@@ -1,11 +1,11 @@
-# Compatibility considerations Go back up one level
+# Compatibility considerations
 
-## Minimum MATLAB version Go back up one level
+## Minimum MATLAB version
 This is version 2 of GUI Layout Toolbox, designed to work with the new MATLAB graphics system that was introduced in R2014b.
 
 Version 1 works with MATLAB releases prior to R2014b that use the old graphics system.
 
-## Compatibility with version 1 Go back up one level
+## Compatibility with version 1
 If you are upgrading from version 1, there are a number of compatibility considerations:
 
 ### Package name
