@@ -1,13 +1,17 @@
 # `uix.Panel` — Arrange a single element inside a standard panel
 
-## Properties
+## Color and styling
 
-### Color and styling
+### `BackgroundColor` — background color
 
-- `BackgroundColor` — background color — `[.94 .94 .94]` (default) | RGB triplet | hexadecimal color code | `'r'` | `'g'` | `'b'` | ...
+`[.94 .94 .94]` (default) | RGB triplet | hexadecimal color code | `'r'` | `'g'` | `'b'` | ...
 
-### Callback Execution Control
+Some description.
 
-- `BeingDeleted` — deletion status — on/off logical value
+## Callback Execution Control
 
-- BorderType
+### `BeingDeleted` — deletion status
+
+on/off logical value
+
+Some description.
