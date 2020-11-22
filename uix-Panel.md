@@ -8,10 +8,14 @@
 
 Some description.
 
-## Callback Execution Control
+## Callback execution control
 
 ### `BeingDeleted` — deletion status
 
 on/off logical value
 
 Some description.
+
+## See also
+
+[uix.BoxPanel](uix-BoxPanel.md) | [uix.CardPanel](uix-CardPanel.md)
