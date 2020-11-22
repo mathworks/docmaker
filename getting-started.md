@@ -1,0 +1,6 @@
+- [What is GUI Layout Toolbox?](about.md)
+- [Compatibility considerations](compatibility.md)
+- [Release notes](release-notes.md)
+- [Installation](installation.md)
+- [Support](support.md)
+- [Acknowledgements](acknowledgements.md)
