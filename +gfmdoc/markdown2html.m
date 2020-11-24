@@ -20,30 +20,16 @@ end
 
 end % markdown2html
 
-function [status, body] = request( method, endpoint, varargin )
+function [status, body] = request( method, endpoint, data )
 %request  Send GitLab request and return response
 %
-%  [status,body] = gitlab.request(method,endpoint)
 %  [status,body] = gitlab.request(method,endpoint,data)
-%
-%  This helper function uses the hostname and access token preferences to
-%  construct and issue a request and return the response.  The optional
-%  request data should be a struct.
 
 % Retrieve preferences
-[hostname, token] = gitlab.setup();
+hostname = "insidelabs-git.mathworks.com";
 
 % Create RequestMessage
-method = matlab.net.http.RequestMethod.( method );
-switch method
-    case matlab.net.http.RequestMethod.GET
-        header = matlab.net.http.HeaderField( ...
-            "PRIVATE-TOKEN", token );
-    otherwise
-        header = matlab.net.http.HeaderField( ...
-            "Content-Type", "application/json", "PRIVATE-TOKEN", token );
-end
-request = matlab.net.http.RequestMessage( method, header, varargin{:} );
+request = matlab.net.http.RequestMessage( method, [], data );
 
 % Send request
 uri = matlab.net.URI( "https://" + hostname + "/api/v4" + endpoint );
