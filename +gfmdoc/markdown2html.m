@@ -1,7 +1,7 @@
 function html = markdown2html( md )
 %markdown2html  Convert GitLab Flavored Markdown to HTML
 %
-%  html = markdown2html(md)
+%  html = gfmdoc.markdown2html(md)
 
 % Request
 hostname = "insidelabs-git.mathworks.com";
