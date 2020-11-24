@@ -34,8 +34,15 @@
     </xsl:template>
     
     <xsl:template match="@href">
-        <xsl:value-of select="substring-before(.,'.md')"/>
-        <xsl:text>.html</xsl:text>
+        <xsl:choose>
+            <xsl:when test="contains(.,'.')">
+                <xsl:value-of select="substring-before(.,'.')"/>
+                <xsl:text>.html</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="substring-before(.,'.')"/>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     
 </xsl:stylesheet>
