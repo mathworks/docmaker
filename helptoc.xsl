@@ -40,7 +40,7 @@
                 <xsl:text>.html</xsl:text>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:value-of select="substring-before(.,'.')"/>
+                <xsl:value-of select="."/>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
