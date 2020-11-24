@@ -47,49 +47,13 @@ request = matlab.net.http.RequestMessage( method, header, varargin{:} );
 
 % Send request
 uri = matlab.net.URI( "https://" + hostname + "/api/v4" + endpoint );
-responses = []; % initialize
-while true
-    response = request.send( uri );
-    responses = [responses response]; %#ok<AGROW>
-    [tf, uri] = isfinal( response ); % more?
-    if tf == true, break, end % break if done
-end
+response = request.send( uri );
 
 % Return
-status = responses(end).StatusCode;
-data = arrayfun( @(r)r.Body.Data, responses, 'UniformOutput', false ); % extract
-body = vertcat( data{:} ); % combine
+status = response.StatusCode;
+body = response.Body.Data;
 
 end % request
-
-function [tf, uri] = isfinal( response )
-%isfinal  Test whether response is final
-%
-%  [tf,uri] = isfinal(response) tests whether the specified response is
-%  final by inspecting the headers for links.  If not then the URI of the
-%  next part of the response is returned.
-
-header = getFields( response, "Link" ); % get links from header
-if isempty( header ) % no links
-    tf = true;
-    uri = [];
-else % links, look for "next"
-    links = textscan( header.Value, "%s" ); % parse into labels and URLs
-    links = string( flipud( reshape( links{:}, 2, [] ) ) ); % reshape
-    links(1,:) = extractBetween( links(1,:), """", """" ); % labels
-    links(2,:) = extractBetween( links(2,:), "<", ">;" ); % URLs
-    links = cellstr( links );
-    links = struct( links{:} );
-    if isfield( links, "next" )
-        tf = false;
-        uri = matlab.net.URI( links.next );
-    else
-        tf = true;
-        uri = [];
-    end
-end
-
-end % isfinal
 
 function e = exception( identifier, body )
 %exception  Create exception from identifier and response body
