@@ -1,5 +1,5 @@
 function html = markdown2html( md )
-%markdown2html  Create GitLab issue discussion note
+%markdown2html  Convert GitLab Flavored Markdown to HTML
 %
 %  html = markdown2html(md)
 
@@ -16,23 +16,7 @@ switch response.StatusCode
     case matlab.net.http.StatusCode.Created
         html = response.Body.Data.html;
     otherwise
-        throwAsCaller( exception( "create", response.Body.Data ) )
+        throw( MException( "gitlab:create", response.Body.Data.error ) )
 end
 
 end % markdown2html
-
-function e = exception( identifier, body )
-%exception  Create exception from identifier and response body
-%
-%  e = exception(identifier,body)
-
-if isfield( body, "error" )
-    message = body.error;
-elseif isfield( body, "message" )
-    message = body.message;
-else
-    message = "Unknown error.";
-end
-e = MException( "gitlab:" + identifier, message );
-
-end % exception
