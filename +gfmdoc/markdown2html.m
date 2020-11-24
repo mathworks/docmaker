@@ -3,43 +3,23 @@ function html = markdown2html( md )
 %
 %  html = markdown2html(md)
 
-% Handle inputs
-narginchk( 1, 1 )
-
 % Request
-data = struct( "text", md, "gfm", true );
-[status, body] = request( "POST", "/markdown", data );
-
-% Return
-switch status
-    case matlab.net.http.StatusCode.Created
-        html = body.html;
-    otherwise
-        throwAsCaller( exception( "create", body ) )
-end
-
-end % markdown2html
-
-function [status, body] = request( method, endpoint, data )
-%request  Send GitLab request and return response
-%
-%  [status,body] = gitlab.request(method,endpoint,data)
-
-% Retrieve preferences
 hostname = "insidelabs-git.mathworks.com";
-
-% Create RequestMessage
+data = struct( "text", md, "gfm", true );
+method = matlab.net.http.RequestMethod.POST;
 request = matlab.net.http.RequestMessage( method, [], data );
-
-% Send request
-uri = matlab.net.URI( "https://" + hostname + "/api/v4" + endpoint );
+uri = matlab.net.URI( "https://" + hostname + "/api/v4/markdown" );
 response = request.send( uri );
 
 % Return
-status = response.StatusCode;
-body = response.Body.Data;
+switch response.StatusCode
+    case matlab.net.http.StatusCode.Created
+        html = response.Body.Data.html;
+    otherwise
+        throwAsCaller( exception( "create", response.Body.Data ) )
+end
 
-end % request
+end % markdown2html
 
 function e = exception( identifier, body )
 %exception  Create exception from identifier and response body
