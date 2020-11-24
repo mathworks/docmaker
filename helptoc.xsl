@@ -15,6 +15,10 @@
         </xsl:element>
     </xsl:template>
     
+    <xsl:template match="ol">
+        <xsl:apply-templates select="li"/>  
+    </xsl:template>
+    
     <xsl:template match="ul">
         <xsl:apply-templates select="li"/>  
     </xsl:template>
@@ -22,11 +26,12 @@
     <xsl:template match="li">
         <xsl:element name="tocitem">
             <xsl:apply-templates select="a"/>
+            <xsl:apply-templates select="ol"/>
             <xsl:apply-templates select="ul"/>
         </xsl:element>
     </xsl:template>
     
-    <xsl:template match="a">
+    <xsl:template match="li/a"> <!-- a in li -->
         <xsl:attribute name="target">
             <xsl:apply-templates select="@href"/>
         </xsl:attribute>
@@ -44,5 +49,7 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
+    
+    <xsl:template match="text()"/> <!-- ignore unmatched -->
     
 </xsl:stylesheet>
