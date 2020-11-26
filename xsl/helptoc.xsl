@@ -39,15 +39,17 @@
     </xsl:template>
     
     <xsl:template match="@href">
-        <xsl:choose>
-            <xsl:when test="contains(.,'.')">
-                <xsl:value-of select="substring-before(.,'.')"/>
-                <xsl:text>.html</xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:value-of select="."/>
-            </xsl:otherwise>
-        </xsl:choose>
+        <xsl:attribute name="href">
+            <xsl:choose>
+                <xsl:when test="contains(.,'.')">
+                    <xsl:value-of select="substring-before(.,'.')"/>
+                    <xsl:text>.html</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="."/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
     </xsl:template>
     
     <xsl:template match="text()"/> <!-- ignore unmatched -->

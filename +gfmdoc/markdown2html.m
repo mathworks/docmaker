@@ -3,15 +3,12 @@ function html = markdown2html( md )
 %
 %  html = gfmdoc.markdown2html(md)
 
-% Request
 hostname = "insidelabs-git.mathworks.com";
 data = struct( "text", md, "gfm", true );
 method = matlab.net.http.RequestMethod.POST;
 request = matlab.net.http.RequestMessage( method, [], data );
 uri = matlab.net.URI( "https://" + hostname + "/api/v4/markdown" );
 response = request.send( uri );
-
-% Return
 switch response.StatusCode
     case matlab.net.http.StatusCode.Created
         html = response.Body.Data.html;

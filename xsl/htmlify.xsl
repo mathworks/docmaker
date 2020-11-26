@@ -6,7 +6,6 @@
     <xsl:output method="html" indent="yes"/>
     
     <xsl:template match="/">
-        <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>        
         <xsl:element name="html">
             <xsl:attribute name="xml:lang">en</xsl:attribute>
             <xsl:attribute name="lang">en</xsl:attribute>
