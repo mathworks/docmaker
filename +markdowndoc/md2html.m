@@ -4,6 +4,8 @@ function html = md2html( md, hostname )
 %  html = markdowndoc.md2html(md)
 %  html = markdowndoc.md2html(md,hostname)
 
+%  Copyright 2020 The MathWorks, Inc.
+
 % Handle inputs
 narginchk( 1, 2 )
 if nargin < 2, hostname = "insidelabs-git.mathworks.com"; end
