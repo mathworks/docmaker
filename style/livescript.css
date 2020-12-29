@@ -1,5 +1,5 @@
 main {
-    padding: 30px;
+    padding: 10px;
 }
 
 h1 {
@@ -29,19 +29,7 @@ h3 {
     text-align: left;
 }
 
-/*
-
-pre code span {
-    background-color: #F7F7F7;
-    margin: 10px 0 10px 0;
-}
-
-.S1 {
-    margin: 2px 10px 9px 4px;
-    padding: 0px;
-    line-height: 21px;
-    min-height: 0px;
-    white-space: pre-wrap;
+p, th, td {
     color: rgb(0, 0, 0);
     font-family: Helvetica, Arial, sans-serif;
     font-style: normal;
@@ -50,37 +38,34 @@ pre code span {
     text-align: left;
 }
 
-pre code span {
-    border-left: 1px solid rgb(233, 233, 233);
-    border-right: 1px solid rgb(233, 233, 233);
-    border-top: 1px solid rgb(233, 233, 233);
-    border-bottom: 1px solid rgb(233, 233, 233);
+p code, td code {
+    border: 1px solid rgb(233, 233, 233);
     border-radius: 4px;
-    padding: 6px 45px 4px 13px;
-    line-height: 17.234px;
-    min-height: 18px;
-    white-space: nowrap;
+    padding: 2px 4px;
     color: rgb(0, 0, 0);
     font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
     font-size: 14px;
 }
 
-.S4 {
-    margin: 10px 10px 9px 4px;
-    padding: 0px;
-    line-height: 21px;
-    min-height: 0px;
-    white-space: pre-wrap;
+pre {
+    border: 1px solid rgb(233, 233, 233);
+    border-radius: 4px;
+    padding: 10px 10px;
     color: rgb(0, 0, 0);
-    font-family: Helvetica, Arial, sans-serif;
-    font-style: normal;
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
     font-size: 14px;
-    font-weight: 400;
-    text-align: left;
 }
 
-main {
-    padding: 30px;
+table {
+    border: 1px solid rgb(233, 233, 233);
+    border-radius: 4px;
 }
 
-*/
+th {
+    color: white;
+    background-color: rgb(213, 80, 0);
+}
+
+th, td {
+    padding: 4px 8px;
+}
