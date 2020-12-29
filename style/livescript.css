@@ -1,26 +1,17 @@
-/*
+main {
+    padding: 30px;
+}
 
 h1 {
-    margin: 3px 10px 5px 4px;
-    padding: 0px;
-    line-height: 28.8px;
-    min-height: 0px;
-    white-space: pre-wrap;
     color: rgb(213, 80, 0);
     font-family: Helvetica, Arial, sans-serif;
     font-style: normal;
     font-size: 24px;
     font-weight: 400;
     text-align: left;
-    display: inline;
 }
 
 h2 {
-    margin: 20px 10px 5px 4px;
-    padding: 0px;
-    line-height: 20px;
-    min-height: 0px;
-    white-space: pre-wrap;
     color: rgb(60, 60, 60);
     font-family: Helvetica, Arial, sans-serif;
     font-style: normal;
@@ -30,11 +21,6 @@ h2 {
 }
 
 h3 {
-    margin: 15px 10px 5px 4px;
-    padding: 0px;
-    line-height: 18px;
-    min-height: 0px;
-    white-space: pre-wrap;
     color: rgb(60, 60, 60);
     font-family: Helvetica, Arial, sans-serif;
     font-style: normal;
@@ -42,6 +28,8 @@ h3 {
     font-weight: 700;
     text-align: left;
 }
+
+/*
 
 pre code span {
     background-color: #F7F7F7;
