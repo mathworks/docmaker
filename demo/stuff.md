@@ -2,6 +2,8 @@
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eleifend ac nisi id varius. Aenean sapien arcu, blandit non odio ut, laoreet bibendum ligula. Aenean lectus ex, aliquet eu porta eget, accumsan non felis. Nunc iaculis quam a rhoncus accumsan. Suspendisse suscipit nulla sed est bibendum dapibus. Aenean pulvinar risus tellus, sit amet auctor purus luctus et. Aliquam nisl tortor, semper tempus lectus eget, fermentum malesuada sem. Praesent justo dolor, vehicula sit amet varius sit amet, auctor eget tortor. Morbi fringilla nisl a vehicula laoreet. Aliquam nec ornare urna, et mattis ante. Vestibulum sagittis mauris id neque ullamcorper dapibus. Maecenas faucibus, leo scelerisque imperdiet vehicula, risus orci lobortis felis, vitae vulputate risus metus a ex.
 
+![bouquetin](bouquetin.jpg "Foo Bar")
+
 ## Heading 2
 
 Donec maximus magna eros, ac aliquam nibh tempus sagittis. Sed vel lectus semper, laoreet metus blandit, accumsan purus. Sed tincidunt luctus urna nec placerat. Nullam nec cursus risus. Ut sed eros at enim varius tempor. Duis eros diam, venenatis sed fermentum id, pharetra ac nisi. Quisque placerat eu elit consectetur fermentum. Nunc tristique vestibulum enim, eu vehicula nisl ornare id. Nulla condimentum eget augue sit amet pulvinar.
