@@ -18,4 +18,4 @@ Some description.
 
 ## See also
 
-[uix.BoxPanel](uix-BoxPanel.md) | [uix.CardPanel](uix-CardPanel.md)
+[`uix.BoxPanel`](uix-BoxPanel.md) | [`uix.CardPanel`](uix-CardPanel.md)
