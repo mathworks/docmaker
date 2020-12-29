@@ -1,8 +1,8 @@
-function html = md2html( md, hostname )
-%md2html  Convert (GitLab Flavored) Markdown to HTML
+function htmlf = md2htmlf( md, hostname )
+%md2htmlf  Convert (GitLab Flavored) Markdown to HTML fragment
 %
-%  html = markdowndoc.md2html(md)
-%  html = markdowndoc.md2html(md,hostname)
+%  htmlf = markdowndoc.md2htmlf(md)
+%  htmlf = markdowndoc.md2htmlf(md,hostname)
 
 %  Copyright 2020 The MathWorks, Inc.
 
@@ -20,9 +20,9 @@ response = request.send( uri );
 % Handle response
 switch response.StatusCode
     case matlab.net.http.StatusCode.Created
-        html = response.Body.Data.html;
+        htmlf = response.Body.Data.html;
     otherwise
         throw( MException( "gitlab:create", response.Body.Data.error ) )
 end
 
-end % md2html
+end % md2htmlf
