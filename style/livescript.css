@@ -1,8 +1,6 @@
-.rtcContent {
-    padding: 30px;
-}
+/*
 
-.S0 {
+h1 {
     margin: 3px 10px 5px 4px;
     padding: 0px;
     line-height: 28.8px;
@@ -14,6 +12,40 @@
     font-size: 24px;
     font-weight: 400;
     text-align: left;
+    display: inline;
+}
+
+h2 {
+    margin: 20px 10px 5px 4px;
+    padding: 0px;
+    line-height: 20px;
+    min-height: 0px;
+    white-space: pre-wrap;
+    color: rgb(60, 60, 60);
+    font-family: Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: left;
+}
+
+h3 {
+    margin: 15px 10px 5px 4px;
+    padding: 0px;
+    line-height: 18px;
+    min-height: 0px;
+    white-space: pre-wrap;
+    color: rgb(60, 60, 60);
+    font-family: Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-size: 17px;
+    font-weight: 700;
+    text-align: left;
+}
+
+pre code span {
+    background-color: #F7F7F7;
+    margin: 10px 0 10px 0;
 }
 
 .S1 {
@@ -30,26 +62,7 @@
     text-align: left;
 }
 
-.S2 {
-    margin: 20px 10px 5px 4px;
-    padding: 0px;
-    line-height: 20px;
-    min-height: 0px;
-    white-space: pre-wrap;
-    color: rgb(60, 60, 60);
-    font-family: Helvetica, Arial, sans-serif;
-    font-style: normal;
-    font-size: 20px;
-    font-weight: 700;
-    text-align: left;
-}
-
-.CodeBlock {
-    background-color: #F7F7F7;
-    margin: 10px 0 10px 0;
-}
-
-.S3 {
+pre code span {
     border-left: 1px solid rgb(233, 233, 233);
     border-right: 1px solid rgb(233, 233, 233);
     border-top: 1px solid rgb(233, 233, 233);
@@ -78,16 +91,8 @@
     text-align: left;
 }
 
-.S5 {
-    margin: 15px 10px 5px 4px;
-    padding: 0px;
-    line-height: 18px;
-    min-height: 0px;
-    white-space: pre-wrap;
-    color: rgb(60, 60, 60);
-    font-family: Helvetica, Arial, sans-serif;
-    font-style: normal;
-    font-size: 17px;
-    font-weight: 700;
-    text-align: left;
+main {
+    padding: 30px;
 }
+
+*/
