@@ -1,7 +1,7 @@
-function root = rootdir( d )
-%rootdir  Find common ancestor folder for dirspec
+function root = ancestordir( d )
+%ancestordir  Find common ancestor folder for dirspec
 %
-%  r = rootdir(d) finds a common ancestor folder for the dirspec d.
+%  r = ancestordir(d) finds a common ancestor folder for the dirspec d.
 %
 %  If d is empty then r is [].  If there is no common ancestor then an
 %  exception is raised.
@@ -20,4 +20,4 @@ else
     end
 end
 
-end % rootdir
+end % ancestordir
