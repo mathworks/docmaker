@@ -1,21 +1,33 @@
-function root = ancestordir( d )
-%ancestordir  Find common ancestor folder for dirspec
+function a = ancestordir( f )
+%ancestordir  Find common ancestor folder
 %
-%  r = ancestordir(d) finds a common ancestor folder for the dirspec d.
+%  r = ancestordir(f) finds a common ancestor folder for the file list f.
+%  f can be specified as a char or string, a cellstr or string array, or a
+%  dir struct.
 %
-%  If d is empty then r is [].  If there is no common ancestor then an
-%  exception is raised.
+%  If f is empty, or if the elements of f have no common ancestor folder,
+%  then [] is returned.
 
-if isempty( d )
-    root = [];
-else
-    root = d(1).folder; % initialize
-    for ii = 1:numel( d )
-        while( ~strncmp( d(ii).folder, root, numel( root ) ) )
-            assert( ~strcmp( root, fileparts( root ) ), ...
-                'markdowndoc:UnhandledError', ...
-                'Cannot find root directory.' )
-            root = fileparts( root );
+%  Copyright 2020-2021 The MathWorks, Inc.
+
+% Handle inputs
+if isstruct( f ) % dir struct
+    p = reshape( {f.folder}, size( f ) ); % extract folders
+    n = reshape( {f.name}, size( f ) ); % extract folders
+    f = fullfile( p, n ); % combine
+else % something else, convert
+    f = cellstr( f );
+end
+
+% Find ancestor
+if isempty( f ) % degenerate
+    a = [];
+else % normal
+    a = fileparts( f{1} ); % initialize
+    for ii = 1:numel( f )
+        while( ~strncmp( f{ii}, a, numel( a ) ) ) % compare first parts
+            if strcmp( a, fileparts( a ) ), a = []; return; end % topped out
+            a = fileparts( a ); % up one
         end
     end
 end
