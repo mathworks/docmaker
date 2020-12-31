@@ -4,3 +4,5 @@
 - [Installation](Installation.md)
   - [Support](Support.md)
   - [Acknowledgements](Acknowledgements.md)
+- [Functions](API.md)
+  - [uix.Panel](api/uix.Panel.md)
