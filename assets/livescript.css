@@ -29,7 +29,7 @@ h3 {
     text-align: left;
 }
 
-p, th, td {
+p, li, th, td {
     color: rgb(0, 0, 0);
     font-family: Helvetica, Arial, sans-serif;
     font-style: normal;

@@ -21,7 +21,6 @@ document.addEventListener("DOMContentLoaded", function () {
           let button = document.createElement("button");
           button.className = "collapsible";
           while (child.childNodes.length > 0) {
-            console.log("Add");
             button.appendChild(child.childNodes[0]);
           }
           let content = document.createElement("div");
@@ -32,12 +31,12 @@ document.addEventListener("DOMContentLoaded", function () {
           parent = content;
           break;
         default:
-          console.log("Move " + child.nodeName);
           parent.appendChild(child);
       }
     }
     main.appendChild(div);
   }
+
   var collapsible = document.getElementsByClassName("collapsible");
   for (let i = 0; i < collapsible.length; i++) {
     collapsible[i].addEventListener("click", function () {
