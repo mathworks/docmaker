@@ -1,32 +1,30 @@
-function html = md2html( nMd, nCss )
+function htmlf = md2html( md, hostname )
+%md2html  Convert (GitLab Flavored) Markdown to HTML fragment
+%
+%  htmlf = markdowndoc.md2html(md)
+%  htmlf = markdowndoc.md2html(md,hostname)
+%
+%  See also: markdown.publish
+
+%  Copyright 2020 The MathWorks, Inc.
 
 % Handle inputs
-[pMd, fMd, ~] = fileparts( nMd );
-nHtml = fullfile( pMd, [fMd '.html'] );
+narginchk( 1, 2 )
+if nargin < 2, hostname = "insidelabs-git.mathworks.com"; end
 
-% Read input
-md = fileread( nMd );
+% Submit request
+data = struct( "text", md, "gfm", true );
+method = matlab.net.http.RequestMethod.POST;
+request = matlab.net.http.RequestMessage( method, [], data );
+uri = matlab.net.URI( "https://" + hostname + "/api/v4/markdown" );
+response = request.send( uri );
 
-% Convert
-htmlf = markdowndoc.md2htmlf( md );
-
-% Wrap
-html = "<!DOCTYPE html>" + newline + ...
-    "<html xmlns=""http://www.w3.org/1999/xhtml"" xml:lang=""en"" lang=""en"">" + newline + ...
-    "<head>" + newline + ...
-    "<title>" + fMd + "</title>" + newline + ...
-    "<link rel=""stylesheet"" href=""" + nCss + """>" + newline + ...
-    "<script src=""../assets/lazyload.js""></script>" + newline + ...
-    "<script src=""../assets/fixlinks.js""></script>" + newline + ...
-    "</head>" + newline + ...
-    "<body>" + newline + "<main>" + newline + ...
-    htmlf + newline + ...
-    "</main>" + newline + "</body>" + newline + ...
-    "</html>";
-
-% Write output
-fHtml = fopen( nHtml, "w+" );
-fprintf( fHtml, "%s", html );
-fclose( fHtml );
+% Handle response
+switch response.StatusCode
+    case matlab.net.http.StatusCode.Created
+        htmlf = response.Body.Data.html;
+    otherwise
+        throw( MException( "gitlab:create", response.Body.Data.error ) )
+end
 
 end % md2html
