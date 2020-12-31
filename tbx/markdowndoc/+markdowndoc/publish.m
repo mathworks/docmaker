@@ -14,9 +14,28 @@ else
     error( 'markdowndoc:InvalidArgument', ...
         'Input file(s) must strings or dir structs.' )
 end
-if isempty( md ), return, end
+for s = md
+    assert( s.isdir == false )
+end
 
 % Check root
+if isempty( md )
+    root = [];
+else
+    root = s(1).folder; % initialize
+    while( ~strcmp( root, fileparts( root ) ) )
+        for s = md(2:end)
+            while( ~strncmp( s.folder, root, numel( root ) ) )
+                root = fileparts( root );
+            end
+        end
+    end
+end
+    
+
+
+
+
 if nargin < 2 || isequal( root, [] )
     root = i_root( md );
 else
