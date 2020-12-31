@@ -1,5 +1,6 @@
 function publish( md, root, stylesheets, scripts )
 
+% Check files to process
 if ischar( md ) || isstring( md )
     md = dir( md );
 elseif iscellstr( md )
@@ -8,26 +9,34 @@ elseif iscellstr( md )
     end
     md = [md{:}];
 elseif isstruct( md ) && all( ismember( fieldnames( md ), fieldnames( dir() ) ) )
-    % dir struct, OK
+    md = reshape( md, 1, [] ); % dir struct, OK
 else
     error( 'markdowndoc:InvalidArgument', ...
         'Input file(s) must strings or dir structs.' )
 end
 if isempty( md ), return, end
 
+% Check root
 if nargin < 2 || isequal( root, [] )
-    root = unique( {md.folder} );
-    assert( isscalar( root ), 'markdowndoc:InvalidArgument', ...
-        'root must be specified when publishing from multiple folders.' )
-    root = root{:}; % unpack
+    root = i_root( md );
+else
+    assert( isfolder( root ) )
 end
 
+% Check stylesheets
+% TODO support dirspec
+% TODO bake in standard
+% TODO look in standard place
 if nargin < 3 || isequal( stylesheets, [] )
     stylesheets = cell( 1, 0 );
 else
     stylesheets = cellstr( stylesheets );
 end
 
+% Check scripts
+% TODO support dirspec
+% TODO bake in standard
+% TODO look in standard place
 if nargin < 4 || isequal( scripts, [] )
     scripts = cell( 1, 0 );
 else
@@ -54,6 +63,9 @@ end
 
 function i_publish( fMd, root, stylesheets, scripts )
 
+% Check inputs
+[pMd, nMd, ~] = fileparts( fMd );
+
 % Start with doctype and head including title
 html = "<!DOCTYPE html>" + newline + ...
     "<html xmlns=""http://www.w3.org/1999/xhtml"" xml:lang=""en"" lang=""en"">" + newline + ...
@@ -79,11 +91,10 @@ end
 % Add body
 html = html + ...
     "</head>" + newline + "<body>" + newline + "<main>" + newline + ...
-    markdowndoc.md2htmlf( fileread( fMd ) ) + newline + ...
+    markdowndoc.md2html( fileread( fMd ) ) + newline + ...
     "</main>" + newline + "</body>" + newline + "</html>";
 
 % Write output
-[pMd, nMd, ~] = fileparts( fMd );
 fHtml = fullfile( pMd, [nMd '.html'] );
 hHtml = fopen( fHtml, "w+" );
 fprintf( hHtml, "%s", html );

@@ -8,7 +8,7 @@ md = fread( fMd );
 fclose( fMd );
 md = string( char( transpose( md ) ) );
 
-html = gfmdoc.markdown2html( md );
+html = markdowndoc.md2html( md );
 html = "<html>" + newline + "<body>" + html + "</body>" + newline + "</html>";
 
 nHtml = "temp.html";
