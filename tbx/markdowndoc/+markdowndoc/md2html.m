@@ -1,16 +1,28 @@
-function htmlf = md2html( md, hostname )
+function html = md2html( md, hostname )
 %md2html  Convert (GitLab Flavored) Markdown to HTML fragment
 %
-%  htmlf = markdowndoc.md2html(md)
-%  htmlf = markdowndoc.md2html(md,hostname)
+%  html = markdowndoc.md2html(md,hostname) converts the Markdown md to HTML
+%  html using the GitLab API at the specified hostname.
 %
-%  See also: markdown.publish
+%  html = markdowndoc.md2html(md) uses the default host: insidelabs within
+%  MathWorks and GitLab.com outside.
+%
+%  MarkDown API documentation: https://docs.gitlab.com/ee/api/markdown.html
+%
+%  See also: markdowndoc.publish
 
-%  Copyright 2020 The MathWorks, Inc.
+%  Copyright 2020-2021 The MathWorks, Inc.
 
 % Handle inputs
 narginchk( 1, 2 )
-if nargin < 2, hostname = "insidelabs-git.mathworks.com"; end
+if nargin < 2
+    switch lower( getenv( "userdomain" ) )
+        case "mathworks"
+            hostname = "insidelabs-git.mathworks.com"; % MathWorks
+        otherwise
+            hostname = "gitlab.com"; % public
+    end
+end
 
 % Submit request
 data = struct( "text", md, "gfm", true );
@@ -22,7 +34,7 @@ response = request.send( uri );
 % Handle response
 switch response.StatusCode
     case matlab.net.http.StatusCode.Created
-        htmlf = response.Body.Data.html;
+        html = response.Body.Data.html;
     otherwise
         throw( MException( "gitlab:create", response.Body.Data.error ) )
 end
