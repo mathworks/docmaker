@@ -1,3 +1,8 @@
+/*
+mdlinks  Replace .md links with corresponding .html links.
+
+Copyright 2020-2021 The MathWorks, Inc.
+*/
 document.addEventListener("DOMContentLoaded", function() {
   let links = document.getElementsByTagName("a"); // get links
   for(let i=0;i<links.length;i++) { // loop over links

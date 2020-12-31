@@ -1,5 +1,9 @@
+/*
+h3collapse  Replace h3 tags with buttons and collapsible divs.
+
+Copyright 2020-2021 The MathWorks, Inc.
+*/
 document.addEventListener("DOMContentLoaded", function () {
-  
   let mains = document.body.getElementsByTagName("main");
   for (let i = 0; i < mains.length; i++) {
     let main = mains[i];
@@ -35,7 +39,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     tempDiv.remove(); // remove temp div
   }
-
   let collapsibles = document.getElementsByClassName("collapsible");
   for (let i = 0; i < collapsibles.length; i++) {
     collapsibles[i].addEventListener("click", function () {
@@ -48,5 +51,4 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   }
-
 })
