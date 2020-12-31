@@ -1,47 +1,46 @@
 document.addEventListener("DOMContentLoaded", function () {
+  
   let mains = document.body.getElementsByTagName("main");
   for (let i = 0; i < mains.length; i++) {
     let main = mains[i];
-    let children = main.childNodes;
-    let div = document.createElement("div");
-    let parent = div;
-    while (children.length > 0) {
-      var child = children[0];
-      var childName = child.nodeName.toLowerCase();
-      switch (childName) {
+    let div = document.createElement("div"); // create temp div
+    let parent = div; // initialize: append next child to div
+    while (main.hasChildNodes()) {
+      let child = main.childNodes[0];
+      switch (child.nodeName.toLowerCase()) {
         case "h1":
         case "h2":
+          div.appendChild(child); // append child to div
+          parent = div; // append next child to div
+          break;
         case "h3":
-          if (parent != div) {
-            parent = div;
-          }
-      }
-      switch (childName) {
-        case "h3":
-          let button = document.createElement("button");
+          let button = document.createElement("button"); // create new button
           button.className = "collapsible";
-          while (child.childNodes.length > 0) {
-            button.appendChild(child.childNodes[0]);
+          while (child.hasChildNodes()) {
+            button.appendChild(child.childNodes[0]); // move h3 children to new button
           }
-          let content = document.createElement("div");
+          let content = document.createElement("div"); // create subdiv
           content.className = "content";
-          div.appendChild(button);
-          div.appendChild(content);
-          child.remove();
-          parent = content;
+          div.appendChild(button); // append button to div
+          div.appendChild(content); // append subdiv to div
+          child.remove(); // remove h3
+          parent = content; // append next child to subdiv
           break;
         default:
-          parent.appendChild(child);
+          parent.appendChild(child); // append child to div or subdiv
       }
     }
-    main.appendChild(div);
+    while (div.hasChildNodes()) {
+      main.appendChild(div.childNodes[0]); // move temp div children back to main
+    }
+    div.remove(); // remove temp div
   }
 
-  var collapsible = document.getElementsByClassName("collapsible");
+  let collapsible = document.getElementsByClassName("collapsible");
   for (let i = 0; i < collapsible.length; i++) {
     collapsible[i].addEventListener("click", function () {
       this.classList.toggle("active");
-      var content = this.nextElementSibling;
+      let content = this.nextElementSibling;
       if (content.style.maxHeight) {
         content.style.maxHeight = null;
       } else {
@@ -51,44 +50,3 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 })
-
-function printElements(elements) {
-  var s = ""; // initialize
-  for (let i = 0; i < elements.length; i++) {
-    s = s + "." + elements[i].nodeName;
-  }
-  console.log(s);
-}
-
-/*
-      var child = children[j];
-      var tag = child.nodeName.toLowerCase();
-      switch (tag) {
-        case "h1":
-        case "h2":
-        case "h3":
-          console.log("Tag level " + tag);
-          var childLevel = parseInt(tag[1]);
-*/
-
-/*
-if(childLevel>parentLevel) {
-  for(let k=parentLevel;k<childLevel;k++) {
-    var div = document.createElement("div");
-    div.setAttribute("class",tag);
-    parent.appendChild(div);
-    parent = div;
-    parentLevel = k+1;
-  }
-} else if (childLevel<parentLevel) {
-  for(let k=parentLevel;k>childLevel;k--) {
-    parent = parent.parentElement;
-    parentLevel = k-1;
-  }
-} else {
-  var div = document.createElement("div");
-  div.setAttribute("class",tag);
-  parent.parentElement.appendChild(div);
-  parent = div;
-}
-*/
