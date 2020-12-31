@@ -3,15 +3,15 @@ document.addEventListener("DOMContentLoaded", function () {
   let mains = document.body.getElementsByTagName("main");
   for (let i = 0; i < mains.length; i++) {
     let main = mains[i];
-    let div = document.createElement("div"); // create temp div
-    let parent = div; // initialize: append next child to div
+    let tempDiv = document.createElement("div"); // create temp div
+    let nextParent = tempDiv; // initialize: append next child to div
     while (main.hasChildNodes()) {
       let child = main.childNodes[0];
       switch (child.nodeName.toLowerCase()) {
         case "h1":
         case "h2":
-          div.appendChild(child); // append child to div
-          parent = div; // append next child to div
+          tempDiv.appendChild(child); // append child to div
+          nextParent = tempDiv; // append next child to div
           break;
         case "h3":
           let button = document.createElement("button"); // create new button
@@ -21,24 +21,24 @@ document.addEventListener("DOMContentLoaded", function () {
           }
           let content = document.createElement("div"); // create subdiv
           content.className = "content";
-          div.appendChild(button); // append button to div
-          div.appendChild(content); // append subdiv to div
+          tempDiv.appendChild(button); // append button to div
+          tempDiv.appendChild(content); // append subdiv to div
           child.remove(); // remove h3
-          parent = content; // append next child to subdiv
+          nextParent = content; // append next child to subdiv
           break;
         default:
-          parent.appendChild(child); // append child to div or subdiv
+          nextParent.appendChild(child); // append child to div or subdiv
       }
     }
-    while (div.hasChildNodes()) {
-      main.appendChild(div.childNodes[0]); // move temp div children back to main
+    while (tempDiv.hasChildNodes()) {
+      main.appendChild(tempDiv.childNodes[0]); // move temp div children back to main
     }
-    div.remove(); // remove temp div
+    tempDiv.remove(); // remove temp div
   }
 
-  let collapsible = document.getElementsByClassName("collapsible");
-  for (let i = 0; i < collapsible.length; i++) {
-    collapsible[i].addEventListener("click", function () {
+  let collapsibles = document.getElementsByClassName("collapsible");
+  for (let i = 0; i < collapsibles.length; i++) {
+    collapsibles[i].addEventListener("click", function () {
       this.classList.toggle("active");
       let content = this.nextElementSibling;
       if (content.style.maxHeight) {
