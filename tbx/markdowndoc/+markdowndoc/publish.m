@@ -1,89 +1,67 @@
-function publish( md, root, stylesheets, scripts )
+function publish( md, root, css, js )
 
 % Check files to process
-if ischar( md ) || isstring( md )
-    md = dir( md );
-elseif iscellstr( md )
-    for ii = 1:numel( md )
-        md{ii} = dir( md{ii} );
-    end
-    md = [md{:}];
-elseif isstruct( md ) && all( ismember( fieldnames( md ), fieldnames( dir() ) ) )
-    md = reshape( md, 1, [] ); % dir struct, OK
-else
-    error( 'markdowndoc:InvalidArgument', ...
-        'Input file(s) must strings or dir structs.' )
-end
-for s = md
-    assert( s.isdir == false )
-end
+md = dirspec( md );
+assert( ~any( [md.isdir] ) )
 
 % Check root
-if isempty( md )
-    root = [];
-else
-    root = s(1).folder; % initialize
-    while( ~strcmp( root, fileparts( root ) ) )
-        for s = md(2:end)
-            while( ~strncmp( s.folder, root, numel( root ) ) )
-                root = fileparts( root );
-            end
-        end
-    end
-end
-    
-
-
-
-
 if nargin < 2 || isequal( root, [] )
-    root = i_root( md );
+    root = markdowndoc.ancestordir( md );
 else
     assert( isfolder( root ) )
+    root = getfield( dir( root ), 'folder' );
+    assert( strncmp( root, markdowndoc.ancestordir( md ), numel( root ) ) )
 end
 
 % Check stylesheets
-% TODO support dirspec
-% TODO bake in standard
 % TODO look in standard place
-if nargin < 3 || isequal( stylesheets, [] )
-    stylesheets = cell( 1, 0 );
+if nargin < 3 || isequal( css, [] )
+    css = [];
 else
-    stylesheets = cellstr( stylesheets );
+    css = dirspec( css );
+    assert( ~any( [css.isdir] ) )
 end
+css = [dirspec( fullfile( tbxresources(), 'matlaby.css' ) ); css]; % prepend standard
 
 % Check scripts
-% TODO support dirspec
-% TODO bake in standard
 % TODO look in standard place
-if nargin < 4 || isequal( scripts, [] )
-    scripts = cell( 1, 0 );
+if nargin < 4 || isequal( js, [] )
+    js = [];
 else
-    scripts = cellstr( scripts );
+    js = dirspec( js );
 end
+js = [dirspec( fullfile( tbxresources(), 'lazyload.js' ) ); ...
+    dirspec( fullfile( tbxresources(), 'mdlinks.js' ) ); js]; % prepend standard
 
 % Publish
 for ii = 1:numel( md )
-    fMd = fullfile( md(ii).folder, md(ii).name ); % full file name
-    dMd = md(ii).isdir; % folder flag
-    [~, ~, eMd] = fileparts( fMd ); % file extension
-    if dMd == true % folder
-        warning( 'markdowndoc:InvalidArgument', ...
-            'Cannot publish folder ''%s''.', fMd )
-    elseif ~strcmpi( eMd, '.md' ) % not .md
-        warning( 'markdowndoc:InvalidArgument', ...
-            'Cannot publish non-Markdown file ''%s''.', fMd )
-    else % go for it
-        i_publish( fMd, root, stylesheets, scripts )
+    i_publish( fullfile( md(ii).folder, md(ii).name ), root, css, js )
+end
+
+end
+
+function d = dirspec( d )
+
+if isstruct( d ) && all( ismember( fieldnames( d ), fieldnames( dir() ) ) )
+    d = d(:);
+elseif iscellstr( d ) || isstring( d ) % strings, call dir and combine
+    d = cellstr( d );
+    for ii = 1:numel( d )
+        d{ii} = dir( d{ii} );
     end
+    d = vertcat( d{:} );
+else % call dir
+    d = dir( d );
 end
 
 end
 
-function i_publish( fMd, root, stylesheets, scripts )
+function i_publish( fMd, root, css, js )
 
 % Check inputs
 [pMd, nMd, ~] = fileparts( fMd );
+resdir = fullfile( root, 'resources' );
+if ~isfolder( resdir ), mkdir( resdir ), end
 
 % Start with doctype and head including title
 html = "<!DOCTYPE html>" + newline + ...
@@ -91,20 +69,22 @@ html = "<!DOCTYPE html>" + newline + ...
     "<head>" + newline + "<title>" + nMd + "</title>" + newline;
 
 % Add stylesheets
-for ii = 1:numel( stylesheets )
-    i_copyresource( stylesheets{ii}, root )
-    html = html + ...
-        "<link rel=""stylesheet"" href=""" + ...
-        i_relpath( root, stylesheets{ii} ) + """>" + newline;
+for ii = 1:numel( css )
+    fCss = fullfile( css(ii).folder, css(ii).name );
+    [~, nCss, eCss] = fileparts( fCss ); 
+    copyfile( fCss, resdir )
+    rCss = markdowndoc.relpath( fMd, fullfile( resdir, [nCss eCss] ) );
+    html = html + "<link rel=""stylesheet"" href=""" + rCss + """>" + newline;
 end
 
-
 % Add scripts
-for ii = 1:numel( scripts )
-    i_copyresource( scripts{ii}, root )
-    html = html + ...
-        "<script src=""" + i_relpath( root, scripts{ii} ) + ...
-        """></script>" + newline;
+for ii = 1:numel( js )
+    fJs = fullfile( js(ii).folder, js(ii).name );
+    [~, nJs, eJs] = fileparts( fJs ); 
+    copyfile( fJs, resdir )
+    rJs = markdowndoc.relpath( fMd, fullfile( resdir, [nJs eJs] ) );
+    rJs = strrep( rJs, filesep(), '/' );
+    html = html + "<script src=""" + rJs + """></script>" + newline;
 end
 
 % Add body
@@ -121,15 +101,10 @@ fclose( hHtml );
 
 end % i_publish
 
-function i_copyresource( fS, r )
+function r = tbxresources()
 
-[~, nS, eS] = fileparts( fS ); % source name and extension
-pD = fullfile( r, 'resources' ); % destination folder
-if ~isfolder( pD ), mkdir( pD ), end % ensure destination folder exists
-copyfile( fS, fullfile( pD, [nS eS] ) ) % copy file
+p = fileparts( mfilename( 'fullpath' ) );
+c = fileparts( p );
+r = fullfile( c, 'resources' );
 
-end % i_copyresource
-
-function from = i_relpath( from, to )
-
-end
+end % tbxresources
