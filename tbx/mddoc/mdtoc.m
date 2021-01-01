@@ -1,22 +1,23 @@
 function mdtoc( nMd, nXml )
 %mdtoc  Create helptoc XML from Markdown table of contents
 %
-%  gfmdoc.mdtoc(md,xml)
+%  mdtoc(md,xml)
 
-fMd = fopen( nMd, "r+" );
-md = fread( fMd );
-fclose( fMd );
-md = string( char( transpose( md ) ) );
+% Read input Markdown
+md = fileread( nMd );
 
-html = markdowndoc.md2html( md );
-html = "<html>" + newline + "<body>" + html + "</body>" + newline + "</html>";
+% Convert Markdown to HTML
+html = md2html( md );
+html = "<body>" + html + "</body>"; % TODO necessary?
 
+% Write HTML to file
 nHtml = "temp.html";
 c = onCleanup( @()delete(nHtml) );
 fHtml = fopen( nHtml, "w" );
 fwrite( fHtml, html );
 fclose( fHtml );
 
+% Convert from HTML to XML using XSL
 dXsl = fullfile( fileparts( fileparts( mfilename( "fullfile" ) ) ), "xsl" );
 i_xslt( nHtml, fullfile( dXsl, "helptoc.xsl" ), nXml );
 
