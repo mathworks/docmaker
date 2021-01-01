@@ -7,7 +7,7 @@
     <param.summary>Author MATLAB documentation in Markdown</param.summary>
     <param.description />
     <param.screenshot />
-    <param.version>1.0</param.version>
+    <param.version>0.1</param.version>
     <param.output>${PROJECT_ROOT}\Markdown Documentation.mltbx</param.output>
     <param.products.name />
     <param.products.id />
@@ -47,7 +47,6 @@
       <param.company />
       <param.description />
       <param.screenshot />
-      <param.version />
       <param.output />
       <param.products.name />
       <param.products.id />
@@ -84,6 +83,7 @@
     </fileset.rootdir>
     <fileset.rootfiles>
       <file>${PROJECT_ROOT}\tbx\markdowndoc\+markdowndoc</file>
+      <file>${PROJECT_ROOT}\tbx\markdowndoc\Contents.m</file>
       <file>${PROJECT_ROOT}\tbx\markdowndoc\resources</file>
     </fileset.rootfiles>
     <fileset.depfun.included />
