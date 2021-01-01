@@ -1,4 +1,4 @@
-function a = superdir( f )
+function a = superdir( varargin )
 %superdir  Find lowest common superdirectory
 %
 %  r = superdir(f) finds the lowest common superdirectory for the file list
@@ -7,16 +7,29 @@ function a = superdir( f )
 %
 %  If f is empty, or if the elements of f have no common superdirectory,
 %  then [] is returned.
+%
+%  For convenience, r = superdir(f1,f2,...) is also supported.
+%
+%  Examples:
+%    superdir('C:\a\b\x','C:\a\b\y') returns 'C:\a\b'.
+%    superdir('C:\a\x','C:\a\b\y') returns 'C:\a'.
+%    superdir('C:\a\b\c','D:\x\y\z') returns [].
 
 %  Copyright 2020-2021 The MathWorks, Inc.
 
 % Handle inputs
-if isstruct( f ) % dir struct
-    p = reshape( {f.folder}, size( f ) ); % extract folders
-    n = reshape( {f.name}, size( f ) ); % extract folders
-    f = fullfile( p, n ); % combine
-else % something else, convert
-    f = cellstr( f );
+switch nargin
+    case 1
+        if isstruct( varargin{:} ) % dir struct
+            f = varargin{:}; % unpack
+            p = reshape( {f.folder}, size( f ) ); % extract folders
+            n = reshape( {f.name}, size( f ) ); % extract folders
+            f = fullfile( p, n ); % combine
+        else % something else, convert
+            f = cellstr( varargin{:} );
+        end
+    otherwise
+        f = cellstr( varargin );
 end
 
 % Find ancestor
