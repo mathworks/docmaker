@@ -1,2 +1,3 @@
 # List of untracked files to ignore
-demo/*.html
+demo/**/*.html
+demo/resources
