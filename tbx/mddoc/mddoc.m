@@ -16,7 +16,7 @@ function varargout = mddoc( md, root, css, js )
 %  For debugging, [md,css,js] = mddoc(...) returns the Markdown files
 %  published and the stylesheets and scripts included, as dir structs.
 %
-%  See also: unpublish
+%  See also: mdtoc, mdundoc
 
 %  Copyright 2020-2021 The MathWorks, Inc.
 
