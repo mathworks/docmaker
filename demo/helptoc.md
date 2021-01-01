@@ -1,3 +1,5 @@
+# GUI Layout Toolbox documentation
+
 - [What is GUI Layout Toolbox?](About.md)
   - [Compatibility considerations](Compatibility.md)
   - [Release notes](Release Notes.md)
