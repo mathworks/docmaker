@@ -1,9 +1,12 @@
-function unpublish( f )
+function varargout = unpublish( f )
 %unpublish  Unpublish Markdown files
 %
 %  unpublish(root) unpublishes the documentation in the folder f by
 %  deleting HTML files in f and its subfolders and deleting the folder
 %  <f>/resources.
+%
+%  For debugging, html = unpublish(...) returns the HTML files unpublished,
+%  as a dir struct.
 %
 %  See also: publish
 
@@ -17,18 +20,18 @@ assert( isfolder( f ), 'markdowndoc:InvalidArgument', ...
 d = dir( fullfile( f, '**', '*.html' ) );
 for ii = 1:numel( d )
     fHtml = fullfile( d(ii).folder, d(ii).name );
-    fprintf( 1, '[markdowndoc] Deleting ''%s''... ', fHtml ); % progress
     try
         delete( fHtml )
-        fprintf( 1, 'OK.\n' ); % progress
     catch e
-        fprintf( 1, 'failed.\n' ); % progress
-        fprintf( 2, '%s\n', e.message ); % message
+        warning( e.identifier, '%s', e.message ) % rethrow as warning
     end
 end
 
 % Delete resources folder
 pRes = fullfile( f, 'resources' );
 if exist( pRes ) == 7, rmdir( pRes, 's' ), end %#ok<EXIST>
+
+% Return output
+if nargout, varargout = {d}; end
 
 end % unpublish

@@ -1,4 +1,4 @@
-function publish( md, root, css, js )
+function varargout = publish( md, root, css, js )
 %publish  Publish Markdown files with stylesheets and scripts
 %
 %  publish(md) publishes the Markdown files md to HTML.  md can be a char
@@ -12,6 +12,9 @@ function publish( md, root, css, js )
 %  publish(md,f,css,js) includes the stylesheets css and the scripts js.
 %  If specified as [], then only the minimal set of stylesheets and scripts
 %  are included. If specified without path, then ...
+%
+%  For debugging, [md,css,js] = publish(...) returns the Markdown files
+%  published and the stylesheets and scripts included, as dir structs.
 %
 %  See also: unpublish
 
@@ -57,17 +60,17 @@ js = [i_dir( fullfile( pRes, 'lazyload.js' ) ); ...
 % Publish
 for ii = 1:numel( md ) % loop over files
     fMd = fullfile( md(ii).folder, md(ii).name ); % this file
-    fprintf( 1, '[markdowndoc] Publishing ''%s''... ', fMd ); % progress
     try
         i_publish( fMd, root, css, js ) % publish
-        fprintf( 1, 'OK.\n' ); % progress
     catch e
-        fprintf( 1, 'failed.\n' ); % progress
-        fprintf( 2, '%s\n', e.message ); % message
+        warning( e.identifier, '%s', e.message ) % rethrow as warning
     end
 end
 
-end
+% Return output
+if nargout, varargout = {md, css, js}; end
+
+end % publish
 
 function i_publish( fMd, root, css, js )
 %i_publish  Publish a single Markdown file
