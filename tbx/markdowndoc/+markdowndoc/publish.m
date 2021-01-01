@@ -4,12 +4,16 @@ function publish( md, root, css, js )
 md = i_dir( md );
 assert( ~any( [md.isdir] ) )
 
+% Find resources folder
+pCode = fileparts( fileparts( mfilename( 'fullpath' ) ) );
+pRes = fullfile( pCode, 'resources' );
+
 % Check root
 if nargin < 2 || isequal( root, [] )
     root = markdowndoc.superdir( md );
 else
     assert( isfolder( root ) )
-    root = getfield( dir( root ), 'folder' ); % full path
+    root = getfield( dir( root ), 'folder' ); % absolute path
     assert( strncmp( root, markdowndoc.superdir( md ), numel( root ) ) )
 end
 
@@ -21,7 +25,7 @@ else
     css = i_dir( css );
     assert( ~any( [css.isdir] ) )
 end
-css = [i_dir( fullfile( tbxresources(), 'matlaby.css' ) ); css]; % prepend standard
+css = [i_dir( fullfile( pRes, 'matlaby.css' ) ); css]; % prepend standard
 
 % Check scripts
 % TODO look in standard place
@@ -30,8 +34,8 @@ if nargin < 4 || isequal( js, [] )
 else
     js = i_dir( js );
 end
-js = [i_dir( fullfile( tbxresources(), 'lazyload.js' ) ); ...
-    i_dir( fullfile( tbxresources(), 'mdlinks.js' ) ); js]; % prepend standard
+js = [i_dir( fullfile( pRes, 'lazyload.js' ) ); ...
+    i_dir( fullfile( pRes, 'mdlinks.js' ) ); js]; % prepend standard
 
 % Publish
 for ii = 1:numel( md )
@@ -65,12 +69,16 @@ end
 
 end % i_dir
 
-function i_publish( fMd, pShared, css, js )
+function i_publish( fMd, root, css, js )
+%i_publish  Publish a single Markdown file
+%
+%  i_publish(md,root,css,js) publishes the Markdown file md to HTML with
+%  stylesheets css and scripts js in root/resources.
 
 % Check inputs
 [pMd, nMd, ~] = fileparts( fMd );
-pResources = fullfile( pShared, 'resources' );
-if ~isfolder( pResources ), mkdir( pResources ), end
+pRes = fullfile( root, 'resources' );
+if ~isfolder( pRes ), mkdir( pRes ), end
 
 % Start with doctype and head including title
 html = "<!DOCTYPE html>" + newline + ...
@@ -81,8 +89,8 @@ html = "<!DOCTYPE html>" + newline + ...
 for ii = 1:numel( css )
     fCss = fullfile( css(ii).folder, css(ii).name );
     [~, nCss, eCss] = fileparts( fCss );
-    copyfile( fCss, pResources )
-    rCss = markdowndoc.relpath( pMd, fullfile( pResources, [nCss eCss] ) );
+    copyfile( fCss, pRes )
+    rCss = markdowndoc.relpath( fullfile( pRes, [nCss eCss] ), pMd );
     rCss = strrep( rCss, filesep, '/' );
     html = html + "<link rel=""stylesheet"" href=""" + rCss + """>" + newline;
 end
@@ -91,8 +99,8 @@ end
 for ii = 1:numel( js )
     fJs = fullfile( js(ii).folder, js(ii).name );
     [~, nJs, eJs] = fileparts( fJs );
-    copyfile( fJs, pResources )
-    rJs = markdowndoc.relpath( pMd, fullfile( pResources, [nJs eJs] ) );
+    copyfile( fJs, pRes )
+    rJs = markdowndoc.relpath( fullfile( pRes, [nJs eJs] ), pMd );
     rJs = strrep( rJs, filesep(), '/' );
     html = html + "<script src=""" + rJs + """></script>" + newline;
 end
@@ -110,11 +118,3 @@ fprintf( hHtml, "%s", html );
 fclose( hHtml );
 
 end % i_publish
-
-function r = tbxresources()
-
-p = fileparts( mfilename( 'fullpath' ) );
-c = fileparts( p );
-r = fullfile( c, 'resources' );
-
-end % tbxresources
