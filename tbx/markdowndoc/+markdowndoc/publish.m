@@ -37,7 +37,6 @@ else
 end
 
 % Check stylesheets
-% TODO look in standard place
 if nargin < 3 || isequal( css, [] )
     css = [];
 else
@@ -46,7 +45,6 @@ else
 end
 
 % Check scripts
-% TODO look in standard place
 if nargin < 4 || isequal( js, [] )
     js = [];
 else
