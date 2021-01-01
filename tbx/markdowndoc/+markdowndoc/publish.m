@@ -1,7 +1,7 @@
 function publish( md, root, css, js )
 
 % Check files to process
-md = dirstruct( md );
+md = i_dir( md );
 assert( ~any( [md.isdir] ) )
 
 % Check root
@@ -9,7 +9,7 @@ if nargin < 2 || isequal( root, [] )
     root = markdowndoc.ancestordir( md );
 else
     assert( isfolder( root ) )
-    root = getfield( dir( root ), 'folder' );
+    root = getfield( dir( root ), 'folder' ); % full path
     assert( strncmp( root, markdowndoc.ancestordir( md ), numel( root ) ) )
 end
 
@@ -18,20 +18,20 @@ end
 if nargin < 3 || isequal( css, [] )
     css = [];
 else
-    css = dirstruct( css );
+    css = i_dir( css );
     assert( ~any( [css.isdir] ) )
 end
-css = [dirstruct( fullfile( tbxresources(), 'matlaby.css' ) ); css]; % prepend standard
+css = [i_dir( fullfile( tbxresources(), 'matlaby.css' ) ); css]; % prepend standard
 
 % Check scripts
 % TODO look in standard place
 if nargin < 4 || isequal( js, [] )
     js = [];
 else
-    js = dirstruct( js );
+    js = i_dir( js );
 end
-js = [dirstruct( fullfile( tbxresources(), 'lazyload.js' ) ); ...
-    dirstruct( fullfile( tbxresources(), 'mdlinks.js' ) ); js]; % prepend standard
+js = [i_dir( fullfile( tbxresources(), 'lazyload.js' ) ); ...
+    i_dir( fullfile( tbxresources(), 'mdlinks.js' ) ); js]; % prepend standard
 
 % Publish
 for ii = 1:numel( md )
@@ -40,24 +40,30 @@ end
 
 end
 
-function d = dirstruct( d )
-%dirstruct  Convert file specification to dir struct
+function s = i_dir( d )
+%i_dir  Query folder contents
 %
-%  d = dirstruct(s) converts the file specification to a dir struct.
+%  s = i_dir(p) queries the contents of the folder p.  If p is a char or a
+%  string then s is dir(p).  If p is a cellstr or a string array then s is
+%  the concatenation of the results of calling dir on each element.  If p
+%  is already a struct returned from dir then it is returned unaltered.
+%
+%  See also: dir
 
 if isstruct( d ) && all( ismember( fieldnames( d ), fieldnames( dir() ) ) )
-    d = d(:);
+    s = d(:);
 elseif iscellstr( d ) || isstring( d ) % strings, call dir and combine
     d = cellstr( d );
+    s = cell( size( d ) ); % preallocate
     for ii = 1:numel( d )
-        d{ii} = dir( d{ii} );
+        s{ii} = dir( d{ii} );
     end
-    d = vertcat( d{:} );
+    s = vertcat( s{:} );
 else % call dir
-    d = dir( d );
+    s = dir( d );
 end
 
-end
+end % i_dir
 
 function i_publish( fMd, pShared, css, js )
 
@@ -74,7 +80,7 @@ html = "<!DOCTYPE html>" + newline + ...
 % Add stylesheets
 for ii = 1:numel( css )
     fCss = fullfile( css(ii).folder, css(ii).name );
-    [~, nCss, eCss] = fileparts( fCss ); 
+    [~, nCss, eCss] = fileparts( fCss );
     copyfile( fCss, pResources )
     rCss = markdowndoc.relpath( pMd, fullfile( pResources, [nCss eCss] ) );
     rCss = strrep( rCss, filesep, '/' );
@@ -84,7 +90,7 @@ end
 % Add scripts
 for ii = 1:numel( js )
     fJs = fullfile( js(ii).folder, js(ii).name );
-    [~, nJs, eJs] = fileparts( fJs ); 
+    [~, nJs, eJs] = fileparts( fJs );
     copyfile( fJs, pResources )
     rJs = markdowndoc.relpath( pMd, fullfile( pResources, [nJs eJs] ) );
     rJs = strrep( rJs, filesep(), '/' );
