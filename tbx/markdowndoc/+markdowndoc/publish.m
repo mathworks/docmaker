@@ -1,6 +1,23 @@
 function publish( md, root, css, js )
+%publish  Publish Markdown files with stylesheets and scripts
+%
+%  publish(md) publishes the Markdown files md to HTML.  md can be a char
+%  or string including wildcards, a cellstr or string array, or a dir
+%  struct.
+%
+%  publish(md,f) publishes to the folder f, placing resources in the folder
+%  <f>/resources.  If not specified, or if specified as [], then f is the
+%  lowest superdirectory of the published files.
+%
+%  publish(md,f,css,js) includes the stylesheets css and the scripts js.
+%  If specified as [], then only the minimal set of stylesheets and scripts
+%  are included. If specified without path, then ...
+%
+%  See also: unpublish
 
-% Check files to process
+%  Copyright 2020-2021 The MathWorks, Inc.
+
+% Handle inputs
 md = i_dir( md );
 assert( ~any( [md.isdir] ) )
 
@@ -44,36 +61,11 @@ end
 
 end
 
-function s = i_dir( d )
-%i_dir  Query folder contents
-%
-%  s = i_dir(p) queries the contents of the folder p.  If p is a char or a
-%  string then s is dir(p).  If p is a cellstr or a string array then s is
-%  the concatenation of the results of calling dir on each element.  If p
-%  is already a struct returned from dir then it is returned unaltered.
-%
-%  See also: dir
-
-if isstruct( d ) && all( ismember( fieldnames( d ), fieldnames( dir() ) ) )
-    s = d(:);
-elseif iscellstr( d ) || isstring( d ) % strings, call dir and combine
-    d = cellstr( d );
-    s = cell( size( d ) ); % preallocate
-    for ii = 1:numel( d )
-        s{ii} = dir( d{ii} );
-    end
-    s = vertcat( s{:} );
-else % call dir
-    s = dir( d );
-end
-
-end % i_dir
-
 function i_publish( fMd, root, css, js )
 %i_publish  Publish a single Markdown file
 %
-%  i_publish(md,root,css,js) publishes the Markdown file md to HTML with
-%  stylesheets css and scripts js in root/resources.
+%  i_publish(md,f,css,js) publishes the Markdown file md to HTML with
+%  stylesheets css and scripts js in <f>/resources.
 
 % Check inputs
 [pMd, nMd, ~] = fileparts( fMd );
@@ -83,7 +75,9 @@ if ~isfolder( pRes ), mkdir( pRes ), end
 % Start with doctype and head including title
 html = "<!DOCTYPE html>" + newline + ...
     "<html xmlns=""http://www.w3.org/1999/xhtml"" xml:lang=""en"" lang=""en"">" + newline + ...
-    "<head>" + newline + "<title>" + nMd + "</title>" + newline;
+    "<head>" + newline + ...
+    "<meta name=""generator"" content=""" + i_generator() + """>" + newline + ...
+    "<title>" + nMd + "</title>" + newline;
 
 % Add stylesheets
 for ii = 1:numel( css )
@@ -118,3 +112,39 @@ fprintf( hHtml, "%s", html );
 fclose( hHtml );
 
 end % i_publish
+
+function s = i_dir( d )
+%i_dir  Query folder contents
+%
+%  s = i_dir(p) queries the contents of the folder p.  If p is a char or a
+%  string then s is dir(p).  If p is a cellstr or a string array then s is
+%  the concatenation of the results of calling dir on each element.  If p
+%  is already a struct returned from dir then it is returned unaltered.
+%
+%  See also: dir
+
+if isstruct( d ) && all( ismember( fieldnames( d ), fieldnames( dir() ) ) )
+    s = d(:);
+elseif iscellstr( d ) || isstring( d ) % strings, call dir and combine
+    d = cellstr( d );
+    s = cell( size( d ) ); % preallocate
+    for ii = 1:numel( d )
+        s{ii} = dir( d{ii} );
+    end
+    s = vertcat( s{:} );
+else % call dir
+    s = dir( d );
+end
+
+end % i_dir
+
+function s = i_generator()
+%i_generator  HTML meta generator name
+
+m = ver( 'MATLAB' );
+t = struct( 'Name', 'markdowndoc', 'Version', '1.0', 'Release', m.Release );
+s = sprintf( '%s %s %s with %s %s', ...
+    m.Name, m.Version, m.Release, t.Name, t.Version );
+s = string( s );
+
+end % i_generator
