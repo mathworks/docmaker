@@ -248,7 +248,7 @@ function s = generator()
 
 matlab = ver( 'MATLAB' );
 matlab = matlab(1);
-toolbox = ver( 'markdowndoc' );
+toolbox = ver( 'mddoc' );
 toolbox = toolbox(1);
 s = sprintf( '%s %s %s with %s %s', matlab.Name, matlab.Version, ...
     matlab.Release, toolbox.Name, toolbox.Version );
