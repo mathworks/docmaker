@@ -39,8 +39,8 @@ else % normal
     d = fileparts( f{1} ); % initialize
     for ii = 1:numel( f )
         while( ~strncmp( f{ii}, d, numel( d ) ) ) % compare first parts
-            if strcmp( d, fileparts( d ) ), d = []; return; end % topped out
-            d = fileparts( d ); % up one
+            if strcmp( d, fileparts( d ) ), d = []; return; end % root, stop
+            d = fileparts( d ); % up
         end
     end
 end
