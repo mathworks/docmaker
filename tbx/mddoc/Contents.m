@@ -4,5 +4,6 @@
 % mddoc   - publish Markdown files to HTML with stylesheets and scripts
 % mdundoc - unpublish Markdown files
 % mdtoc   - generate helptoc.xml
+% md2html - convert (GitLab Flavored) Markdown to HTML
 
 %  Copyright 2020-2021 The MathWorks, Inc.

@@ -1,5 +1,5 @@
 function html = md2html( md, hostname )
-%md2html  Convert (GitLab Flavored) Markdown to HTML fragment
+%md2html  Convert (GitLab Flavored) Markdown to HTML
 %
 %  html = md2html(md) converts the Markdown md to HTML html using the
 %  GitLab API at gitlab.com.
