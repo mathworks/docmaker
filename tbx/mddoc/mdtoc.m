@@ -1,5 +1,5 @@
 function mdtoc( nMd, nXml )
-%mdtoc  Create helptoc XML from Markdown
+%mdtoc  Create helptoc XML from Markdown table of contents
 %
 %  gfmdoc.mdtoc(md,xml)
 
