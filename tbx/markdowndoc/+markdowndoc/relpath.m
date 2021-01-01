@@ -1,8 +1,8 @@
-function r = relpath( f, t )
+function rTo = relpath( pFrom, fTo )
 %relpath  Compute relative path between two files
 %
-%  p = relpath(f,t) computes the relative path from the file f to the file
-%  t.
+%  r = relpath(f,t) computes the relative path from the folder f to the
+%  file t.
 %
 %  Examples:
 %    relpath('C:\a\b\x','C:\a\b\y') returns '.\y'.
@@ -12,20 +12,42 @@ function r = relpath( f, t )
 
 %  Copyright 2020-2021 The MathWorks, Inc.
 
-a = markdowndoc.ancestordir( {f t} ); % find common ancestor
-if isempty( a ) % no common ancestor
-    r = t; % return absolute path
+sFrom = separator( pFrom ); % separator
+fFrom = [pFrom, sFrom, '.']; % fullfile
+pShared = markdowndoc.ancestordir( {fFrom fTo} ); % common ancestor folder
+if isempty( pShared ) % no common ancestor
+    rTo = fTo; % return absolute path
 else % common ancestor
-    r = '.'; % initialize
-    while ~strcmp( fileparts( f ), a )
-        r = fullfile( r, '..' ); % append ..
-        f = fileparts( f ); % up one level
+    sTo = separator( fTo ); % identify separator
+    rTo = '.'; % initialize
+    while ~strcmp( pFrom, pShared )
+        rTo = [rTo, sTo, '..']; %#ok<AGROW> % append ..
+        pFrom = fileparts( pFrom ); % up one level
     end
-    if strcmp( a, fileparts( a ) )
-        r = [r, t(numel(a):end)]; % append t after r
-    else
-        r = [r, t(numel(a)+1:end)]; % append t after r
+    if strcmp( pShared, fileparts( pShared ) ) % root, ends with separator
+        rTo = [rTo, sTo, fTo(numel(pShared)+1:end)];
+    else % not root
+        rTo = [rTo, fTo(numel(pShared)+1:end)];
     end
 end
 
 end % relpath
+
+function s = separator( f )
+%separator  Identify file separator in filename
+%
+%  s = separator(f) identifies the file separator in the filename f by
+%  searching for, in order: filesep, /, \.  If no separator is found then
+%  filesep is assumed.
+
+if any( f == filesep )
+    s = filesep;
+elseif any( f == '/' )
+    s = '/';
+elseif any( f == '\' )
+    s = '\';
+else
+    s = filesep;
+end
+
+end % separator
