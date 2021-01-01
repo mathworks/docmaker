@@ -6,11 +6,11 @@ assert( ~any( [md.isdir] ) )
 
 % Check root
 if nargin < 2 || isequal( root, [] )
-    root = markdowndoc.ancestordir( md );
+    root = markdowndoc.superdir( md );
 else
     assert( isfolder( root ) )
     root = getfield( dir( root ), 'folder' ); % full path
-    assert( strncmp( root, markdowndoc.ancestordir( md ), numel( root ) ) )
+    assert( strncmp( root, markdowndoc.superdir( md ), numel( root ) ) )
 end
 
 % Check stylesheets

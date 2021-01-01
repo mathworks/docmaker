@@ -14,7 +14,7 @@ function rTo = relpath( pFrom, fTo )
 
 sFrom = separator( pFrom ); % separator
 fFrom = [pFrom, sFrom, '.']; % fullfile
-pShared = markdowndoc.ancestordir( {fFrom fTo} ); % common ancestor folder
+pShared = markdowndoc.superdir( {fFrom fTo} ); % common ancestor folder
 if isempty( pShared ) % no common ancestor
     rTo = fTo; % return absolute path
 else % common ancestor

@@ -1,4 +1,4 @@
-function a = ancestordir( f )
+function a = superdir( f )
 %ancestordir  Find common ancestor folder
 %
 %  r = ancestordir(f) finds a common ancestor folder for the file list f.
