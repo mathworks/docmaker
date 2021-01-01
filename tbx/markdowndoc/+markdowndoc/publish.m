@@ -21,7 +21,7 @@ function varargout = publish( md, root, css, js )
 %  Copyright 2020-2021 The MathWorks, Inc.
 
 % Handle inputs
-md = i_dir( md );
+md = dirstruct( md );
 assert( ~any( [md.isdir] ) )
 
 % Find resources folder
@@ -29,11 +29,11 @@ res = fullfile( fileparts( fileparts( mfilename( 'fullpath' ) ) ), 'resources' )
 
 % Check root
 if nargin < 2 || isequal( root, [] )
-    root = markdowndoc.superdir( md );
+    root = superdir( md );
 else
     assert( isfolder( root ) )
     root = getfield( dir( root ), 'folder' ); % absolute path
-    assert( strncmp( root, markdowndoc.superdir( md ), numel( root ) ) )
+    assert( strncmp( root, superdir( md ), numel( root ) ) )
 end
 
 % Check stylesheets
@@ -41,7 +41,7 @@ end
 if nargin < 3 || isequal( css, [] )
     css = [];
 else
-    css = i_dir( css, res );
+    css = dirstruct( css, res );
     assert( ~any( [css.isdir] ) )
 end
 
@@ -50,10 +50,10 @@ end
 if nargin < 4 || isequal( js, [] )
     js = [];
 else
-    js = i_dir( js, res );
+    js = dirstruct( js, res );
     assert( ~any( [js.isdir] ) )
 end
-js = [i_dir( {'lazyload.js','mdlinks.js'}, res ); js]; % prepend standard
+js = [dirstruct( {'lazyload.js','mdlinks.js'}, res ); js]; % prepend standard
 
 % Publish
 for ii = 1:numel( md ) % loop over files
@@ -85,7 +85,7 @@ if ~isfolder( pRes ), mkdir( pRes ), end
 html = "<!DOCTYPE html>" + newline + ...
     "<html xmlns=""http://www.w3.org/1999/xhtml"" xml:lang=""en"" lang=""en"">" + newline + ...
     "<head>" + newline + ...
-    "<meta name=""generator"" content=""" + i_generator() + """>" + newline + ...
+    "<meta name=""generator"" content=""" + generator() + """>" + newline + ...
     "<title>" + nMd + "</title>" + newline;
 
 % Add stylesheets
@@ -93,7 +93,7 @@ for ii = 1:numel( css )
     fCss = fullfile( css(ii).folder, css(ii).name );
     [~, nCss, eCss] = fileparts( fCss );
     copyfile( fCss, pRes )
-    rCss = markdowndoc.relpath( fullfile( pRes, [nCss eCss] ), pMd );
+    rCss = relpath( fullfile( pRes, [nCss eCss] ), pMd );
     rCss = strrep( rCss, filesep, '/' );
     html = html + "<link rel=""stylesheet"" href=""" + rCss + """>" + newline;
 end
@@ -103,7 +103,7 @@ for ii = 1:numel( js )
     fJs = fullfile( js(ii).folder, js(ii).name );
     [~, nJs, eJs] = fileparts( fJs );
     copyfile( fJs, pRes )
-    rJs = markdowndoc.relpath( fullfile( pRes, [nJs eJs] ), pMd );
+    rJs = relpath( fullfile( pRes, [nJs eJs] ), pMd );
     rJs = strrep( rJs, filesep(), '/' );
     html = html + "<script src=""" + rJs + """></script>" + newline;
 end
@@ -111,7 +111,7 @@ end
 % Add body
 html = html + ...
     "</head>" + newline + "<body>" + newline + "<main>" + newline + ...
-    markdowndoc.md2html( fileread( fMd ) ) + newline + ...
+    md2html( fileread( fMd ) ) + newline + ...
     "</main>" + newline + "</body>" + newline + "</html>";
 
 % Write output
@@ -122,15 +122,16 @@ fclose( hHtml );
 
 end % i_publish
 
-function s = i_dir( p, r )
-%i_dir  Query folder contents
+function s = dirstruct( p, r )
+%dirstruct  List folder contents
 %
-%  s = i_dir(p) queries the contents of the folder p.  If p is a char or a
-%  string then s is dir(p).  If p is a cellstr or a string array then s is
-%  the concatenation of the results of calling dir on each element.  If p
-%  is already a struct returned from dir then it is returned unaltered.
+%  s = dirstruct(p) lists the contents of the folder p.  If p is a char
+%  or a string then s is dir(p).  If p is a cellstr or a string array then
+%  s is the concatenation of the results of calling dir on each element.
+%  If p is already a struct returned from dir then it is returned
+%  unaltered.
 %
-%  s = i_dir(...,r) looks in the folder r if no contents are found
+%  s = dirstruct(...,r) looks in the folder r if no contents are found
 %  initially.
 %
 %  See also: dir
@@ -162,18 +163,97 @@ else
     error( 'Input must be a char or string, a cellstr or string array, or a dir struct.' )
 end
 
-end % i_dir
+end % dirstruct
 
-function s = i_generator()
-%i_generator  HTML meta generator name
+function rTo = relpath( fTo, pFr )
+%relpath  Compute relative path to a file from a folder
 %
-%  s = i_generator() returns a string detailing the MATLAB and markdowndoc
+%  r = relpath(f,t) computes the relative path to the file t from the
+%  *folder* f.
+%
+%  Examples:
+%    relpath('C:\a\b\x','C:\a\b\y') returns '.\y'.
+%    relpath('C:\a\b\x','C:\a\b\c\y') returns '.\c\y'.
+%    relpath('C:\a\b\c\y','C:\a\b\x') returns '.\..\x'.
+%    relpath('C:\a\b\c','D:\x\y\z') returns 'D:\x\y\z'.
+
+pSu = superdir( fullfile( pFr, '.' ), fTo ); % superdirectory
+if isempty( pSu ) % no superdirectory, return absolute path
+    rTo = fTo;
+else % superdirectory, go up then down
+    rTo = '.'; % initialize
+    while ~strcmp( pFr, pSu )
+        rTo = fullfile( rTo, '..' ); % up
+        pFr = fileparts( pFr ); % up
+    end
+    if strcmp( pSu, fileparts( pSu ) ) % root, includes separator
+        rTo = fullfile( rTo, extractAfter( fTo, pSu ) );
+    else % not root
+        rTo = horzcat( rTo, extractAfter( fTo, pSu ) );
+    end
+end
+
+end % relpath
+
+function d = superdir( varargin )
+%superdir  Find lowest common superdirectory
+%
+%  d = superdir(f) finds the lowest common superdirectory for the file list
+%  f. f can be specified as a char or string, a cellstr or string array, or
+%  a dir struct.
+%
+%  If f is empty, or if the elements of f have no common superdirectory,
+%  then [] is returned.
+%
+%  d = superdir(f1,f2,...) is also supported for chars and strings.
+%
+%  Examples:
+%    superdir('C:\a\b\x','C:\a\b\y') returns 'C:\a\b'.
+%    superdir('C:\a\x','C:\a\b\y') returns 'C:\a'.
+%    superdir('C:\a\b\c','D:\x\y\z') returns [].
+
+% Handle inputs
+switch nargin
+    case 1
+        if isstruct( varargin{:} ) % dir struct
+            f = varargin{:}; % unpack
+            p = reshape( {f.folder}, size( f ) ); % extract folders
+            n = reshape( {f.name}, size( f ) ); % extract folders
+            f = fullfile( p, n ); % combine
+        else % something else, convert
+            f = cellstr( varargin{:} );
+        end
+    otherwise
+        f = cellstr( varargin );
+end
+
+% Find ancestor
+if isempty( f ) % degenerate
+    d = [];
+else % normal
+    d = fileparts( f{1} ); % initialize
+    for ii = 1:numel( f )
+        while( ~strncmp( f{ii}, d, numel( d ) ) ) % compare first parts
+            if strcmp( d, fileparts( d ) ), d = []; return; end % root, stop
+            d = fileparts( d ); % up
+        end
+    end
+end
+
+end % superdir
+
+function s = generator()
+%generator  HTML meta generator name
+%
+%  s = generator() returns a string detailing the MATLAB and markdowndoc
 %  versions, e.g, "MATLAB 9.9 (R2020b) with markdowndoc 0.1".
 
 matlab = ver( 'MATLAB' );
-markdowndoc = ver( 'markdowndoc' );
+matlab = matlab(1);
+toolbox = ver( 'markdowndoc' );
+toolbox = toolbox(1);
 s = sprintf( '%s %s %s with %s %s', matlab.Name, matlab.Version, ...
-    matlab.Release, markdowndoc.Name, markdowndoc.Version );
+    matlab.Release, toolbox.Name, toolbox.Version );
 s = string( s );
 
-end % i_generator
+end % generator
