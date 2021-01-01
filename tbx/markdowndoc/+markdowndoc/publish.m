@@ -132,17 +132,31 @@ function s = i_dir( p, r )
 %
 %  See also: dir
 
+% Check inputs
+if nargin > 1, assert( isfolder( r ), 'Folder not found.' ), end
+
+% List contents
 if isstruct( p ) && all( ismember( fieldnames( p ), fieldnames( dir() ) ) )
     s = p(:);
-elseif iscellstr( p ) || isstring( p ) % strings, call dir and combine
+elseif ischar( p )
+    s = dir( p );
+    if isempty( s ) && isempty( fileparts( p ) ) && nargin > 1
+        s = dir( fullfile( r, p ) );
+    end
+elseif isstring( p ) || iscellstr( p )
     p = cellstr( p );
-    s = cell( size( p ) ); % preallocate
+    s = cell( size( p ) );
     for ii = 1:numel( p )
-        s{ii} = dir( p{ii} );
+        q = p{ii};
+        t = dir( q );
+        if isempty( t ) && isempty( fileparts( q ) ) && nargin > 1
+            t = dir( fullfile( r, q ) );
+        end
+        s{ii} = t;
     end
     s = vertcat( s{:} );
-else % call dir
-    s = dir( p );
+else
+    error( 'Input must be a char or string, a cellstr or string array, or a dir struct.' )
 end
 
 end % i_dir
