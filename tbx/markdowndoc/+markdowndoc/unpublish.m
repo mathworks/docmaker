@@ -15,9 +15,16 @@ assert( isfolder( f ), 'markdowndoc:InvalidArgument', ...
 
 % Delete HTML files in folder and subfolders
 d = dir( fullfile( f, '**', '*.html' ) );
-p = unique( {d.folder} );
-for ii = 1:numel( p )
-    delete( fullfile( p{ii}, '*.html' ) )
+for ii = 1:numel( d )
+    fHtml = fullfile( d(ii).folder, d(ii).name );
+    fprintf( 1, '[markdowndoc] Deleting ''%s''... ', fHtml ); % progress
+    try
+        delete( fHtml )
+        fprintf( 1, 'OK.\n' ); % progress
+    catch e
+        fprintf( 1, 'failed.\n' ); % progress
+        fprintf( 2, '%s\n', e.message ); % message
+    end
 end
 
 % Delete resources folder

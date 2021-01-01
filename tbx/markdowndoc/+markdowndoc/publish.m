@@ -55,8 +55,16 @@ js = [i_dir( fullfile( pRes, 'lazyload.js' ) ); ...
     i_dir( fullfile( pRes, 'mdlinks.js' ) ); js]; % prepend standard
 
 % Publish
-for ii = 1:numel( md )
-    i_publish( fullfile( md(ii).folder, md(ii).name ), root, css, js )
+for ii = 1:numel( md ) % loop over files
+    fMd = fullfile( md(ii).folder, md(ii).name ); % this file
+    fprintf( 1, '[markdowndoc] Publishing ''%s''... ', fMd ); % progress
+    try
+        i_publish( fMd, root, css, js ) % publish
+        fprintf( 1, 'OK.\n' ); % progress
+    catch e
+        fprintf( 1, 'failed.\n' ); % progress
+        fprintf( 2, '%s\n', e.message ); % message
+    end
 end
 
 end
