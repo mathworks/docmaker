@@ -8,18 +8,22 @@ md = fileread( nMd );
 
 % Convert Markdown to HTML
 html = md2html( md );
-html = "<body>" + html + "</body>"; % TODO necessary?
 
-% Write HTML to file
-nHtml = "temp.html";
-c = onCleanup( @()delete(nHtml) );
-fHtml = fopen( nHtml, "w" );
-fwrite( fHtml, html );
-fclose( fHtml );
+% Convert HTML to XML by enclosing and adding a declaration
+encoding = "utf-8";
+declaration = "<?xml version=""1.0"" encoding=""" + encoding + """?>";
+xml = declaration + "<html>" + html + "</html>";
+
+% Write XML to file
+nTemp = "temp.xml";
+c = onCleanup( @()delete(nTemp) );
+fTemp = fopen( nTemp, "w", "native", encoding );
+fprintf( fTemp, "%s", xml );
+fclose( fTemp );
 
 % Convert from HTML to XML using XSL
-dXsl = fullfile( fileparts( fileparts( mfilename( "fullfile" ) ) ), "xsl" );
-i_xslt( nHtml, fullfile( dXsl, "helptoc.xsl" ), nXml );
+fXsl = fullfile( fileparts( mfilename( "fullpath" ) ), "resources", "helptoc.xsl" );
+xslt( nTemp, fXsl, nXml );
 
 end % mdtoc
 
@@ -35,6 +39,16 @@ function i_xslt( source, style, destination )
 
 if ispc() % .NET, fast
     NET.addAssembly( "System.Xml" );
+    %     xslt = System.Xml.Xsl.XslCompiledTransform();
+    %     xslt.Load( style );
+    %     settings = System.Xml.XmlWriterSettings();
+    %     settings.Indent = true;
+    %     settings.IndentChars = "\t";
+    %     % settings.NewLineOnAttributes = true;
+    %     settings.ConformanceLevel = System.Xml.ConformanceLevel.Fragment;
+    %     writer = System.Xml.XmlWriter.Create( destination, settings );
+    %     xslt.Transform( System.Xml.XPath.XPathDocument( source ), writer );
+    %     writer.Close();
     xform = System.Xml.Xsl.XslCompiledTransform();
     xform.Load( style );
     xform.Transform( source, destination );

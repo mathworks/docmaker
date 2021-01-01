@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2020 The MathWorks, Inc. -->
+<!-- Copyright 2020-2021 The MathWorks, Inc. -->
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     
@@ -7,7 +7,7 @@
     
     <xsl:template match="/">
         <xsl:text>&#xA;</xsl:text>    
-        <xsl:comment> Copyright 2009-2020 The MathWorks, Inc. </xsl:comment>
+        <xsl:comment> Copyright 2020-2021 The MathWorks, Inc. </xsl:comment>
         <xsl:text>&#xA;</xsl:text>
         <xsl:element name="toc">
             <xsl:attribute name="version">1.0</xsl:attribute>
@@ -25,6 +25,7 @@
     
     <xsl:template match="li">
         <xsl:element name="tocitem">
+            <xsl:attribute name="image">$toolbox/matlab/icons/book_mat.png</xsl:attribute>
             <xsl:apply-templates select="a"/>
             <xsl:apply-templates select="ol"/>
             <xsl:apply-templates select="ul"/>
@@ -39,17 +40,15 @@
     </xsl:template>
     
     <xsl:template match="@href">
-        <xsl:attribute name="href">
-            <xsl:choose>
-                <xsl:when test="contains(.,'.md')">
-                    <xsl:value-of select="substring-before(.,'.md')"/>
-                    <xsl:text>.html</xsl:text>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="."/>
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:attribute>
+        <xsl:choose>
+            <xsl:when test="contains(.,'.md')">
+                <xsl:value-of select="substring-before(.,'.md')"/>
+                <xsl:text>.html</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="."/>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     
     <xsl:template match="text()"/> <!-- ignore unmatched -->
