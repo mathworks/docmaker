@@ -130,6 +130,9 @@ function s = i_dir( p, r )
 %  the concatenation of the results of calling dir on each element.  If p
 %  is already a struct returned from dir then it is returned unaltered.
 %
+%  s = i_dir(...,r) looks in the folder r if no contents are found
+%  initially.
+%
 %  See also: dir
 
 % Check inputs
@@ -140,7 +143,7 @@ if isstruct( p ) && all( ismember( fieldnames( p ), fieldnames( dir() ) ) )
     s = p(:);
 elseif ischar( p )
     s = dir( p );
-    if isempty( s ) && isempty( fileparts( p ) ) && nargin > 1
+    if isempty( s ) && nargin > 1
         s = dir( fullfile( r, p ) );
     end
 elseif isstring( p ) || iscellstr( p )
@@ -149,7 +152,7 @@ elseif isstring( p ) || iscellstr( p )
     for ii = 1:numel( p )
         q = p{ii};
         t = dir( q );
-        if isempty( t ) && isempty( fileparts( q ) ) && nargin > 1
+        if isempty( t ) && nargin > 1
             t = dir( fullfile( r, q ) );
         end
         s{ii} = t;
@@ -163,6 +166,9 @@ end % i_dir
 
 function s = i_generator()
 %i_generator  HTML meta generator name
+%
+%  s = i_generator() returns a string detailing the MATLAB and markdowndoc
+%  versions, e.g, "MATLAB 9.9 (R2020b) with markdowndoc 0.1".
 
 matlab = ver( 'MATLAB' );
 markdowndoc = ver( 'markdowndoc' );
