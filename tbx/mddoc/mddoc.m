@@ -1,5 +1,5 @@
 function varargout = mddoc( md, root, css, js )
-%mddoc  Publish Markdown files with stylesheets and scripts
+%mddoc  Publish Markdown files to HTML with stylesheets and scripts
 %
 %  mddoc(md) publishes the Markdown files md to HTML.  md can be a char
 %  or string including wildcards, a cellstr or string array, or a dir

@@ -1,7 +1,7 @@
 % Markdown Documentation Toolbox
 % Version 0.1 (R2020b) 1-January-2021
 %
-% mddoc   - publish Markdown files with stylesheets and scripts
+% mddoc   - publish Markdown files to HTML with stylesheets and scripts
 % mdundoc - unpublish Markdown files
 % mdtoc   - generate helptoc.xml
 
