@@ -141,10 +141,10 @@ end % i_dir
 function s = i_generator()
 %i_generator  HTML meta generator name
 
-m = ver( 'MATLAB' );
-t = struct( 'Name', 'markdowndoc', 'Version', '1.0', 'Release', m.Release );
-s = sprintf( '%s %s %s with %s %s', ...
-    m.Name, m.Version, m.Release, t.Name, t.Version );
+matlab = ver( 'MATLAB' );
+markdowndoc = ver( 'markdowndoc' );
+s = sprintf( '%s %s %s with %s %s', matlab.Name, matlab.Version, ...
+    matlab.Release, markdowndoc.Name, markdowndoc.Version );
 s = string( s );
 
 end % i_generator
