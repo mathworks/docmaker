@@ -1,8 +1,8 @@
-function rTo = relpath( pFr, fTo )
-%relpath  Compute relative path between two files
+function rTo = relpath( fTo, pFr )
+%relpath  Compute relative path to a file from a folder
 %
-%  r = relpath(f,t) computes the relative path from the folder f to the
-%  file t.
+%  r = relpath(f,t) computes the relative path to the file t from the
+%  *folder* f.
 %
 %  Examples:
 %    relpath('C:\a\b\x','C:\a\b\y') returns '.\y'.
@@ -12,20 +12,19 @@ function rTo = relpath( pFr, fTo )
 
 %  Copyright 2020-2021 The MathWorks, Inc.
 
-fFr = fullfile( pFr, '.' );
-pSu = markdowndoc.superdir( fFr, fTo ); % common ancestor folder
-if isempty( pSu ) % no common ancestor
-    rTo = fTo; % return absolute path
-else % common ancestor
+pSu = markdowndoc.superdir( fullfile( pFr, '.' ), fTo ); % superdirectory
+if isempty( pSu ) % no superdirectory, return absolute path
+    rTo = fTo;
+else % superdirectory, go up then down
     rTo = '.'; % initialize
     while ~strcmp( pFr, pSu )
-        rTo = fullfile( rTo, '..' );
-        pFr = fileparts( pFr ); % up one level
+        rTo = fullfile( rTo, '..' ); % up
+        pFr = fileparts( pFr ); % up
     end
     if strcmp( pSu, fileparts( pSu ) ) % root, includes separator
-        rTo = fullfile( rTo, fTo(numel(pSu)+1:end) );
+        rTo = fullfile( rTo, extractAfter( fTo, pSu ) );
     else % not root
-        rTo = [rTo, fTo(numel(pSu)+1:end)];
+        rTo = horzcat( rTo, extractAfter( fTo, pSu ) );
     end
 end
 
