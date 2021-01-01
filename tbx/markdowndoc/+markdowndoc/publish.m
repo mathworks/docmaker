@@ -25,8 +25,7 @@ md = i_dir( md );
 assert( ~any( [md.isdir] ) )
 
 % Find resources folder
-pCode = fileparts( fileparts( mfilename( 'fullpath' ) ) );
-pRes = fullfile( pCode, 'resources' );
+res = fullfile( fileparts( fileparts( mfilename( 'fullpath' ) ) ), 'resources' );
 
 % Check root
 if nargin < 2 || isequal( root, [] )
@@ -42,20 +41,19 @@ end
 if nargin < 3 || isequal( css, [] )
     css = [];
 else
-    css = i_dir( css );
+    css = i_dir( css, res );
     assert( ~any( [css.isdir] ) )
 end
-css = [i_dir( fullfile( pRes, 'matlaby.css' ) ); css]; % prepend standard
 
 % Check scripts
 % TODO look in standard place
 if nargin < 4 || isequal( js, [] )
     js = [];
 else
-    js = i_dir( js );
+    js = i_dir( js, res );
+    assert( ~any( [js.isdir] ) )
 end
-js = [i_dir( fullfile( pRes, 'lazyload.js' ) ); ...
-    i_dir( fullfile( pRes, 'mdlinks.js' ) ); js]; % prepend standard
+js = [i_dir( {'lazyload.js','mdlinks.js'}, res ); js]; % prepend standard
 
 % Publish
 for ii = 1:numel( md ) % loop over files
@@ -124,7 +122,7 @@ fclose( hHtml );
 
 end % i_publish
 
-function s = i_dir( d )
+function s = i_dir( p, r )
 %i_dir  Query folder contents
 %
 %  s = i_dir(p) queries the contents of the folder p.  If p is a char or a
@@ -134,17 +132,17 @@ function s = i_dir( d )
 %
 %  See also: dir
 
-if isstruct( d ) && all( ismember( fieldnames( d ), fieldnames( dir() ) ) )
-    s = d(:);
-elseif iscellstr( d ) || isstring( d ) % strings, call dir and combine
-    d = cellstr( d );
-    s = cell( size( d ) ); % preallocate
-    for ii = 1:numel( d )
-        s{ii} = dir( d{ii} );
+if isstruct( p ) && all( ismember( fieldnames( p ), fieldnames( dir() ) ) )
+    s = p(:);
+elseif iscellstr( p ) || isstring( p ) % strings, call dir and combine
+    p = cellstr( p );
+    s = cell( size( p ) ); % preallocate
+    for ii = 1:numel( p )
+        s{ii} = dir( p{ii} );
     end
     s = vertcat( s{:} );
 else % call dir
-    s = dir( d );
+    s = dir( p );
 end
 
 end % i_dir
