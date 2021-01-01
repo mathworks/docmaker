@@ -1,5 +1,5 @@
 /*
-h3collapse  Replace h3 tags with buttons and collapsible divs.
+h3collapse  Replace h3 tags with "collapsible" buttons and "content" divs
 
 Copyright 2020-2021 The MathWorks, Inc.
 */

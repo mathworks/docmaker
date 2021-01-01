@@ -1,5 +1,5 @@
 /*
-mdlinks  Replace .md links with corresponding .html links.
+mdlinks  Replace .md links with .html links
 
 Copyright 2020-2021 The MathWorks, Inc.
 */

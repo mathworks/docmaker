@@ -1,5 +1,5 @@
 /*
-lazyload  Lazily load items of class "lazy" by populating setting their src from their dataset.src.
+lazyload  Load "lazy" items as required by populating src from dataset.src
 
 Copyright 2020-2021 The MathWorks, Inc.
 */
