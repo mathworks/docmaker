@@ -1,9 +1,9 @@
-function varargout = mdundoc( f )
+function varargout = mdundoc( pDoc )
 %mdundoc  Unpublish Markdown files
 %
 %  mdundoc(root) unpublishes the documentation in the folder f by deleting
-%  HTML files in f and its subfolders and deleting the folder
-%  <f>/resources.
+%  HTML files in f and its subfolders, deleting the folder <f>/resources,
+%  and deleting <f>/helptoc.xml.
 %
 %  For debugging, html = mdundoc(...) returns the HTML files unpublished,
 %  as a dir struct.
@@ -13,13 +13,13 @@ function varargout = mdundoc( f )
 %  Copyright 2020-2021 The MathWorks, Inc.
 
 % Check inputs
-assert( isfolder( f ), 'markdowndoc:InvalidArgument', ...
+assert( isfolder( pDoc ), 'markdowndoc:InvalidArgument', ...
     'Folder not found.' )
 
 % Delete HTML files in folder and subfolders
-d = dir( fullfile( f, '**', '*.html' ) );
-for ii = 1:numel( d )
-    fHtml = fullfile( d(ii).folder, d(ii).name );
+dHtml = dir( fullfile( pDoc, '**', '*.html' ) );
+for ii = 1:numel( dHtml )
+    fHtml = fullfile( dHtml(ii).folder, dHtml(ii).name );
     try
         delete( fHtml )
     catch e
@@ -28,10 +28,14 @@ for ii = 1:numel( d )
 end
 
 % Delete resources folder
-pRes = fullfile( f, 'resources' );
+pRes = fullfile( pDoc, 'resources' );
 if exist( pRes ) == 7, rmdir( pRes, 's' ), end %#ok<EXIST>
 
+% Delete helptoc.xml
+fHelp = fullfile( pDoc, 'helptoc.xml' );
+if exist( fHelp, 'file' ), delete( fHelp ), end
+
 % Return output
-if nargout, varargout = {d}; end
+if nargout, varargout = {dHtml}; end
 
 end % mdundoc
