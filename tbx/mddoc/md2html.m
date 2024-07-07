@@ -1,34 +1,32 @@
-function html = md2html( md, hostname )
-%md2html  Convert (GitLab Flavored) Markdown to HTML
+function html = md2html( md )
+%md2html  Convert Markdown to HTML
 %
 %  html = md2html(md) converts the Markdown md to HTML html using the
-%  GitLab API at gitlab.com.
+%  GitHub API.
 %
-%  html = md2html(md,hostname) uses the specified hostname.
-%
-%  MarkDown API documentation: https://docs.gitlab.com/ee/api/markdown.html
+%  API documentation: https://docs.github.com/en/rest/markdown
 %
 %  See also: mddoc
 
-%  Copyright 2020-2021 The MathWorks, Inc.
+%  Copyright 2020-2024 The MathWorks, Inc.
 
-% Handle inputs
-narginchk( 1, 2 )
-if nargin < 2, hostname = "gitlab.com"; end
+arguments
+    md (1,1) string
+end
 
 % Submit request
-data = struct( "text", md, "gfm", true );
 method = matlab.net.http.RequestMethod.POST;
-request = matlab.net.http.RequestMessage( method, [], data );
-uri = matlab.net.URI( "https://" + hostname + "/api/v4/markdown" );
+header = matlab.net.http.HeaderField( "Content-Type", "text/plain" );
+request = matlab.net.http.RequestMessage( method, header, md );
+uri = matlab.net.URI( "https://api.github.com/markdown/raw" );
 response = request.send( uri );
 
 % Handle response
 switch response.StatusCode
-    case matlab.net.http.StatusCode.Created
-        html = response.Body.Data.html;
+    case matlab.net.http.StatusCode.OK
+        html = response.Body.Data;
     otherwise
-        throw( MException( "gitlab:create", response.Body.Data.error ) )
+        throw( MException( "github:UnhandledError", "Unknown error." ) )
 end
 
 end % md2html
