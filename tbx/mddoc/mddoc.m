@@ -18,11 +18,10 @@ function varargout = mddoc( md, root, css, js )
 %
 %  See also: mdtoc, mdundoc
 
-%  Copyright 2020-2021 The MathWorks, Inc.
+%  Copyright 2020-2024 The MathWorks, Inc.
 
 % Handle inputs
 md = dirstruct( md );
-assert( ~any( [md.isdir] ) )
 
 % Find resources folder
 res = fullfile( fileparts( mfilename( 'fullpath' ) ), 'resources' );
@@ -108,9 +107,10 @@ end
 
 % Add body
 html = html + ...
-    "</head>" + newline + "<body>" + newline + "<main>" + newline + ...
-    md2html( fileread( fMd ) ) + newline + ...
-    "</main>" + newline + "</body>" + newline + "</html>";
+    "</head>" + newline + "<body class=""markdown-body"">" + newline + ...
+    "<main style=""margin: 0.7em"">" + newline + ...
+    md2html( fileread( fMd ) ) + "</main>" + newline + ...
+    "</body>" + newline + "</html>";
 
 % Write output
 fHtml = fullfile( pMd, [nMd '.html'] );
@@ -246,12 +246,12 @@ function s = generator()
 %  s = generator() returns a string detailing the MATLAB and markdowndoc
 %  versions, e.g, "MATLAB 9.9 (R2020b) with markdowndoc 0.1".
 
-matlab = ver( 'MATLAB' );
+matlab = ver( 'MATLAB' ); %#ok<VERMATLAB>
 matlab = matlab(1);
 toolbox = ver( 'mddoc' );
 toolbox = toolbox(1);
-s = sprintf( '%s %s %s with %s %s', matlab.Name, matlab.Version, ...
-    matlab.Release, toolbox.Name, toolbox.Version );
+s = sprintf( '%s %s with %s %s', matlab.Name, ...
+    matlab.Release(2:end-1), toolbox.Name, toolbox.Version );
 s = string( s );
 
 end % generator
