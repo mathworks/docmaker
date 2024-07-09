@@ -1,22 +1,22 @@
-function varargout = mddoc( md, root, css, js )
-%mddoc  Publish Markdown files to HTML with stylesheets and scripts
+function varargout = nndoc( md, root, css, js )
+%nndoc  Publish Markdown files to HTML with stylesheets and scripts
 %
-%  mddoc(md) publishes the Markdown files md to HTML.  md can be a char
+%  nndoc(md) publishes the Markdown files md to HTML.  md can be a char
 %  or string including wildcards, a cellstr or string array, or a dir
 %  struct.
 %
-%  mddoc(md,f) publishes to the folder f, placing resources in the folder
+%  nndoc(md,f) publishes to the folder f, placing resources in the folder
 %  <f>/resources.  If not specified, or if specified as [], then f is the
 %  lowest superdirectory of the published files.
 %
-%  mddoc(md,f,css,js) includes the stylesheets css and the scripts js.
+%  nndoc(md,f,css,js) includes the stylesheets css and the scripts js.
 %  If specified as [], then only the minimal set of stylesheets and scripts
 %  are included. If specified without path, then ...
 %
-%  For debugging, [md,css,js] = mddoc(...) returns the Markdown files
+%  For debugging, [md,css,js] = nndoc(...) returns the Markdown files
 %  published and the stylesheets and scripts included, as dir structs.
 %
-%  See also: mdtoc, mdundoc
+%  See also: nntoc, nnundoc
 
 %  Copyright 2020-2024 The MathWorks, Inc.
 
@@ -65,7 +65,7 @@ end
 % Return output
 if nargout, varargout = {md, css, js}; end
 
-end % mddoc
+end % nndoc
 
 function publish( fMd, root, css, js )
 %publish  Publish a single Markdown file
@@ -248,7 +248,7 @@ function s = generator()
 
 matlab = ver( 'MATLAB' ); %#ok<VERMATLAB>
 matlab = matlab(1);
-toolbox = ver( 'mddoc' );
+toolbox = ver( 'nndoc' );
 toolbox = toolbox(1);
 s = sprintf( '%s %s with %s %s', matlab.Name, ...
     matlab.Release(2:end-1), toolbox.Name, toolbox.Version );

@@ -1,14 +1,14 @@
-function varargout = mdundoc( pDoc )
-%mdundoc  Unpublish Markdown files
+function varargout = nnundoc( pDoc )
+%nnundoc  Unpublish Markdown files
 %
-%  mdundoc(root) unpublishes the documentation in the folder f by deleting
+%  nnundoc(root) unpublishes the documentation in the folder f by deleting
 %  HTML files in f and its subfolders, deleting the folder <f>/resources,
 %  and deleting <f>/helptoc.xml.
 %
-%  For debugging, html = mdundoc(...) returns the HTML files unpublished,
+%  For debugging, html = nnundoc(...) returns the HTML files unpublished,
 %  as a dir struct.
 %
-%  See also: mddoc
+%  See also: nndoc
 
 %  Copyright 2020-2021 The MathWorks, Inc.
 
@@ -38,4 +38,4 @@ if exist( fHelp, 'file' ), delete( fHelp ), end
 % Return output
 if nargout, varargout = {dHtml}; end
 
-end % mdundoc
+end % nnundoc
