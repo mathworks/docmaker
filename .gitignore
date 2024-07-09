@@ -1,7 +1,4 @@
 # List of untracked files to ignore
-tbx/mddocdoc/helptoc.xml
-tbx/mddocdoc/**/*.html
-tbx/mddocdoc/resources
-demo/helptoc.xml
 demo/**/*.html
+demo/**/*.png
 demo/resources
