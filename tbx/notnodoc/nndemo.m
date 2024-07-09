@@ -2,7 +2,7 @@ function nndemo( s )
 %nndemo  Run script and capture output
 
 d = pwd;
-[p, n, x] = fileparts( s );
+[p, n, ~] = fileparts( s );
 if isempty( p ), p = d; end
 o = figures(); % existing figures
 try
@@ -42,7 +42,7 @@ function capture( f, filename )
 w = warning( 'off', 'MATLAB:print:ExcludesUIInFutureRelease' ); % suppress
 f.Position(3:4) = [400 300];
 drawnow()
-print( f, filename, '-dpng', '-r0' ) % save
+print( f, filename, '-dpng', '-r144' ) % save
 warning( w ) % restore
 
 end % capture
