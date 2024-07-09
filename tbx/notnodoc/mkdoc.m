@@ -1,4 +1,4 @@
-function varargout = nndoc( md, root, css, js )
+function varargout = mkdoc( md, root, css, js )
 %nndoc  Publish Markdown files to HTML with stylesheets and scripts
 %
 %  nndoc(md) publishes the Markdown files md to HTML.  md can be a char

@@ -1,4 +1,4 @@
-function varargout = nnundoc( pDoc )
+function varargout = rmdoc( pDoc )
 %nnundoc  Unpublish Markdown files
 %
 %  nnundoc(root) unpublishes the documentation in the folder f by deleting

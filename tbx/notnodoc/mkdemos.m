@@ -1,4 +1,4 @@
-function nndemos( s )
+function mkdemos( s )
 %nndemos  Run script and capture output
 
 d = pwd;
