@@ -2,3 +2,6 @@
 demo/**/*.html
 demo/**/*.png
 demo/resources
+tbx/notnodocdoc/**/*.html
+tbx/notnodocdoc/**/*.png
+tbx/notnodocdoc/resources
