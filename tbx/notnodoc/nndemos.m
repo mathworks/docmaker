@@ -1,5 +1,5 @@
-function nndemo( s )
-%nndemo  Run script and capture output
+function nndemos( s )
+%nndemos  Run script and capture output
 
 d = pwd;
 [p, n, ~] = fileparts( s );
@@ -10,7 +10,7 @@ try
     run() % run script
     t = setdiff( figures(), o ); % new figures
     for ii = 1:numel( t )
-        capture( t(ii), string( n ) + ii + ".png" ) % capture
+        grab( t(ii), string( n ) + ii + ".png" ) % capture
     end
     delete( setdiff( figures(), o ) ) % clean up
     cd( d )
@@ -20,7 +20,7 @@ catch e
     rethrow( e )
 end
 
-end % nndemo
+end % nndemos
 
 function f = figures()
 %figures  Find all figures
@@ -36,8 +36,8 @@ eval( evalin( 'caller', 'n' ) ) % run in clean workspace
 
 end % run
 
-function capture( f, filename )
-%capture  Capture figure to file
+function grab( f, filename )
+%grab  Capture figure to file
 
 w = warning( 'off', 'MATLAB:print:ExcludesUIInFutureRelease' ); % suppress
 f.Position(3:4) = [400 300];
@@ -45,4 +45,4 @@ drawnow()
 print( f, filename, '-dpng', '-r144' ) % save
 warning( w ) % restore
 
-end % capture
+end % grab
