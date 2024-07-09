@@ -10,7 +10,7 @@ try
     run() % run script
     t = setdiff( figures(), o ); % new figures
     for ii = 1:numel( t )
-        capture( t(ii), string( n ) + ii + x ) % capture
+        capture( t(ii), string( n ) + ii + ".png" ) % capture
     end
     delete( setdiff( figures(), o ) ) % clean up
     cd( d )
