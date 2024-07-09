@@ -71,6 +71,6 @@ set(g,'Widths',[-1 100 -2],'Heights',[-1 100])
 
 ## See also
 
-:house: | :arrow_right: [HBox](hbox.md) | :arrow_down: [VBox](vbox.md) | :symbols: [Grid](grid.md) | :card_index: [CardPanel](CardPanel.md) | :point_right: [TabPanel](TabPanel.md) | :scroll: [ScrollingPanel](ScrollingPanel.md) | :white_square_button: [BoxPanel](BoxPanel.md) | :vertical_traffic_light: [VButtonBox](VButtonBox.md) | :traffic_light: [HButtonBox](VButtonBox.md)
+[:house:](index.md) | :arrow_right: [HBox](hbox.md) | :arrow_down: [VBox](vbox.md) | :symbols: [Grid](grid.md) | :card_index: [CardPanel](CardPanel.md) | :point_right: [TabPanel](TabPanel.md) | :scroll: [ScrollingPanel](ScrollingPanel.md) | :white_square_button: [BoxPanel](BoxPanel.md) | :vertical_traffic_light: [VButtonBox](VButtonBox.md) | :traffic_light: [HButtonBox](VButtonBox.md)
 
 :copyright: 2009-2024 [The MathWorks, Inc.](https://www.mathworks.com/services/consulting.html)
