@@ -1,10 +1,10 @@
-# :symbols: `uix.Grid`, `uix.GridFlex`
+# :point_right: `uix.TabPanel`
 
-Arrange contents in a grid
+Arrange contents in a panel with tabs for selecting which is visible
 
 ## Description
 
-`uix.Grid` arranges contents in a grid.
+`uix.TabPanel` arranges contents in a panel with tabs for selecting which is visible.
 
 The number of rows and columns are *dynamic* with the number of contents:
 * Changing the number of rows may change the number of columns, and vice versa.
@@ -12,17 +12,15 @@ The number of rows and columns are *dynamic* with the number of contents:
 
 Contents are laid out dynamically, top-to-bottom then left-to-right.  To interleave empty space, use [`uix.Empty`](Empty.md).
 
-Row heights and column widths can be fixed or variable, with minima.  Variable-sized rows and columns fill available container space, subject to minima, according to specified weights.
+Row heights and column widths can be fixed or variable, with minima.  Variable-sized rows and columns fill available container space, subject to minima, accoring to specified weights.
 
 `uix.GridFlex` extends `uix.Grid`, adding draggable dividers between the rows and columns.
 
 ## Syntax
 
-`g = uix.Grid()` creates a new, default, *unparented* grid.
+`g = uix.TabPanel()` creates a new, default, *unparented* tab panel.
 
-`g = uix.Grid(p1,v1,...)` also sets one or more property values.
-
-`g = uix.GridFlex(...)` creates a new flexible grid.
+`g = uix.TabPanel(p1,v1,...)` also sets one or more property values.
 
 ## Properties
 
@@ -50,6 +48,12 @@ plus other [container properties](https://uk.mathworks.com/help/matlab/ref/matla
 
 | Property | Value | Alternative | Notes |
 | --- | --- | --- | --- |
+| `FontAngle` | `normal` or `italic` | none | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
+| `FontName` | string | none | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
+| `FontSize` | positive integer | none | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
+| `FontUnits` | `points`, `pixels`, [etc.](https://uk.mathworks.com/help/matlab/ref/matlab.ui.control.uicontrol-properties.html#bt6ck7c-1_sep_shared-FontUnits) | none | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
+| `FontWeight` | `normal` or `bold` | none | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
+| `FontName` | string | none | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
 | `FontName` | string | none | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
 | `Widths` | double vector | `Width` | Was one entry per child; now one entry for all |
 
@@ -57,17 +61,15 @@ plus other [container properties](https://uk.mathworks.com/help/matlab/ref/matla
 
 ```matlab
 f = figure();
-g = uix.Grid('Parent',f,'Padding',5,'Spacing',5);
-uicontrol('Parent',g,'Background','r')
-uicontrol('Parent',g,'Background','b')
-uicontrol('Parent',g,'Background','g')
-uix.Empty('Parent',g);
-uicontrol('Parent',g,'Background','c')
-uicontrol('Parent',g,'Background','y')
-set(g,'Widths',[-1 100 -2],'Heights',[-1 100])
+p = uix.TabPanel('Parent',f,'Padding',5);
+uicontrol('Parent',p,'Background','r');
+uicontrol('Parent',p,'Background','b');
+uicontrol('Parent',p,'Background','g');
+p.TabTitles = {'Red','Blue','Green'};
+p.Selection = 2;
 ```
 
-![Output](griddemo1.png)
+![Output](tabpaneldemo1.png)
 
 ## See also
 
