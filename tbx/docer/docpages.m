@@ -1,4 +1,4 @@
-function varargout = docpages( md, root, css, js )
+function varargout = docpages( md, options )
 %docpages  Publish Markdown files to HTML with stylesheets and scripts
 %
 %  docpages(md) publishes the Markdown files md to HTML.  md can be a char
@@ -20,37 +20,46 @@ function varargout = docpages( md, root, css, js )
 
 %  Copyright 2020-2024 The MathWorks, Inc.
 
-% Handle inputs
-md = dirstruct( md );
+arguments
+    md
+    options.Stylesheets (1,:) string {mustBeFile}
+    options.Scripts (1,:) string {mustBeFile}
+    options.Root (1,1) string {mustBeFolder}
+end
 
-% Find resources folder
+% Local resources folder
 res = fullfile( fileparts( mfilename( 'fullpath' ) ), 'resources' );
 
-% Check root
-if nargin < 2 || isequal( root, [] )
-    root = superdir( md );
-else
-    assert( isfolder( root ) )
-    root = getfield( dir( root ), 'folder' ); % absolute path
-    assert( strncmp( root, superdir( md ), numel( root ) ) )
-end
+% Check documents
+md = dirstruct( md );
+assert( all( extensions( md ) == ".md" ), "docer:InvalidArgument", ...
+    "Markdown files must all have extension .md." )
 
 % Check stylesheets
-if nargin < 3 || isequal( css, [] )
-    css = [];
-else
-    css = dirstruct( css, res );
-    assert( ~any( [css.isdir] ) )
+css = dirstruct( fullfile( res, ["github-markdown.css" "matlaby.css"] ) );
+if isfield( options, "Stylesheets" )
+    css = dirstruct( css, options.Stylesheets );
 end
+assert( all( extensions( css ) == ".css" ), "docer:InvalidArgument", ...
+    "Stylesheets must all have extension .css." )
 
 % Check scripts
-if nargin < 4 || isequal( js, [] )
-    js = [];
-else
-    js = dirstruct( js, res );
-    assert( ~any( [js.isdir] ) )
+js = dirstruct( fullfile( res, "mdlinks.js" ) );
+if isfield( options, "Scripts" )
+    js = dirstruct( js, options.Scripts );
 end
-js = [dirstruct( {'lazyload.js','mdlinks.js'}, res ); js]; % prepend standard
+assert( all( extensions( js ) == ".js" ), "docer:InvalidArgument", ...
+    "Scripts must all have extension .js." )
+
+% Check root
+if isfield( options, "Root" )
+    sRoot = dir( options.Root );
+    root = sRoot(1).folder; % absolute path
+    assert( startsWith( superdir( md ), root ), "docer:InvalidArgument", ...
+        "Markdown files must be under folder %s.", root )
+else
+    root = superdir( md );
+end
 
 % Publish
 for ii = 1:numel( md ) % loop over files
@@ -66,6 +75,15 @@ end
 if nargout, varargout = {md, css, js}; end
 
 end % docpages
+
+function x = extensions( s )
+
+x = strings( size( s ) ); % preallocate
+for ii = 1:numel( s )
+    [~, ~, x(ii)] = fileparts( s(ii).name );
+end
+
+end % extensions
 
 function publish( fMd, root, css, js )
 %publish  Publish a single Markdown file
