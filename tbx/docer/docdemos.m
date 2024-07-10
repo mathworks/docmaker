@@ -1,7 +1,8 @@
-function docdemos( scripts, options )
-%docdemos  Run scripts and capture output
+function docdemos( m, options )
+%docdemos  Run MATLAB scripts and capture output
 %
-%  docdemos(s) runs the scripts s and captures figure output to PNG files.
+%  docdemos(s) runs the MATLAB scripts s and captures figure output to PNG
+%  files.
 %
 %  docdemos(...,"Size",wh) sets the size of the output figures to [width
 %  height] wh.
@@ -12,18 +13,20 @@ function docdemos( scripts, options )
 %  Copyright 2020-2024 The MathWorks, Inc.
 
 arguments
-    scripts % convertible to dirstruct
+    m % convertible to dirstruct
     options.Size (1,2) double {mustBePositive} = [400 300]
     options.Resolution (1,1) double {mustBeNonnegative} = 144
 end
 
-% Handle inputs
-scripts = dirstruct( scripts );
+% Check inputs
+m = dirstruct( m );
+assert( all( extensions( m ) == ".m" ), "docer:InvalidArgument", ...
+    "MATLAB scripts must all have extension .m." )
 
 % Process
-for ii = 1:numel( scripts ) % loop
+for ii = 1:numel( m ) % loop
     try
-        docdemo( scripts(ii), options.Size, options.Resolution )
+        docdemo( m(ii), options.Size, options.Resolution )
     catch e
         warning( e.identifier, '%s', e.message ) % rethrow as warning
     end

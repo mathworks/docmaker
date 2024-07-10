@@ -76,15 +76,6 @@ if nargout, varargout = {md, css, js}; end
 
 end % docpages
 
-function x = extensions( s )
-
-x = strings( size( s ) ); % preallocate
-for ii = 1:numel( s )
-    [~, ~, x(ii)] = fileparts( s(ii).name );
-end
-
-end % extensions
-
 function docpage( fMd, root, css, js )
 %docpage  Publish a single Markdown file
 %
