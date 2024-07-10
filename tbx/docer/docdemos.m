@@ -12,12 +12,12 @@ function docdemos( scripts, options )
 %  Copyright 2020-2024 The MathWorks, Inc.
 
 arguments
-    scripts string
+    scripts % convertible to dirstruct
     options.Size (1,2) double {mustBePositive} = [400 300]
     options.Resolution (1,1) double {mustBePositive} = 144
 end
 
-% Convert input to dirstruct
+% Handle inputs
 scripts = dirstruct( scripts );
 
 % Process
@@ -38,14 +38,14 @@ function docdemo( script, wh, res )
 %  [width height] wh and screenshot resolution r dpi.
 
 oldFolder = pwd;
-[~, name, ~] = fileparts( script.name ); %#ok<ASGLU>
+[~, name, ~] = fileparts( script.name );
 oldFigures = figures(); % existing figures
 try
     cd( script.folder )
     run() % run script
     newFigures = setdiff( figures(), oldFigures ); % new figures
     for ii = 1:numel( newFigures )
-        capture( newFigures(ii), string( names ) + ii + ".png", wh, res ) % capture
+        capture( newFigures(ii), string( name ) + ii + ".png", wh, res ) % capture
     end
     delete( setdiff( figures(), oldFigures ) ) % clean up
     cd( oldFolder )
@@ -62,10 +62,10 @@ function f = figures()
 %
 %  f = figures() returns all current figures in ascending number order.
 
-f = findobj( groot(), '-Depth', 1, 'Type', 'figure', ...
-    'HandleVisibility', 'on' ); % ignore HandleVisibility 'off'
-n = cell2mat( get( f, 'Number' ) ); % figure numbers
-[~, i] = sort( n, 'ascend' ); % sort ascending
+f = findobj( groot(), "-Depth", 1, "Type", "figure", ...
+    "HandleVisibility", "on" ); % ignore HandleVisibility 'off'
+n = cell2mat( get( f, {"Number"} ) ); % figure numbers
+[~, i] = sort( n, "ascend" ); % sort ascending
 f = f(i); % return in ascending order of figure number
 
 end % figure
@@ -94,6 +94,7 @@ w = warning( "off", "MATLAB:print:ExcludesUIInFutureRelease" ); % suppress
 f.Position(3:4) = wh;
 drawnow()
 print( f, png, "-dpng", "-r" + res ) % save
+fprintf( 1, "[+] %s\n", png );
 warning( w ) % restore
 
 end % capture
