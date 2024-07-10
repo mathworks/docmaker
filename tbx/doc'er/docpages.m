@@ -44,7 +44,7 @@ assert( all( extensions( css ) == ".css" ), "docer:InvalidArgument", ...
     "Stylesheets must all have extension .css." )
 
 % Check scripts
-js = dirstruct( fullfile( res, "mdlinks.js" ) );
+js = dirstruct( fullfile( res, "md2html.js" ) );
 if isfield( options, "Scripts" )
     js = dirstruct( js, options.Scripts );
 end
