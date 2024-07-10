@@ -46,16 +46,16 @@ plus other [container properties](https://uk.mathworks.com/help/matlab/ref/matla
 
 ### :warning: Deprecated
 
-| Property | Value | Alternative | Notes |
+| Property | Value | Description | Recommendation |
 | --- | --- | --- | --- |
-| `FontAngle` | `normal` or `italic` | none | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
-| `FontName` | string | none | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
-| `FontSize` | positive integer | none | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
-| `FontUnits` | `points`, `pixels`, [etc.](https://uk.mathworks.com/help/matlab/ref/matlab.ui.control.uicontrol-properties.html#bt6ck7c-1_sep_shared-FontUnits) | none | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
-| `FontWeight` | `normal` or `bold` | none | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
-| `FontName` | string | none | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
-| `FontName` | string | none | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
-| `Widths` | double vector | `Width` | Was one entry per child; now one entry for all |
+| `FontAngle` | `normal` or `italic` | Tab title font angle | `normal`, as per `uitab`, from version 2.4 |
+| `FontName` | string | Tab title font name | `MS Sans Serif`, as per `uitab`, from version 2.4 |
+| `FontSize` | positive integer | Tab title font size, in `FontUnits` | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
+| `FontUnits` | `points`, `pixels`, [etc.](https://uk.mathworks.com/help/matlab/ref/matlab.ui.control.uicontrol-properties.html#bt6ck7c-1_sep_shared-FontUnits) | Tab title font units | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
+| `FontWeight` | `normal` or `bold` | Tab title font weight | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
+| `HighlightColor` | [color](https://uk.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) | Border highlight color | Was one entry per child; now one entry for all |
+| `ShadowColor` | [color](https://uk.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) | Border shadow color | Was one entry per child; now one entry for all |
+| `TabWidth` | double | Tab width, in pixels | Was one entry per child; now one entry for all |
 
 ## Examples
 

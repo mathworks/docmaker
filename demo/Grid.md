@@ -1,4 +1,4 @@
-# :symbols: `uix.Grid`, `uix.GridFlex`
+# :symbols: uix.Grid, uix.GridFlex
 
 Arrange contents in a grid
 
