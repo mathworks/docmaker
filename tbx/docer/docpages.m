@@ -247,7 +247,7 @@ function s = generator()
 %generator  HTML meta generator name
 %
 %  s = generator() returns a string detailing the MATLAB and markdowndoc
-%  versions, e.g, "MATLAB 9.9 (R2020b) with markdowndoc 0.1".
+%  versions, e.g, "MATLAB R2024a with Doc'er 0.2".
 
 matlab = ver( 'MATLAB' ); %#ok<VERMATLAB>
 matlab = matlab(1);
