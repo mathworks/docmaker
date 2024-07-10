@@ -14,7 +14,7 @@ function docdemos( scripts, options )
 arguments
     scripts % convertible to dirstruct
     options.Size (1,2) double {mustBePositive} = [400 300]
-    options.Resolution (1,1) double {mustBePositive} = 144
+    options.Resolution (1,1) double {mustBeNonnegative} = 144
 end
 
 % Handle inputs
