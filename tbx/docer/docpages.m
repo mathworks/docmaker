@@ -65,7 +65,7 @@ end
 for ii = 1:numel( md ) % loop over files
     fMd = fullfile( md(ii).folder, md(ii).name ); % this file
     try
-        publish( fMd, root, css, js )
+        docpage( fMd, root, css, js )
     catch e
         warning( e.identifier, '%s', e.message ) % rethrow as warning
     end
@@ -85,10 +85,10 @@ end
 
 end % extensions
 
-function publish( fMd, root, css, js )
-%publish  Publish a single Markdown file
+function docpage( fMd, root, css, js )
+%docpage  Publish a single Markdown file
 %
-%  publish(md,f,css,js) publishes the Markdown file md to HTML with
+%  docpage(md,f,css,js) publishes the Markdown file md to HTML with
 %  stylesheets css and scripts js in <f>/resources.
 
 % Check inputs
@@ -139,7 +139,7 @@ fclose( hHtml );
 % Echo
 fprintf( 1, "[+] %s\n", fHtml );
 
-end % publish
+end % docpage
 
 function rTo = relpath( fTo, pFr )
 %relpath  Compute relative path to a file from a folder
