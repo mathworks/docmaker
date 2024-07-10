@@ -1,12 +1,10 @@
-function varargout = undoc( pDoc )
+function undoc( pRoot )
 %undoc  Unpublish Markdown files
 %
-%  undoc(f) unpublishes the documentation in the folder f by deleting HTML
-%  files in f and its subfolders, deleting the folder <f>/resources, and
-%  deleting <f>/helptoc.xml.
-%
-%  For debugging, html = undoc(...) returns the HTML files unpublished,
-%  as a dir struct.
+%  undoc(f) unpublishes the documentation in the folder f by deleting:
+%  * HTML files corresponding to Markdown files
+%  * PNG files corresponding to MATLAB scripts
+%  * the resources folder, <f>/resources
 %
 %  See also: docpages, docdemos
 
@@ -14,29 +12,46 @@ function varargout = undoc( pDoc )
 
 % Check inputs
 arguments
-    pDoc (1,1) string {mustBeFolder}
+    pRoot (1,1) string {mustBeFolder}
 end
 
-% Delete HTML files in folder and subfolders
-dHtml = dir( fullfile( pDoc, '**', '*.html' ) );
-for ii = 1:numel( dHtml )
-    fHtml = fullfile( dHtml(ii).folder, dHtml(ii).name );
-    try
-        delete( fHtml )
-    catch e
-        warning( e.identifier, '%s', e.message ) % rethrow as warning
+% Delete HTML files corresponding to Markdown files
+sMd = dir( fullfile( pRoot, '**', '*.md' ) ); % Markdown files
+for ii = 1:numel( sMd ) % loop
+    fMd = fullfile( sMd(ii).folder, sMd(ii).name ); % this Markdown
+    [pMd, nMd, ~] = fileparts( fMd ); % path and name
+    fHtml = fullfile( pMd, nMd + ".html" ); % this HTML
+    if exist( fHtml, "file" ) % corresponding
+        delete( fHtml ) % delete
+        fprintf( 1, '[-] %s\n', fHtml ); % echo
+    end
+end
+
+% Delete PNG files corresponding to MATLAB scripts
+sM = dir( fullfile( pRoot, '**', '*.m' ) ); % MATLAB scripts
+for ii = 1:numel( sM ) % loop
+    fM = fullfile( sM(ii).folder, sM(ii).name ); % this script
+    [pM, nM, ~] = fileparts( fM ); % path and name
+    for jj = 1:1e2
+        fPng = fullfile( pM, nM + string( jj ) + ".png" ); % this PNG
+        if exist( fPng, "file" ) % corresponding
+            delete( fPng ) % delete
+            fprintf( 1, '[-] %s\n', fPng ); % echo
+        else
+            break % not found, next script
+        end
     end
 end
 
 % Delete resources folder
-pRes = fullfile( pDoc, 'resources' );
-if exist( pRes ) == 7, rmdir( pRes, 's' ), end %#ok<EXIST>
-
-% Delete helptoc.xml
-fHelp = fullfile( pDoc, 'helptoc.xml' );
-if exist( fHelp, 'file' ), delete( fHelp ), end
-
-% Return output
-if nargout, varargout = {dHtml}; end
+sRes = dir( fullfile( pRoot, 'resources' ) ); % resources folder
+for ii = 1:numel( sRes ) % loop
+    if sRes(ii).name == "." && sRes(ii).isdir == true % match
+        fRes = sRes(ii).folder; % absolute path
+        rmdir( fRes, "s" ) % delete
+        fprintf( 1, "[-] %s\n", fRes ); % echo
+        break % only one
+    end
+end
 
 end % undoc
