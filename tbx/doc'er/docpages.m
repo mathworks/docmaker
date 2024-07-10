@@ -217,7 +217,7 @@ function s = generator()
 
 matlab = ver( 'MATLAB' ); %#ok<VERMATLAB>
 matlab = matlab(1);
-toolbox = ver( 'docer' );
+toolbox = ver( 'doc''er' );
 toolbox = toolbox(1);
 s = sprintf( '%s %s with %s %s', matlab.Name, ...
     matlab.Release(2:end-1), toolbox.Name, toolbox.Version );
