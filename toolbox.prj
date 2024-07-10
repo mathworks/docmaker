@@ -1,14 +1,14 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration file="C:\Development\markdowndoc\toolbox.prj" location="C:\Development\markdowndoc" name="toolbox" target="target.toolbox" target-name="Package Toolbox">
-    <param.appname>Markdown Documentation</param.appname>
+  <configuration file="C:\Development\doc'er\toolbox.prj" location="C:\Development\doc'er" name="toolbox" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>Doc'er</param.appname>
     <param.authnamewatermark>David Sampson</param.authnamewatermark>
     <param.email>dsampson@mathworks.com</param.email>
     <param.company>MathWorks</param.company>
-    <param.summary>Author MATLAB documentation in Markdown</param.summary>
-    <param.description />
-    <param.screenshot />
-    <param.version>0.1</param.version>
-    <param.output>${PROJECT_ROOT}\Markdown Documentation.mltbx</param.output>
+    <param.summary>Write Markdown, ship doc</param.summary>
+    <param.description>Doc'er is a MATLAB documentation generator that converts Markdown to HTML and captures graphics output from scripts</param.description>
+    <param.screenshot>${PROJECT_ROOT}\octopus.png</param.screenshot>
+    <param.version>0.2</param.version>
+    <param.output>${PROJECT_ROOT}\Doc'er.mltbx</param.output>
     <param.products.name />
     <param.products.id />
     <param.products.version />
@@ -45,8 +45,6 @@
       <param.authnamewatermark />
       <param.email />
       <param.company />
-      <param.description />
-      <param.screenshot />
       <param.output />
       <param.products.name />
       <param.products.id />
@@ -81,40 +79,17 @@
     <fileset.rootdir>
       <file>${PROJECT_ROOT}\tbx\markdowndoc</file>
     </fileset.rootdir>
-    <fileset.rootfiles>
-      <file>${PROJECT_ROOT}\tbx\markdowndoc\+markdowndoc</file>
-      <file>${PROJECT_ROOT}\tbx\markdowndoc\Contents.m</file>
-      <file>${PROJECT_ROOT}\tbx\markdowndoc\resources</file>
-    </fileset.rootfiles>
+    <fileset.rootfiles />
     <fileset.depfun.included />
     <fileset.depfun.excluded />
     <fileset.package />
     <build-deliverables>
-      <file location="${PROJECT_ROOT}" name="Markdown Documentation.mltbx" optional="false">C:\Development\markdowndoc\Markdown Documentation.mltbx</file>
+      <file location="${PROJECT_ROOT}" name="Doc'er.mltbx" optional="false">C:\Development\doc'er\Doc'er.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>C:\Program Files\MATLAB\R2020b</root>
-      <toolboxes>
-        <toolbox name="matlabcoder" />
-        <toolbox name="embeddedcoder" />
-        <toolbox name="neuralnetwork" />
-      </toolboxes>
-      <toolbox>
-        <matlabcoder>
-          <enabled>true</enabled>
-        </matlabcoder>
-      </toolbox>
-      <toolbox>
-        <embeddedcoder>
-          <enabled>true</enabled>
-        </embeddedcoder>
-      </toolbox>
-      <toolbox>
-        <neuralnetwork>
-          <enabled>true</enabled>
-        </neuralnetwork>
-      </toolbox>
+      <root>C:\Program Files\MATLAB\R2024a</root>
+      <toolboxes />
     </matlab>
     <platform>
       <unix>false</unix>
