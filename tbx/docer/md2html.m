@@ -6,7 +6,7 @@ function html = md2html( md )
 %
 %  API documentation: https://docs.github.com/en/rest/markdown
 %
-%  See also: mddoc
+%  See also: docpages
 
 %  Copyright 2020-2024 The MathWorks, Inc.
 
