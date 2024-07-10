@@ -1,30 +1,57 @@
-function docdemos( scripts )
-%docdemos  Run script and capture output
+function docdemos( scripts, options )
+%docdemos  Run scripts and capture output
 %
-%  docdemos(s)
+%  docdemos(s) runs the scripts s and captures figure output to PNG files.
+%
+%  docdemos(...,"Size",wh) sets the size of the output figures to [width
+%  height] wh.
+%
+%  docdemos(...,"Resolution",r) sets the resolution of the screenshots to r
+%  dpi.
 
+%  Copyright 2020-2024 The MathWorks, Inc.
 
-
+arguments
+    scripts string
+    options.Size (1,2) double {mustBePositive} = [400 300]
+    options.Resolution (1,1) double {mustBePositive} = 144
 end
 
-function docdemo( script )
+% Convert input to dirstruct
+scripts = dirstruct( scripts );
 
-oldDir = pwd;
-[paths, names, ~] = fileparts( script );
-if isempty( paths ), paths = oldDir; end
+% Process
+for ii = 1:numel( scripts ) % loop
+    try
+        docdemo( scripts(ii), options.Size, options.Resolution )
+    catch e
+        warning( e.identifier, '%s', e.message ) % rethrow as warning
+    end
+end
+
+end % docdemos
+
+function docdemo( script, wh, res )
+%docdemo  Run script and capture output
+%
+%  docdemo(s,wh,res) runs the script s and captures the output with figure
+%  [width height] wh and screenshot resolution r dpi.
+
+oldFolder = pwd;
+[~, name, ~] = fileparts( script.name ); %#ok<ASGLU>
 oldFigures = figures(); % existing figures
 try
-    cd( paths )
+    cd( script.folder )
     run() % run script
     newFigures = setdiff( figures(), oldFigures ); % new figures
     for ii = 1:numel( newFigures )
-        grab( newFigures(ii), string( names ) + ii + ".png" ) % capture
+        capture( newFigures(ii), string( names ) + ii + ".png", wh, res ) % capture
     end
     delete( setdiff( figures(), oldFigures ) ) % clean up
-    cd( oldDir )
+    cd( oldFolder )
 catch e
     delete( setdiff( figures(), oldFigures ) ) % clean up
-    cd( oldDir )
+    cd( oldFolder )
     rethrow( e )
 end
 
@@ -47,26 +74,21 @@ function run()
 %run  Run script
 %
 %  run() runs a script in a clean workspace.  The script name is the value
-%  of the variable 'n' in the caller workspace.
+%  of the variable 'name' in the caller workspace.
 
-eval( evalin( 'caller', 'n' ) ) % run in clean workspace
+eval( evalin( 'caller', 'name' ) ) % run in clean workspace
 
 end % run
 
-function grab( f, png, wh, res )
-%grab  Capture figure to file
+function capture( f, png, wh, res )
+%capture  Capture figure to file
 %
-%  grab(f,png) prints the figure f to the filename png.
+%  capture(f,png) prints the figure f to the filename png.
 %
-%  grab(...,wh,r) specifies the figure width and height wh and the printing
-%  resolution r.
-
-arguments
-    f (1,1) matlab.ui.Figure
-    png (1,1) string
-    wh (1,2) double = [400 300]
-    res (1,1) double = 144
-end
+%  capture(...,wh,r) specifies the figure width and height wh and the
+%  printing resolution r.
+%
+%  See also: print
 
 w = warning( "off", "MATLAB:print:ExcludesUIInFutureRelease" ); % suppress
 f.Position(3:4) = wh;
@@ -74,4 +96,4 @@ drawnow()
 print( f, png, "-dpng", "-r" + res ) % save
 warning( w ) % restore
 
-end % grab
+end % capture
