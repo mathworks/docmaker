@@ -1,5 +1,5 @@
-function mkdemos( s )
-%nndemos  Run script and capture output
+function docdemos( s )
+%docdemos  Run script and capture output
 
 d = pwd;
 [p, n, ~] = fileparts( s );
@@ -20,7 +20,7 @@ catch e
     rethrow( e )
 end
 
-end % nndemos
+end % docdemos
 
 function f = figures()
 %figures  Find all figures
