@@ -118,6 +118,9 @@ hHtml = fopen( fHtml, "w+" );
 fprintf( hHtml, "%s", html );
 fclose( hHtml );
 
+% Echo
+fprintf( 1, "[+] %s\n", fHtml );
+
 end % publish
 
 function s = dirstruct( p, r )
