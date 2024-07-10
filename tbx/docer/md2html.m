@@ -8,7 +8,7 @@ function html = md2html( md )
 %
 %  See also: docpages
 
-%  Copyright 2020-2024 The MathWorks, Inc.
+%  Copyright 2024 The MathWorks, Inc.
 
 arguments
     md (1,1) string

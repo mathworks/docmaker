@@ -1,9 +1,9 @@
 function varargout = undoc( pDoc )
 %undoc  Unpublish Markdown files
 %
-%  undoc(root) unpublishes the documentation in the folder f by deleting
-%  HTML files in f and its subfolders, deleting the folder <f>/resources,
-%  and deleting <f>/helptoc.xml.
+%  undoc(f) unpublishes the documentation in the folder f by deleting HTML
+%  files in f and its subfolders, deleting the folder <f>/resources, and
+%  deleting <f>/helptoc.xml.
 %
 %  For debugging, html = undoc(...) returns the HTML files unpublished,
 %  as a dir struct.
@@ -13,8 +13,9 @@ function varargout = undoc( pDoc )
 %  Copyright 2020-2024 The MathWorks, Inc.
 
 % Check inputs
-assert( isfolder( pDoc ), 'markdowndoc:InvalidArgument', ...
-    'Folder not found.' )
+arguments
+    pDoc (1,1) string {mustBeFolder}
+end
 
 % Delete HTML files in folder and subfolders
 dHtml = dir( fullfile( pDoc, '**', '*.html' ) );
