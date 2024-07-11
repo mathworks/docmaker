@@ -6,7 +6,7 @@
     <param.company>MathWorks</param.company>
     <param.summary>Write Markdown, ship doc</param.summary>
     <param.description>Doc'er is a MATLAB documentation generator that converts Markdown to HTML and captures graphics output from scripts</param.description>
-    <param.screenshot>${PROJECT_ROOT}\octopus.png</param.screenshot>
+    <param.screenshot>${PROJECT_ROOT}\hippo.png</param.screenshot>
     <param.version>0.2</param.version>
     <param.output>${PROJECT_ROOT}\Doc'er.mltbx</param.output>
     <param.products.name />
