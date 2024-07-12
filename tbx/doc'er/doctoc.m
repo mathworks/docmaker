@@ -3,29 +3,36 @@ function doctoc( fMd )
 %
 %  mdtoc(md,xml)
 
-% Find style sheet
-pXsl = fullfile( fileparts( mfilename( 'fullpath' ) ), 'resources' );
-fXsl = fullfile( pXsl, "helptoc.xsl" );
+arguments
+    fMd (1,1) string {mustBeFile}
+end
 
-% Put helptoc.xml next to input Markdown file
+% Find style sheet
+fXsl = fullfile( fileparts( mfilename( "fullpath" ) ), "resources", ...
+    "helptoc.xsl" );
+
+% Put XML next to Markdown
 [pMd, nMd, ~] = fileparts( fMd );
 fXml = fullfile( pMd, nMd + ".xml" );
 
-% Generate HTML fragment
+% Convert to HTML and write to file
 cHtml = md2html( fileread( fMd ) );
 [pHtml, nHtml] = fileparts( tempname( pMd ) );
 xHtml = ".html";
 fHtml = fullfile( pHtml, nHtml + xHtml );
 hHtml = fopen( fHtml, "w" );
-fprintf( hHtml, "<html>\n%s\n</html>\n", cHtml );
+if hHtml == -1, error( "Could not create ""%s"".", fHtml ), end
+fprintf( hHtml, "<html>\n%s\n</html>\n", cHtml ); % wrap in <html>
 fclose( hHtml );
 
-
-% Create helptoc.xml
-xslt( fHtml, fXsl, fXml );
-fprintf( 1, "[+] %s\n", fXml );
-
-% Clean up
-delete( fHtml )
+% Create XML using XSLT
+try
+    xslt( fHtml, fXsl, fXml );
+    fprintf( 1, "[+] %s\n", fXml );
+    delete( fHtml ) % clean up
+catch e
+    delete( fHtml ) % clean up
+    rethrow( e )
+end
 
 end % doctoc
