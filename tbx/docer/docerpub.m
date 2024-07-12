@@ -35,7 +35,7 @@ assert( all( extensions( md ) == ".md" ), "docer:InvalidArgument", ...
     "Markdown files must all have extension .md." )
 
 % Check stylesheets
-css = dirstruct( fullfile( res, ["github-markdown.css" "matlaby.css"] ) );
+css = dirstruct( fullfile( res, ["github-markdown-light.css" "matlaby.css"] ) );
 if isfield( options, "Stylesheets" )
     css = dirstruct( css, options.Stylesheets );
 end
