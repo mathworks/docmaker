@@ -1,14 +1,16 @@
-function docdemos( m, options )
-%docdemos  Run MATLAB scripts and capture output
+function docdemo( m, options )
+%docdemo  Run MATLAB scripts and capture output
 %
-%  docdemos(s) runs the MATLAB scripts s and captures figure output to PNG
+%  docdemo(s) runs the MATLAB scripts s and captures figure output to PNG
 %  files.
 %
-%  docdemos(...,"Size",wh) sets the size of the output figures to [width
+%  docdemo(...,"Size",wh) sets the size of the output figures to [width
 %  height] wh.
 %
-%  docdemos(...,"Resolution",r) sets the resolution of the screenshots to r
+%  docdemo(...,"Resolution",r) sets the resolution of the screenshots to r
 %  dpi.
+%
+%  See also: docpublish, docregister, undoc
 
 %  Copyright 2020-2024 The MathWorks, Inc.
 
@@ -26,7 +28,7 @@ assert( all( extensions( m ) == ".m" ), "docer:InvalidArgument", ...
 % Process
 for ii = 1:numel( m ) % loop
     try
-        docdemo( m(ii), options.Size, options.Resolution )
+        demo( m(ii), options.Size, options.Resolution )
     catch e
         warning( e.identifier, '%s', e.message ) % rethrow as warning
     end
@@ -34,10 +36,10 @@ end
 
 end % docdemos
 
-function docdemo( script, wh, res )
-%docdemo  Run script and capture output
+function demo( script, wh, res )
+%demo  Run a single MATLAB script and capture output
 %
-%  docdemo(s,wh,res) runs the script s and captures the output with figure
+%  demo(s,wh,res) runs the script s and captures the output with figure
 %  [width height] wh and screenshot resolution r dpi.
 
 oldFolder = pwd;
@@ -58,7 +60,7 @@ catch e
     rethrow( e )
 end
 
-end % docdemos
+end % demo
 
 function f = figures()
 %figures  Find all figures

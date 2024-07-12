@@ -1,22 +1,22 @@
-function varargout = docpages( md, options )
-%docpages  Publish Markdown files to HTML with stylesheets and scripts
+function varargout = docpublish( md, options )
+%docpublish  Publish Markdown files to HTML with stylesheets and scripts
 %
-%  docpages(md) publishes the Markdown files md to HTML.  md can be a char
-%  or string including wildcards, a cellstr or string array, or a dir
+%  docpublish(md) publishes the Markdown files md to HTML.  md can be a
+%  char or string including wildcards, a cellstr or string array, or a dir
 %  struct.
 %
-%  docpages(md,f) publishes to the folder f, placing resources in the folder
-%  <f>/resources.  If not specified, or if specified as [], then f is the
-%  lowest superdirectory of the published files.
+%  docpublish(md,f) publishes to the folder f, placing resources in the
+%  folder <f>/resources.  If not specified, or if specified as [], then f
+%  is the lowest superdirectory of the published files.
 %
-%  docpages(md,f,css,js) includes the stylesheets css and the scripts js.
+%  docpublish(md,f,css,js) includes the stylesheets css and the scripts js.
 %  If specified as [], then only the minimal set of stylesheets and scripts
 %  are included. If specified without path, then ...
 %
-%  For debugging, [md,css,js] = docpages(...) returns the Markdown files
+%  For debugging, [md,css,js] = docpublish(...) returns the Markdown files
 %  published and the stylesheets and scripts included, as dir structs.
 %
-%  See also: docdemos, doctoc, undoc
+%  See also: docdemo, docregister, undoc
 
 %  Copyright 2020-2024 The MathWorks, Inc.
 
@@ -65,7 +65,7 @@ end
 for ii = 1:numel( md ) % loop over files
     fMd = fullfile( md(ii).folder, md(ii).name ); % this file
     try
-        docpage( fMd, root, css, js )
+        publish( fMd, root, css, js )
     catch e
         warning( e.identifier, '%s', e.message ) % rethrow as warning
     end
@@ -74,12 +74,12 @@ end
 % Return output
 if nargout, varargout = {md, css, js}; end
 
-end % docpages
+end % docpublish
 
-function docpage( fMd, root, css, js )
-%docpage  Publish a single Markdown file
+function publish( fMd, root, css, js )
+%publish  Publish a single Markdown file
 %
-%  docpage(md,f,css,js) publishes the Markdown file md to HTML with
+%  publish(md,f,css,js) publishes the Markdown file md to HTML with
 %  stylesheets css and scripts js in <f>/resources.
 
 % Check inputs
@@ -89,10 +89,10 @@ if ~isfolder( pRes ), mkdir( pRes ), end
 
 % Start with doctype and head including title
 html = "<!DOCTYPE html>" + newline + ...
-    "<html xmlns=""http://www.w3.org/1999/xhtml"" xml:lang=""en"" lang=""en"">" + newline + ...
-    "<head>" + newline + ...
-    "<meta name=""generator"" content=""" + generator() + """>" + newline + ...
-    "<title>" + nMd + "</title>" + newline;
+    "<html xmlns=""http://www.w3.org/1999/xhtml"" xml:lang=""en"" lang=""en"">" + ...
+    newline + "<head>" + newline + ...
+    "<meta name=""generator"" content=""" + generator() + """>" + ...
+    newline + "<title>" + nMd + "</title>" + newline;
 
 % Add stylesheets
 for ii = 1:numel( css )
@@ -130,7 +130,7 @@ fclose( hHtml );
 % Echo
 fprintf( 1, "[+] %s\n", fHtml );
 
-end % docpage
+end % publish
 
 function rTo = relpath( fTo, pFr )
 %relpath  Compute relative path to a file from a folder
