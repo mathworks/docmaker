@@ -1,22 +1,19 @@
-function varargout = docpublish( md, options )
-%docpublish  Publish Markdown files to HTML with stylesheets and scripts
+function varargout = docerpub( md, options )
+%docerpub  Publish Markdown files to HTML with stylesheets and scripts
 %
-%  docpublish(md) publishes the Markdown files md to HTML.  md can be a
+%  docerpub(md) publishes the Markdown files md to HTML.  md can be a
 %  char or string including wildcards, a cellstr or string array, or a dir
 %  struct.
 %
-%  docpublish(md,f) publishes to the folder f, placing resources in the
+%  docerpub(md,f) publishes to the folder f, placing resources in the
 %  folder <f>/resources.  If not specified, or if specified as [], then f
 %  is the lowest superdirectory of the published files.
 %
-%  docpublish(md,f,css,js) includes the stylesheets css and the scripts js.
+%  docerpub(md,f,css,js) includes the stylesheets css and the scripts js.
 %  If specified as [], then only the minimal set of stylesheets and scripts
 %  are included. If specified without path, then ...
 %
-%  For debugging, [md,css,js] = docpublish(...) returns the Markdown files
-%  published and the stylesheets and scripts included, as dir structs.
-%
-%  See also: docdemo, docregister, undoc
+%  See also: md2html, docerrun, docerreg, undocer
 
 %  Copyright 2020-2024 The MathWorks, Inc.
 
@@ -74,7 +71,7 @@ end
 % Return output
 if nargout, varargout = {md, css, js}; end
 
-end % docpublish
+end % docerpub
 
 function publish( fMd, root, css, js )
 %publish  Publish a single Markdown file

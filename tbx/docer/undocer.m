@@ -1,4 +1,4 @@
-function undoc( pRoot )
+function undocer( pRoot )
 %undoc  Unpublish Markdown files
 %
 %  undoc(f) unpublishes the documentation in the folder f by deleting:
