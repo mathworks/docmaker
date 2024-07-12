@@ -9,7 +9,7 @@ function html = md2html( md )
 %  Authenticated requests get a higher API rate limit.  To authenticate,
 %  set the environment variable GITHUB_API_TOKEN.
 %
-%  See also: docpages
+%  See also: docerpub
 
 %  Copyright 2024 The MathWorks, Inc.
 

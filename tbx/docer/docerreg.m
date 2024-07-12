@@ -1,10 +1,10 @@
-function docregister( pRoot, id )
-%docregister  Create info.xml, helptoc.xml from Contents.m, helptoc.md
+function docerreg( pRoot, id )
+%docerreg  Create info.xml, helptoc.xml from Contents.m, helptoc.md
 %
-%  docregister(f,id) creates info.xml and helptoc.xml for the product with
+%  docerreg(f,id) creates info.xml and helptoc.xml for the product with
 %  identifier id in the folder f.
 %
-%  See also: docpublish, docdemo, undoc
+%  See also: docerpub, docerrun, undocer
 
 %  Copyright 2020-2024 The MathWorks, Inc.
 
@@ -47,7 +47,7 @@ end
 cInfo = info( id, pRoot );
 fprintf( 1, "%s\n", cInfo );
 
-end % doctoc
+end % docerreg
 
 function c = info( id, pHelp )
 %info  Generate info.xml from product identifier and documentation folder
