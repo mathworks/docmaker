@@ -215,11 +215,11 @@ function s = generator()
 %  s = generator() returns a string detailing the MATLAB and markdowndoc
 %  versions, e.g, "MATLAB R2024a with Doc'er 0.2".
 
-matlab = ver( 'MATLAB' ); %#ok<VERMATLAB>
+matlab = ver( "MATLAB" ); %#ok<VERMATLAB>
 matlab = matlab(1);
-toolbox = ver( 'doc''er' );
+toolbox = ver( "docer" );
 toolbox = toolbox(1);
-s = sprintf( '%s %s with %s %s', matlab.Name, ...
+s = sprintf( "%s %s with %s %s", matlab.Name, ...
     matlab.Release(2:end-1), toolbox.Name, toolbox.Version );
 s = string( s );
 
