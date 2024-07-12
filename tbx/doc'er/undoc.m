@@ -6,7 +6,7 @@ function undoc( pRoot )
 %  * PNG files corresponding to MATLAB scripts
 %  * the resources folder, <f>/resources
 %
-%  See also: docpages, docdemos
+%  See also: docpublish, docdemo
 
 %  Copyright 2020-2024 The MathWorks, Inc.
 
@@ -43,13 +43,13 @@ for ii = 1:numel( sM ) % loop
     end
 end
 
-% Delete helptoc.xml
-sHelp = dir( fullfile( pRoot, 'helptoc.xml' ) ); % helptoc
-for ii = 1:numel( sHelp ) % loop
-    fHelp = fullfile( sHelp(ii).folder, sHelp(ii).name ); % one-and-only
-    if exist( fHtml, "file" )
-        delete( fHelp ) % delete
-        fprintf( 1, '[-] %s\n', fHelp ); % echo
+% Delete info.xml and helptoc.xml
+sXml = dirstruct( fullfile( pRoot, ["helptoc.xml" "info.xml"] ) ); % info, helptoc
+for ii = 1:numel( sXml ) % loop
+    fXml = fullfile( sXml(ii).folder, sXml(ii).name ); % this xml
+    if exist( fXml, "file" )
+        delete( fXml ) % delete
+        fprintf( 1, '[-] %s\n', fXml ); % echo
     end
 end
 
