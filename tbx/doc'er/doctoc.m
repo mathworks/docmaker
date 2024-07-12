@@ -22,7 +22,8 @@ xHtml = ".html";
 fHtml = fullfile( pHtml, nHtml + xHtml );
 hHtml = fopen( fHtml, "w" );
 if hHtml == -1, error( "Could not create ""%s"".", fHtml ), end
-fprintf( hHtml, "<html>\n%s\n</html>\n", cHtml ); % wrap in <html>
+s = "<!DOCTYPE html>\n<html>\n<body>\n%s</body>\n</html>\n"; % format string
+fprintf( hHtml, s, cHtml ); % build HTML file around fragment
 fclose( hHtml );
 
 % Create XML using XSLT
