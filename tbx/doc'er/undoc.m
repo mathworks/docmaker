@@ -43,6 +43,16 @@ for ii = 1:numel( sM ) % loop
     end
 end
 
+% Delete helptoc.xml
+sHelp = dir( fullfile( pRoot, 'helptoc.xml' ) ); % helptoc
+for ii = 1:numel( sHelp ) % loop
+    fHelp = fullfile( sHelp(ii).folder, sHelp(ii).name ); % one-and-only
+    if exist( fHtml, "file" )
+        delete( fHelp ) % delete
+        fprintf( 1, '[-] %s\n', fHelp ); % echo
+    end
+end
+
 % Delete resources folder
 sRes = dir( fullfile( pRoot, 'resources' ) ); % resources folder
 for ii = 1:numel( sRes ) % loop
