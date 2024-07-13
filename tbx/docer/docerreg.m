@@ -1,4 +1,4 @@
-function docerreg( pRoot, id )
+function docerreg( pRoot )
 %docerreg  Create info.xml, helptoc.xml from Contents.m, helptoc.md
 %
 %  docerreg(f,id) creates info.xml and helptoc.xml for the product with
@@ -10,69 +10,34 @@ function docerreg( pRoot, id )
 
 arguments
     pRoot (1,1) string {mustBeFolder}
-    id (1,1) string
 end
 
-% Find style sheet
-fXsl = fullfile( fileparts( mfilename( "fullpath" ) ), "resources", ...
-    "helptoc.xsl" );
+% Find resources folder
+pRez = fullfile( fileparts( mfilename( "fullpath" ) ), "resources" );
 
-% Put XML next to Markdown
-fMd = fullfile( pRoot, "helptoc.md" );
-fXml = fullfile( pRoot, "helptoc.xml" );
-fInfo = fullfile( pRoot, "info.xml" );
+% Create helptoc.xml from helptoc.md
+fHelpMd = fullfile( pRoot, "helptoc.md" ); % source file
+xHelp = md2html( fileread( fHelpMd ) ); % convert to XML fragment
+xHelp = "<?xml version=""1.0"" encoding=""utf-8""?>" + ...
+    "<xml>" + newline + xHelp + "</xml>"; % wrap fragment
+fHelpIn = tempname() + ".xml"; % temp file
+writelines( xHelp, fHelpIn ) % write to file
+cuHelp = onCleanup( @()delete( fHelpIn ) ); % clean up
+fHelpXsl = fullfile( pRez, "helptoc.xsl" );
+fHelpOut = fullfile( pRoot, "helptoc.xml" );
+xslt( fHelpIn, fHelpXsl, fHelpOut ); % transform
+fprintf( 1, "[+] %s\n", fHelpOut ); % echo
 
-% Convert to HTML and write to file
-assert( exist( fMd, "file" ), "docer:NotFound", ...
-    "Cannot find table of contents ""%s"".", fMd )
-cHtml = md2html( fileread( fMd ) ); % content
-[~, nHtml] = fileparts( tempname( pRoot ) ); % temp
-fHtml = fullfile( pRoot, nHtml + ".html" );
-hHtml = fopen( fHtml, "w" );
-if hHtml == -1, error( "Could not create ""%s"".", fHtml ), end
-s = "<!DOCTYPE html>\n<html>\n<body>\n%s</body>\n</html>\n"; % format string
-fprintf( hHtml, s, cHtml ); % build HTML file around fragment
-fclose( hHtml );
-
-% Create XML using XSLT
-try
-    xslt( fHtml, fXsl, fXml );
-    fprintf( 1, "[+] %s\n", fXml );
-    delete( fHtml ) % clean up
-catch e
-    delete( fHtml ) % clean up
-    rethrow( e )
-end
-
-cInfo = info( id, pRoot );
-fprintf( 1, "%s\n", cInfo );
+% Create info.xml from Contents.m
+r = matlabRelease().Release;
+n = "Package Jockey";
+sInfo = struct( "release", r, "name", n );
+fInfoIn = tempname() + ".xml"; % temp file
+writestruct( sInfo, fInfoIn ); % write to file
+cuInfo = onCleanup( @()delete( fInfoIn ) ); % clean up
+fInfoXsl = fullfile( pRez, "info.xsl" );
+fInfoOut = fullfile( pRoot, "info.xml" );
+xslt( fInfoIn, fInfoXsl, fInfoOut ); % transform
+fprintf( 1, "[+] %s\n", fInfoOut ); % echo
 
 end % docerreg
-
-function c = info( id, pHelp )
-%info  Generate info.xml from product identifier and documentation folder
-
-s = ver( id ); % read metadata from Contents.m
-[~, nHelp] = fileparts( pHelp ); % just last part
-release = string( s.Release );
-if startsWith( release, "(" ) && endsWith( release, ")" )
-    release = extractBetween( release, 2, strlength( release ) - 1 );
-end
-name = string( s.Name );
-if endsWith( name, " Toolbox" )
-    name = extractBefore( name, strlength( name ) - strlength( "Toolbox" ) );
-end
-
-c(1) = "<productinfo xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xsi:noNamespaceSchemaLocation=""optional"">";
-c(2) = "<?xml-stylesheet type=""text/xsl"" href=""optional""?>";
-c(3) = sprintf( "<matlabrelease>%s</matlabrelease>", release );
-c(4) = sprintf( "<name>%s</name>", name );
-c(5) = "<type>toolbox</type>";
-c(6) = "<icon>$toolbox/matlab/icons/bookicon.gif</icon>";
-c(7) = sprintf( "<help_location>../%s</help_location>", nHelp );
-c(8) = "</productinfo>";
-
-% Combine
-c = strjoin( c, newline );
-
-end % info
