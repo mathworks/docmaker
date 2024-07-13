@@ -211,15 +211,17 @@ end % superdir
 function s = generator()
 %generator  HTML meta generator name
 %
-%  s = generator() returns a string detailing the MATLAB and markdowndoc
+%  s = generator() returns a string detailing the MATLAB and Doc'er
 %  versions, e.g, "MATLAB R2024a with Doc'er 0.2".
 
-matlab = ver( "MATLAB" ); %#ok<VERMATLAB>
-matlab = matlab(1);
-toolbox = ver( "docer" );
-toolbox = toolbox(1);
-s = sprintf( "%s %s with %s %s", matlab.Name, ...
-    matlab.Release(2:end-1), toolbox.Name, toolbox.Version );
-s = string( s );
+persistent GENERATOR % cache
+if isequal( GENERATOR, [] ) % uninitialized
+    v = ver( 'docer' ); % from Contents.m
+    s = "MATLAB " + matlabRelease().Version + " with " + ...
+        v(1).Name + " " + v(1).Version;
+    GENERATOR = s; % store
+else
+    s = GENERATOR; % retrieve
+end
 
 end % generator
