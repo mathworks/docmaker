@@ -41,6 +41,18 @@ switch response.StatusCode
             string( response.StatusLine ), response.Body.Data.message ) )
 end
 
+% Close img tags to ensure valid XML
+img = strfind( html, "<img " ); % all "img" tag opens
+gt = strfind( html, ">" ); % *all* tag closes
+for ii = numel( img ):-1:1
+    i = min( gt(gt>img(ii)) ); % first ">" after "<img "
+    if extract( html, i-1 ) == "/", continue, end % already closed
+    html = extractBefore( html, i ) + "/>" + extractAfter( html, i ); % replace > with />
+end
+
+% Wrap in div
+html = "<div class=""github-markdown-html"">" + newline + html + "</div>";
+
 % Replace links
 if options.ReplaceLinks
     html = linkrep( html, ".md", ".html" );
