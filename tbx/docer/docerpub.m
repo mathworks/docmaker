@@ -8,8 +8,7 @@ function varargout = docerpub( md, options )
 %  docerpub(...,"Stylesheets",css) includes the stylesheet(s) css.
 %  Stylesheets "github-markdown.css" and "matlaby.css" are always included.
 %
-%  docerpub(...,"Scripts",js) includes the script(s) js.  Script
-%  "md2html.js" is always included.
+%  docerpub(...,"Scripts",js) includes the script(s) js.
 %
 %  docerpub(...,"Root",f) publishes to the root folder f, placing resources
 %  in <f>/resources.  If not specified, then the root folder is the lowest
@@ -43,12 +42,13 @@ assert( all( extensions( css ) == ".css" ), "docer:InvalidArgument", ...
     "Stylesheets must all have extension .css." )
 
 % Check scripts
-js = dirstruct( fullfile( res, "md2html.js" ) );
 if isfield( options, "Scripts" )
-    js = dirstruct( js, options.Scripts );
+    js = dirstruct( options.Scripts );
+    assert( all( extensions( js ) == ".js" ), "docer:InvalidArgument", ...
+        "Scripts must all have extension .js." )
+else
+    js = repmat( dir( "." ), [0 1] );
 end
-assert( all( extensions( js ) == ".js" ), "docer:InvalidArgument", ...
-    "Scripts must all have extension .js." )
 
 % Check root
 if isfield( options, "Root" )
