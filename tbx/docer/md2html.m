@@ -35,7 +35,7 @@ response = request.send( uri );
 % Handle response
 switch response.StatusCode
     case matlab.net.http.StatusCode.OK
-        html = response.Body.Data;
+        html = strtrim( response.Body.Data );
     otherwise
         throw( MException( "github:UnhandledError", "[%s] %s", ...
             string( response.StatusLine ), response.Body.Data.message ) )
@@ -44,7 +44,7 @@ end
 % Close img tags to ensure valid XML
 img = strfind( html, "<img " ); % all "img" tag opens
 gt = strfind( html, ">" ); % *all* tag closes
-for ii = numel( img ):-1:1
+for ii = numel( img ):-1:1 % backwards
     i = min( gt(gt>img(ii)) ); % first ">" after "<img "
     if extract( html, i-1 ) == "/", continue, end % already closed
     html = extractBefore( html, i ) + "/>" + extractAfter( html, i ); % replace > with />
@@ -84,8 +84,10 @@ for ii = 1:aa.Length
     end
 end
 writer = matlab.io.xml.dom.DOMWriter();
+writer.Configuration.FormatPrettyPrint = true;
 writer.Configuration.XMLDeclaration = false;
 s = writer.writeToString( doc );
 s = string( s );
+s = strtrim( s );
 
 end % linkrep
