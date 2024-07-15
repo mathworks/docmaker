@@ -217,7 +217,7 @@ function s = generator()
 persistent GENERATOR % cache
 if isequal( GENERATOR, [] ) % uninitialized
     v = ver( 'docer' ); % from Contents.m
-    s = "MATLAB " + matlabRelease().Version + " with " + ...
+    s = "MATLAB " + matlabRelease().Release + " with " + ...
         v(1).Name + " " + v(1).Version;
     GENERATOR = s; % store
 else
