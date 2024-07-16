@@ -4,6 +4,8 @@ function linkrep( doc, ext )
 %  linkrep(x,ext) replaces Markdown links in the XML document x with the
 %  extension ext.
 
+%  Copyright 2024 The MathWorks, Inc.
+
 aa = doc.getElementsByTagName( "a" );
 for ii = 1:aa.Length
     a = aa.item(ii-1);

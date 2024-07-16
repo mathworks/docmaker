@@ -12,6 +12,8 @@ function s = dirstruct( p, varargin )
 %
 %  See also: dir
 
+%  Copyright 2024 The MathWorks, Inc.
+
 % Process first input
 narginchk( 1, Inf )
 if isstruct( p ) && all( ismember( fieldnames( p ), fieldnames( dir() ) ) )
