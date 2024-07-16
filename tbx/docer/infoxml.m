@@ -13,16 +13,16 @@ if endsWith( name, " Toolbox" )
 end
 
 % Create document
-doc = matlab.io.xml.dom.Document( "productname" );
+doc = matlab.io.xml.dom.Document( "productinfo" );
 doc.XMLStandalone = true;
-pn = getDocumentElement( doc ); % root
+pi = getDocumentElement( doc ); % root
 
 % Add elements
-addElement( pn, "matlabrelease", matlabRelease().Release )
-addElement( pn, "name", name )
-addElement( pn, "type", "toolbox" )
-addElement( pn, "icon", "$toolbox/matlab/icons/bookicon.gif" )
-addElement( pn, "help_location", "." )
+addElement( pi, "matlabrelease", matlabRelease().Release )
+addElement( pi, "name", name )
+addElement( pi, "type", "toolbox" )
+addElement( pi, "icon", "$toolbox/matlab/icons/bookicon.gif" )
+addElement( pi, "help_location", "." )
 
 end % infoxml
 
