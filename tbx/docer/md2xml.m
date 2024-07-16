@@ -5,7 +5,9 @@ function doc = md2xml( md )
 %  GitHub API at: https://docs.github.com/en/rest/markdown
 %
 %  Authenticated requests get a higher API rate limit.  To authenticate,
-%  set the secret "GitHub API token".
+%  set the secret or preference using:
+%  * setSecret("GitHub API token"), or
+%  * setpref("docer","token",t)
 
 %  Copyright 2024 The MathWorks, Inc.
 
@@ -20,6 +22,9 @@ request = addFields( request, "Content-Type", "text/plain" );
 if ~verLessThan( "MATLAB", "24.1" ) && isSecret( "GitHub API token" ) %#ok<VERLESSMATLAB>
     request = addFields( request, "Authorization", ...
         "Bearer " + getSecret( "GitHub API token" ) );
+elseif ispref( "docer", "token" )
+    request = addFields( request, "Authorization", ...
+        "Bearer " + getpref( "docer", "token" ) );
 end
 uri = matlab.net.URI( "https://api.github.com/markdown/raw" );
 response = request.send( uri );
