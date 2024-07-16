@@ -15,7 +15,7 @@ for ii = 1:aa.Length
         if endsWith( path, ".md" )
             path = extractBefore( path, strlength( path ) - 2 ) + ext;
             href.EncodedPath = path;
-            a.setAttribute( "href", string( href ) )
+            a.setAttribute( "href", href )
         end
     end
 end
