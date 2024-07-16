@@ -1,47 +1,35 @@
-function r = relpath( b, p )
-%relpath  Relative path
+function r = relpath( d, f )
+%relpath  Relative path from folder to file
 %
-%  r = relpath(b,p) returns the relative path r of the path p from the base
-%  b.
+%  r = relpath(d,f) returns the relative path r from the folder d to the
+%  file f.  The folder and file must exist, and can be specified as
+%  absolute or relative (with respect to the current folder) paths.
 
-if ~ischar( p )
-    b = string( b );
-    s = string( p );
-    if isscalar( b ) && ~isscalar( s )
-        b = repmat( b, size( s ) );
-    elseif ~isscalar( b ) && isscalar( s )
-        s = repmat( s, size( b ) );
-    end
-    r = strings( size( s ) );
-    for ii = 1:numel( s )
-        r(ii) = relpath( char( b(ii) ), char( s(ii) ) );
-    end
-    if iscellstr( p ) %#ok<ISCLSTR>
-        r = cellstr( r );
-    else
-        r = feval( class( p ), r );
-    end
+%  Copyright 2020-2024 The MathWorks, Inc.
+
+% Canonicalize
+assert( isfolder( d ), "docer:NotFound", "Folder ""%s"" not found.", d )
+sd = dir( d );
+pd = string( sd(1).folder ); % first entry is "."
+assert( isfile( f ), "docer:NotFound", "File ""%s"" not found.", f )
+sf = dir( f );
+pf = string( sf(1).folder ); % single matching entry
+nf = string( sf(1).name ); % single matching entry
+
+% Find common ancestor folder
+ps = superfolder( pd, pf );
+if isequal( ps, [] )
+    r = fullfile( pf, nf ); % absolute
 else
-    try
-        r = s_relpath( b, p );
-    catch
-        error( "docer:Path", "Invalid path ""%s"".", p )
-    end
-    if ~isequal( class( r ), class( p ) )
-        r = feval( class( p ), r ); % cast
-    end
+    tp = split( pd, filesep );
+    tf = split( pf, filesep );
+    ts = split( ps, filesep );
+    up = repmat( "..", numel( tp ) - numel( ts ), 1 ); % go up
+    dn = tf(numel( ts )+1:end,:); % then down
+    r = fullfile( join( up, filesep ), join( dn, filesep ), nf );
 end
+
+% Return matching datatype
+if ischar( d ) && ischar( f ), r = char( r ); end
 
 end % relpath
-
-function r = s_relpath( b, p )
-%s_relpath  Implementation for scalar relpath
-
-arguments
-    b char
-    p char
-end
-
-r = System.IO.Path.GetRelativePath( b, p ); % .NET
-
-end % s_relpath
