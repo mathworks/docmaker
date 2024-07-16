@@ -109,8 +109,8 @@ pMd = fileparts( fMd );
 md = fileread( fMd );
 
 % Convert Markdown to XML
-frag = md2xml( md );
-linkrep( frag, ".html" )
+xml = md2xml( md );
+linkrep( xml, ".html" )
 
 % Create document
 doc = matlab.io.xml.dom.Document( "html", "html", "", "" );
@@ -128,7 +128,7 @@ meta.setAttribute( "generator", "MATLAB " + matlabRelease().Release + ...
     " with " + v(1).Name + " " + v(1).Version );
 
 % Add title
-h1 = getElementsByTagName( frag, "h1" );
+h1 = getElementsByTagName( xml, "h1" );
 if h1.Length > 0
     title = createElement( doc, "title" );
     appendChild( head, title );
@@ -165,7 +165,7 @@ main = createElement( doc, "main" );
 appendChild( body, main );
 
 % Add converted Markdown
-div = importNode( doc, getDocumentElement( frag ), true );
+div = importNode( doc, getDocumentElement( xml ), true );
 appendChild( main, div );
 
 end % convert
