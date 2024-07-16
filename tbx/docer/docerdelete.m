@@ -1,12 +1,14 @@
-function undocer( pRoot )
-%undoc  Unpublish Markdown files
+function docerdelete( pRoot )
+%docerdelete  Delete Doc'er artifacts
 %
-%  undoc(f) unpublishes the documentation in the folder f by deleting:
+%  docerdelete(d) deletes the Doc'er artifacts in the folder d:
 %  * HTML files corresponding to Markdown files
 %  * PNG files corresponding to MATLAB scripts
+%  * the index files, <f>/info.xml, <f>/helptoc.xml, <f>/helpindex.xml
 %  * the resources folder, <f>/resources
+%  * the search database, <f>/helpsearch-v*
 %
-%  See also: docpublish, docdemo
+%  See also: docerconvert, docerrun, docerindex
 
 %  Copyright 2020-2024 The MathWorks, Inc.
 
@@ -21,7 +23,7 @@ for ii = 1:numel( sMd ) % loop
     fMd = fullfile( sMd(ii).folder, sMd(ii).name ); % this Markdown
     [pMd, nMd, ~] = fileparts( fMd ); % path and name
     fHtml = fullfile( pMd, nMd + ".html" ); % this HTML
-    if exist( fHtml, "file" ) % corresponding
+    if isfile( fHtml ) % corresponding
         delete( fHtml ) % delete
         fprintf( 1, '[-] %s\n', fHtml ); % echo
     end
@@ -34,7 +36,7 @@ for ii = 1:numel( sM ) % loop
     [pM, nM, ~] = fileparts( fM ); % path and name
     for jj = 1:1e2
         fPng = fullfile( pM, nM + string( jj ) + ".png" ); % this PNG
-        if exist( fPng, "file" ) % corresponding
+        if isfile( fPng ) % corresponding
             delete( fPng ) % delete
             fprintf( 1, '[-] %s\n', fPng ); % echo
         else
@@ -43,25 +45,44 @@ for ii = 1:numel( sM ) % loop
     end
 end
 
-% Delete info.xml and helptoc.xml
-sXml = dirstruct( fullfile( pRoot, ["helptoc.xml" "info.xml"] ) ); % info, helptoc
+% Delete XML files
+nXml = ["info.xml" "helptoc.xml" "helpindex.xml"]; % names
+sXml = dirstruct( fullfile( pRoot, nXml ) ); % xmls
 for ii = 1:numel( sXml ) % loop
     fXml = fullfile( sXml(ii).folder, sXml(ii).name ); % this xml
-    if exist( fXml, "file" )
+    if isfile( fXml )
         delete( fXml ) % delete
         fprintf( 1, '[-] %s\n', fXml ); % echo
     end
 end
 
-% Delete resources folder
-sRes = dir( fullfile( pRoot, 'resources' ) ); % resources folder
-for ii = 1:numel( sRes ) % loop
-    if sRes(ii).name == "." && sRes(ii).isdir == true % match
-        fRes = sRes(ii).folder; % absolute path
-        rmdir( fRes, "s" ) % delete
-        fprintf( 1, "[-] %s\n", fRes ); % echo
-        break % only one
+% Delete JSON files
+nJson = "custom_toolbox.json"; % names
+sJson = dirstruct( fullfile( pRoot, nJson ) ); % jsons
+for ii = 1:numel( sJson ) % loop
+    fJson = fullfile( sJson(ii).folder, sJson(ii).name ); % this json
+    if isfile( fJson )
+        delete( fJson ) % delete
+        fprintf( 1, '[-] %s\n', fJson ); % echo
     end
 end
 
-end % undoc
+% Delete resources folder
+sRoot = dirstruct( pRoot );
+fRez = fullfile( sRoot(1).folder, "resources" );
+if isfolder( fRez )
+    rmdir( fRez, "s" ) % delete
+    fprintf( 1, "[-] %s\n", fRez ); % echo
+end
+
+% Delete helpsearch folders
+sHelp = dirstruct( fullfile( pRoot, "helpsearch-v*" ) );
+for ii = 1:numel( sHelp )
+    if sHelp(ii).isdir
+        fHelp = fullfile( sHelp(ii).folder, sHelp(ii).name );
+        rmdir( fHelp, "s" ) % delete
+        fprintf( 1, "[-] %s\n", fHelp ); % echo
+    end
+end
+
+end % docerdelete
