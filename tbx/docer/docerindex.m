@@ -1,7 +1,7 @@
 function docerindex( pRoot )
 %docerindex  Create info.xml and helptoc.xml from helptoc.md
 %
-%  docerindex(f) creates info.xml and helptoc.xml from helptoc.xml in the
+%  docerindex(f) creates info.xml and helptoc.xml from helptoc.md in the
 %  folder f.
 %
 %  See also: docerconvert, docerrun, docerdelete
@@ -11,6 +11,51 @@ function docerindex( pRoot )
 arguments
     pRoot (1,1) string {mustBeFolder}
 end
+
+% Canonicalize
+sRoot = dirstruct( pRoot );
+pRoot = sRoot(1).folder;
+
+% Read helptoc.md
+fHelp = fullfile( pRoot, "helptoc.md" );
+mHelp = fileread( fHelp );
+xHelp = md2xml( mHelp );
+linkrep( xHelp, ".md", ".html" )
+
+% Extract name
+h1 = xHelp.getElementsByTagName( "h1" );
+if h1.Length > 0
+    name = h1.item( 0 ).TextContent;
+else
+    name = "Unknown Toolbox";
+end
+
+% Write info.xml
+xInfo = infoxml( name );
+fInfo = fullfile( pRoot, "info.xml" );
+w = matlab.io.xml.dom.DOMWriter();
+w.Configuration.FormatPrettyPrint = true;
+w.writeToFile( xInfo, fInfo )
+fprintf( 1, "[+] %s\n", fInfo );
+
+return
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 % Find resources folder
 pRez = fullfile( fileparts( mfilename( "fullpath" ) ), "resources" );
