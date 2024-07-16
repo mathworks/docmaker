@@ -18,7 +18,7 @@ arguments
 end
 
 % Delete HTML files corresponding to Markdown files
-sMd = dir( fullfile( pRoot, '**', '*.md' ) ); % Markdown files
+sMd = dir( fullfile( pRoot, '**', '*.md' ) ); % Markdown
 for ii = 1:numel( sMd ) % loop
     fMd = fullfile( sMd(ii).folder, sMd(ii).name ); % this Markdown
     [pMd, nMd, ~] = fileparts( fMd ); % path and name
@@ -69,17 +69,17 @@ end
 
 % Delete resources folder
 sRoot = dirstruct( pRoot );
-fRez = fullfile( sRoot(1).folder, "resources" );
+fRez = fullfile( sRoot(1).folder, "resources" ); % folder
 if isfolder( fRez )
     rmdir( fRez, "s" ) % delete
     fprintf( 1, "[-] %s\n", fRez ); % echo
 end
 
 % Delete helpsearch folders
-sHelp = dirstruct( fullfile( pRoot, "helpsearch-v*" ) );
-for ii = 1:numel( sHelp )
+sHelp = dirstruct( fullfile( pRoot, "helpsearch-v*" ) ); % indices
+for ii = 1:numel( sHelp ) % loop
     if sHelp(ii).isdir
-        fHelp = fullfile( sHelp(ii).folder, sHelp(ii).name );
+        fHelp = fullfile( sHelp(ii).folder, sHelp(ii).name ); % this index
         rmdir( fHelp, "s" ) % delete
         fprintf( 1, "[-] %s\n", fHelp ); % echo
     end

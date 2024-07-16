@@ -35,7 +35,7 @@ switch response.StatusCode
         xml = response.Body.Data;
         xml = strtrim( xml );
     otherwise
-        throw( MException( "github:UnhandledError", "[%s] %s", ...
+        throw( MException( "docer:UnhandledError", "[%s] %s", ...
             string( response.StatusLine ), response.Body.Data.message ) )
 end
 
