@@ -56,15 +56,21 @@ for ii = 1:numel( sXml ) % loop
     end
 end
 
-% Delete resources and helpsearch folders
+% Delete resources folder
 sRoot = dirstruct( pRoot );
-sRoot([sRoot.isdir] == false) = []; % remove non-directories
-for ii = 1:numel( sRoot )
-    nRoot = sRoot(ii).name;
-    fRoot = fullfile( sRoot(ii).folder, nRoot );
-    if nRoot == "resources" || startsWith( nRoot, "helpsearch-v" )
-        rmdir( fRoot, "s" ) % delete
-        fprintf( 1, "[-] %s\n", fRoot ); % echo
+fRez = fullfile( sRoot(1).folder, "resources" );
+if isfolder( fRez )
+    rmdir( fRez, "s" ) % delete
+    fprintf( 1, "[-] %s\n", fRez ); % echo
+end
+
+% Delete helpsearch folders
+sHelp = dirstruct( fullfile( pRoot, "helpsearch-v*" ) );
+for ii = 1:numel( sHelp )
+    if sHelp(ii).isdir
+        fHelp = fullfile( sHelp(ii).folder, sHelp(ii).name );
+        rmdir( fHelp, "s" ) % delete
+        fprintf( 1, "[-] %s\n", fHelp ); % echo
     end
 end
 
