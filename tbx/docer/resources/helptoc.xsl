@@ -9,12 +9,12 @@
     <xsl:template match="ul">
         <xsl:for-each select="li">
             <tocitem target="{a/@href}">
+                <xsl:value-of select="a/text()"/>
                 <xsl:apply-templates/>
             </tocitem>
         </xsl:for-each>
     </xsl:template>
+    <xsl:template match="text()"/>
     <!-- TODO match ol -->
-    <xsl:template match="h1"/>
-    <xsl:template match="p"/>
     <xsl:strip-space elements="*" />
 </xsl:stylesheet>
