@@ -12,7 +12,7 @@ function docerconvert( sMd, options )
 %
 %  docerconvert(...,"Root",f) publishes to the root folder f, placing
 %  resources in <f>/resources.  If not specified, then the root folder is
-%  the lowest superdirectory of the published files.
+%  the superfolder of the published files.
 %
 %  See also: md2html, docerrun, docerreg, undocer
 
@@ -33,14 +33,15 @@ assert( all( extensions( sMd ) == ".md" ), ...
 if isempty( sMd ), return, end
 
 % Check root
+pMd = reshape( {sMd.folder}, size( sMd ) );
 if isfield( options, "Root" )
     sRoot = dir( options.Root );
     pRoot = sRoot(1).folder; % absolute path
-    assert( startsWith( superdir( sMd ), pRoot ), ...
+    assert( isequal( superfolder( pRoot, pMd{:} ), pRoot ), ...
         "docer:InvalidArgument", ...
         "Markdown files must be under folder %s.", pRoot )
 else
-    pRoot = superdir( sMd );
+    pRoot = superfolder( pMd{:} );
 end
 
 % Folders
@@ -48,7 +49,7 @@ pTem = fullfile( fileparts( mfilename( 'fullpath' ) ), 'resources' );
 pRez = fullfile( pRoot, 'resources' );
 if ~isfolder( pRez ), mkdir( pRez ), end
 
-% Check stylesheets
+% Check and copy stylesheets
 sCss = dirstruct( fullfile( pTem, ["github-markdown-light.css" "matlaby.css"] ) );
 if isfield( options, "Stylesheets" )
     sCss = dirstruct( sCss, options.Stylesheets );
@@ -56,8 +57,13 @@ if isfield( options, "Stylesheets" )
         "docer:InvalidArgument", ...
         "Stylesheets must all have extension .css." )
 end
+for ii = 1:numel( sCss )
+    copyfile( fullfile( sCss(ii).folder, sCss(ii).name ), pRez )
+    fprintf( 1, "[+] %s\n", fullfile( pRez, sCss(ii).name ) );
+    sCss(ii).folder = pRez;
+end
 
-% Check scripts
+% Check and copy scripts
 if isfield( options, "Scripts" )
     sJs = dirstruct( options.Scripts );
     assert( all( extensions( sJs ) == ".js" ), ...
@@ -65,6 +71,11 @@ if isfield( options, "Scripts" )
         "Scripts must all have extension .js." )
 else
     sJs = repmat( dir( "." ), [0 1] );
+end
+for ii = 1:numel( sJs )
+    copyfile( fullfile( sJs(ii).folder, sJs(ii).name ), pRez )
+    fprintf( 1, "[+] %s\n", fullfile( pRez, sJs(ii).name ) );
+    sJs(ii).folder = pRez;
 end
 
 % Publish
@@ -76,7 +87,7 @@ for ii = 1:numel( sMd ) % loop over files
     [pHtml, nHtml, ~] = fileparts( fMd );
     fHtml = fullfile( pHtml, nHtml + ".html" );
     try
-        doc = convert( fMd, pRez, sCss, sJs );
+        doc = convert( fMd, sCss, sJs );
         writeToFile( w, doc, fHtml )
         fprintf( 1, "[+] %s\n", fHtml );
     catch e
@@ -86,7 +97,7 @@ end
 
 end % docerconvert
 
-function doc = convert( fMd, pRez, css, js )
+function doc = convert( fMd, sCss, sJs )
 
 % Read Markdown from file
 pMd = fileparts( fMd );
@@ -120,12 +131,10 @@ if h1.Length > 0
 end
 
 % Add stylesheets
-for ii = 1:numel( css )
-    fCss = fullfile( css(ii).folder, css(ii).name );
-    [~, nCss, eCss] = fileparts( fCss );
-    copyfile( fCss, pRez )
-    rCss = relpath( fullfile( pRez, [nCss eCss] ), pMd );
-    rCss = strrep( rCss, filesep, '/' );
+for ii = 1:numel( sCss )
+    fCss = fullfile( sCss(ii).folder, sCss(ii).name );
+    rCss = relpath( pMd, fCss );
+    rCss = strrep( rCss, filesep, "/" );
     link = createElement( doc, "link" );
     appendChild( head, link );
     link.setAttribute( "rel", "stylesheet" );
@@ -133,12 +142,10 @@ for ii = 1:numel( css )
 end
 
 % Add scripts
-for ii = 1:numel( js )
-    fJs = fullfile( js(ii).folder, js(ii).name );
-    [~, nJs, eJs] = fileparts( fJs );
-    copyfile( fJs, pRez )
-    rJs = relpath( fullfile( pRez, [nJs eJs] ), pMd );
-    rJs = strrep( rJs, filesep(), '/' );
+for ii = 1:numel( sJs )
+    fJs = fullfile( sJs(ii).folder, sJs(ii).name );
+    rJs = relpath( pMd, fJs );
+    rJs = strrep( rJs, filesep, "/" );
     script = createElement( doc, "script" );
     appendChild( head, script );
     script.setAttribute( "src", rJs );
@@ -159,80 +166,3 @@ div = importNode( doc, getDocumentElement( frag ), true );
 appendChild( main, div );
 
 end % convert
-
-function rTo = relpath( fTo, pFr )
-%relpath  Compute relative path to a file from a folder
-%
-%  r = relpath(f,t) computes the relative path to the file t from the
-%  *folder* f.
-%
-%  Examples:
-%    relpath('C:\a\b\x','C:\a\b\y') returns '.\y'.
-%    relpath('C:\a\b\x','C:\a\b\c\y') returns '.\c\y'.
-%    relpath('C:\a\b\c\y','C:\a\b\x') returns '.\..\x'.
-%    relpath('C:\a\b\c','D:\x\y\z') returns 'D:\x\y\z'.
-
-pSu = superdir( fullfile( pFr, '.' ), fTo ); % superdirectory
-if isempty( pSu ) % no superdirectory, return absolute path
-    rTo = fTo;
-else % superdirectory, go up then down
-    rTo = '.'; % initialize
-    while ~strcmp( pFr, pSu )
-        rTo = fullfile( rTo, '..' ); % up
-        pFr = fileparts( pFr ); % up
-    end
-    if strcmp( pSu, fileparts( pSu ) ) % root, includes separator
-        rTo = fullfile( rTo, extractAfter( fTo, pSu ) );
-    else % not root
-        rTo = horzcat( rTo, extractAfter( fTo, pSu ) );
-    end
-end
-
-end % relpath
-
-function d = superdir( varargin )
-%superdir  Find lowest common superdirectory
-%
-%  d = superdir(f) finds the lowest common superdirectory for the file list
-%  f. f can be specified as a char or string, a cellstr or string array, or
-%  a dir struct.
-%
-%  If f is empty, or if the elements of f have no common superdirectory,
-%  then [] is returned.
-%
-%  d = superdir(f1,f2,...) is also supported for chars and strings.
-%
-%  Examples:
-%    superdir('C:\a\b\x','C:\a\b\y') returns 'C:\a\b'.
-%    superdir('C:\a\x','C:\a\b\y') returns 'C:\a'.
-%    superdir('C:\a\b\c','D:\x\y\z') returns [].
-
-% Handle inputs
-switch nargin
-    case 1
-        if isstruct( varargin{:} ) % dir struct
-            f = varargin{:}; % unpack
-            p = reshape( {f.folder}, size( f ) ); % extract folders
-            n = reshape( {f.name}, size( f ) ); % extract names
-            f = fullfile( p, n ); % combine
-        else % something else, convert
-            f = cellstr( varargin{:} );
-        end
-    otherwise
-        f = cellstr( varargin );
-end
-
-% Find ancestor
-if isempty( f ) % degenerate
-    d = [];
-else % normal
-    d = fileparts( f{1} ); % initialize
-    for ii = 1:numel( f )
-        while( ~strncmp( f{ii}, d, numel( d ) ) ) % compare first parts
-            if strcmp( d, fileparts( d ) ), d = []; return; end % root, stop
-            d = fileparts( d ); % up
-        end
-    end
-end
-
-end % superdir
