@@ -1,4 +1,4 @@
-function docerconvert( md, options )
+function docerconvert( sMd, options )
 %docerconvert  Publish Markdown files to HTML with stylesheets and scripts
 %
 %  docerconvert(md) publishes the Markdown files md to HTML.  md can be a
@@ -19,28 +19,28 @@ function docerconvert( md, options )
 %  Copyright 2020-2024 The MathWorks, Inc.
 
 arguments
-    md
+    sMd
     options.Stylesheets (1,:) string {mustBeFile}
     options.Scripts (1,:) string {mustBeFile}
     options.Root (1,1) string {mustBeFolder}
 end
 
 % Check documents
-md = dirstruct( md );
-assert( all( extensions( md ) == ".md" ), ...
+sMd = dirstruct( sMd );
+assert( all( extensions( sMd ) == ".md" ), ...
     "docer:InvalidArgument", ...
     "Markdown files must all have extension .md." )
-if isempty( md ), return, end
+if isempty( sMd ), return, end
 
 % Check root
 if isfield( options, "Root" )
     sRoot = dir( options.Root );
     pRoot = sRoot(1).folder; % absolute path
-    assert( startsWith( superdir( md ), pRoot ), ...
+    assert( startsWith( superdir( sMd ), pRoot ), ...
         "docer:InvalidArgument", ...
         "Markdown files must be under folder %s.", pRoot )
 else
-    pRoot = superdir( md );
+    pRoot = superdir( sMd );
 end
 
 % Folders
@@ -49,34 +49,34 @@ pRez = fullfile( pRoot, 'resources' );
 if ~isfolder( pRez ), mkdir( pRez ), end
 
 % Check stylesheets
-css = dirstruct( fullfile( pTem, ["github-markdown-light.css" "matlaby.css"] ) );
+sCss = dirstruct( fullfile( pTem, ["github-markdown-light.css" "matlaby.css"] ) );
 if isfield( options, "Stylesheets" )
-    css = dirstruct( css, options.Stylesheets );
-    assert( all( extensions( css ) == ".css" ), ...
+    sCss = dirstruct( sCss, options.Stylesheets );
+    assert( all( extensions( sCss ) == ".css" ), ...
         "docer:InvalidArgument", ...
         "Stylesheets must all have extension .css." )
 end
 
 % Check scripts
 if isfield( options, "Scripts" )
-    js = dirstruct( options.Scripts );
-    assert( all( extensions( js ) == ".js" ), ...
+    sJs = dirstruct( options.Scripts );
+    assert( all( extensions( sJs ) == ".js" ), ...
         "docer:InvalidArgument", ...
         "Scripts must all have extension .js." )
 else
-    js = repmat( dir( "." ), [0 1] );
+    sJs = repmat( dir( "." ), [0 1] );
 end
 
 % Publish
 w = matlab.io.xml.dom.DOMWriter();
 w.Configuration.XMLDeclaration = false;
 w.Configuration.FormatPrettyPrint = false;
-for ii = 1:numel( md ) % loop over files
-    fMd = fullfile( md(ii).folder, md(ii).name ); % this file
+for ii = 1:numel( sMd ) % loop over files
+    fMd = fullfile( sMd(ii).folder, sMd(ii).name ); % this file
     [pHtml, nHtml, ~] = fileparts( fMd );
     fHtml = fullfile( pHtml, nHtml + ".html" );
     try
-        doc = convert( fMd, pRez, css, js );
+        doc = convert( fMd, pRez, sCss, sJs );
         writeToFile( w, doc, fHtml )
         fprintf( 1, "[+] %s\n", fHtml );
     catch e
