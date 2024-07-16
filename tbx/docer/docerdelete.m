@@ -56,6 +56,17 @@ for ii = 1:numel( sXml ) % loop
     end
 end
 
+% Delete JSON files
+nJson = "custom_toolbox.json"; % names
+sJson = dirstruct( fullfile( pRoot, nJson ) ); % jsons
+for ii = 1:numel( sJson ) % loop
+    fJson = fullfile( sJson(ii).folder, sJson(ii).name ); % this json
+    if isfile( fJson )
+        delete( fJson ) % delete
+        fprintf( 1, '[-] %s\n', fJson ); % echo
+    end
+end
+
 % Delete resources folder
 sRoot = dirstruct( pRoot );
 fRez = fullfile( sRoot(1).folder, "resources" );
