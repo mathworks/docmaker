@@ -10,7 +10,7 @@ function docerrun( m, options )
 %  docerrun(...,"Resolution",r) sets the resolution of the screenshots to r
 %  dpi.
 %
-%  See also: docerpub, docerreg, undocer
+%  See also: docerconvert, docerindex, docerdelete
 
 %  Copyright 2020-2024 The MathWorks, Inc.
 
