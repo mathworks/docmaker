@@ -41,7 +41,7 @@ fprintf( 1, "[+] %s\n", fInfo );
 % Write helptoc.xml
 transformer = matlab.io.xml.transform.Transformer();
 oToc = matlab.io.xml.transform.SourceDocument( xToc );
-fXsl = "tbx/docer/resources/helptoc.xsl";
+fXsl = fullfile( fileparts( mfilename( "fullpath" ) ), "resources", "helptoc.xsl" );
 oXsl = matlab.io.xml.transform.StylesheetSourceFile( fXsl );
 fHelp = fullfile( pRoot, "helptoc.xml" );
 oHelp = matlab.io.xml.transform.ResultFile( fHelp );
