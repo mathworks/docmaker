@@ -1,10 +1,10 @@
-function docerreg( pRoot )
-%docerreg  Create info.xml, helptoc.xml from Contents.m, helptoc.md
+function docerindex( pRoot )
+%docerindex  Create info.xml and helptoc.xml from helptoc.md
 %
-%  docerreg(f,id) creates info.xml and helptoc.xml for the product with
-%  identifier id in the folder f.
+%  docerindex(f) creates info.xml and helptoc.xml from helptoc.xml in the
+%  folder f.
 %
-%  See also: docerpub, docerrun, undocer
+%  See also: docerconvert, docerrun, docerdelete
 
 %  Copyright 2020-2024 The MathWorks, Inc.
 
@@ -40,4 +40,4 @@ fInfoOut = fullfile( pRoot, "info.xml" );
 xslt( fInfoIn, fInfoXsl, fInfoOut ); % transform
 fprintf( 1, "[+] %s\n", fInfoOut ); % echo
 
-end % docerreg
+end % docerindex
