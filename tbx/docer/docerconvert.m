@@ -213,7 +213,7 @@ switch nargin
         if isstruct( varargin{:} ) % dir struct
             f = varargin{:}; % unpack
             p = reshape( {f.folder}, size( f ) ); % extract folders
-            n = reshape( {f.name}, size( f ) ); % extract folders
+            n = reshape( {f.name}, size( f ) ); % extract names
             f = fullfile( p, n ); % combine
         else % something else, convert
             f = cellstr( varargin{:} );
