@@ -1,8 +1,8 @@
 function s = superfolder( varargin )
 %superfolder  Common ancestor folder
 %
-%  s = superfolder(f1,f2,...) returns the common ancestor of the folders
-%  f1, f2, ...  The folders must exist.  If there is no common ancestor
+%  s = superfolder(p1,p2,...) returns the common ancestor of the folders
+%  p1, p2, ...  The folders must exist.  If there is no common ancestor
 %  then superfolder returns [].
 
 % Check inputs
