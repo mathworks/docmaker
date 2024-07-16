@@ -1,7 +1,7 @@
 function docerconvert( sMd, options )
-%docerconvert  Publish Markdown files to HTML with stylesheets and scripts
+%docerconvert  Convert Markdown files to HTML with stylesheets and scripts
 %
-%  docerconvert(md) publishes the Markdown files md to HTML.  md can be a
+%  docerconvert(md) converts the Markdown files md to HTML.  md can be a
 %  char or string including wildcards, a cellstr or string array, or a dir
 %  struct.
 %
@@ -11,10 +11,11 @@ function docerconvert( sMd, options )
 %  docerconvert(...,"Scripts",js) includes the script(s) js.
 %
 %  docerconvert(...,"Root",f) publishes to the root folder f, placing
-%  resources in <f>/resources.  If not specified, then the root folder is
-%  the superfolder of the published files.
+%  resources in <f>/resources.  The root folder must be a common ancestor
+%  of the Markdown files.  If not specified, the root folder is the lowest
+%  common ancestor.
 %
-%  See also: md2html, docerrun, docerreg, undocer
+%  See also: docerindex, docerrun, docerdelete
 
 %  Copyright 2020-2024 The MathWorks, Inc.
 
@@ -60,8 +61,8 @@ end
 for ii = 1:numel( sCss )
     copyfile( fullfile( sCss(ii).folder, sCss(ii).name ), pRez )
     fprintf( 1, "[+] %s\n", fullfile( pRez, sCss(ii).name ) );
-    sCss(ii).folder = pRez;
 end
+fCss = reshape( fullfile( pRez, {sCss.name} ), size( sCss ) );
 
 % Check and copy scripts
 if isfield( options, "Scripts" )
@@ -75,8 +76,8 @@ end
 for ii = 1:numel( sJs )
     copyfile( fullfile( sJs(ii).folder, sJs(ii).name ), pRez )
     fprintf( 1, "[+] %s\n", fullfile( pRez, sJs(ii).name ) );
-    sJs(ii).folder = pRez;
 end
+fJs = reshape( fullfile( pRez, {sJs.name} ), size( sJs ) );
 
 % Publish
 w = matlab.io.xml.dom.DOMWriter();
@@ -87,7 +88,7 @@ for ii = 1:numel( sMd ) % loop over files
     [pHtml, nHtml, ~] = fileparts( fMd );
     fHtml = fullfile( pHtml, nHtml + ".html" );
     try
-        doc = convert( fMd, sCss, sJs );
+        doc = convert( fMd, fCss, fJs );
         writeToFile( w, doc, fHtml )
         fprintf( 1, "[+] %s\n", fHtml );
     catch e
@@ -97,7 +98,11 @@ end
 
 end % docerconvert
 
-function doc = convert( fMd, sCss, sJs )
+function doc = convert( fMd, fCss, fJs )
+%convert  Convert Markdown file to HTML with stylesheets and scripts
+%
+%  convert(md,css,js) converts the Markdown file md to HTML and includes
+%  references to the stylesheets css and scripts js.
 
 % Read Markdown from file
 pMd = fileparts( fMd );
@@ -131,9 +136,8 @@ if h1.Length > 0
 end
 
 % Add stylesheets
-for ii = 1:numel( sCss )
-    fCss = fullfile( sCss(ii).folder, sCss(ii).name );
-    rCss = relpath( pMd, fCss );
+for ii = 1:numel( fCss )
+    rCss = relpath( pMd, fCss{ii} );
     rCss = strrep( rCss, filesep, "/" );
     link = createElement( doc, "link" );
     appendChild( head, link );
@@ -142,9 +146,8 @@ for ii = 1:numel( sCss )
 end
 
 % Add scripts
-for ii = 1:numel( sJs )
-    fJs = fullfile( sJs(ii).folder, sJs(ii).name );
-    rJs = relpath( pMd, fJs );
+for ii = 1:numel( fJs )
+    rJs = relpath( pMd, fJs{ii} );
     rJs = strrep( rJs, filesep, "/" );
     script = createElement( doc, "script" );
     appendChild( head, script );
