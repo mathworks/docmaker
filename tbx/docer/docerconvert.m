@@ -110,6 +110,8 @@ md = fileread( fMd );
 
 % Convert Markdown to XML
 xml = md2xml( md );
+
+% Replace Markdown links
 linkrep( xml, ".html" )
 
 % Create document
