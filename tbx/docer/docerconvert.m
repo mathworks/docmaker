@@ -25,46 +25,60 @@ arguments
     options.Root (1,1) string {mustBeFolder}
 end
 
-% Local resources folder
-pRez = fullfile( fileparts( mfilename( 'fullpath' ) ), 'resources' );
-
 % Check documents
 md = dirstruct( md );
-assert( all( extensions( md ) == ".md" ), "docer:InvalidArgument", ...
+assert( all( extensions( md ) == ".md" ), ...
+    "docer:InvalidArgument", ...
     "Markdown files must all have extension .md." )
+if isempty( md ), return, end
+
+% Check root
+if isfield( options, "Root" )
+    sRoot = dir( options.Root );
+    pRoot = sRoot(1).folder; % absolute path
+    assert( startsWith( superdir( md ), pRoot ), ...
+        "docer:InvalidArgument", ...
+        "Markdown files must be under folder %s.", pRoot )
+else
+    pRoot = superdir( md );
+end
+
+% Folders
+pTem = fullfile( fileparts( mfilename( 'fullpath' ) ), 'resources' );
+pRez = fullfile( pRoot, 'resources' );
+if ~isfolder( pRez ), mkdir( pRez ), end
 
 % Check stylesheets
-css = dirstruct( fullfile( pRez, ["github-markdown-light.css" "matlaby.css"] ) );
+css = dirstruct( fullfile( pTem, ["github-markdown-light.css" "matlaby.css"] ) );
 if isfield( options, "Stylesheets" )
     css = dirstruct( css, options.Stylesheets );
+    assert( all( extensions( css ) == ".css" ), ...
+        "docer:InvalidArgument", ...
+        "Stylesheets must all have extension .css." )
 end
-assert( all( extensions( css ) == ".css" ), "docer:InvalidArgument", ...
-    "Stylesheets must all have extension .css." )
 
 % Check scripts
 if isfield( options, "Scripts" )
     js = dirstruct( options.Scripts );
-    assert( all( extensions( js ) == ".js" ), "docer:InvalidArgument", ...
+    assert( all( extensions( js ) == ".js" ), ...
+        "docer:InvalidArgument", ...
         "Scripts must all have extension .js." )
 else
     js = repmat( dir( "." ), [0 1] );
 end
 
-% Check root
-if isfield( options, "Root" )
-    sRoot = dir( options.Root );
-    root = sRoot(1).folder; % absolute path
-    assert( startsWith( superdir( md ), root ), "docer:InvalidArgument", ...
-        "Markdown files must be under folder %s.", root )
-else
-    root = superdir( md );
-end
-
 % Publish
+w = matlab.io.xml.dom.DOMWriter();
+w.Configuration.XMLDeclaration = false;
+w.Configuration.FormatPrettyPrint = false;
 for ii = 1:numel( md ) % loop over files
     fMd = fullfile( md(ii).folder, md(ii).name ); % this file
+    [pHtml, nHtml, ~] = fileparts( fMd );
+    fHtml = fullfile( pHtml, nHtml + ".html" );
     try
-        convert( fMd, root, css, js )
+        doc = convert( fMd, pRez, css, js );
+        writeToFile( w, doc, fHtml )
+        fprintf( 1, "[+] %s\n", fHtml );
     catch e
         warning( e.identifier, '%s', e.message ) % rethrow as warning
     end
@@ -72,14 +86,15 @@ end
 
 end % docerconvert
 
-function doc = convert( md, pRoot, css, js )
+function doc = convert( fMd, pRez, css, js )
+
+% Read Markdown from file
+pMd = fileparts( fMd );
+md = fileread( fMd );
 
 % Convert Markdown to XML
-div = md2xml( md );
-
-% Create resources folder
-pRez = fullfile( pRoot, 'resources' );
-if ~isfolder( pRez ), mkdir( pRez ), end
+frag = md2xml( md );
+linkrep( frag, ".html" )
 
 % Create document
 doc = matlab.io.xml.dom.Document( "html", "html", "", "" );
@@ -90,14 +105,14 @@ head = createElement( doc, "head" );
 appendChild( root, head );
 
 % Add generator
-generator = createElement( doc, "generator" );
-appendChild( head, generator );
+meta = createElement( doc, "meta" );
+appendChild( head, meta );
 v = ver( "docer" );
-generator.TextContent = "MATLAB " + matlabRelease().Release + ...
-    " with " + v(1).Name + " " + v(1).Version;
+meta.setAttribute( "generator", "MATLAB " + matlabRelease().Release + ...
+    " with " + v(1).Name + " " + v(1).Version );
 
 % Add title
-h1 = getElementsByTagName( div, "h1" );
+h1 = getElementsByTagName( frag, "h1" );
 if h1.Length > 0
     title = createElement( doc, "title" );
     appendChild( head, title );
@@ -131,6 +146,8 @@ end
 
 % Add body
 body = createElement( doc, "body" );
+body.setAttribute( "class", "markdown-body" )
+body.setAttribute( "style", "margin-left: 1em; margin-right: 1em;" )
 appendChild( root, body );
 
 % Add main
@@ -138,7 +155,7 @@ main = createElement( doc, "main" );
 appendChild( body, main );
 
 % Add converted Markdown
-div = cloneNode( doc, div, true );
+div = importNode( doc, getDocumentElement( frag ), true );
 appendChild( main, div );
 
 end % convert
