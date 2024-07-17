@@ -62,7 +62,9 @@ tbx/docerdoc/**/*.html
 tbx/docerdoc/**/*.png
 tbx/docerdoc/info.xml
 tbx/docerdoc/helptoc.xml
-tbx/docerdoc/helpsearch-v*/**
+tbx/docerdoc/custom_toolbox.json
+tbx/docerdoc/resources
+tbx/docerdoc/helpsearch-v*
 ```
 
 You should package the generated files, and optionally the source files, for distribution.
