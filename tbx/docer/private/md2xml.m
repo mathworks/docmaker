@@ -39,14 +39,10 @@ switch response.StatusCode
             string( response.StatusLine ), response.Body.Data.message ) )
 end
 
-% Close img tags to ensure valid XML
-img = strfind( xml, "<img " ); % all "img" tag opens
-gt = strfind( xml, ">" ); % *all* tag closes
-for ii = numel( img ):-1:1 % backwards
-    i = min( gt(gt>img(ii)) ); % first ">" after "<img "
-    if extract( xml, i-1 ) == "/", continue, end % already closed
-    xml = extractBefore( xml, i ) + "/>" + extractAfter( xml, i ); % replace > with />
-end
+% Close self-closing to ensure valid XML
+xml = closetag( xml, "img " );
+xml = closetag( xml, "hr" );
+xml = closetag( xml, "br" );
 
 % Wrap in div
 parser = matlab.io.xml.dom.Parser();
@@ -54,3 +50,16 @@ doc = parser.parseString( "<div>" + xml + "</div>" );
 doc.XMLStandalone = true;
 
 end % md2xml
+
+function xml = closetag( xml, t )
+
+lt = sort( [strfind( xml, "<" + t + " " ), ...
+    strfind( xml, "<" + t + ">" )], "descend" ); % all *matching* tag opens
+gt = strfind( xml, ">" ); % *all* tag closes
+for ii = 1:numel( lt ) % backwards
+    i = min( gt(gt>lt(ii)) ); % first ">" after "<" + tag
+    if extract( xml, i-1 ) == "/", continue, end % already closed
+    xml = extractBefore( xml, i ) + "/>" + extractAfter( xml, i ); % replace > with />
+end
+
+end % closetag
