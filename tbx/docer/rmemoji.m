@@ -19,8 +19,11 @@ e = extract( s, p );
 s = erase( s, e );
 s = strtrim( s );
 
-% Remove Unicode 2130 to 1FFFF
-p = asManyOfPattern( characterListPattern( char( 8496:131071 ) ), 1 ) + ...
+% Remove Unicode U+2130 and above
+c = char( s );
+c(c>=hex2dec( "2130" )) = hex2dec( "2130" );
+s = string( c );
+p = asManyOfPattern( characterListPattern( char( 8496 ) ), 1 ) + ...
     optionalPattern( asManyOfPattern( whitespacePattern ) );
 e = extract( s, p );
 s = erase( s, e );
