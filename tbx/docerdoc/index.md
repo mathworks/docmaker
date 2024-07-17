@@ -53,7 +53,7 @@ docerrun tbx/docerdoc/**/*.m
 docerindex tbx/docerdoc
 ```
 
-### Build automation
+### Automate DevOps
 
 You should commit your source files (`.md`, `.m`), but not the Doc'er generated files (`.html`, `.xml`), to source control.  An example `.gitignore` snippet is:
 
@@ -69,13 +69,11 @@ tbx/docerdoc/helpsearch-v*
 
 You should package the generated files, and optionally the source files, for distribution.
 
-From R2022b, you may wish to automate the publishing steps using the [MATLAB Build Tool](https://uk.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html).
+From R2022b, you may wish to automate these steps using the [MATLAB Build Tool](https://uk.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html).
 
 ## Support
 
-Doc'er is not a MathWorks supported product, but is supported by its author and his colleagues on a *best efforts* basis.
-
-If you have problems, suggestions, or other comments, please contact the [author](https://uk.mathworks.com/matlabcentral/profile/authors/16247).  MathWorks staff can raise issues directly in [GitLab](https://insidelabs-git.mathworks.com/dsampson/docer).
+Doc'er is not a MathWorks supported product, but support is provided by the [author](https://uk.mathworks.com/matlabcentral/profile/authors/16247) and his colleagues on a *best efforts* basis, so please get in touch if you have problems, suggestions, or other comments.  MathWorks staff can raise issues directly in [GitLab](https://insidelabs-git.mathworks.com/dsampson/docer).
 
 ## See also
 
