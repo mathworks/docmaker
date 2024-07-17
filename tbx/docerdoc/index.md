@@ -27,7 +27,7 @@ Doc'er uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) 
 
 ### Write documentation
 
-Write documentation in Markdown using your favorite editor (e.g., [Visual Studio Code](https://code.visualstudio.com/)).  Your Markdown documents can include internal and external links and images.  Use Markdown links within your Markdown documents.  You can use the Doc'er documentation as inspiration for your own documentation.
+Write documentation in Markdown using your favorite editor (e.g., [Visual Studio Code](https://code.visualstudio.com/)).  Include elements such as links and images.  You can use the Doc'er documentation as inspiration for your own documentation.
 
 Write a table of contents called `helptoc.md`, also in Markdown.  This document should contain:
 * a level-1 heading with the name of the toolbox
@@ -49,7 +49,7 @@ If you need a list item to group child items, specify an empty link URL, e.g. `*
 
 Before you start, you may wish to delete previous Doc'er artifacts using [`docerdelete`](docerdelete.md).
 
-First, use [`docerconvert`](docerconvert.md) to convert your Markdown documents to HTML.  Next, use [`docerrun`](docerrun.md) to run your MATLAB scripts and capture output as images.  Next, use [`docerindex`](docerindex.md) to generate documentation index files.  Finally, use [builddocsearchdb](https://uk.mathworks.com/help/matlab/ref/builddocsearchdb.html) to build a searchable documentation database.  Here is a complete example:
+First, use [`docerconvert`](docerconvert.md) to convert your Markdown documents to HTML.  Next, use [`docerrun`](docerrun.md) to run your MATLAB scripts and capture output as images.  Next, use [`docerindex`](docerindex.md) to generate documentation index files.  Finally, use [`builddocsearchdb`](https://uk.mathworks.com/help/matlab/ref/builddocsearchdb.html) to build a searchable documentation database.  Here is a complete example:
 
 ```matlab
 docerconvert tbx/docerdoc/**/*.md
@@ -78,8 +78,8 @@ From R2022b, you may wish to automate these steps using the [MATLAB Build Tool](
 
 ## Support
 
-Doc'er is not a MathWorks supported product, but support is provided by the [author](https://uk.mathworks.com/matlabcentral/profile/authors/16247) and his colleagues on a *best efforts* basis, so please get in touch if you have problems, suggestions, or other comments.  MathWorks staff can raise issues directly in [GitLab](https://insidelabs-git.mathworks.com/dsampson/docer).
+Doc'er is not an official MathWorks product, but support is provided by the [author](https://uk.mathworks.com/matlabcentral/profile/authors/16247) and his colleagues on a *best efforts* basis.  Please get in touch by [email](mailto:dsampson@mathworks.com) if you have problems, suggestions, or other comments.  MathWorks staff can raise issues directly in [GitLab](https://insidelabs-git.mathworks.com/dsampson/docer).
 
-___
+## See also
 
 [home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://uk.mathworks.com/services/consulting.html) 2024

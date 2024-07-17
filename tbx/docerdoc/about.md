@@ -6,7 +6,7 @@ Doc'er is currently under development, with an initial release within MathWorks 
 
 ## Contributors
 
-Doc'er was developed by [David Sampson](https://uk.mathworks.com/matlabcentral/profile/authors/16247) at [MathWorks](https://uk.mathworks.com/services/consulting.html).
+Doc'er is developed by [David Sampson](https://uk.mathworks.com/matlabcentral/profile/authors/16247) at [MathWorks](https://uk.mathworks.com/services/consulting.html).
 
 Doc'er uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) at [github.com](https://docs.github.com/), and the [GitHub Markdown CSS](https://github.com/sindresorhus/github-markdown-css) by [Sindre Sorhus](https://github.com/sindresorhus).
 
@@ -20,7 +20,7 @@ Doc'er was developed to build documentation for [GUI Layout Toolbox](http://www.
 
 ## Doc'er (disambiguation)
 
-Doc'er is pronounced the same as, but not to be confused with, [Docker :whale:](https://docs.docker.com/).
+Doc'er is pronounced the same as, but should not to be confused with, [Docker](https://docs.docker.com/) :whale:.
 
 ## See also
 
