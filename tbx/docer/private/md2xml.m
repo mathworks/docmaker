@@ -52,6 +52,14 @@ doc.XMLStandalone = true;
 end % md2xml
 
 function xml = closetag( xml, t )
+%closetag  Close self-closing tag
+%
+%  x = closetag(x,t) closes the self-closing tags t in the xml string x.
+%
+%  Self-closing tags are HTML tags that cannot contain content, e.g. "img",
+%  "hr", "br".  Unclosed self-closing tags -- e.g., <br> rather than <br/>
+%  -- are valid HTML but invalid XML.  GitHub returns valid HTML that may
+%  be invalid XML, so closetag closes unclosed self-closing tags.
 
 lt = sort( [strfind( xml, "<" + t + " " ), ...
     strfind( xml, "<" + t + ">" )], "descend" ); % all *matching* tag opens
