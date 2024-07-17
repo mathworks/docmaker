@@ -5,9 +5,9 @@ function x = extensions( s )
 
 %  Copyright 2024 The MathWorks, Inc.
 
-x = strings( size( s ) ); % preallocate
+x = cell( size( s ) ); % preallocate
 for ii = 1:numel( s )
-    [~, ~, x(ii)] = fileparts( s(ii).name );
+    [~, ~, x{ii}] = fileparts( s(ii).name );
 end
 
 end % extensions

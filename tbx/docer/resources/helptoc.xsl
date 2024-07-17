@@ -6,15 +6,18 @@
             <xsl:apply-templates/>
         </toc>
     </xsl:template>
-    <xsl:template match="ul">
-        <xsl:for-each select="li">
-            <tocitem target="{a/@href}">
-                <xsl:apply-templates/>
-            </tocitem>
-        </xsl:for-each>
+    <xsl:template match="ul/li">
+        <tocitem target="{a/@href}">
+            <xsl:value-of select="a/text()"/>
+            <xsl:apply-templates/>
+        </tocitem>
     </xsl:template>
-    <!-- TODO match ol -->
-    <xsl:template match="h1"/>
-    <xsl:template match="p"/>
+    <xsl:template match="ol/li">
+        <tocitem target="{a/@href}">
+            <xsl:value-of select="a/text()"/>
+            <xsl:apply-templates/>
+        </tocitem>
+    </xsl:template>
+    <xsl:template match="text()"/>
     <xsl:strip-space elements="*" />
 </xsl:stylesheet>

@@ -1,7 +1,8 @@
-<productinfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="optional">
-   <matlabrelease>R2024a</matlabrelease>
-   <name>Doc'er</name>
-   <type>toolbox</type>
-   <icon>$toolbox/matlab/icons/bookicon.gif</icon>
-   <help_location>.</help_location>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<productinfo>
+  <matlabrelease>R2024a</matlabrelease>
+  <name>Doc'er</name>
+  <type>toolbox</type>
+  <icon>$toolbox/matlab/icons/bookicon.gif</icon>
+  <help_location>.</help_location>
 </productinfo>

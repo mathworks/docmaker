@@ -2,8 +2,7 @@ function linkrep( doc, old, new )
 %linkrep  Replace links in XML document
 %
 %  linkrep(x,o,n) replaces links with extension o in the XML document x
-%  with links with extension n.  "." is prepended to extensions that do not
-%  already start with ".".
+%  with links with extension n.
 %
 %  For example, replace Markdown links with HTML links using:
 %    linkrep(x,".md",".html")
@@ -15,9 +14,6 @@ arguments
     old (1,1) string
     new (1,1) string
 end
-
-if ~startsWith( old, "." ), old = "." + old; end
-if ~startsWith( new, "." ), new = "." + new; end
 
 aa = doc.getElementsByTagName( "a" );
 for ii = 1:aa.Length

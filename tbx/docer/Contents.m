@@ -5,6 +5,5 @@
 % docerrun     - run demo scripts and publish output figures to PNG
 % docerindex   - create toolbox documentation index files
 % docerdelete  - delete Doc'er artifacts
-% docer        - Doc'er gateway function
 
 %  Copyright 2020-2024 The MathWorks, Inc.
