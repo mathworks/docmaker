@@ -7,4 +7,4 @@
   * [docerindex](docerindex.md) - create documentation index files
   * [docerdelete](docerdelete.md) - delete Doc'er artifacts
   * [About](about.md) - about Doc'er
-  * [License](license.md)
+  * [Licenses](license.md) - software licenses
