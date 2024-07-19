@@ -1,0 +1,8 @@
+# List of untracked files to ignore
+**/*.html
+**/*.png
+helptoc.xml
+info.xml
+custom_toolbox.json
+resources
+helpsearch-v*

@@ -1,7 +1,4 @@
 # List of untracked files to ignore
-demo/**/*.html
-demo/**/*.png
-demo/resources
 tbx/docerdoc/**/*.html
 tbx/docerdoc/**/*.png
 tbx/docerdoc/helptoc.xml
