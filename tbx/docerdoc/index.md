@@ -7,11 +7,13 @@ With Doc'er, you can:
 * run MATLAB scripts and capture output as images for inclusion in documentation
 * create MATLAB documentation index files from a Markdown table of contents
 
+This is Doc'er version 0.1.  The [release notes](release-notes.md) detail new features, bug fixes, and compatibility considerations for each version.
+
 ## Getting started
 
 ### System requirements
 
-Doc'er requires [MATLAB](https://uk.mathworks.com/support/requirements/matlab-system-requirements.html) R2021a or later to *generate* documentation.  (Doc'er makes heavy use of the [MATLAB API for XML processing](https://uk.mathworks.com/help/matlab/xml-documents.html) that was introduced in R2021a.)
+Doc'er requires [MATLAB](https://uk.mathworks.com/support/requirements/matlab-system-requirements.html) R2021a or later to *generate* documentation.
 
 [`docerconvert`](docerconvert.md) and [`docerindex`](docerindex.md) require internet access to [api.github.com](https://docs.github.com/en/rest) to process your Markdown files and generate Doc'er artifacts.  See the [GitHub API terms of service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service#h-api-terms) and [privacy statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement) for further information.
 
@@ -27,27 +29,26 @@ Doc'er uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) 
 
 ### Write documentation
 
-Write documentation in Markdown using your favorite editor (e.g., [Visual Studio Code](https://code.visualstudio.com/)).  Include elements such as links and images.  You can use the Doc'er documentation as inspiration for your own documentation.
+Write documentation in Markdown using your favorite editor.  Include elements such as links and images.  You can use the Doc'er documentation as inspiration for your own documentation.
 
 Write a table of contents called `helptoc.md`, also in Markdown.  This document should contain:
-* a level-1 heading with the name of the toolbox
+* a level-1 heading `# Heading` with the name of the toolbox
 * a nested list of links to your Markdown documents
 
 For example:
 
 ```md
-# My Toolbox
+# Ducks Toolbox
 
-* [My Toolbox](index.md)
-  * [foo](foo.md)
-  * [bar](bar.md)
+* [Getting started](index.md)
+  * [Huey](huey.md)
+  * [Louie](louie.md)
+  * [Dewey](dewey.md)
 ```
 
 If you need a list item to group child items, specify an empty link URL, e.g. `* [Function reference]()`.  Other content in `helptoc.md` -- including additional links and normal text in list items -- is ignored by but harmless to [`docerindex`](docerindex.md).
 
 ### Publish documentation
-
-Before you start, you may wish to delete previous Doc'er artifacts using [`docerdelete`](docerdelete.md).
 
 First, use [`docerconvert`](docerconvert.md) to convert your Markdown documents to HTML.  Next, use [`docerrun`](docerrun.md) to run your MATLAB scripts and capture output as images.  Next, use [`docerindex`](docerindex.md) to generate documentation index files.  Finally, use [`builddocsearchdb`](https://uk.mathworks.com/help/matlab/ref/builddocsearchdb.html) to build a searchable documentation database.  Here is a complete example:
 
@@ -57,6 +58,8 @@ docerrun tbx/docerdoc/**/*.m
 docerindex tbx/docerdoc
 builddocsearchdb tbx/docerdoc
 ```
+
+Before you start, you may wish to delete previous Doc'er artifacts using [`docerdelete`](docerdelete.md).
 
 ### Automate DevOps
 
