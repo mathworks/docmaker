@@ -4,7 +4,7 @@ function docerindex( pRoot )
 %  docerindex(f) creates info.xml and helptoc.xml from helptoc.md in the
 %  folder f.
 %
-%  See also: docerconvert, docerrun, docerdelete
+%  See also: docerconvert, docerrun, docerdelete, builddocsearchdb
 
 %  Copyright 2020-2024 The MathWorks, Inc.
 
