@@ -1,12 +1,12 @@
 # docerrun :runner:
 
-Run scripts and capture output to image files
+Run scripts and save generated figures to image files
 
 ## Syntax
 
-`docerrun(s)` runs the MATLAB script(s) `s` and captures figure output to image files.
+`docerrun(s)` runs the MATLAB script(s) `s` and saves generated figures to image files.
 
-`docerrun(...,"Size",wh)` sets the size of the output figures to [width height] `wh`.
+`docerrun(...,"Size",wh)` sets the size of the figures to [width height] `wh`.
 
 `docerrun(...,"Resolution",r)` sets the resolution of the screenshots to `r` dpi.
 
@@ -15,13 +15,13 @@ Run scripts and capture output to image files
 | Input | Description | Type | Required |
 | :-: | --- | :-: | :-: |
 | `s` | MATLAB script(s), as an absolute or relative path; wildcards are [supported](https://uk.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
-| `wh` | Width and height of output figures, in pixels | 1x2 double | |
+| `wh` | Width and height of figures, in pixels | 1x2 double | |
 | `r` | Screenshot resolution, in dpi | double | |
 
 ## Examples
 
 ```matlab
-docerrun("mickey/pluto.md")
+docerrun("mickey/pluto.m")
 ```
 runs a single MATLAB script `mickey/pluto.m`.  The file extension `.m` is optional.  Note that this path is *relative*.
 
@@ -48,21 +48,26 @@ runs *multiple* MATLAB scripts.
 ```matlab
 docerrun("mickey/pluto.m","Size",[400 300])
 ```
-sets the output figure size to 400-by-300 pixels.
+sets the figure size to 400-by-300 pixels.
 
 ```matlab
-docerrun("mickey/pluto.md","Resolution",96)
+docerrun("mickey/pluto.m","Resolution",96)
 ```
 sets the screenshot resolution to 96 dpi.
 
 ## Description
 
-`docerrun` runs scripts that generate figures to be included in documentation.  Once generated, the figures are:
-1. resized to the specified size,
-2. captured to image files in PNG format at the specified resolution, and
-3. closed.
+## Steps
 
-The generated image files are named after the corresponding script and placed in the same folder.  For example, if a script `mydemo.m` generates two figures, then these will be captured to `mydemo1.png` and `mydemo2.png`.
+Each run consists of 4 steps:
+1. Run the MATLAB script
+2. Resize the generated figure(s) to the specified size
+3. Save the figure(s) to image file(s) at the specified resolution next to the original script
+4. Close the generated figure(s)
+
+## Image filenames
+
+The generated image files are named after the corresponding MATLAB script.  For example, if a script `mickey/pluto.m` generates two figures, then these will be saved to `mickey/pluto1.png` and `mickey/pluto2.png`.
 
 ## See also
 
