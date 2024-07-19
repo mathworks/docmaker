@@ -1,6 +1,6 @@
 # docerconvert :arrow_right:
 
-Convert Markdown files to HTML
+Convert Markdown documents to HTML
 
 ## Syntax
 

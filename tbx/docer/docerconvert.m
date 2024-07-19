@@ -1,19 +1,19 @@
 function docerconvert( sMd, options )
-%docerconvert  Convert Markdown files to HTML with stylesheets and scripts
+%docerconvert  Convert Markdown documents to HTML
 %
-%  docerconvert(md) converts the Markdown files md to HTML.  md can be a
-%  char or string including wildcards, a cellstr or string array, or a dir
-%  struct.
+%  docerconvert(md) converts the Markdown document(s) md to HTML.  md can
+%  be a char or string including wildcards, a cellstr or string array, or a
+%  dir struct.
 %
 %  docerconvert(...,"Stylesheets",css) includes the stylesheet(s) css.
 %  Stylesheets "github-markdown.css" and "matlaby.css" are always included.
 %
 %  docerconvert(...,"Scripts",js) includes the script(s) js.
 %
-%  docerconvert(...,"Root",f) publishes to the root folder f, placing
-%  resources in <f>/resources.  The root folder must be a common ancestor
-%  of the Markdown files.  If not specified, the root folder is the lowest
-%  common ancestor.
+%  docerconvert(...,"Root",r) publishes to the root folder r, placing
+%  stylesheets and scripts in the subfolder "resources".  The root folder
+%  must be a common ancestor of the Markdown documents.  If not specified,
+%  the root folder is the lowest common ancestor.
 %
 %  See also: docerindex, docerrun, docerdelete
 
