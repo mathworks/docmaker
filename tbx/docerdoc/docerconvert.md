@@ -4,48 +4,109 @@ Convert Markdown files to HTML
 
 ## Syntax
 
-`docerconvert(md)` converts the Markdown documents in the specification `md` to HTML.
+`docerconvert(md)` converts the Markdown documents `md` to HTML.
 
-`docerconvert(...,"Stylesheets",css)` includes the stylesheet(s) `css`.  Stylesheets `github-markdown.css` and `matlaby.css` are always included.
+`docerconvert(...,"Stylesheets",css)` includes the stylesheet(s) `css`.  Doc'er stylesheets `github-markdown.css` and `matlaby.css` are always included.
 
-`docerconvert(...,"Scripts",js)` includes the script(s) `js`.
+`docerconvert(...,"Scripts",js)` includes the script(s) `js`. :test_tube:
 
-`docerconvert(...,"Root",d)` publishes to the root folder `d`, placing stylesheets and scripts in the subfolder `resources`.  The root folder must be a common ancestor of the Markdown files.  If not specified, the root folder is the lowest common ancestor.
-
-## Description
+`docerconvert(...,"Root",r)` publishes to the root folder `r`, placing stylesheets and scripts in the subfolder `resources`.The root folder must be a common ancestor of the Markdown documents.  If not specified, the root folder is the lowest common ancestor.
 
 ## Inputs
 
 | Input | Description | Type | Required |
 | :-: | --- | :-: | :-: |
-| `md` | Markdown document(s), as filename(s) or [dirspec](https://uk.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | required |
-| `css` | CSS stylesheets, as filename(s) or [dirspec](https://uk.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | `Stylesheets` |
-| `js` | JavaScript scripts, as filename(s) or [dirspec](https://uk.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | `Scripts` |
-| `d` | Root folder; default is the superfolder of `md` | string | `Root` |
+| `md` | Markdown document(s), as an absolute or relative path; wildcards are [supported](https://uk.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
+| `css` | CSS stylesheet(s), as an absolute or relative path; wildcards are [supported](https://uk.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | |
+| `js` | JavaScript script(s), as an absolute or relative path; wildcards are [supported](https://uk.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | :test_tube: |
+| `d` | Root folder, as an absolute or relative path; default is the lowest common ancestor of `md` | string | |
 
 ## Examples
 
 ```matlab
-docerconvert("tbx/mydoc/foo.md")
+docerconvert("mickey/pluto.md")
 ```
-converts a single Markdown document `tbx/mydoc/foo.md` to HTML.  Note that this path is *relative*.
+converts a single Markdown document `mickey/pluto.md` to HTML.  Note that this path is *relative*.
 
 ```matlab
-docerconvert("C:\path\to\bar.md")
+docerconvert("C:\daisy\mickey\pluto.md")
 ```
 also converts a single Markdown document, this time specified using an *absolute* path.
 
 ```matlab
-docerconvert("tbx/mydoc/*.md")
+docerconvert("mickey/*.md")
 ```
-converts *all* Markdown documents in `tbx/mydoc` to HTML.
+converts *all* Markdown documents in `mickey` to HTML.
 
 ```matlab
-docerconvert("tbx/mydoc/**/*.md")
+docerconvert("mickey/**/*.md")
 ```
-converts all Markdown documents in `tbx/mydoc` *and its subfolders* to HTML.
+converts all Markdown documents in `mickey` *and its subfolders*.
 
+```matlab
+docerconvert(["mickey/pluto.md" "mickey/donald.md"])
+```
+converts *multiple* Markdown documents to HTML.
 
+```matlab
+docerconvert("mickey/pluto.md","Stylesheets","huey/louie.css")
+```
+copies the stylesheet `huey/louie.css` to the `resources` folder and includes a `<link>` in the HTML `<head>`.
+
+```matlab
+docerconvert("mickey/pluto.md","Scripts","morty/ferdie.js")
+```
+copies the script `morty/ferdie.js` to the `resources` folder and includes a `<script>` in the HTML `<head>`. :test_tube:
+
+```matlab
+docerconvert("mickey/pluto/*.md","Root","mickey")
+```
+sets the root folder to `mickey`, rather than the lowest common ancestor `mickey/pluto` of the Markdown documents.
+
+## More details
+
+### Steps
+
+The conversion consists of 7 steps:
+1. Read the Markdown file
+2. Convert Markdown to an HTML fragment using the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) service
+3. Tidy up the HTML fragment in preparation for XML postprocessing
+4. Replace `.md` links in the fragment to `.html` -- Markdown links to Markdown, HTML links to HTML
+5. Build an HTML document around the HTML fragment
+   * including default stylesheets, specified stylesheets, and specified scripts
+   * using the first level-1 heading `# Heading` as the `<html>` `<title>`
+6. Copy the specified stylesheets and scripts to the `resources` folder in the root folder
+7. Write the document to an HTML file next to the original Markdown file
+
+### Styling
+
+Doc'er seeks to provide pleasant style by default, but you can override the default styles by specifying your own stylesheets.
+
+For example, to make level-2 headings `## Heading` blue, create and specify a stylesheet with:
+```css
+h2 {
+  color: blue;
+}
+```
+
+Since cascading stylesheets [*cascade*](https://developer.mozilla.org/en-US/docs/Web/CSS/Cascade), later styles override earlier styles.
+
+### Postprocessing
+
+Generated HTML may be postprocessed in the browser using JavaScript.  To postprocess content, create and specify a JavaScript file with:
+```js
+document.addEventListener("DOMContentLoaded", function() {
+    // your code here
+})
+```
+
+The script is included using a `<script>` in the `<html>` `<head>` and so is loaded *before* the HTML `<body>` is loaded.  The `DOMContentLoaded` event is suggested because, as explained [here](https://developer.mozilla.org/en-US/docs/Web/API/Document/DOMContentLoaded_event):
+
+> The DOMContentLoaded event fires when the HTML document has been completely parsed, and all deferred scripts (<script defer src="..."> and <script type="module">) have downloaded and executed.  It doesn't wait for other things like images, subframes, and async scripts to finish loading.
+
+This feature depends on reverse-engineering the HTML generated by the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) service, although much of the behavior is obvious.
+
+This feature is experimental :test_tube: and may be removed in a future version.
 
 ## See also
 
