@@ -49,4 +49,13 @@ oHelp = matlab.io.xml.transform.ResultFile( fHelp ); % output
 transform( transformer, oToc, oXsl, oHelp ); % transform
 fprintf( 1, "[+] %s\n", fHelp ); % echo
 
+% Build search database
+search = ['builddocsearchdb(''', strrep( pRoot, '''', '''''' ), ''')']; % command
+evalc( search ); % build without echo
+fDatabase = dir( fullfile( pRoot, "helpsearch-v4*" ) ); % find database
+fDatabase = fDatabase([fDatabase.isdir]); % only folders
+fprintf( 1, "[+] %s\n", fullfile( fDatabase(1).folder, fDatabase(1).name ) ); % echo
+fDrool = fullfile( pRoot, "custom_toolbox.json" ); % drool
+if isfile( fDrool ), delete( fDrool ), end % clean up
+
 end % docerindex

@@ -1,10 +1,10 @@
 # docerindex :scroll:
 
-Create documentation index files `info.xml` and `helptoc.xml`
+Create documentation index files
 
 ## Syntax
 
-`docerindex(d)` creates documentation index files in the folder `d`.
+`docerindex(d)` creates documentation index files `info.xml` and `helptoc.xml` and search database `helpsearch_v4` in the folder `d`.
 
 ## Inputs
 
@@ -59,6 +59,7 @@ The indexing consists of 3 steps:
    * nested `<tocitem>`s for each list item `* [text](ref.md)`
    * `<tocitem>` attribute `target` set to the list item link reference, with `.md` links replaced by `.html` equivalents
    * `<tocitem>` content set to the list item link text
+4. Run [`builddocsearchdb`](https://uk.mathworks.com/help/matlab/ref/builddocsearchdb.html) in the specified folder to build the documentation search database.
 
 ## See also
 
