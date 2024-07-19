@@ -24,7 +24,7 @@ s.ToolboxImageFile = fullfile( d, s.ToolboxImageFile );
 n = extractBefore( mfilename(), "release" );
 v = feval( @(s)s(1).Version, ver( n ) ); %#ok<FVAL>
 s.ToolboxVersion = v;
-s.OutputFile = fullfile( d, "releases", "docer.mltbx" );
+s.OutputFile = fullfile( d, "releases", s.ToolboxName + " " + v + ".mltbx" );
 
 % Create options object
 f = s.ToolboxFolder; % mandatory
