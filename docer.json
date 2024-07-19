@@ -1,0 +1,13 @@
+{
+    "ToolboxName":"Doc'er",
+    "Identifier":"ae82d5d2-45be-4fc5-a01b-70d8bb905ca2",
+    "Summary":"Create MATLAB toolbox documentation from Markdown documents and MATLAB scripts",
+    "Description":"",
+    "AuthorCompany":"MathWorks",
+    "AuthorName":"David Sampson",
+    "AuthorEmail":"dsampson@mathworks.com",
+    "ToolboxFolder":"./tbx",
+    "ToolboxMatlabPath": ["./tbx/docer", "./tbx/docerdoc"],
+    "ToolboxImageFile":"./hippo.png",
+    "MinimumMatlabRelease":"R2021b"
+}
