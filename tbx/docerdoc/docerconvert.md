@@ -4,7 +4,7 @@ Convert Markdown files to HTML
 
 ## Syntax
 
-`docerconvert(md)` converts the Markdown documents `md` to HTML.
+`docerconvert(md)` converts the Markdown document(s) `md` to HTML.
 
 `docerconvert(...,"Stylesheets",css)` includes the stylesheet(s) `css`.  Doc'er stylesheets `github-markdown.css` and `matlaby.css` are always included.
 

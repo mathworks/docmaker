@@ -1,14 +1,22 @@
 # docerrun :runner:
 
-Run scripts and capture output as images
+Run scripts and capture output to image files
 
 ## Syntax
 
-`docerrun(s)` runs the MATLAB scripts `s` and captures figure output to image files in PNG format.
+`docerrun(s)` runs the MATLAB script(s) `s` and captures figure output to image files.
 
 `docerrun(...,"Size",wh)` sets the size of the output figures to [width height] `wh`.
 
 `docerrun(...,"Resolution",r)` sets the resolution of the screenshots to `r` dpi.
+
+## Inputs
+
+| Input | Description | Type | Required |
+| :-: | --- | :-: | :-: |
+| `s` | MATLAB script(s), as an absolute or relative path; wildcards are [supported](https://uk.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
+| `wh` | Width and height of output figures, in pixels | 1x2 double | |
+| `r` | Screenshot resolution, in dpi | double | |
 
 ## Description
 
@@ -18,14 +26,6 @@ Run scripts and capture output as images
 3. closed.
 
 The generated image files are named after the corresponding script and placed in the same folder.  For example, if a script `mydemo.m` generates two figures, then these will be captured to `mydemo1.png` and `mydemo2.png`.
-
-## Inputs
-
-| Input | Description | Type | Required |
-| :-: | --- | :-: | :-: |
-| `s` | MATLAB script, as filename(s) or [dirspec](https://uk.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string | required |
-| `wh` | Width and height of output figures, in pixels | 1x2 double | `Size` |
-| `r` | Screenshot resolution, in dpi | double | `Resolution` |
 
 ## See also
 
