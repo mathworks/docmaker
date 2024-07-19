@@ -3,7 +3,7 @@ function docerdelete( pRoot )
 %
 %  docerdelete(d) deletes the Doc'er artifacts in the folder d:
 %  * HTML documents corresponding to Markdown documents
-%  * images corresponding to MATLAB scripts
+%  * image files corresponding to MATLAB scripts
 %  * the resources subfolder, "resources"
 %  * the index files, "info.xml" and "helptoc.xml"
 %  * the search database subfolder, "helpsearch-v4"
