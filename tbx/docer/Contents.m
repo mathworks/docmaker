@@ -1,5 +1,5 @@
 % Doc'er
-% Version 0.2 (R2024a) 10-Jul-2024
+% Version 0.1 (R2024a) 19-Jul-2024
 %
 % docerconvert - convert Markdown files to HTML with stylesheets and scripts
 % docerrun     - run demo scripts and publish output figures to PNG
