@@ -9,3 +9,4 @@ tbx/docerdoc/info.xml
 tbx/docerdoc/custom_toolbox.json
 tbx/docerdoc/resources
 tbx/docerdoc/helpsearch-v*
+releases/*.mltbx
