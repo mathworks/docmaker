@@ -22,7 +22,7 @@ deletes artifacts in the folder `mickey/goofy`.  Note that this path is *relativ
 ```matlab
 docerconvert("C:\daisy\mickey\goofy")
 ```
-also deleted artifacts, this time specified using an *absolute* path.
+also deletes artifacts, this time specified using an *absolute* path.
 
 ## Details
 

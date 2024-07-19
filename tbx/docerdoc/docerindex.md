@@ -1,28 +1,64 @@
 # docerindex :scroll:
 
-Create documentation index files
+Create documentation index files `info.xml` and `helptoc.xml`
 
 ## Syntax
 
-`docerindex(d)` generates documentation index files in the folder `d`:
-* `info.xml`, from the level-1 heading in `helptoc.md`
-* `helptoc.xml`, from the list item links in `helptoc.md`
-
-The [documentation index file requirements](https://uk.mathworks.com/help/matlab/matlab_prog/display-custom-documentation.html) are described in detail in the MATLAB documentation.  With Doc'er, you can generate rather than hand-write these files.
+`docerindex(d)` creates documentation index files in the folder `d`.
 
 ## Inputs
 
-| Input | Type | Description |
-| --- | --- | --- |
-| `d` | string | Documentation folder |
+| Input | Description | Type | Required |
+| :-: | --- | :-: | :-: |
+| `d` | Documentation folder, as an absolute or relative path | string | yes |
 
 ## Examples
 
 ```matlab
-docerindex("tbx/mydoc")
+docerindex("mickey/goofy")
+```
+indexes documentation in the folder `mickey/goofy`.  Note that this path is *relative*.
+
+```matlab
+docerindex("C:\daisy\mickey\goofy")
+```
+also indexes documentation, this time specified using an *absolute* path.
+
+## Details
+
+### `info.xml` and `helptoc.xml`
+
+`info.xml` enables MATLAB to find and identify your HTML help files.  `helptoc.xml` contains the table of contents for your documentation that is displayed in the Contents sidebar of the Help browser.  The MATLAB documentation contains [further details](https://uk.mathworks.com/help/matlab/matlab_prog/display-custom-documentation.html), that you do not need to know about anymore once you are generating rather than hand-writing these files.
+
+### Table of contents requirements
+
+`helptoc.md` should contain:
+* a level-1 heading `# Heading` with the name of the toolbox
+* a nested list of links to your Markdown documents
+
+For example:
+
+```md
+# Ducks Toolbox
+
+* [Getting started](index.md)
+  * [Huey](huey.md)
+  * [Louie](louie.md)
+  * [Dewey](dewey.md)
 ```
 
-creates documentation index files in the folder `tbx/mydoc`.
+If you need a list item to group child items, specify an empty link URL, e.g. `* [Function reference]()`.  Other content in `helptoc.md` -- including additional links and normal text in list items -- is ignored.
+
+### Steps
+
+The indexing consists of 3 steps:
+1. Read `helptoc.md` in the specified folder
+2. Create `info.xml` in the specified folder with
+   * `<name>` content set to the first level-1 heading `# Heading`
+3. Create `helptoc.xml` in the specified folder with
+   * nested `<tocitem>`s for each list item `* [text](ref.md)`
+   * `<tocitem>` attribute `target` set to the list item link reference, with `.md` links replaced by `.html` equivalents
+   * `<tocitem>` content set to the list item link text
 
 ## See also
 
