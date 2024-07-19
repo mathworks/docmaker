@@ -1,10 +1,10 @@
 function docerindex( pRoot )
 %docerindex  Create info.xml and helptoc.xml from helptoc.md
 %
-%  docerindex(f) creates info.xml and helptoc.xml from helptoc.md in the
-%  folder f.
+%  docerindex(d) creates documentation index files "info.xml" and
+%  "helptoc.xml" and search database "helpsearch-v4" in the folder d.
 %
-%  See also: docerconvert, docerrun, docerdelete
+%  See also: docerconvert, docerrun, docerdelete, builddocsearchdb
 
 %  Copyright 2020-2024 The MathWorks, Inc.
 
@@ -48,5 +48,14 @@ fHelp = fullfile( pRoot, "helptoc.xml" );
 oHelp = matlab.io.xml.transform.ResultFile( fHelp ); % output
 transform( transformer, oToc, oXsl, oHelp ); % transform
 fprintf( 1, "[+] %s\n", fHelp ); % echo
+
+% Build search database
+search = ['builddocsearchdb(''', strrep( pRoot, '''', '''''' ), ''')']; % command
+evalc( search ); % build without echo
+fDatabase = dir( fullfile( pRoot, "helpsearch-v4*" ) ); % find database
+fDatabase = fDatabase([fDatabase.isdir]); % only folders
+fprintf( 1, "[+] %s\n", fullfile( fDatabase(1).folder, fDatabase(1).name ) ); % echo
+fDrool = fullfile( pRoot, "custom_toolbox.json" ); % drool
+if isfile( fDrool ), delete( fDrool ), end % clean up
 
 end % docerindex

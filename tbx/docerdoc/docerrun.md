@@ -1,6 +1,6 @@
 # docerrun :runner:
 
-Run scripts and save generated figures to image files
+Run MATLAB scripts and save generated figures to image files
 
 ## Syntax
 
