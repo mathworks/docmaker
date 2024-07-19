@@ -34,7 +34,7 @@ also indexes documentation, this time specified using an *absolute* path.
 
 `helptoc.md` should contain:
 * a level-1 heading `# Heading` with the name of the toolbox
-* a nested list of links to your Markdown documents
+* a nested list of links `* [text](ref.md)` to your Markdown documents
 
 For example:
 
@@ -51,7 +51,7 @@ If you need a list item to group child items, specify an empty link URL, e.g. `*
 
 ### Steps
 
-The indexing consists of 3 steps:
+The indexing consists of 4 steps:
 1. Read `helptoc.md` in the specified folder
 2. Create `info.xml` in the specified folder with
    * `<name>` content set to the first level-1 heading `# Heading`
