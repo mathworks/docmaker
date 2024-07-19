@@ -8,9 +8,6 @@ Doc'er is a tool for generating MATLAB toolbox documentation.  With Doc'er, you 
 ## Documentation
 [Browse](./tbx/docerdoc/index.md)
 
-## Support
-* [Add an issue](https://insidelabs-git.mathworks.com/dsampson/docer/-/issues)
-
 ## License
 [MathWorks Limited License](./LICENSE)
 
