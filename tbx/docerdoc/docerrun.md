@@ -18,6 +18,43 @@ Run scripts and capture output to image files
 | `wh` | Width and height of output figures, in pixels | 1x2 double | |
 | `r` | Screenshot resolution, in dpi | double | |
 
+## Examples
+
+```matlab
+docerrun("mickey/pluto.md")
+```
+runs a single MATLAB script `mickey/pluto.m`.  The file extension `.m` is optional.  Note that this path is *relative*.
+
+```matlab
+docerrun("C:\daisy\mickey\pluto.m")
+```
+also runs a single MATLAB script, this time specified using an *absolute* path.
+
+```matlab
+docerrun("mickey/*.m")
+```
+runs *all* MATLAB scripts in `mickey`.
+
+```matlab
+docerrun("mickey/**/*.m")
+```
+runs all MATLAB scripts in `mickey` *and its subfolders*.
+
+```matlab
+docerrun(["mickey/pluto.m" "mickey/donald.m"])
+```
+runs *multiple* MATLAB scripts.
+
+```matlab
+docerrun("mickey/pluto.m","Size",[400 300])
+```
+sets the output figure size to 400-by-300 pixels.
+
+```matlab
+docerrun("mickey/pluto.md","Resolution",96)
+```
+sets the screenshot resolution to 96 dpi.
+
 ## Description
 
 `docerrun` runs scripts that generate figures to be included in documentation.  Once generated, the figures are:
