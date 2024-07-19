@@ -6,28 +6,32 @@ Delete Doc'er artifacts
 
 `docerdelete(d)` deletes Doc'er artifacts in the folder `d`.
 
-## Description
-
-`docerdelete` deletes:
-* HTML files corresponding to Markdown files
-* PNG files corresponding MATLAB scripts
-* the resources subfolder, `resources`, containing stylesheets and scripts
-* index files `info.xml` and `helptoc.xml`
-* the search database subfolder, `helpsearch-v4`
-
 ## Inputs
 
 | Input | Description | Type | Required |
 | :-: | --- | :-: | :-: |
-| `d` | Documentation folder | string | required |
+| `d` | Documentation folder, as an absolute or relative path | string | yes |
 
 ## Examples
 
 ```matlab
-docerdelete("tbx/mydoc")
+docerdelete("mickey/goofy")
 ```
+deletes artifacts in the folder `mickey/goofy`.  Note that this path is *relative*.
 
-deletes Doc'er artifacts in the folder `tbx/mydoc`.
+```matlab
+docerconvert("C:\daisy\mickey\goofy")
+```
+also deleted artifacts, this time specified using an *absolute* path.
+
+## Details
+
+The deletion consists of 5 steps:
+1. Delete HTML files corresponding to Markdown files
+2. Delete PNG files corresponding MATLAB scripts
+3. Delete the resources subfolder, `resources`, containing stylesheets and scripts
+4. Delete the index files `info.xml` and `helptoc.xml`
+5. Delete the search database subfolder, `helpsearch-v4`
 
 ## See also
 

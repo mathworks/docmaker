@@ -59,11 +59,11 @@ docerconvert("mickey/pluto.md","Scripts","morty/ferdie.js")
 copies the script `morty/ferdie.js` to the `resources` folder and includes a `<script>` in the HTML `<head>`. :test_tube:
 
 ```matlab
-docerconvert("mickey/pluto/*.md","Root","mickey")
+docerconvert("mickey/goofy/*.md","Root","mickey")
 ```
-sets the root folder to `mickey`, rather than the lowest common ancestor `mickey/pluto` of the Markdown documents.
+sets the root folder to `mickey`, rather than the lowest common ancestor `mickey/goofy` of the Markdown documents.
 
-## More details
+## Details
 
 ### Steps
 
