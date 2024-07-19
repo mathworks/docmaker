@@ -1,9 +1,5 @@
 # About Doc'er :hippopotamus:
 
-## Release notes
-
-Doc'er is currently under development, with an initial release within MathWorks planned for Q3 2024.
-
 ## Contributors
 
 Doc'er is developed by [David Sampson](https://uk.mathworks.com/matlabcentral/profile/authors/16247) at [MathWorks](https://uk.mathworks.com/services/consulting.html).
@@ -11,6 +7,17 @@ Doc'er is developed by [David Sampson](https://uk.mathworks.com/matlabcentral/pr
 Doc'er uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) at [github.com](https://docs.github.com/), and the [GitHub Markdown CSS](https://github.com/sindresorhus/github-markdown-css) by [Sindre Sorhus](https://github.com/sindresorhus).
 
 The author thanks [Ken Deeley](https://uk.mathworks.com/matlabcentral/profile/authors/2987674) from MathWorks for his encouragement during the development of Doc'er.
+
+## Release notes
+
+Doc'er is currently under development, with an initial release within MathWorks planned for Q3 2024.
+
+### Version numbering
+
+* Major version changes, e.g. `1.x` to `2.x`, denote incompatible API changes.
+* Minor version changes, e.g. `1.2.x` to `1.3.x`, denote backward compatible additions and/or *material* output changes.
+* Patch version changes, e.g. `1.4.1` to `1.4.2`, denote backward compatible bug fixes -- no API changes, no *material* output changes.
+* Major version zero `0.x` denotes initial development.  *Anything* may change at any time.
 
 ## History
 
