@@ -107,40 +107,6 @@
                             "kind": "namevalue",
                             "purpose": "screenshot resolution"
                         }
-                    ],
-                    [
-                        {
-                            "name": "cmd",
-                            "kind": "required",
-                            "type": [
-                                "char",
-                                "choices='index'"
-                            ],
-                            "purpose": "Doc'er command"
-                        },
-                        {
-                            "name": "d",
-                            "kind": "required",
-                            "type": "folder",
-                            "purpose": "folder"
-                        }
-                    ],
-                    [
-                        {
-                            "name": "cmd",
-                            "kind": "required",
-                            "type": [
-                                "char",
-                                "choices='delete'"
-                            ],
-                            "purpose": "Doc'er command"
-                        },
-                        {
-                            "name": "d",
-                            "kind": "required",
-                            "type": "folder",
-                            "purpose": "folder"
-                        }
                     ]
                 ]
             }
