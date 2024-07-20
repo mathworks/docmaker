@@ -1,0 +1,93 @@
+{
+    "_schemaVersion": "1.0.0",
+    "docerconvert": {
+        "inputs": [
+            {
+                "mutuallyExclusiveGroup": [
+                    {
+                        "name": "md",
+                        "kind": "required",
+                        "type": "file=*.md",
+                        "purpose": "Markdown document",
+                        "repeating": true
+                    },
+                    {
+                        "name": "md",
+                        "kind": "required",
+                        "type": [
+                            "char",
+                            "choices={'*.md','**/*.md'}"
+                        ],
+                        "purpose": "Markdown document common wildcard",
+                        "repeating": false
+                    },
+                    {
+                        "name": "md",
+                        "kind": "required",
+                        "purpose": "Markdown document other wildcard",
+                        "repeating": false
+                    }
+                ]
+            },
+            {
+                "name": "Stylesheets",
+                "kind": "namevalue",
+                "type": "file=*.css",
+                "purpose": "CSS stylesheet"
+            },
+            {
+                "name": "Scripts",
+                "kind": "namevalue",
+                "type": "file=*.css",
+                "purpose": "JavaScript script"
+            },
+            {
+                "name": "Root",
+                "kind": "namevalue",
+                "type": "folder",
+                "purpose": "root folder"
+            }
+        ]
+    },
+    "docerrun": {
+        "inputs": [
+            {
+                "mutuallyExclusiveGroup": [
+                    {
+                        "name": "s",
+                        "kind": "required",
+                        "type": "file=*.m",
+                        "purpose": "MATLAB script",
+                        "repeating": true
+                    },
+                    {
+                        "name": "s",
+                        "kind": "required",
+                        "type": [
+                            "char",
+                            "choices={'*.m','**/*.m'}"
+                        ],
+                        "purpose": "MATLAB script common wildcard",
+                        "repeating": false
+                    },
+                    {
+                        "name": "s",
+                        "kind": "required",
+                        "purpose": "MATLAB script other wildcard",
+                        "repeating": false
+                    }
+                ]
+            },
+            {
+                "name": "Size",
+                "kind": "namevalue",
+                "purpose": "figure size"
+            },
+            {
+                "name": "Resolution",
+                "kind": "namevalue",
+                "purpose": "screenshot resolution"
+            }
+        ]
+    }
+}
