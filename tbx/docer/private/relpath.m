@@ -1,11 +1,11 @@
 function r = relpath( d, f )
 %relpath  Relative path from folder to file
 %
-%  r = relpath(d,f) returns the relative path r from the folder d to the
-%  file f.  The folder and file must exist, and can be specified as
-%  absolute or relative (with respect to the current folder) paths.
+%   r = relpath(d,f) returns the relative path r from the folder d to the
+%   file f.  The folder and file must exist, and can be specified as
+%   absolute or relative (with respect to the current folder) paths.
 
-%  Copyright 2020-2024 The MathWorks, Inc.
+%   Copyright 2020-2024 The MathWorks, Inc.
 
 % Canonicalize
 assert( isfolder( d ), "docer:NotFound", "Folder ""%s"" not found.", d )

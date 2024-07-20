@@ -1,15 +1,15 @@
 function doc = md2xml( md )
 %md2xml  Convert Markdown to XML
 %
-%  x = md2xml(md) converts the Markdown md to the XML document x using the
-%  GitHub API at: https://docs.github.com/en/rest/markdown
+%   x = md2xml(md) converts the Markdown md to the XML document x using the
+%   GitHub API at: https://docs.github.com/en/rest/markdown
 %
-%  Authenticated requests get a higher API rate limit.  To authenticate,
-%  set the secret or preference using:
-%  * setSecret("GitHub API token"), or
-%  * setpref("docer","token",t)
+%   Authenticated requests get a higher API rate limit.  To authenticate,
+%   set the secret or preference using:
+%   * setSecret("GitHub API token"), or
+%   * setpref("docer","token",t)
 
-%  Copyright 2024 The MathWorks, Inc.
+%   Copyright 2024 The MathWorks, Inc.
 
 arguments
     md (1,1) string

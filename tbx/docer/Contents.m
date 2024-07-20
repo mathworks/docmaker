@@ -6,4 +6,4 @@
 % docerindex   - create documentation index files
 % docerdelete  - delete Doc'er artifacts
 
-%  Copyright 2020-2024 The MathWorks, Inc.
+%   Copyright 2020-2024 The MathWorks, Inc.

@@ -1,13 +1,13 @@
 function linkrep( doc, old, new )
 %linkrep  Replace links in XML document
 %
-%  linkrep(x,o,n) replaces links with extension o in the XML document x
-%  with links with extension n.
+%   linkrep(x,o,n) replaces links with extension o in the XML document x
+%   with links with extension n.
 %
-%  For example, replace Markdown links with HTML links using:
-%    linkrep(x,".md",".html")
+%   For example, replace Markdown links with HTML links using:
+%      linkrep(x,".md",".html")
 
-%  Copyright 2024 The MathWorks, Inc.
+%   Copyright 2024 The MathWorks, Inc.
 
 arguments
     doc (1,1) matlab.io.xml.dom.Document
