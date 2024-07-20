@@ -14,14 +14,17 @@ function docerrun( m, options )
 
 %   Copyright 2020-2024 The MathWorks, Inc.
 
-arguments
+arguments ( Repeating )
     m % convertible to dirstruct
+end
+
+arguments
     options.Size (1,2) double {mustBePositive} = [400 300]
     options.Resolution (1,1) double {mustBeNonnegative} = 144
 end
 
 % Check inputs
-m = dirstruct( m );
+m = dirstruct( m{:} );
 assert( all( extensions( m ) == ".m" ), "docer:InvalidArgument", ...
     "MATLAB scripts must all have extension .m." )
 

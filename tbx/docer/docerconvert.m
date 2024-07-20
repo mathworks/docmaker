@@ -20,15 +20,18 @@ function docerconvert( sMd, options )
 
 %   Copyright 2020-2024 The MathWorks, Inc.
 
-arguments
+arguments ( Repeating )
     sMd
+end
+
+arguments
     options.Stylesheets (1,:) string {mustBeFile}
     options.Scripts (1,:) string {mustBeFile}
     options.Root (1,1) string {mustBeFolder}
 end
 
 % Check documents
-sMd = dirstruct( sMd );
+sMd = dirstruct( sMd{:} );
 assert( all( extensions( sMd ) == ".md" ), ...
     "docer:InvalidArgument", ...
     "Markdown files must all have extension .md." )
