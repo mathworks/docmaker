@@ -28,7 +28,7 @@ also indexes documentation, this time specified using an *absolute* path.
 
 ### `info.xml` and `helptoc.xml`
 
-`info.xml` enables MATLAB to find and identify your HTML help files.  `helptoc.xml` contains the table of contents for your documentation that is displayed in the Contents sidebar of the Help browser.  The MATLAB documentation contains [further details](https://uk.mathworks.com/help/matlab/matlab_prog/display-custom-documentation.html), that you do not need to know about anymore once you are generating rather than hand-writing these files.
+`info.xml` enables MATLAB to find and identify your HTML help files.  `helptoc.xml` contains the table of contents for your documentation that is displayed in the Contents sidebar of the Help browser.  The MATLAB documentation contains [further details](https://www.mathworks.com/help/matlab/matlab_prog/display-custom-documentation.html), that you do not need to know about anymore once you are generating rather than hand-writing these files.
 
 ### Table of contents requirements
 
@@ -59,8 +59,8 @@ The indexing consists of 4 steps:
    * nested `<tocitem>`s for each list item `* [text](ref.md)`
    * `<tocitem>` attribute `target` set to the list item link reference, with `.md` links replaced by `.html` equivalents
    * `<tocitem>` content set to the list item link text
-4. Run [`builddocsearchdb`](https://uk.mathworks.com/help/matlab/ref/builddocsearchdb.html) in the specified folder to build the documentation search database.
+4. Run [`builddocsearchdb`](https://www.mathworks.com/help/matlab/ref/builddocsearchdb.html) in the specified folder to build the documentation search database.
 
 ## See also
 
-[home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://uk.mathworks.com/services/consulting.html) 2024
+[home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024

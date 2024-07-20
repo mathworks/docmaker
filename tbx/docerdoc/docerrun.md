@@ -14,7 +14,7 @@ Run MATLAB scripts and save generated figures to image files
 
 | Input | Description | Type | Required |
 | :-: | --- | :-: | :-: |
-| `s` | MATLAB script(s), as an absolute or relative path; wildcards are [supported](https://uk.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
+| `s` | MATLAB script(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
 | `wh` | Width and height of figures, in pixels | 1x2 double | |
 | `r` | Screenshot resolution, in dpi | double | |
 
@@ -71,4 +71,4 @@ The generated image files are named after the corresponding MATLAB script.  For 
 
 ## See also
 
-[home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://uk.mathworks.com/services/consulting.html) 2024
+[home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024

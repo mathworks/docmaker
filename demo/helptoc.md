@@ -7,4 +7,4 @@
   3. [E](e.md)
 * [F](f.md)
 
-This table of contents is used to generate [`info.xml` and `helptoc.xml`](https://uk.mathworks.com/help/matlab/matlab_prog/display-custom-documentation.html).
+This table of contents is used to generate [`info.xml` and `helptoc.xml`](https://www.mathworks.com/help/matlab/matlab_prog/display-custom-documentation.html).

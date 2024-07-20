@@ -26,18 +26,18 @@ Row heights and column widths can be fixed or variable, with minima.  Variable-s
 
 | Property | Value | Description |
 | --- | --- | --- |
-| `BackgroundColor` | [color](https://uk.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) | Background color |
+| `BackgroundColor` | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) | Background color |
 | `Contents` | graphics vector | Children, in layout order (top-to-bottom, then left-to-right), regardless of `HandleVisibility` |
 | `Heights` | double vector | Row heights; positive entries denote fixed sizes in pixels; negative entries denote weights for variable sizing |
 | `Padding` | positive integer | Space around contents, in pixels |
-| `Parent` | figure, panel, [etc.](https://uk.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) | Parent figure or container |
+| `Parent` | figure, panel, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#mw_e4809363-1f35-4bc7-89f8-36ed9cccb017) | Parent figure or container |
 | `Position` | `[left bottom width height]` | Position within parent figure or container, in `Units` |
 | `Spacing` | positive integer | Space between rows and columns, in pixels |
-| `Units` | `normalized`, `pixels`, [etc.](https://uk.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) | Position units; default is `normalized` |
+| `Units` | `normalized`, `pixels`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html#bub8wap-1_sep_shared-Position) | Position units; default is `normalized` |
 | `Visible` | `on` or `off` | Visibility; default is `on` |
 | `Widths` | double vector | Column widths; positive entries denote fixed sizes in pixels; negative entries denote weights for variable sizing |
 
-plus other [container properties](https://uk.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
+plus other [container properties](https://www.mathworks.com/help/matlab/ref/matlab.ui.container.panel-properties.html):
 * Interactivity: `ContextMenu`
 * Callbacks: `SizeChangedFcn`, `ButtonDownFcn`, `CreateFcn`, `DeleteFcn`
 * Callback execution control: `Interruptible`, `BusyAction`, `BeingDeleted`, `HitTest`
@@ -51,10 +51,10 @@ plus other [container properties](https://uk.mathworks.com/help/matlab/ref/matla
 | `FontAngle` | `normal` or `italic` | Tab title font angle | `normal`, as per `uitab`, from version 2.4 |
 | `FontName` | string | Tab title font name | `MS Sans Serif`, as per `uitab`, from version 2.4 |
 | `FontSize` | positive integer | Tab title font size, in `FontUnits` | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
-| `FontUnits` | `points`, `pixels`, [etc.](https://uk.mathworks.com/help/matlab/ref/matlab.ui.control.uicontrol-properties.html#bt6ck7c-1_sep_shared-FontUnits) | Tab title font units | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
+| `FontUnits` | `points`, `pixels`, [etc.](https://www.mathworks.com/help/matlab/ref/matlab.ui.control.uicontrol-properties.html#bt6ck7c-1_sep_shared-FontUnits) | Tab title font units | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
 | `FontWeight` | `normal` or `bold` | Tab title font weight | Not supportable in a `uitab`-backed implementation; removed in version 2.4 |
-| `HighlightColor` | [color](https://uk.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) | Border highlight color | Was one entry per child; now one entry for all |
-| `ShadowColor` | [color](https://uk.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) | Border shadow color | Was one entry per child; now one entry for all |
+| `HighlightColor` | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) | Border highlight color | Was one entry per child; now one entry for all |
+| `ShadowColor` | [color](https://www.mathworks.com/help/matlab/creating_plots/specify-plot-colors.html) | Border shadow color | Was one entry per child; now one entry for all |
 | `TabWidth` | double | Tab width, in pixels | Was one entry per child; now one entry for all |
 
 ## Examples
