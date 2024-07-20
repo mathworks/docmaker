@@ -36,6 +36,46 @@ end % docTask
 function packageTask( ~ )
 %packageTask  Package toolbox
 
-docerrelease()
+% Define name
+n = "docer";
+
+% Check environment
+d = fileparts( mfilename( "fullpath" ) );
+p = matlab.project.currentProject();
+if isempty( p ) || p.RootFolder ~= d
+    error( "Run the release script from within its project at %s.", d )
+end
+
+% Load and tweak metadata
+s = jsondecode( fileread( fullfile( d, n + ".json" ) ) );
+s.ToolboxMatlabPath = fullfile( d, s.ToolboxMatlabPath );
+s.ToolboxFolder = fullfile( d, s.ToolboxFolder );
+s.ToolboxImageFile = fullfile( d, s.ToolboxImageFile );
+v = feval( @(s)s(1).Version, ver( n ) ); %#ok<FVAL>
+s.ToolboxVersion = v;
+s.OutputFile = fullfile( d, "releases", s.ToolboxName + " " + v + ".mltbx" );
+
+% Create options object
+f = s.ToolboxFolder; % mandatory
+id = s.Identifier; % mandatory
+s = rmfield( s, ["Identifier", "ToolboxFolder"] ); % mandatory
+pv = [fieldnames( s ), struct2cell( s )]'; % optional
+o = matlab.addons.toolbox.ToolboxOptions( f, id, pv{:} );
+o.ToolboxVersion = string( o.ToolboxVersion ); % g3079185
+
+% Package   
+fprintf( 1, "Packaging ""%s"" version %s to ""%s""... ", ...
+    o.ToolboxName, o.ToolboxVersion, o.OutputFile );
+try
+    matlab.addons.toolbox.packageToolbox( o )
+    fprintf( 1, "OK.\n" )
+catch e
+    fprintf( 1, "failed.\n" )
+    rethrow( e )
+end
+
+% Add license
+lic = fileread( fullfile( d, "LICENSE" ) );
+mlAddonSetLicense( char( o.OutputFile ), struct( "type", 'MLL', "text", lic ) );
 
 end % packageTask
