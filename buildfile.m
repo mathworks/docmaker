@@ -1,7 +1,7 @@
 function plan = buildfile()
 %buildfile  Doc'er buildfile
 
-%  Copyright 2023-2024 The MathWorks, Inc.
+%   Copyright 2023-2024 The MathWorks, Inc.
 
 import matlab.buildtool.tasks.CodeIssuesTask
 import matlab.buildtool.tasks.TestTask
@@ -63,16 +63,9 @@ pv = [fieldnames( s ), struct2cell( s )]'; % optional
 o = matlab.addons.toolbox.ToolboxOptions( f, id, pv{:} );
 o.ToolboxVersion = string( o.ToolboxVersion ); % g3079185
 
-% Package   
-fprintf( 1, "Packaging ""%s"" version %s to ""%s""... ", ...
-    o.ToolboxName, o.ToolboxVersion, o.OutputFile );
-try
-    matlab.addons.toolbox.packageToolbox( o )
-    fprintf( 1, "OK.\n" )
-catch e
-    fprintf( 1, "failed.\n" )
-    rethrow( e )
-end
+% Package
+matlab.addons.toolbox.packageToolbox( o )
+fprintf( 1, "[+] %s\n", o.OutputFile );
 
 % Add license
 lic = fileread( fullfile( d, "LICENSE" ) );
