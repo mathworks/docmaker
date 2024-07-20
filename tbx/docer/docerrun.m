@@ -1,18 +1,18 @@
 function docerrun( m, options )
 %docerrun  Run MATLAB scripts and save generated figures to image files
 %
-%  docerrun(s) runs the MATLAB script(s) s and saves generated figures to
-%  image files.
+%   docerrun(s) runs the MATLAB script(s) s and saves generated figures to
+%   image files.
 %
-%  docerrun(...,"Size",wh) sets the size of the figures to [width height]
-%  wh.
+%   docerrun(...,"Size",wh) sets the size of the figures to [width height]
+%   wh.
 %
-%  docerrun(...,"Resolution",r) sets the resolution of the screenshots to r
-%  dpi.
+%   docerrun(...,"Resolution",r) sets the resolution of the screenshots to
+%   r dpi.
 %
-%  See also: docerconvert, docerindex, docerdelete
+%   See also: docerconvert, docerindex, docerdelete
 
-%  Copyright 2020-2024 The MathWorks, Inc.
+%   Copyright 2020-2024 The MathWorks, Inc.
 
 arguments
     m % convertible to dirstruct

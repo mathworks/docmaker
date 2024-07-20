@@ -1,12 +1,12 @@
 function docerindex( pRoot )
 %docerindex  Create info.xml and helptoc.xml from helptoc.md
 %
-%  docerindex(d) creates documentation index files "info.xml" and
-%  "helptoc.xml" and search database "helpsearch-v4" in the folder d.
+%   docerindex(d) creates documentation index files "info.xml" and
+%   "helptoc.xml" and search database "helpsearch-v4" in the folder d.
 %
-%  See also: docerconvert, docerrun, docerdelete, builddocsearchdb
+%   See also: docerconvert, docerrun, docerdelete, builddocsearchdb
 
-%  Copyright 2020-2024 The MathWorks, Inc.
+%   Copyright 2020-2024 The MathWorks, Inc.
 
 arguments
     pRoot (1,1) string {mustBeFolder}
