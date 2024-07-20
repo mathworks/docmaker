@@ -28,7 +28,7 @@ also deletes artifacts, this time specified using an *absolute* path.
 
 The deletion consists of 5 steps:
 1. Delete HTML documents corresponding to Markdown documents
-2. Delete image files corresponding MATLAB scripts
+2. Delete image files corresponding to MATLAB scripts
 3. Delete the resources subfolder, `resources`, containing stylesheets and scripts
 4. Delete the index files `info.xml` and `helptoc.xml`
 5. Delete the search database subfolder, `helpsearch-v4`
