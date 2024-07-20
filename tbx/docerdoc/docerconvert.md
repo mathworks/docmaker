@@ -6,7 +6,7 @@ Convert Markdown documents to HTML
 
 `docerconvert(md)` converts the Markdown document(s) `md` to HTML.
 
-`docerconvert(...,"Stylesheets",css)` includes the stylesheet(s) `css`.  Doc'er stylesheets `github-markdown.css` and `matlaby.css` are always included.
+`docerconvert(...,"Stylesheets",css)` includes the stylesheet(s) `css`.  Doc_er stylesheets `github-markdown.css` and `matlaby.css` are always included.
 
 `docerconvert(...,"Scripts",js)` includes the script(s) `js`. :test_tube:
 
@@ -80,7 +80,7 @@ The conversion consists of 7 steps:
 
 ### Styling
 
-Doc'er seeks to provide pleasant style by default, but you can override the default styles by specifying your own stylesheets.
+Doc_er seeks to provide pleasant style by default, but you can override the default styles by specifying your own stylesheets.
 
 For example, to make level-2 headings `## Heading` blue, create and specify a stylesheet with:
 ```css

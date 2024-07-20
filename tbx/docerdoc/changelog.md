@@ -1,6 +1,6 @@
 # Release notes
 
-Doc'er is currently under development, with an initial release within MathWorks planned for Q3 2024.
+Doc_er is currently under development, with an initial release within MathWorks planned for Q3 2024.
 
 ## Version numbering
 
