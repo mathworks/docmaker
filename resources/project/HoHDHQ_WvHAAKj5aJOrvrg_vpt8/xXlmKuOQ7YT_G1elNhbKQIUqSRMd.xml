@@ -1,2 +1,2 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<Info description="Write Markdown.  Ship doc."/>
+<?xml version="1.0" ?>
+<Info description="Create MATLAB toolbox documentation from Markdown documents and MATLAB scripts"></Info>

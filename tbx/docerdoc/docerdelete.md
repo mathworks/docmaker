@@ -1,10 +1,10 @@
 # docerdelete :recycle:
 
-Delete Doc'er artifacts
+Delete Doc_er artifacts
 
 ## Syntax
 
-`docerdelete(d)` deletes Doc'er artifacts in the folder `d`.
+`docerdelete(d)` deletes Doc_er artifacts in the folder `d`.
 
 ## Inputs
 
