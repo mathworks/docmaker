@@ -1,7 +1,8 @@
 # Doc'er
 
 * [Doc'er](index.md)
-  * [Function reference](functions.md)
+  * [Release notes](changelog.md)
+  * [Function reference](api.md)
     * [docerconvert](docerconvert.md)
     * [docerrun](docerrun.md)
     * [docerindex](docerindex.md)
