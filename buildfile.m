@@ -1,5 +1,5 @@
 function plan = buildfile()
-%buildfile  Doc'er buildfile
+%buildfile  Doc_er buildfile
 
 %   Copyright 2023-2024 The MathWorks, Inc.
 
