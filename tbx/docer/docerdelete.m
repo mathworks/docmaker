@@ -1,7 +1,7 @@
 function docerdelete( pRoot )
-%docerdelete  Delete Doc'er artifacts
+%docerdelete  Delete Doc_er artifacts
 %
-%   docerdelete(d) deletes the Doc'er artifacts in the folder d:
+%   docerdelete(d) deletes the Doc_er artifacts in the folder d:
 %   * HTML documents corresponding to Markdown documents
 %   * image files corresponding to MATLAB scripts
 %   * the resources subfolder, "resources"
