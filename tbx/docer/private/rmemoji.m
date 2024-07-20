@@ -1,12 +1,13 @@
 function s = rmemoji( s )
 %rmemoji Remove emojis from string
 %
-%  s = rmemoji(s) removes emojis from the string s.
+%   s = rmemoji(s) removes emojis from the string s.
+%
+%   Emojis are strings that begin and end with ":" with letters, numbers
+%   and underscores in between, and Unicode characters from U+2130 to
+%   U+1FFFF.
 
-%  Emojis are strings that begin and end with ":" with letters, numbers and
-%  underscores in between, and Unicode characters from U+2130 to U+1FFFF.
-
-%  Copyright 2024 The MathWorks, Inc.
+%   Copyright 2024 The MathWorks, Inc.
 
 arguments
     s (1,1) string

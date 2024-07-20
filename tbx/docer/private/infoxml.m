@@ -1,7 +1,9 @@
 function doc = infoxml( name )
 %infoxml  Create info.xml document
 %
-%  x = infoxml(n) creates an info.xml document x with name n.
+%   x = infoxml(n) creates an info.xml document x with name n.
+
+%   Copyright 2024 The MathWorks, Inc.
 
 arguments
     name (1,1) string
