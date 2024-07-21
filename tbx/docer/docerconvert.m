@@ -55,7 +55,7 @@ pRez = fullfile( pRoot, 'resources' );
 if ~isfolder( pRez ), mkdir( pRez ), end
 
 % Check and copy stylesheets
-sCss = dirstruct( fullfile( pTem, ["github-markdown-light.css" "matlaby.css"] ) );
+sCss = dirstruct( fullfile( pTem, ["github-markdown.css" "matlaby.css"] ) );
 if isfield( options, "Stylesheets" )
     sCss = dirstruct( sCss, options.Stylesheets );
     assert( all( extensions( sCss ) == ".css" ), ...
