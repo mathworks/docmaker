@@ -130,7 +130,8 @@ appendChild( root, head );
 meta = createElement( doc, "meta" );
 appendChild( head, meta );
 v = ver( "docer" );
-meta.setAttribute( "generator", "MATLAB " + matlabRelease().Release + ...
+meta.setAttribute( "name", "generator" );
+meta.setAttribute( "content", "MATLAB " + matlabRelease().Release + ...
     " with " + v(1).Name + " " + v(1).Version );
 
 % Add title
