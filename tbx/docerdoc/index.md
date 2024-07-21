@@ -7,7 +7,7 @@ With Doc_er, you can:
 * run MATLAB scripts and capture output as images for inclusion in documentation
 * create MATLAB documentation index files from a Markdown table of contents
 
-This is Doc_er version 0.1.  The [release notes](release-notes.md) detail new features, bug fixes, and compatibility considerations for each version.
+This is Doc_er version 0.1.  The [release notes](changelog.md) detail new features, bug fixes, and compatibility considerations for each version.
 
 ## Getting started
 
@@ -50,7 +50,7 @@ If you need a list item to group child items, specify an empty link URL, e.g. `*
 
 ### Publish documentation
 
-First, use [`docerconvert`](docerconvert.md) to convert your Markdown documents to HTML.  Next, use [`docerrun`](docerrun.md) to run your MATLAB scripts and capture output as images.  Finally, use [`docerindex`](docerindex.md) to generate documentation index files.  Here is a complete example:
+First, use [`docerconvert`](docerconvert.md) to convert your Markdown documents to HTML.  Next, use [`docerrun`](docerrun.md) to run your MATLAB scripts and capture output as images.  Finally, use [`docerindex`](docerindex.md) to generate documentation index files.  Here is a complete example, to generate the Doc_er documentation:
 
 ```matlab
 docerconvert tbx/docerdoc/**/*.md
@@ -62,7 +62,7 @@ Before you start, you may wish to delete previous Doc_er artifacts using [`docer
 
 ### Automate DevOps
 
-You should commit your source files (`.md`, `.m`), but not the Doc_er generated files (`.html`, `.xml`), to source control.  An example `.gitignore` snippet is:
+You should commit your source files (`.md`, `.m`), but not the Doc_er generated files (`.html`, `.xml`), to source control.  An example `.gitignore` snippet, from Doc_er, is:
 
 ```
 tbx/docerdoc/**/*.html
