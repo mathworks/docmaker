@@ -40,7 +40,7 @@ switch response.StatusCode
 end
 
 % Close self-closing to ensure valid XML
-xml = closetag( xml, "img " );
+xml = closetag( xml, "img" );
 xml = closetag( xml, "hr" );
 xml = closetag( xml, "br" );
 
