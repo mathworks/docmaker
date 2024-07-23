@@ -176,6 +176,6 @@ div = importNode( doc, getDocumentElement( xml ), true );
 appendChild( main, div );
 
 % Tidy up
-fixdoc( doc )
+tidydoc( doc )
 
 end % convert
