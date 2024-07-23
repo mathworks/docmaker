@@ -175,4 +175,7 @@ appendChild( body, main );
 div = importNode( doc, getDocumentElement( xml ), true );
 appendChild( main, div );
 
+% Tidy up
+tidydoc( doc )
+
 end % convert
