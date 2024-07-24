@@ -10,7 +10,7 @@ The author thanks [Ken Deeley](https://www.mathworks.com/matlabcentral/profile/a
 
 ## History
 
-The [release notes](release-notes.md) detail new features, bug fixes, and compatibility considerations for each version.
+The [release notes](changelog.md) detail new features, bug fixes, and compatibility considerations for each version.
 
 Doc_er replaces a previous MathWorks internal documentation tool, *DocTools*, by [Ben Tordoff](https://www.mathworks.com/matlabcentral/profile/authors/1297191).  Doc_er seeks to improve on DocTools by supporting authoring in Markdown and leveraging the Markdown ecosystem.
 
