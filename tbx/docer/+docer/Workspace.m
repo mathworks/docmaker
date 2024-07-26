@@ -51,7 +51,7 @@ classdef Workspace < handle
             if ismember( name, obj.Names ) % existing
                 obj.Values{obj.Names == name} = value;
             else % new
-                obj.Names{end+1} = name;
+                obj.Names(end+1) = name;
                 obj.Values{end+1} = value;
             end
 
@@ -80,21 +80,21 @@ classdef Workspace < handle
             %   evalin("caller",...) to unpack, evaluate, and repack.
 
             % Unpack
-            evalin( "caller", "clear" )
+            builtin( "evalin", "caller", "clear" )
             oldNames = obj.Names;
             oldValues = obj.Values;
             for ii = 1:numel( oldNames )
-                assignin( "caller", oldNames(ii), oldValues{ii} )
+                builtin( "assignin", "caller", oldNames(ii), oldValues{ii} )
             end
 
             % Evaluate
-            [varargout{1:nargout}] = evalin( "caller", expr ); % bubbles up
+            [varargout{1:nargout}] = builtin( "evalin", "caller", expr ); % bubbles up
 
             % Repack
-            newNames = string( evalin( "caller", "who" ) );
+            newNames = reshape( string( evalin( "caller", "who" ) ), 1, [] );
             newValues = cell( size( newNames ) ); % preallocate
             for ii = 1:numel( newNames )
-                newValues{ii} = evalin( "caller", newNames(ii) );
+                newValues{ii} = builtin( "evalin", "caller", newNames(ii) );
             end
             obj.Names = newNames;
             obj.Values = newValues;
