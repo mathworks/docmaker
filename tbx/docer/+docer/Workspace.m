@@ -29,7 +29,7 @@ classdef Workspace < handle
             end
 
             try
-                [varargout{1:nargout}] = evalin1( obj, expr );
+                [varargout{1:nargout}] = evalin_clean( obj, expr );
             catch e
                 throwAsCaller( e )
             end
@@ -61,22 +61,22 @@ classdef Workspace < handle
 
     methods ( Access = private )
 
-        function varargout = evalin1( obj, expr )
-            %evalin1  Middle level of the evalin chain
+        function varargout = evalin_clean( obj, expr )
+            %evalin_clean  Middle level of the evalin chain
             %
-            %   evalin1 is the workspace scope in which expressions are
-            %   evaluated.  evalin1 bubbles down to evalin2, which then
-            %   uses evalin("caller",...) to unpack, evaluate, repack, and
-            %   bubble up outputs.
+            %   evalin_clean is the workspace scope in which expressions
+            %   are evaluated.  evalin_clean bubbles down to evalin2, which
+            %   then uses evalin("caller",...) to unpack, evaluate, repack,
+            %   and bubble up outputs.
 
-            [varargout{1:nargout}] = evalin2( obj, expr ); % bubble down
+            [varargout{1:nargout}] = evalin_do( obj, expr ); % bubble down
 
         end % evalin1
 
-        function varargout = evalin2( obj, expr )
-            %evalin2  Bottom level of the evalin chain
+        function varargout = evalin_do( obj, expr )
+            %evalin_do  Bottom level of the evalin chain
             %
-            %   evalin2 uses assignin("caller",...) and
+            %   evalin_do uses assignin("caller",...) and
             %   evalin("caller",...) to unpack, evaluate, and repack.
 
             % Unpack
