@@ -129,6 +129,43 @@ classdef Workspace < handle
 
         end % save
 
+    end
+
+    methods ( Hidden )
+
+        function keyboard( db16a6c786 )
+            %keyboard  Prompt in workspace
+            %
+            %   keyboard(w) provides a debug prompt in the workspace w.
+
+            % Check
+            assert( ~any( ismember( ...
+                ["db16a6c786" "db2ccd973c" "db3caabcbe"], ...
+                db16a6c786.Names ) ), "docer:InvalidArgument", ...
+                "Cannot debug %s with reserved variable name(s)." )
+
+            % Unpack
+            for db2ccd973c = 1:numel( db16a6c786.Names )
+                eval( db16a6c786.Names(db2ccd973c) + ...
+                    " = db16a6c786.Values{db2ccd973c};" )
+            end
+
+            % Clean up
+            clear( "db2ccd973c" )
+
+            % Prompt
+            keyboard() %#ok<KEYBOARDFUN>
+
+            % Repack
+            db2ccd973c = setdiff( who(), ...
+                ["db16a6c786" "db2ccd973c" "db3caabcbe"] );
+            db2ccd973c = reshape( db2ccd973c, 1, [] );
+            db3caabcbe = eval( "{" + strjoin( db2ccd973c, " " ) + "}" );
+            db16a6c786.Names = db2ccd973c;
+            db16a6c786.Values = db3caabcbe;
+
+        end % keyboard
+
     end % public methods
 
     methods ( Static )
@@ -173,7 +210,7 @@ classdef Workspace < handle
 
             [varargout{1:nargout}] = evalin_do( obj, expr ); % bubble down
 
-        end % evalin1
+        end % evalin_clean
 
         function varargout = evalin_do( obj, expr )
             %evalin_do  Bottom level of the evalin chain
@@ -201,7 +238,7 @@ classdef Workspace < handle
             obj.Names = newNames;
             obj.Values = newValues;
 
-        end % evalin2
+        end % evalin_do
 
     end % methods
 
