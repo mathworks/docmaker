@@ -1,8 +1,14 @@
-function s = encodefig( f, o )
-%encodefig  Base 64 encoding of figure
+function s = base64encode( f, o )
+%base64encode  Perform Base 64 encoding of a figure
 %
-%   s = encodefig(f) encodes the figure f using base 64 encoding and
-%   returns the encoded data as a string s.
+%   s = docer.base64encode(f) prints the figure f to file, encodes the file
+%   data using Base 64 encoding, and returns the encoded data as a string
+%   s.
+%
+%   s = docer.base64encode(...,"Resolution",r) sets the resolution of the
+%   screenshots to r dpi.
+%
+%   See also: matlab.net.base64encode
 
 %   Copyright 2024 The MathWorks, Inc.
 
@@ -32,4 +38,4 @@ delete( fIm )
 s = matlab.net.base64encode( bin );
 s = string( s );
 
-end % figuredata
+end % base64encode
