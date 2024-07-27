@@ -102,7 +102,64 @@ classdef Workspace < handle
 
         end % clearvars
 
+        function save( obj, varargin )
+            %save  Save workspace variables to file
+            %
+            %   save(w,f) saves all variables in the workspace w to the
+            %   file f.
+
+            % Check inputs
+            try
+                varargin = string( varargin );
+            catch
+                e = MException( "docer:InvalidArgument", ...
+                    "Variable names must be strings." );
+                throwAsCaller( e )
+            end
+
+            % Form expression
+            expr = "save" + sprintf( " %s", varargin{:} );
+
+            % Evaluate
+            try
+                evalin_clean( obj, expr )
+            catch e
+                throwAsCaller( e )
+            end
+
+        end % save
+
     end % public methods
+
+    methods ( Static )
+
+        function obj = load( varargin )
+
+            % Check inputs
+            try
+                varargin = string( varargin );
+            catch
+                e = MException( "docer:InvalidArgument", ...
+                    "Variable names must be strings." );
+                throwAsCaller( e )
+            end
+
+            % Form expression
+            expr = "load" + sprintf( " %s", varargin{:} );
+
+            % Create
+            obj = docer.Workspace();
+
+            % Evaluate
+            try
+                evalin_clean( obj, expr )
+            catch e
+                throwAsCaller( e )
+            end
+
+        end % load
+
+    end % static methods
 
     methods ( Access = private )
 
