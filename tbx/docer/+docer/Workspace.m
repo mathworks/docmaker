@@ -15,7 +15,7 @@ classdef Workspace < handle
 
     methods
 
-        function varargout = evalin( obj, expr, cap )
+        function varargout = evalin( obj, expr )
             %evalin  Evaluate expression in workspace
             %
             %   evalin(w,e) evaluates the expression e in the workspace w.
@@ -41,7 +41,8 @@ classdef Workspace < handle
             %evalinc  Evaluate expression in workspace and capture output
 
             % Wrap expression in evalc
-            expr = "evalc(""" + strrep( expr, """", """""" ) + """)";
+            expr = sprintf( "builtin(""evalc"",""%s"")", ...
+                strrep( expr, """", """""" ) );
 
             % Evaluate
             try
@@ -77,6 +78,29 @@ classdef Workspace < handle
             end
 
         end % assignin
+
+        function clearvars( obj, varargin )
+
+            % Check inputs
+            try
+                varargin = string( varargin );
+            catch
+                e = MException( "docer:InvalidArgument", ...
+                    "Variable names must be strings." );
+                throwAsCaller( e )
+            end
+
+            % Form expression
+            expr = "clearvars" + sprintf( " %s", varargin{:} );
+
+            % Evaluate
+            try
+                evalin_clean( obj, expr )
+            catch e
+                throwAsCaller( e )
+            end
+
+        end % clearvars
 
     end % public methods
 
