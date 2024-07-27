@@ -15,7 +15,7 @@ classdef Workspace < handle
 
     methods
 
-        function varargout = evalin( obj, expr )
+        function varargout = evalin( obj, expr, cap )
             %evalin  Evaluate expression in workspace
             %
             %   evalin(w,e) evaluates the expression e in the workspace w.
@@ -26,15 +26,47 @@ classdef Workspace < handle
             arguments
                 obj (1,1)
                 expr (1,1) string
+                cap (1,1) matlab.lang.OnOffSwitchState = "off"
             end
 
+            % If capturing, wrap expression in evalc
+            if cap
+                expr = "evalc(""" + strrep( expr, """", """""" ) + """)";
+            end
+
+            % Evaluate
             try
                 [varargout{1:nargout}] = evalin_clean( obj, expr );
             catch e
                 throwAsCaller( e )
             end
 
+            % Return
+            if cap && nargout > 0
+                varargout{1} = string( varargout{1} );
+            end
+
         end % evalin
+
+        function varargout = evalc( obj, expr )
+            %evalc  Evaluate expression in workspace and capture output
+
+            % Wrap expression in evalc
+            expr = "evalc(""" + strrep( expr, """", """""" ) + """)";
+
+            % Evaluate
+            try
+            [varargout{1:nargout}] = evalin_clean( obj, expr );
+            catch e
+                throwAsCaller( e )
+            end
+
+            % Return
+            if nargout > 0
+                varargout{1} = string( varargout{1} );
+            end
+
+        end % evalc
 
         function assignin( obj, name, value )
             %assignin  Assign variable in workspace
