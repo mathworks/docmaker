@@ -26,12 +26,6 @@ classdef Workspace < handle
             arguments
                 obj (1,1)
                 expr (1,1) string
-                cap (1,1) matlab.lang.OnOffSwitchState = "off"
-            end
-
-            % If capturing, wrap expression in evalc
-            if cap
-                expr = "evalc(""" + strrep( expr, """", """""" ) + """)";
             end
 
             % Evaluate
@@ -39,11 +33,6 @@ classdef Workspace < handle
                 [varargout{1:nargout}] = evalin_clean( obj, expr );
             catch e
                 throwAsCaller( e )
-            end
-
-            % Return
-            if cap && nargout > 0
-                varargout{1} = string( varargout{1} );
             end
 
         end % evalin
@@ -56,7 +45,7 @@ classdef Workspace < handle
 
             % Evaluate
             try
-            [varargout{1:nargout}] = evalin_clean( obj, expr );
+                [varargout{1:nargout}] = evalin_clean( obj, expr );
             catch e
                 throwAsCaller( e )
             end
