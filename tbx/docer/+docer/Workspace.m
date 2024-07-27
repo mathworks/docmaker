@@ -37,8 +37,8 @@ classdef Workspace < handle
 
         end % evalin
 
-        function varargout = evalc( obj, expr )
-            %evalc  Evaluate expression in workspace and capture output
+        function varargout = evalinc( obj, expr )
+            %evalinc  Evaluate expression in workspace and capture output
 
             % Wrap expression in evalc
             expr = "evalc(""" + strrep( expr, """", """""" ) + """)";
@@ -55,7 +55,7 @@ classdef Workspace < handle
                 varargout{1} = string( varargout{1} );
             end
 
-        end % evalc
+        end % evalinc
 
         function assignin( obj, name, value )
             %assignin  Assign variable in workspace
