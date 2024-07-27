@@ -133,36 +133,21 @@ classdef Workspace < handle
 
     methods ( Hidden )
 
-        function keyboard( db16a6c786 )
+        function keyboard( obj )
             %keyboard  Prompt in workspace
             %
             %   keyboard(w) provides a debug prompt in the workspace w.
+            %
+            %   To quit debugging and commit changes: dbcont
+            %
+            %   To quit debugging without committing: dbquit
 
-            % Check
-            assert( ~any( ismember( ...
-                ["db16a6c786" "db2ccd973c" "db3caabcbe"], ...
-                db16a6c786.Names ) ), "docer:InvalidArgument", ...
-                "Cannot debug %s with reserved variable name(s)." )
-
-            % Unpack
-            for db2ccd973c = 1:numel( db16a6c786.Names )
-                eval( db16a6c786.Names(db2ccd973c) + ...
-                    " = db16a6c786.Values{db2ccd973c};" )
+            % Debug
+            try
+                [obj.Names, obj.Values] = keyboard_do( obj );
+            catch e
+                throwAsCaller( e )
             end
-
-            % Clean up
-            clear( "db2ccd973c" )
-
-            % Prompt
-            keyboard() %#ok<KEYBOARDFUN>
-
-            % Repack
-            db2ccd973c = setdiff( who(), ...
-                ["db16a6c786" "db2ccd973c" "db3caabcbe"] );
-            db2ccd973c = reshape( db2ccd973c, 1, [] );
-            db3caabcbe = eval( "{" + strjoin( db2ccd973c, " " ) + "}" );
-            db16a6c786.Names = db2ccd973c;
-            db16a6c786.Values = db3caabcbe;
 
         end % keyboard
 
@@ -239,6 +224,41 @@ classdef Workspace < handle
             obj.Values = newValues;
 
         end % evalin_do
+
+        function [db16a6c786, db2ccd973c] = keyboard_do( db16a6c786 )
+            %keyboard  Prompt in workspace
+            %
+            %   keyboard(w) provides a debug prompt in the workspace w.
+            %
+            %   db16a6c786 and db2ccd973c are reserved variable names.
+            %   Before debugging, these are used for the workspace and a
+            %   loop index respectively.  After debugging, these are used
+            %   to return the workspace names and values.
+
+            % Unpack
+            assert( ~any( ismember( db16a6c786.Names, ["db16a6c786", "db2ccd973c"] ) ), ...
+                "docer:InvalidArgument", ...
+                "Cannot debug workspace with reserved variable names ""%s"" or ""%s"".", ...
+                "db16a6c786", "db2ccd973c" )
+            for db2ccd973c = 1:numel( db16a6c786.Names )
+                eval( db16a6c786.Names(db2ccd973c) + ...
+                    " = db16a6c786.Values{db2ccd973c};" )
+            end
+            clear( "db16a6c786", "db2ccd973c" ) % temporary variables
+
+            % Prompt
+            keyboard() %#ok<KEYBOARDFUN>
+
+            % Repack
+            assert( ~exist( "db16a6c786", "var" ), ...
+                "docer:InvalidArgument", ...
+                "Cannot commit workspace with reserved variable name ""%s"".", ...
+                "db16a6c786" )
+
+            db16a6c786 = reshape( who(), 1, [] );
+            db2ccd973c = eval( "{" + strjoin( db16a6c786, " " ) + "}" );
+
+        end % keyboard_do
 
     end % methods
 
