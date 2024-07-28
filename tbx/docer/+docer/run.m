@@ -5,7 +5,7 @@ function [output, modFigures] = run( w, expr )
 %   returns the console output c and the created or modified figures f.
 
 % Capture initial figures
-oldFigures = figures();
+oldFigures = docer.figures();
 oldPrints = arrayfun( @docer.capture, oldFigures, "UniformOutput", false );
 
 % Evaluate expression and capture output
@@ -17,7 +17,7 @@ catch e
 end
 
 % Capture final figures
-newFigures = figures();
+newFigures = docer.figures();
 newPrints = arrayfun( @docer.capture, newFigures, "UniformOutput", false );
 
 % Return new and modified figures
@@ -28,17 +28,3 @@ modFigures = newFigures(~cellfun( @isequal, newPrints, wasPrints )); %
 modFigures = reshape( modFigures, [], 1 ); % return column vector
 
 end % run
-
-function f = figures()
-%figures  Find all figures
-%
-%  f = figures() returns all current figures in ascending number order.
-
-f = findobj( groot(), "-Depth", 1, "Type", "figure", ...
-    "HandleVisibility", "on" ); % ignore HandleVisibility 'off'
-c = get( f, {"Number"} ); % figure numbers
-c(cellfun( @isempty, c )) = {NaN};
-[~, i] = sort( cell2mat( c ), "ascend" ); % sort ascending
-f = f(i); % return in ascending order of figure number
-
-end % figures
