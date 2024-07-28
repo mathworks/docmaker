@@ -6,15 +6,17 @@ function x = capture( fig, res )
 %   from the file.
 %
 %   x = docer.capture(f,r) captures the figure at a resolution of r dpi.
-%   The default resolution is 144 dpi.
+%   The default resolution is 150 dpi.
+
+%   Copyright 2024 The MathWorks, Inc.
 
 arguments
     fig (1,1) matlab.ui.Figure
-    res (1,1) double {mustBePositive} = 144
+    res (1,1) double {mustBePositive} = 150
 end
 
 fn = tempname() + ".png"; % filename
-print( fig, fn, "-dpng", "-r" + res ); % print
+exportgraphics( fig, fn, "Resolution", res ) % export
 x = imread( fn ); % read
 delete( fn ) % clean up
 
