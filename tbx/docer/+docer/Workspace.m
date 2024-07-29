@@ -40,20 +40,34 @@ classdef Workspace < handle
         function varargout = evalinc( obj, expr )
             %evalinc  Evaluate expression in workspace and capture output
 
-            % Wrap expression in evalc
-            expr = sprintf( "builtin(""evalc"",""%s"")", ...
-                strrep( expr, """", """""" ) );
-
-            % Evaluate
-            try
-                [varargout{1:nargout}] = evalin_clean( obj, expr );
-            catch e
-                throwAsCaller( e )
+            arguments
+                obj (1,1)
+                expr (1,1) string
             end
 
-            % Return
-            if nargout > 0
-                varargout{1} = string( varargout{1} );
+            % Clean up
+            try
+                expr = parse( expr );
+            catch
+                throwAsCaller( MException( "docer:InvalidArgument", ...
+                    "Invalid expression ""%s"".", expr ) )
+            end
+
+            % Split into individual lines
+            if isscalar( expr )
+                expr = sprintf( "builtin(""evalc"",""%s"")", ...
+                    strrep( expr, """", """""" ) );
+                [varargout{1:nargout}] = evalin_clean( obj, expr );
+                if nargout > 0
+                    varargout{1} = string( varargout{1} );
+                end
+            else
+                nargoutchk( 0, 1 )
+                varargout{1} = strings( size( expr ) );
+                for ii = 1:numel( expr )
+                    varargout{1}(ii) = evalinc( obj, expr(ii) );
+                end
+                varargout{1} = strjoin( varargout{1} );
             end
 
         end % evalinc
@@ -225,6 +239,13 @@ classdef Workspace < handle
 
         end % evalin_do
 
+        function evalinc_one( obj, expr )
+
+
+
+
+        end
+
         function [db16a6c786, db2ccd973c] = keyboard_do( db16a6c786 )
             %keyboard  Prompt in workspace
             %
@@ -260,3 +281,17 @@ classdef Workspace < handle
     end % methods
 
 end % classdef
+
+function s = parse( s )
+%parse  Parse MATLAB expression(s)
+%
+%   s = parse(s) parses the code s, removing comments and consolidating
+%   multiline expressions on a single line.
+
+t = mtree( s ); % parse
+s = tree2str( t ); % convert back to clean string
+s = strsplit( s, newline ); % split into expressions
+s(strlength( s ) == 0) = []; % remove empties
+s = string( s(:) ); % convert and reshape
+
+end % parse
