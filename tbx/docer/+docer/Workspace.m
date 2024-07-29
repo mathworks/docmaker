@@ -37,7 +37,7 @@ classdef Workspace < handle
 
         end % evalin
 
-        function varargout = evalinc( obj, expr )
+        function varargout = evalinc( obj, t )
             %evalinc  Evaluate expression in workspace and capture output
             %
             %   s = evalinc(w,e) evaluates the expression e in the
@@ -45,31 +45,25 @@ classdef Workspace < handle
             %
             %   [s,o1,o2,...] = evalinc(w,e) also returns the outputs from
             %   the evaluation.
-            %
-            %
 
             arguments
                 obj (1,1)
-                expr (1,1) string
+                t (1,1) string
             end
 
-            % Split into expressions
-            tree = mtree( expr ); % parse
-            if count( tree ) == 1 && iskind( tree, "ERR" )
-                throwAsCaller( MException( "docer:InvalidArgument", ...
-                    "Invalid expression(s) ""%s"".", expr ) )
+            % Split into statements
+            try
+                s = obj.statements( t );
+            catch e
+                throwAsCaller( e )
             end
-            expr = tree2str( tree ); % convert back to clean string
-            expr = strsplit( expr, newline ); % split into expressions
-            expr(strlength( expr ) == 0) = []; % remove empties
-            expr = string( expr(:) ); % reshape and convert
 
             % Evaluate
-            if isscalar( expr ) % single line
-                expr = sprintf( "builtin(""evalc"",""%s"")", ...
-                    strrep( expr, """", """""" ) ); % wrap in evalc
+            if isscalar( s ) % single line
+                es = sprintf( "builtin(""evalc"",""%s"")", ...
+                    strrep( s, """", """""" ) ); % escape and wrap in evalc
                 try
-                    [varargout{1:nargout}] = evalin_clean( obj, expr ); % evaluate
+                    [varargout{1:nargout}] = evalin_clean( obj, es ); % evaluate
                 catch e
                     throwAsCaller( e )
                 end
@@ -81,15 +75,15 @@ classdef Workspace < handle
                     throwAsCaller( MException( "docer:IllegalOperation", ...
                         "Cannot return outputs from multiple expressions." ) )
                 end
-                varargout{1} = strings( size( expr ) ); % preallocate
-                for ii = 1:numel( expr )
+                varargout{1} = strings( size( s ) ); % preallocate
+                for ii = 1:numel( s )
                     try
-                        varargout{1}(ii) = evalinc( obj, expr(ii) ); % evaluate
+                        varargout{1}(ii) = evalinc( obj, s(ii) ); % evaluate
                     catch e
                         throwAsCaller( e )
                     end
                 end
-                varargout{1} = strjoin( varargout{1} ); % combine
+                varargout{1} = strjoin( varargout{1}, "" ); % combine
             end
 
         end % evalinc
@@ -217,6 +211,24 @@ classdef Workspace < handle
 
         end % load
 
+        function s = statements( t )
+            %statements  Parse text into statements
+            %
+            %   s = parse(t) parses the text t into statements s, removing
+            %   comments and consolidating multiline expressions.
+
+            tr = mtree( t ); % parse text
+            if count( tr ) == 1 && iskind( tr, "ERR" )
+                error( "docer:InvalidArgument", ...
+                    "Cannot parse text ""%s"".", t )
+            end
+            s = tree2str( tr ); % convert back to statements
+            s = strsplit( s, newline ); % split lines
+            s(strlength( s ) == 0) = []; % remove empty lines
+            s = string( s(:) ); % convert and reshape
+
+        end % statements
+
     end % static methods
 
     methods ( Access = private )
@@ -296,20 +308,3 @@ classdef Workspace < handle
     end % methods
 
 end % classdef
-
-function s = statements( t )
-%statements  Parse text into statements
-%
-%   s = parse(s) parses the text t into statements s, removing comments and
-%   consolidating multiline expressions.
-
-tr = mtree( t ); % parse text
-if count( tr ) == 1 && iskind( tr, "ERR" )
-    error( "docer:InvalidArgument", "Cannot parse text ""%s"".", t )
-end
-s = tree2str( tr ); % convert back to statements
-s = strsplit( s, newline ); % split lines
-s(strlength( s ) == 0) = []; % remove empty lines
-s = string( s(:) ); % convert and reshape
-
-end % statements
