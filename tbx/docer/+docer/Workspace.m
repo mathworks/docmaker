@@ -303,8 +303,11 @@ function s = statements( t )
 %   s = parse(s) parses the text t into statements s, removing comments and
 %   consolidating multiline expressions.
 
-mt = mtree( t ); % parse text
-s = tree2str( mt ); % convert back to statements
+tr = mtree( t ); % parse text
+if count( tr ) == 1 && iskind( tr, "ERR" )
+    error( "docer:InvalidArgument", "Cannot parse text ""%s"".", t )
+end
+s = tree2str( tr ); % convert back to statements
 s = strsplit( s, newline ); % split lines
 s(strlength( s ) == 0) = []; % remove empty lines
 s = string( s(:) ); % convert and reshape
