@@ -52,7 +52,7 @@ classdef Workspace < handle
             end
 
             try
-                [varargout{1:nargout}] = evalin_gateway( obj, t );
+                [varargout{1:nargout}] = evalinc_gateway( obj, t );
             catch e
                 throwAsCaller( e )
             end
