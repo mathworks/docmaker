@@ -39,35 +39,57 @@ classdef Workspace < handle
 
         function varargout = evalinc( obj, expr )
             %evalinc  Evaluate expression in workspace and capture output
+            %
+            %   s = evalinc(w,e) evaluates the expression e in the
+            %   workspace w and returns the console output s.
+            %
+            %   [s,o1,o2,...] = evalinc(w,e) also returns the outputs from
+            %   the evaluation.
+            %
+            %
 
             arguments
                 obj (1,1)
                 expr (1,1) string
             end
 
-            % Clean up
-            try
-                expr = parse( expr );
-            catch
+            % Split into expressions
+            tree = mtree( expr ); % parse
+            if count( tree ) == 1 && iskind( tree, "ERR" )
                 throwAsCaller( MException( "docer:InvalidArgument", ...
-                    "Invalid expression ""%s"".", expr ) )
+                    "Invalid expression(s) ""%s"".", expr ) )
             end
+            expr = tree2str( tree ); % convert back to clean string
+            expr = strsplit( expr, newline ); % split into expressions
+            expr(strlength( expr ) == 0) = []; % remove empties
+            expr = string( expr(:) ); % reshape and convert
 
-            % Split into individual lines
-            if isscalar( expr )
+            % Evaluate
+            if isscalar( expr ) % single line
                 expr = sprintf( "builtin(""evalc"",""%s"")", ...
-                    strrep( expr, """", """""" ) );
-                [varargout{1:nargout}] = evalin_clean( obj, expr );
+                    strrep( expr, """", """""" ) ); % wrap in evalc
+                try
+                    [varargout{1:nargout}] = evalin_clean( obj, expr ); % evaluate
+                catch e
+                    throwAsCaller( e )
+                end
                 if nargout > 0
-                    varargout{1} = string( varargout{1} );
+                    varargout{1} = string( varargout{1} ); % output datatype
                 end
-            else
-                nargoutchk( 0, 1 )
-                varargout{1} = strings( size( expr ) );
+            else % multiple lines
+                if nargout > 1
+                    throwAsCaller( MException( "docer:IllegalOperation", ...
+                        "Cannot return outputs from multiple expressions." ) )
+                end
+                varargout{1} = strings( size( expr ) ); % preallocate
                 for ii = 1:numel( expr )
-                    varargout{1}(ii) = evalinc( obj, expr(ii) );
+                    try
+                        varargout{1}(ii) = evalinc( obj, expr(ii) ); % evaluate
+                    catch e
+                        throwAsCaller( e )
+                    end
                 end
-                varargout{1} = strjoin( varargout{1} );
+                varargout{1} = strjoin( varargout{1} ); % combine
             end
 
         end % evalinc
@@ -239,13 +261,6 @@ classdef Workspace < handle
 
         end % evalin_do
 
-        function evalinc_one( obj, expr )
-
-
-
-
-        end
-
         function [db16a6c786, db2ccd973c] = keyboard_do( db16a6c786 )
             %keyboard  Prompt in workspace
             %
@@ -282,16 +297,16 @@ classdef Workspace < handle
 
 end % classdef
 
-function s = parse( s )
-%parse  Parse MATLAB expression(s)
+function s = statements( t )
+%statements  Parse text into statements
 %
-%   s = parse(s) parses the code s, removing comments and consolidating
-%   multiline expressions on a single line.
+%   s = parse(s) parses the text t into statements s, removing comments and
+%   consolidating multiline expressions.
 
-t = mtree( s ); % parse
-s = tree2str( t ); % convert back to clean string
-s = strsplit( s, newline ); % split into expressions
-s(strlength( s ) == 0) = []; % remove empties
+mt = mtree( t ); % parse text
+s = tree2str( mt ); % convert back to statements
+s = strsplit( s, newline ); % split lines
+s(strlength( s ) == 0) = []; % remove empty lines
 s = string( s(:) ); % convert and reshape
 
-end % parse
+end % statements
