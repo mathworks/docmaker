@@ -52,7 +52,7 @@ classdef Workspace < handle
             end
 
             try
-                [varargout{1:nargout}] = evalinc_gateway( obj, t );
+                [varargout{1:max( nargout, 1 )}] = evalinc_gateway( obj, t );
             catch e
                 throwAsCaller( e )
             end
@@ -264,7 +264,7 @@ classdef Workspace < handle
                 es = sprintf( "builtin(""evalc"",""%s"")", ...
                     strrep( s, """", """""" ) ); % escape and wrap
                 [varargout{1:nargout}] = evalin_clean( obj, es ); % evaluate
-                if nargout > 0, varargout{1} = string( varargout{1} ); end % return string
+                varargout{1} = string( varargout{1} ); % return string
             else % multiple statements
                 assert( nargout <= 1, "docer:InvalidArgument", ...
                     "Cannot return output(s) from multiple statements." )
