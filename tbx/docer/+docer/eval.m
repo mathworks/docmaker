@@ -1,4 +1,4 @@
-function [output, modFigures] = run( w, expr )
+function [output, modFigures] = eval( w, expr )
 %run  Run code in workspace, return output and figures
 %
 %   [c,f] = run(w,e) runs the expression(s) e in the workspace w, and
