@@ -158,35 +158,7 @@ classdef Workspace < handle
 
         end % save
 
-    end % methods
-
-    methods ( Hidden )
-
-        function keyboard( obj )
-            %keyboard  Prompt in workspace
-            %
-            %   keyboard(w) provides a debug prompt in the workspace w.
-            %
-            %   To quit debugging and commit changes: dbcont
-            %
-            %   To quit debugging without committing: dbquit
-            %
-            %   See also: keyboard
-
-            % Debug
-            try
-                [obj.Names, obj.Values] = keyboard_do( obj );
-            catch e
-                throwAsCaller( e ) % trim stack
-            end
-
-        end % keyboard
-
-    end % public methods
-
-    methods ( Static )
-
-        function obj = load( obj, args )
+        function load( obj, args )
             %load  Load workspace variables from file
             %
             %   load(w,f) loads variables from the file f to the workspace
@@ -218,7 +190,31 @@ classdef Workspace < handle
 
         end % load
 
-    end % static methods
+    end % methods
+
+    methods ( Hidden )
+
+        function keyboard( obj )
+            %keyboard  Prompt in workspace
+            %
+            %   keyboard(w) provides a debug prompt in the workspace w.
+            %
+            %   To quit debugging and commit changes: dbcont
+            %
+            %   To quit debugging without committing: dbquit
+            %
+            %   See also: keyboard
+
+            % Debug
+            try
+                [obj.Names, obj.Values] = keyboard_do( obj );
+            catch e
+                throwAsCaller( e ) % trim stack
+            end
+
+        end % keyboard
+
+    end % public methods
 
     methods ( Access = private )
 
