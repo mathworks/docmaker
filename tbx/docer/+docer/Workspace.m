@@ -205,41 +205,6 @@ classdef Workspace < handle
 
     methods ( Access = private )
 
-        function varargout = evalin_gateway( obj, t )
-            %evalin_gateway  Evaluate expression in workspace
-            %
-            %   s = evalinc(w,e) evaluates the expression e in the
-            %   workspace w and returns the console output s.
-            %
-            %   [s,o1,o2,...] = evalinc(w,e) also returns the outputs from
-            %   the evaluation.
-
-            arguments
-                obj (1,1) % workspace
-                t (1,1) string % text
-            end
-
-            % Split into statements
-            s = obj.statements( t );
-
-            % Evaluate
-            if isempty( s )
-                assert( nargout == 0, "docer:InvalidArgument", ...
-                    "Cannot return output(s) from no statements." )
-            elseif isscalar( s ) % single statement
-                es = sprintf( "builtin(""eval"",""%s"")", ...
-                    strrep( s, """", """""" ) ); % escape and wrap
-                [varargout{1:nargout}] = evalin_clean( obj, es ); % evaluate
-            else % no or multiple statements
-                assert( nargout == 0, "docer:InvalidArgument", ...
-                    "Cannot return outputs from multiple statements." )
-                for ii = 1:numel( s )
-                    evalin_gateway( obj, s(ii) )
-                end
-            end
-
-        end % evalin_gateway
-
         function varargout = evalinc_gateway( obj, t, c )
             %evalin_gateway  Evaluate expression in workspace
             %
@@ -286,10 +251,10 @@ classdef Workspace < handle
         function varargout = evalin_clean( obj, expr )
             %evalin_clean  Middle level of the evalin chain
             %
-            %   evalin_clean is the workspace scope in which
-            %   expressions are evaluated.  evalin_clean bubbles down
-            %   to evalin2, which then uses evalin("caller",...) to
-            %   unpack, evaluate, repack, and bubble up outputs.
+            %   evalin_clean is the workspace scope in which expressions
+            %   are evaluated.  evalin_clean bubbles down to evalin2, which
+            %   then uses evalin("caller",...) to unpack, evaluate, repack,
+            %   and bubble up outputs.
 
             [varargout{1:nargout}] = evalin_do( obj, expr ); % bubble down
 
@@ -329,9 +294,9 @@ classdef Workspace < handle
             %   keyboard(w) provides a debug prompt in the workspace w.
             %
             %   db16a6c786 and db2ccd973c are reserved variable names.
-            %   Before debugging, these are used for the workspace and
-            %   a loop index respectively.  After debugging, these are
-            %   used to return the workspace names and values.
+            %   Before debugging, these are used for the workspace and a
+            %   loop index respectively.  After debugging, these are used
+            %   to return the workspace names and values.
 
             % Unpack
             assert( ~any( ismember( db16a6c786.Names, ["db16a6c786", "db2ccd973c"] ) ), ...
