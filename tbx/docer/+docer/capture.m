@@ -1,23 +1,14 @@
-function x = capture( fig, res )
+function x = capture( fig )
 %capture  Capture figure
 %
-%   x = docer.capture(f) captures the figure f to image data x.  First, the
-%   figure is printed to an image file, and then, the image data is read
-%   from the file.
-%
-%   x = docer.capture(f,r) captures the figure at a resolution of r dpi.
-%   The default resolution is 150 dpi.
+%   x = docer.capture(f) captures the figure f to image data x.
 
 %   Copyright 2024 The MathWorks, Inc.
 
 arguments
     fig (1,1) matlab.ui.Figure
-    res (1,1) double {mustBePositive} = 150
 end
 
-fn = tempname() + ".png"; % filename
-exportgraphics( fig, fn, "Resolution", res ) % export
-x = imread( fn ); % read
-delete( fn ) % clean up
+[x, ~] = getframe( fig );
 
 end % capture
