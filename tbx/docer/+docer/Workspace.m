@@ -52,7 +52,8 @@ classdef Workspace < handle
             end
 
             try
-                [varargout{1:max( nargout, 1 )}] = evalinc_gateway( obj, t );
+                no = max( nargout, 1 ); % at least 1 output
+                [varargout{1:no}] = evalinc_gateway( obj, t );
             catch e
                 throwAsCaller( e )
             end
@@ -186,7 +187,7 @@ classdef Workspace < handle
             %statements  Parse text into statements
             %
             %   s = parse(t) parses the text t into statements s, removing
-            %   comments and consolidating multiline expressions.
+            %   comments and consolidating multiline statements.
 
             tr = mtree( t ); % parse text
             if count( tr ) == 1 && iskind( tr, "ERR" )
@@ -222,17 +223,18 @@ classdef Workspace < handle
             s = obj.statements( t );
 
             % Evaluate
-            if isscalar( s ) % single statement
+            if isempty( s )
+                assert( nargout == 0, "docer:InvalidArgument", ...
+                    "Cannot return output(s) from no statements." )
+            elseif isscalar( s ) % single statement
                 es = sprintf( "builtin(""eval"",""%s"")", ...
                     strrep( s, """", """""" ) ); % escape and wrap
                 [varargout{1:nargout}] = evalin_clean( obj, es ); % evaluate
             else % no or multiple statements
-                if nargout > 0
-                    error( "docer:InvalidArgument", ...
-                        "Can only return output(s) from single statements." )
-                end
+                assert( nargout == 0, "docer:InvalidArgument", ...
+                    "Cannot return outputs from multiple statements." )
                 for ii = 1:numel( s )
-                    evalin_clean( obj, s(ii), c )
+                    evalin_gateway( obj, s(ii) )
                 end
             end
 
@@ -257,7 +259,7 @@ classdef Workspace < handle
 
             % Evaluate
             if isempty( s ) % no statements
-                assert( nargout <= 1, "docer:InvalidArgument", ...
+                assert( nargout == 1, "docer:InvalidArgument", ...
                     "Cannot return output(s) from no statements." )
                 varargout{1} = ""; % return empty string
             elseif isscalar( s ) % single statement
@@ -266,8 +268,8 @@ classdef Workspace < handle
                 [varargout{1:nargout}] = evalin_clean( obj, es ); % evaluate
                 varargout{1} = string( varargout{1} ); % return string
             else % multiple statements
-                assert( nargout <= 1, "docer:InvalidArgument", ...
-                    "Cannot return output(s) from multiple statements." )
+                assert( nargout == 1, "docer:InvalidArgument", ...
+                    "Cannot return outputs from multiple statements." )
                 varargout{1} = strings( size( s ) );
                 for ii = 1:numel( s )
                     varargout{1}(ii) = evalinc_gateway( obj, s(ii), c );
