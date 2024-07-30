@@ -1,8 +1,8 @@
-function docerzap( filename, level, zap )
+function docerzap( filename, wslevel, zap )
 
 arguments
     filename (1,1) string {mustBeFile}
-    level (1,1) double {mustBeInteger,mustBeInRange(level,0,6)} = 0
+    wslevel (1,1) double {mustBeInteger,mustBeInRange(wslevel,0,6)} = 0
     zap (1,1) matlab.lang.OnOffSwitchState = "off"
 end
 
@@ -12,24 +12,60 @@ parser.Configuration.AllowDoctype = true;
 doc = parser.parseFile( filename );
 
 % Find all headings and divs
-allHeadings = cell( level, 1 ); % preallocate
-for ii = 1:level
+allHeadings = cell( 6, 1 ); % preallocate
+for ii = 1:numel( allHeadings )
     allHeadings{ii} = elements( doc.getElementsByTagName( "h"+ii ) );
 end
 allDivs = elements( doc.getElementsByTagName( "div" ) );
+tf = true( size( allDivs ) );
+for ii = 1:numel( allDivs )
+    tf(ii) = allDivs(ii).hasAttribute( "class" ) && ( ...
+        contains( allDivs(ii).getAttribute( "class" ), "highlight-source-matlab" ) || ...
+        contains( allDivs(ii).getAttribute( "class" ), "highlight-output-matlab" ) );
+end
+allDivs(~tf) = [];
 
-from = doc.getDocumentElement;
+from = doc.getDocumentElement; % start from root
+if zap, zaplevel = 0; else, zaplevel = 6; end
 while ~isempty( from )
+    % Get current level
+    if from == doc.getDocumentElement()
+        fromlevel = 0;
+    else
+        fromlevel = sscanf( from.TagName, "h%d" );
+    end
+    % Find next heading
     to = getNextHeading( from, allHeadings );
+    % Find divs before next heading
     if isempty( to )
         divs = allDivs(isAfter( allDivs, from ));
     else
         divs = allDivs(isBetween( allDivs, from, to ));
     end
-    from = to;
-end
+    % Create fresh workspace if necessary
+    if fromlevel <= wslevel
+        w = docer.Workspace();
+    end
+    % Update zap level
+    if fromlevel <= zaplevel
+        zaplevel = fromlevel;
+        zap = endsWith( from.TextContent, char( 9889 ) );
+    elseif fromlevel == zaplevel
+        zap = endsWith( from.TextContent, char( 9889 ) ); % reset
+    elseif zap == false
+        zaplevel = fromlevel;
+        zap = endsWith( from.TextContent, char( 9889 ) );
+    end
 
-end
+    
+
+
+
+    from = to;
+
+end % while
+
+end % docerzap
 
 function ee = elements( nn )
 
