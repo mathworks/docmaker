@@ -114,7 +114,7 @@ classdef Workspace < handle
 
             % Check inputs
             try
-                varargin = string( varargin );
+                args = string( varargin );
             catch
                 e = MException( "docer:InvalidArgument", ...
                     "Variable names must be strings." );
@@ -122,7 +122,7 @@ classdef Workspace < handle
             end
 
             % Form expression
-            expr = "save" + sprintf( " %s", varargin{:} );
+            expr = "save" + sprintf( " %s", args );
 
             % Evaluate
             try
@@ -163,7 +163,7 @@ classdef Workspace < handle
 
             % Check inputs
             try
-                varargin = string( varargin );
+                args = string( varargin );
             catch
                 e = MException( "docer:InvalidArgument", ...
                     "Variable names must be strings." );
@@ -171,14 +171,14 @@ classdef Workspace < handle
             end
 
             % Form expression
-            expr = "load" + sprintf( " %s", varargin{:} );
+            expr = "load" + sprintf( " %s", args );
 
             % Create
             obj = docer.Workspace();
 
             % Evaluate
             try
-                evalin_clean( obj, expr )
+                evalin_middle( obj, expr )
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -246,7 +246,10 @@ classdef Workspace < handle
         end % evalinc_gateway
 
         function varargout = evalin_middle( obj, s )
-            %evalin_clean  Middle level of the evalin chain
+            %evalin_middle  Middle level of the evalin chain
+            %
+            %   evalin_middle(w,s) evaluates the statement s in the
+            %   workspace w.
             %
             %   evalin_middle provides the scope in which statements are
             %   evaluated.  evalin_middle forwards the statement to
