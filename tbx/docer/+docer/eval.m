@@ -11,7 +11,6 @@ oldPrints = arrayfun( @docer.capture, oldFigures, "UniformOutput", false );
 % Evaluate expression and capture output
 try
     output = string( evalinc( w, expr ) );
-    output = string( output );
 catch e
     rethrow( e ) % trim stack
 end
