@@ -24,13 +24,13 @@ for ii = 1:numel( divs )
         inDiv = div; % code block
         inString = div.TextContent; % extract text
         [outString, outFigs] = docer.eval( w, inString ); % evaluate and capture
-        for ii = 1:numel( outFigs )
-            outFig = outFigs(ii);
+        for jj = 1:numel( outFigs )
+            outFig = outFigs(jj);
             outDiv = doc.createElement( "div" );
             outDiv.setAttribute( "class", "highlight highlight-output-matlab" );
             outImg = doc.createElement( "img" );
             outImg.setAttribute( "src", "data:image/png;base64, " + ...
-                docer.encode( docer.capture( outFig ) ) );
+                docer.encode( outFig ) );
             outDiv.appendChild( outImg );
             if isempty( inDiv.getNextSibling() )
                 inDiv.getParentNode().appendChild( outDiv );
