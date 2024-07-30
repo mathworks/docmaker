@@ -87,7 +87,7 @@ classdef Workspace < handle
 
             % Check inputs
             try
-                varargin = string( varargin );
+                args = string( varargin );
             catch
                 e = MException( "docer:InvalidArgument", ...
                     "Variable names must be strings." );
@@ -95,7 +95,7 @@ classdef Workspace < handle
             end
 
             % Form expression
-            expr = "clearvars" + sprintf( " %s", varargin{:} );
+            expr = "clearvars" + sprintf( " %s", args );
 
             % Evaluate
             try
@@ -314,7 +314,8 @@ classdef Workspace < handle
             assert( ~exist( "db16a6c786", "var" ) && ~exist( "db2ccd973c", "var" ), ...
                 "docer:InvalidArgument", "%s", ...
                 "Cannot commit workspace with reserved variable name(s)." )
-            db16a6c786 = reshape( who(), 1, [] );
+            db16a6c786 = who(); % variable names
+            db16a6c786 = reshape( string( db16a6c786 ), 1, [] );
             db2ccd973c = eval( "{" + strjoin( db16a6c786, " " ) + "}" );
 
         end % keyboard_do
