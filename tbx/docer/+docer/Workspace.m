@@ -29,9 +29,9 @@ classdef Workspace < handle
             end
 
             % Evaluate
-            try % show but do not return output
+            try
                 [~, varargout{1:nargout}] = ... % do not return output
-                    evalin_gateway( obj, expr, false ); % but do show
+                    evalin_top( obj, expr, false ); % but do show
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -52,9 +52,10 @@ classdef Workspace < handle
                 t (1,1) string
             end
 
-            try % hide but return output
+            % Evaluate
+            try
                 [varargout{1:max( nargout, 1 )}] = ... % return output
-                    evalin_gateway( obj, t, true ); % but do not show
+                    evalin_top( obj, t, true ); % but do not show
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -98,7 +99,7 @@ classdef Workspace < handle
 
             % Evaluate
             try
-                evalin_clean( obj, expr )
+                evalin_middle( obj, expr )
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -125,7 +126,7 @@ classdef Workspace < handle
 
             % Evaluate
             try
-                evalin_clean( obj, expr )
+                evalin_middle( obj, expr )
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -188,19 +189,19 @@ classdef Workspace < handle
 
     methods ( Access = private )
 
-        function varargout = evalin_gateway( obj, t, h )
-            %evalin_gateway  Evaluate expression in workspace
+        function varargout = evalin_top( obj, t, h )
+            %evalin_top  Top level of the evalin chain
             %
-            %   evalin_gateway provides the core implementation for evalin
-            %   and evalinc.
+            %   o = evalin_top(w,t,c) evaluates the text t in the workspace
+            %   w and returns the command window output o.  The flag h
+            %   controls whether the command window output is hidden.
             %
-            %   o = evalin_gateway(w,t,c) evaluates the text t in the
-            %   workspace and returns the command window output o.  The
-            %   flag h controls whether the command window output is hidden
-            %   (true) or shown (false).
-            %
-            %   [o,x,y,...] = evalin_gateway(w,t,c) also returns the
+            %   [o,x,y,...] = evalin_top(w,t,c) also returns the
             %   outputs x, y, ... from the evaluation.
+            %
+            %   evalin_top splits the text t into statements, prepares the
+            %   statements for evaluation, and forwards each statement in
+            %   turn to evalin_middle.
 
             arguments
                 obj (1,1) % workspace
@@ -223,12 +224,12 @@ classdef Workspace < handle
             if isempty( s ) % no statements
                 assert( nargout == 1, "docer:InvalidArgument", ...
                     "Cannot return output(s) from no statements." )
-                varargout{1} = ""; % return empty string
+                varargout{1} = ""; % no output
             elseif isscalar( s ) % single statement
                 es = sprintf( "builtin(""evalc"",""%s"")", ...
                     strrep( s, """", """""" ) ); % escape and wrap
-                [varargout{1:nargout}] = evalin_clean( obj, es ); % evaluate
-                varargout{1} = string( varargout{1} ); % return string
+                [varargout{1:nargout}] = evalin_middle( obj, es ); % evaluate
+                varargout{1} = string( varargout{1} ); % datatype
                 if h == false % do not hide
                     fprintf( 1, "%s", varargout{1} ); % echo
                 end
@@ -237,30 +238,32 @@ classdef Workspace < handle
                     "Cannot return output(s) from multiple statements." )
                 varargout{1} = strings( size( s ) ); % preallocate
                 for ii = 1:numel( s ) % loop over statements
-                    varargout{1}(ii) = evalin_gateway( obj, s(ii), h );
+                    varargout{1}(ii) = evalin_top( obj, s(ii), h ); % recurse
                 end
-                varargout{1} = strjoin( varargout{1}, "" ); % combine
+                varargout{1} = strjoin( varargout{1}, "" ); % combine outputs
             end
 
         end % evalinc_gateway
 
-        function varargout = evalin_clean( obj, expr )
+        function varargout = evalin_middle( obj, s )
             %evalin_clean  Middle level of the evalin chain
             %
-            %   evalin_clean is the workspace scope in which expressions
-            %   are evaluated.  evalin_clean bubbles down to evalin_do,
-            %   which then uses evalin("caller",...) to unpack, evaluate,
-            %   repack, and bubble up outputs.
+            %   evalin_middle provides the scope in which statements are
+            %   evaluated.  evalin_middle forwards the statement to
+            %   evalin_bottom, which then uses assignin("caller",...) and
+            %   evalin("caller",...) to unpack the variables, evaluate the
+            %   statement, and repack the variables.
 
-            [varargout{1:nargout}] = evalin_do( obj, expr ); % bubble down
+            [varargout{1:nargout}] = evalin_bottom( obj, s ); % bubble down
 
-        end % evalin_clean
+        end % evalin_bottom
 
-        function varargout = evalin_do( obj, expr )
-            %evalin_do  Bottom level of the evalin chain
+        function varargout = evalin_bottom( obj, s )
+            %evalin_bottom  Bottom level of the evalin chain
             %
-            %   evalin_do uses assignin("caller",...) and
-            %   evalin("caller",...) to unpack, evaluate, and repack.
+            %   evalin_bottom uses assignin("caller",...) and
+            %   evalin("caller",...) to unpack the variables, evaluate the
+            %   statement, and repack the variables in evalin_middle.
 
             % Unpack
             builtin( "evalin", "caller", "clear" )
@@ -271,7 +274,7 @@ classdef Workspace < handle
             end
 
             % Evaluate
-            [varargout{1:nargout}] = builtin( "evalin", "caller", expr ); % bubbles up
+            [varargout{1:nargout}] = builtin( "evalin", "caller", s );
 
             % Repack
             newNames = reshape( string( evalin( "caller", "who" ) ), 1, [] );
@@ -282,7 +285,7 @@ classdef Workspace < handle
             obj.Names = newNames;
             obj.Values = newValues;
 
-        end % evalin_do
+        end % evalin_bottom
 
         function [db16a6c786, db2ccd973c] = keyboard_do( db16a6c786 )
             %keyboard  Prompt in workspace
