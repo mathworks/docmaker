@@ -29,10 +29,11 @@ classdef Workspace < handle
             end
 
             % Evaluate
-            try
-                [~, varargout{1:nargout}] = evalinc_gateway( obj, expr, false );
+            try % show but do not return output
+                [~, varargout{1:nargout}] = ... % do not return output
+                    evalin_gateway( obj, expr, false ); % but do show
             catch e
-                throwAsCaller( e )
+                throwAsCaller( e ) % trim stack
             end
 
         end % evalin
@@ -51,11 +52,11 @@ classdef Workspace < handle
                 t (1,1) string
             end
 
-            try
-                no = max( nargout, 1 ); % at least 1 output
-                [varargout{1:no}] = evalinc_gateway( obj, t, true );
+            try % hide but return output
+                [varargout{1:max( nargout, 1 )}] = ... % return output
+                    evalin_gateway( obj, t, true ); % but do not show
             catch e
-                throwAsCaller( e )
+                throwAsCaller( e ) % trim stack
             end
 
         end % evalinc
@@ -99,7 +100,7 @@ classdef Workspace < handle
             try
                 evalin_clean( obj, expr )
             catch e
-                throwAsCaller( e )
+                throwAsCaller( e ) % trim stack
             end
 
         end % clearvars
@@ -126,7 +127,7 @@ classdef Workspace < handle
             try
                 evalin_clean( obj, expr )
             catch e
-                throwAsCaller( e )
+                throwAsCaller( e ) % trim stack
             end
 
         end % save
@@ -148,7 +149,7 @@ classdef Workspace < handle
             try
                 [obj.Names, obj.Values] = keyboard_do( obj );
             catch e
-                throwAsCaller( e )
+                throwAsCaller( e ) % trim stack
             end
 
         end % keyboard
@@ -178,17 +179,36 @@ classdef Workspace < handle
             try
                 evalin_clean( obj, expr )
             catch e
-                throwAsCaller( e )
+                throwAsCaller( e ) % trim stack
             end
 
         end % load
 
-        function s = statements( t )
-            %statements  Parse text into statements
-            %
-            %   s = parse(t) parses the text t into statements s, removing
-            %   comments and consolidating multiline statements.
+    end % static methods
 
+    methods ( Access = private )
+
+        function varargout = evalin_gateway( obj, t, h )
+            %evalin_gateway  Evaluate expression in workspace
+            %
+            %   evalin_gateway provides the core implementation for evalin
+            %   and evalinc.
+            %
+            %   o = evalin_gateway(w,t,c) evaluates the text t in the
+            %   workspace and returns the command window output o.  The
+            %   flag h controls whether the command window output is hidden
+            %   (true) or shown (false).
+            %
+            %   [o,x,y,...] = evalin_gateway(w,t,c) also returns the
+            %   outputs x, y, ... from the evaluation.
+
+            arguments
+                obj (1,1) % workspace
+                t (1,1) string % text
+                h (1,1) matlab.lang.OnOffSwitchState % hide output
+            end
+
+            % Split into statements
             tr = mtree( t ); % parse text
             if count( tr ) == 1 && iskind( tr, "ERR" )
                 error( "docer:InvalidArgument", ...
@@ -198,30 +218,6 @@ classdef Workspace < handle
             s = strsplit( s, newline ); % split lines
             s(strlength( s ) == 0) = []; % remove empty lines
             s = string( s(:) ); % convert and reshape
-
-        end % statements
-
-    end % static methods
-
-    methods ( Access = private )
-
-        function varargout = evalinc_gateway( obj, t, c )
-            %evalin_gateway  Evaluate expression in workspace
-            %
-            %   s = evalinc(w,e) evaluates the expression e in the
-            %   workspace w and returns the console output s.
-            %
-            %   [s,o1,o2,...] = evalinc(w,e) also returns the outputs from
-            %   the evaluation.
-
-            arguments
-                obj (1,1) % workspace
-                t (1,1) string % text
-                c (1,1) matlab.lang.OnOffSwitchState
-            end
-
-            % Split into statements
-            s = obj.statements( t );
 
             % Evaluate
             if isempty( s ) % no statements
@@ -233,7 +229,7 @@ classdef Workspace < handle
                     strrep( s, """", """""" ) ); % escape and wrap
                 [varargout{1:nargout}] = evalin_clean( obj, es ); % evaluate
                 varargout{1} = string( varargout{1} ); % return string
-                if c == false % do not capture
+                if h == false % do not hide
                     fprintf( 1, "%s", varargout{1} ); % echo
                 end
             else % multiple statements
@@ -241,7 +237,7 @@ classdef Workspace < handle
                     "Cannot return output(s) from multiple statements." )
                 varargout{1} = strings( size( s ) ); % preallocate
                 for ii = 1:numel( s ) % loop over statements
-                    varargout{1}(ii) = evalinc_gateway( obj, s(ii), c );
+                    varargout{1}(ii) = evalin_gateway( obj, s(ii), h );
                 end
                 varargout{1} = strjoin( varargout{1}, "" ); % combine
             end
@@ -252,9 +248,9 @@ classdef Workspace < handle
             %evalin_clean  Middle level of the evalin chain
             %
             %   evalin_clean is the workspace scope in which expressions
-            %   are evaluated.  evalin_clean bubbles down to evalin2, which
-            %   then uses evalin("caller",...) to unpack, evaluate, repack,
-            %   and bubble up outputs.
+            %   are evaluated.  evalin_clean bubbles down to evalin_do,
+            %   which then uses evalin("caller",...) to unpack, evaluate,
+            %   repack, and bubble up outputs.
 
             [varargout{1:nargout}] = evalin_do( obj, expr ); % bubble down
 
