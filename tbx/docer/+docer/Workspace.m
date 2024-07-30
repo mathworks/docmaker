@@ -311,6 +311,8 @@ classdef Workspace < handle
             clear( "db16a6c786", "db2ccd973c" ) % temporary variables
 
             % Prompt
+            fprintf( 1, "%s\n", "In debug mode.  To exit, type " + ...
+                "dbcont to keep changes, and dbquit to discard changes." )
             keyboard() %#ok<KEYBOARDFUN>
 
             % Repack
