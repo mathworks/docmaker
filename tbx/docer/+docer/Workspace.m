@@ -30,7 +30,7 @@ classdef Workspace < handle
 
             % Evaluate
             try
-                [varargout{1:nargout}] = evalin_gateway( obj, expr );
+                [~, varargout{1:nargout}] = evalinc_gateway( obj, expr, false );
             catch e
                 throwAsCaller( e )
             end
@@ -53,7 +53,7 @@ classdef Workspace < handle
 
             try
                 no = max( nargout, 1 ); % at least 1 output
-                [varargout{1:no}] = evalinc_gateway( obj, t );
+                [varargout{1:no}] = evalinc_gateway( obj, t, true );
             catch e
                 throwAsCaller( e )
             end
@@ -240,7 +240,7 @@ classdef Workspace < handle
 
         end % evalin_gateway
 
-        function varargout = evalinc_gateway( obj, t )
+        function varargout = evalinc_gateway( obj, t, c )
             %evalin_gateway  Evaluate expression in workspace
             %
             %   s = evalinc(w,e) evaluates the expression e in the
@@ -252,6 +252,7 @@ classdef Workspace < handle
             arguments
                 obj (1,1) % workspace
                 t (1,1) string % text
+                c (1,1) matlab.lang.OnOffSwitchState
             end
 
             % Split into statements
@@ -267,14 +268,17 @@ classdef Workspace < handle
                     strrep( s, """", """""" ) ); % escape and wrap
                 [varargout{1:nargout}] = evalin_clean( obj, es ); % evaluate
                 varargout{1} = string( varargout{1} ); % return string
+                if c == false % do not capture
+                    fprintf( 1, "%s", varargout{1} ); % echo
+                end
             else % multiple statements
                 assert( nargout == 1, "docer:InvalidArgument", ...
-                    "Cannot return outputs from multiple statements." )
-                varargout{1} = strings( size( s ) );
-                for ii = 1:numel( s )
+                    "Cannot return output(s) from multiple statements." )
+                varargout{1} = strings( size( s ) ); % preallocate
+                for ii = 1:numel( s ) % loop over statements
                     varargout{1}(ii) = evalinc_gateway( obj, s(ii), c );
                 end
-                varargout{1} = strjoin( varargout{1}, "" );
+                varargout{1} = strjoin( varargout{1}, "" ); % combine
             end
 
         end % evalinc_gateway

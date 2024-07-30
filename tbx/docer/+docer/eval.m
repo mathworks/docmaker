@@ -1,7 +1,7 @@
 function [output, modFigures] = eval( w, expr )
-%run  Run code in workspace, return output and figures
+%eval  Run code in workspace, return output and figures
 %
-%   [c,f] = run(w,e) runs the expression(s) e in the workspace w, and
+%   [c,f] = docer.eval(w,e) evals the expression e in the workspace w, and
 %   returns the console output c and the created or modified figures f.
 
 % Capture initial figures
@@ -24,7 +24,7 @@ newPrints = arrayfun( @docer.capture, newFigures, "UniformOutput", false );
 wasPrints = cell( size( newPrints ) ); % preallocate
 [tf, loc] = ismember( oldFigures, newFigures ); % match
 wasPrints(loc(tf)) = oldPrints(tf); % corresponding
-modFigures = newFigures(~cellfun( @isequal, newPrints, wasPrints )); % 
+modFigures = newFigures(~cellfun( @isequal, newPrints, wasPrints )); %
 modFigures = reshape( modFigures, [], 1 ); % return column vector
 
-end % run
+end % eval
