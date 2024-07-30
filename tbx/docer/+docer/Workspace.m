@@ -9,8 +9,8 @@ classdef Workspace < handle
     %   Copyright 2007-2024 The MathWorks, Inc.
 
     properties ( SetAccess = private )
-        Names = strings( 1, 0 ); % variable names
-        Values = cell( 1, 0 ); % variable values
+        Names (1,:) string % variable names
+        Values (1,:) cell % variable values
     end
 
     methods
