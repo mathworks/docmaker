@@ -33,7 +33,7 @@ classdef Workspace < handle
             % Evaluate
             try
                 [~, varargout{1:nargout}] = ... % do not return output
-                    evalin_top( obj, b, false ); % but do show
+                    evalc_multi( obj, b, false ); % but do show
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -59,7 +59,7 @@ classdef Workspace < handle
             % Evaluate
             try
                 [varargout{1:max( nargout, 1 )}] = ... % return output
-                    evalin_top( obj, b, true ); % but do not show
+                    evalc_multi( obj, b, true ); % but do not show
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -119,7 +119,7 @@ classdef Workspace < handle
 
             % Evaluate
             try
-                evalin_middle( obj, expr )
+                eval_single( obj, expr )
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -151,7 +151,7 @@ classdef Workspace < handle
 
             % Evaluate
             try
-                evalin_middle( obj, expr )
+                eval_single( obj, expr )
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -183,7 +183,7 @@ classdef Workspace < handle
 
             % Evaluate
             try
-                evalin_middle( obj, expr )
+                eval_single( obj, expr )
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -218,31 +218,33 @@ classdef Workspace < handle
 
     methods ( Access = private )
 
-        function varargout = evalin_top( obj, t, h )
-            %evalin_top  Top level of the evalin chain
+        function varargout = evalc_multi( obj, b, h )
+            %evalc_multi  Evaluate multiple statements and capture output
             %
-            %   o = evalin_top(w,t,c) evaluates the text t in the workspace
-            %   w and returns the command window output o.  The flag h
-            %   controls whether the command window output is hidden.
+            %   c = evalc_multi(w,b,h) evaluates the block b in the
+            %   workspace w and returns the command window output o.  The
+            %   flag h controls whether the command window output is also
+            %   hidden.
             %
-            %   [o,x,y,...] = evalin_top(w,t,c) also returns the outputs x,
-            %   y, ... from the evaluation.
+            %   [c,o1,o2,...] = evalc_multi(...) also returns the outputs
+            %   from the evaluation, if the block contains a single
+            %   statement.
             %
-            %   evalin_top splits the text t into statements, prepares the
-            %   statements for evaluation, and forwards each statement in
-            %   turn to evalin_middle.
+            %   evalc_multi splits the block b into statements, prepares
+            %   the statements for evaluation with capture, and forwards
+            %   each statement in turn to eval_single.
 
             arguments
                 obj (1,1) % workspace
-                t (1,1) string % text
-                h (1,1) matlab.lang.OnOffSwitchState % hide output
+                b (1,1) string % text
+                h (1,1) matlab.lang.OnOffSwitchState = true % hide output
             end
 
             % Split into statements
-            tr = mtree( t ); % parse text
+            tr = mtree( b ); % parse text
             if count( tr ) == 1 && iskind( tr, "ERR" )
                 error( "docer:InvalidArgument", ...
-                    "Cannot parse text ""%s"".", t )
+                    "Cannot parse text ""%s"".", b )
             end
             s = tree2str( tr ); % convert back to statements
             s = strsplit( s, newline ); % split lines
@@ -257,8 +259,8 @@ classdef Workspace < handle
             elseif isscalar( s ) % single statement
                 es = sprintf( "builtin(""evalc"",""%s"")", ...
                     strrep( s, """", """""" ) ); % escape and wrap
-                [varargout{1:nargout}] = evalin_middle( obj, es ); % evaluate
-                varargout{1} = string( varargout{1} ); % datatype
+                [varargout{1:nargout}] = eval_single( obj, es ); % evaluate
+                varargout{1} = string( varargout{1} ); % convert
                 if h == false % do not hide
                     fprintf( 1, "%s", varargout{1} ); % echo
                 end
@@ -267,35 +269,42 @@ classdef Workspace < handle
                     "Cannot return output(s) from multiple statements." )
                 varargout{1} = strings( size( s ) ); % preallocate
                 for ii = 1:numel( s ) % loop over statements
-                    varargout{1}(ii) = evalin_top( obj, s(ii), h ); % recurse
+                    varargout{1}(ii) = evalc_multi( obj, s(ii), h ); % recurse
                 end
                 varargout{1} = strjoin( varargout{1}, "" ); % combine outputs
             end
 
-        end % evalinc_gateway
+        end % evalc_multi
 
-        function varargout = evalin_middle( obj, s )
-            %evalin_middle  Middle level of the evalin chain
+        function varargout = eval_single( obj, s )
+            %eval_single  Evaluate a single statement
             %
-            %   evalin_middle(w,s) evaluates the statement s in the
+            %   eval_single(w,s) evaluates the statement s in the
             %   workspace w.
             %
-            %   evalin_middle provides the scope in which statements are
-            %   evaluated.  evalin_middle forwards the statement to
-            %   evalin_bottom, which then uses assignin("caller",...) and
-            %   evalin("caller",...) to unpack the variables, evaluate the
-            %   statement, and repack the variables.
-
-            [varargout{1:nargout}] = evalin_bottom( obj, s ); % bubble down
-
-        end % evalin_bottom
-
-        function varargout = evalin_bottom( obj, s )
-            %evalin_bottom  Bottom level of the evalin chain
+            %   [o1,o2,...] = eval_single(...) returns outputs o1, o2, ...
+            %   of the evaluation.
             %
-            %   evalin_bottom uses assignin("caller",...) and
-            %   evalin("caller",...) to unpack the variables, evaluate the
-            %   statement, and repack the variables in evalin_middle.
+            %   eval_single works in tandem with eval_do to evaluate the
+            %   statement in a context containing only the workspace
+            %   variables.
+
+            [varargout{1:nargout}] = eval_do( obj, s ); % do
+
+        end % eval_single
+
+        function varargout = eval_do( obj, s )
+            %eval_do  Evaluate a single statement in caller workspace
+            %
+            %   eval_do(w,s) evaluates unpacks the workspace w, evaluates
+            %   the statement s, and repacks the workspace, all in scope of
+            %   the caller function.
+            %
+            %   [o1,o2,...] = eval_do(...) returns outputs o1, o2, ... of
+            %   the evaluation.
+            %
+            %   eval_do is part of the implementation of eval_single and
+            %   should not be called directly.
 
             % Unpack
             builtin( "evalin", "caller", "clear" )
@@ -317,7 +326,7 @@ classdef Workspace < handle
             obj.Names = newNames;
             obj.Values = newValues;
 
-        end % evalin_bottom
+        end % eval_do
 
         function [db16a6c786, db2ccd973c] = keyboard_do( db16a6c786 )
             %keyboard  Prompt in workspace
