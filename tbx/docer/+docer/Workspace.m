@@ -15,7 +15,7 @@ classdef Workspace < handle
 
     methods
 
-        function varargout = evalin( obj, b )
+        function varargout = evalin( obj, block )
             %evalin  Evaluate block in workspace
             %
             %   evalin(w,b) evaluates the block b in the workspace w.
@@ -27,20 +27,20 @@ classdef Workspace < handle
 
             arguments
                 obj (1,1)
-                b (1,1) string
+                block (1,1) string
             end
 
             % Evaluate
             try
                 [~, varargout{1:nargout}] = ... % do not return output
-                    evalc_multi( obj, b, true ); % but do show
+                    evalc_multi( obj, block, true ); % but do show
             catch e
                 throwAsCaller( e ) % trim stack
             end
 
         end % evalin
 
-        function varargout = evalinc( obj, b )
+        function varargout = evalinc( obj, block )
             %evalinc  Evaluate block in workspace and capture output
             %
             %   c = evalinc(w,b) evaluates the block b in the
@@ -53,13 +53,13 @@ classdef Workspace < handle
 
             arguments
                 obj (1,1)
-                b (1,1) string
+                block (1,1) string
             end
 
             % Evaluate
             try
                 [varargout{1:max( nargout, 1 )}] = ... % return output
-                    evalc_multi( obj, b, false ); % but do not show
+                    evalc_multi( obj, block, false ); % but do not show
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -218,7 +218,7 @@ classdef Workspace < handle
 
     methods ( Access = private )
 
-        function varargout = evalc_multi( obj, b, show )
+        function varargout = evalc_multi( obj, block, show )
             %evalc_multi  Evaluate multiple statements and capture output
             %
             %   c = evalc_multi(w,b) evaluates the block b in the
@@ -237,45 +237,46 @@ classdef Workspace < handle
 
             arguments
                 obj (1,1) % workspace
-                b (1,1) string % text
+                block (1,1) string % text
                 show (1,1) matlab.lang.OnOffSwitchState = false % hide output
             end
 
             % Split into statements
-            tr = mtree( b ); % parse text
-            if count( tr ) == 1 && iskind( tr, "ERR" )
+            tree = mtree( block ); % parse text
+            if count( tree ) == 1 && iskind( tree, "ERR" )
                 error( "docer:InvalidArgument", ...
-                    "Cannot parse text ""%s"".", b )
+                    "Cannot parse text ""%s"".", block )
             end
-            s = tree2str( tr ); % convert back to statements
-            s = strsplit( s, newline ); % split lines
-            s(strlength( s ) == 0) = []; % remove empty lines
-            s = string( s(:) ); % convert and reshape
+            statements = tree2str( tree ); % convert back to statements
+            statements = strsplit( statements, newline ); % split lines
+            statements(strlength( statements ) == 0) = []; % remove empty lines
+            statements = string( statements(:) ); % convert and reshape
 
             % Evaluate
-            if isempty( s ) % no statements
+            if isempty( statements ) % no statements
                 assert( nargout == 1, "docer:InvalidArgument", ...
                     "Cannot return output(s) from no statements." )
                 varargout{1} = ""; % no output
-            elseif isscalar( s ) % single statement
-                es = sprintf( "builtin(""evalc"",""%s"")", ...
-                    strrep( s, """", """""" ) ); % escape and wrap
-                [varargout{1:nargout}] = eval_single( obj, es ); % evaluate
+            elseif isscalar( statements ) % single statement
+                escapedStatement = sprintf( "builtin(""evalc"",""%s"")", ...
+                    strrep( statements, """", """""" ) ); % escape and wrap
+                [varargout{1:nargout}] = ...
+                    eval_single( obj, escapedStatement ); % evaluate
                 varargout{1} = string( varargout{1} ); % convert
                 if show, fprintf( 1, "%s", varargout{1} ); end % echo
             else % multiple statements
                 assert( nargout == 1, "docer:InvalidArgument", ...
                     "Cannot return output(s) from multiple statements." )
-                varargout{1} = strings( size( s ) ); % preallocate
-                for ii = 1:numel( s ) % loop over statements
-                    varargout{1}(ii) = evalc_multi( obj, s(ii), show ); % recurse
+                varargout{1} = strings( size( statements ) ); % preallocate
+                for ii = 1:numel( statements ) % loop over statements
+                    varargout{1}(ii) = evalc_multi( obj, statements(ii), show ); % recurse
                 end
                 varargout{1} = strjoin( varargout{1}, "" ); % combine outputs
             end
 
         end % evalc_multi
 
-        function varargout = eval_single( obj, s )
+        function varargout = eval_single( obj, statement )
             %eval_single  Evaluate a single statement
             %
             %   eval_single(w,s) evaluates the statement s in the
@@ -288,11 +289,11 @@ classdef Workspace < handle
             %   statement in a context containing only the workspace
             %   variables.
 
-            [varargout{1:nargout}] = eval_do( obj, s ); % do
+            [varargout{1:nargout}] = eval_do( obj, statement ); % do
 
         end % eval_single
 
-        function varargout = eval_do( obj, s )
+        function varargout = eval_do( obj, statement )
             %eval_do  Evaluate a single statement in caller workspace
             %
             %   eval_do(w,s) evaluates unpacks the workspace w, evaluates
@@ -314,7 +315,7 @@ classdef Workspace < handle
             end
 
             % Evaluate
-            [varargout{1:nargout}] = builtin( "evalin", "caller", s );
+            [varargout{1:nargout}] = builtin( "evalin", "caller", statement );
 
             % Repack
             newNames = reshape( string( evalin( "caller", "who" ) ), 1, [] );
