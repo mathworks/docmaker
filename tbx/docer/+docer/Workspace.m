@@ -15,47 +15,51 @@ classdef Workspace < handle
 
     methods
 
-        function varargout = evalin( obj, expr )
-            %evalin  Evaluate expression in workspace
+        function varargout = evalin( obj, b )
+            %evalin  Evaluate block in workspace
             %
-            %   evalin(w,e) evaluates the expression e in the workspace w.
+            %   evalin(w,b) evaluates the block b in the workspace w.
             %
-            %   [o1,o2,...] = evalin(w,e) returns the outputs from the
-            %   evaluation.
+            %   [o1,o2,...] = evalin(w,b) returns the outputs from the
+            %   evaluation, if the block contains a single statement.
+            %
+            %   See also: evalin
 
             arguments
                 obj (1,1)
-                expr (1,1) string
+                b (1,1) string
             end
 
             % Evaluate
             try
                 [~, varargout{1:nargout}] = ... % do not return output
-                    evalin_top( obj, expr, false ); % but do show
+                    evalin_top( obj, b, false ); % but do show
             catch e
                 throwAsCaller( e ) % trim stack
             end
 
         end % evalin
 
-        function varargout = evalinc( obj, t )
-            %evalinc  Evaluate expression in workspace and capture output
+        function varargout = evalinc( obj, b )
+            %evalinc  Evaluate block in workspace and capture output
             %
-            %   s = evalinc(w,e) evaluates the expression e in the
-            %   workspace w and returns the console output s.
+            %   c = evalinc(w,b) evaluates the block b in the
+            %   workspace w and returns the command window output c.
             %
-            %   [s,o1,o2,...] = evalinc(w,e) also returns the outputs from
-            %   the evaluation.
+            %   [c,o1,o2,...] = evalinc(w,e) also returns the outputs from
+            %   the evaluation, if the block contains a single statement.
+            %
+            %   See also: evalc
 
             arguments
                 obj (1,1)
-                t (1,1) string
+                b (1,1) string
             end
 
             % Evaluate
             try
                 [varargout{1:max( nargout, 1 )}] = ... % return output
-                    evalin_top( obj, t, true ); % but do not show
+                    evalin_top( obj, b, true ); % but do not show
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -67,6 +71,8 @@ classdef Workspace < handle
             %
             %   assignin(w,n,v) assigns the value v to the variable n in
             %   the workspace w.
+            %
+            %   See also: assignin
 
             arguments
                 obj (1,1)
@@ -83,19 +89,33 @@ classdef Workspace < handle
 
         end % assignin
 
-        function clearvars( obj, varargin )
+        function clearvars( obj, args )
+            %clearvars  Clear workspace variables
+            %
+            %   clearvars(w,v1,v2,...) clears the variables v1, v2, ...
+            %   from the workspace w.
+            %
+            %   clearvars(w,"*") clears all variables.
+            %
+            %   clearvars(w,"x*") clears all variables beginning with x.
+            %
+            %   clearvars(w,"-except",v1,v2,...) clears all variables
+            %   except v1, v2, ...
+            %
+            %   Other options of clearvars are also supported.
+            %
+            %   See also: clearvars
 
-            % Check inputs
-            try
-                args = string( varargin );
-            catch
-                e = MException( "docer:InvalidArgument", ...
-                    "Variable names must be strings." );
-                throwAsCaller( e )
+            arguments
+                obj (1,1)
+            end
+
+            arguments ( Repeating )
+                args (1,1) string
             end
 
             % Form expression
-            expr = "clearvars" + sprintf( " %s", args );
+            expr = "clearvars" + sprintf( " %s", args{:} );
 
             % Evaluate
             try
@@ -106,23 +126,28 @@ classdef Workspace < handle
 
         end % clearvars
 
-        function save( obj, varargin )
+        function save( obj, args )
             %save  Save workspace variables to file
             %
             %   save(w,f) saves all variables in the workspace w to the
             %   file f.
+            %
+            %   save(w,f,v1,v2,...) saves only the variables v1, v2, ...
+            %
+            %   Other options of save are also supported.
+            %
+            %   See also: save
 
-            % Check inputs
-            try
-                args = string( varargin );
-            catch
-                e = MException( "docer:InvalidArgument", ...
-                    "Variable names must be strings." );
-                throwAsCaller( e )
+            arguments
+                obj (1,1)
+            end
+
+            arguments ( Repeating )
+                args (1,1) string
             end
 
             % Form expression
-            expr = "save" + sprintf( " %s", args );
+            expr = "save" + sprintf( " %s", args{:} );
 
             % Evaluate
             try
@@ -133,7 +158,7 @@ classdef Workspace < handle
 
         end % save
 
-    end
+    end % methods
 
     methods ( Hidden )
 
@@ -145,6 +170,8 @@ classdef Workspace < handle
             %   To quit debugging and commit changes: dbcont
             %
             %   To quit debugging without committing: dbquit
+            %
+            %   See also: keyboard
 
             % Debug
             try
@@ -159,22 +186,28 @@ classdef Workspace < handle
 
     methods ( Static )
 
-        function obj = load( varargin )
+        function obj = load( obj, args )
+            %load  Load workspace variables from file
+            %
+            %   load(w,f) loads variables from the file f to the workspace
+            %   w.
+            %
+            %   load(w,f,v1,v2,...) loads the variables v1, v2, ...
+            %
+            %   Other options of load are also supported.
+            %
+            %   See also: load
 
-            % Check inputs
-            try
-                args = string( varargin );
-            catch
-                e = MException( "docer:InvalidArgument", ...
-                    "Variable names must be strings." );
-                throwAsCaller( e )
+            arguments
+                obj (1,1)
+            end
+
+            arguments ( Repeating )
+                args (1,1) string
             end
 
             % Form expression
-            expr = "load" + sprintf( " %s", args );
-
-            % Create
-            obj = docer.Workspace();
+            expr = "load" + sprintf( " %s", args{:} );
 
             % Evaluate
             try
@@ -196,8 +229,8 @@ classdef Workspace < handle
             %   w and returns the command window output o.  The flag h
             %   controls whether the command window output is hidden.
             %
-            %   [o,x,y,...] = evalin_top(w,t,c) also returns the
-            %   outputs x, y, ... from the evaluation.
+            %   [o,x,y,...] = evalin_top(w,t,c) also returns the outputs x,
+            %   y, ... from the evaluation.
             %
             %   evalin_top splits the text t into statements, prepares the
             %   statements for evaluation, and forwards each statement in
