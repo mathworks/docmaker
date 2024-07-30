@@ -33,7 +33,7 @@ classdef Workspace < handle
             % Evaluate
             try
                 [~, varargout{1:nargout}] = ... % do not return output
-                    evalc_multi( obj, b, false ); % but do show
+                    evalc_multi( obj, b, true ); % but do show
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -59,7 +59,7 @@ classdef Workspace < handle
             % Evaluate
             try
                 [varargout{1:max( nargout, 1 )}] = ... % return output
-                    evalc_multi( obj, b, true ); % but do not show
+                    evalc_multi( obj, b, false ); % but do not show
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -218,13 +218,14 @@ classdef Workspace < handle
 
     methods ( Access = private )
 
-        function varargout = evalc_multi( obj, b, h )
+        function varargout = evalc_multi( obj, b, show )
             %evalc_multi  Evaluate multiple statements and capture output
             %
-            %   c = evalc_multi(w,b,h) evaluates the block b in the
-            %   workspace w and returns the command window output o.  The
-            %   flag h controls whether the command window output is also
-            %   hidden.
+            %   c = evalc_multi(w,b) evaluates the block b in the
+            %   workspace w and returns the command window output o.
+            %
+            %   c = evalc_multi(w,b,true) also shows the command window
+            %   output.
             %
             %   [c,o1,o2,...] = evalc_multi(...) also returns the outputs
             %   from the evaluation, if the block contains a single
@@ -237,7 +238,7 @@ classdef Workspace < handle
             arguments
                 obj (1,1) % workspace
                 b (1,1) string % text
-                h (1,1) matlab.lang.OnOffSwitchState = true % hide output
+                show (1,1) matlab.lang.OnOffSwitchState = false % hide output
             end
 
             % Split into statements
@@ -261,15 +262,13 @@ classdef Workspace < handle
                     strrep( s, """", """""" ) ); % escape and wrap
                 [varargout{1:nargout}] = eval_single( obj, es ); % evaluate
                 varargout{1} = string( varargout{1} ); % convert
-                if h == false % do not hide
-                    fprintf( 1, "%s", varargout{1} ); % echo
-                end
+                if show, fprintf( 1, "%s", varargout{1} ); end % echo
             else % multiple statements
                 assert( nargout == 1, "docer:InvalidArgument", ...
                     "Cannot return output(s) from multiple statements." )
                 varargout{1} = strings( size( s ) ); % preallocate
                 for ii = 1:numel( s ) % loop over statements
-                    varargout{1}(ii) = evalc_multi( obj, s(ii), h ); % recurse
+                    varargout{1}(ii) = evalc_multi( obj, s(ii), show ); % recurse
                 end
                 varargout{1} = strjoin( varargout{1}, "" ); % combine outputs
             end
