@@ -1,4 +1,4 @@
-function s = encode( figure )
+function s = encode( fig )
 %encode  Encode image data
 %
 %   s = docer.encode(f) encodes the figure f to the string s using Base
@@ -11,25 +11,25 @@ function s = encode( figure )
 %   Copyright 2024 The MathWorks, Inc.
 
 arguments
-    figure (1,1) matlab.ui.Figure
+    fig (1,1) matlab.ui.Figure
 end
 
 % Use PNG file format
 format = "png";
 
 % Manage transparency
-transparent = isequal( figure.Color, "none" );
+transparent = isequal( fig.Color, "none" );
 if transparent
     c = get( 0, "DefaultFigureColor" );
-    figure.Color = c;
+    fig.Color = c;
     args = {"Transparency", c};
-    cu = onCleanup( @()set(figure,"Color","none") );
+    cu = onCleanup( @()set(fig,"Color","none") );
 else
     args = cell( 1, 0 );
 end
 
 % Capture
-x = docer.capture( figure );
+x = docer.capture( fig );
 
 % Write to temporary file
 filename = tempname() + "." + format; % filename
