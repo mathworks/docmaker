@@ -32,4 +32,9 @@ if nargin > 1
     s = [s; docer.dirstruct( varargin{:} )];
 end
 
+% Deduplicate
+f = arrayfun( @(x)fullfile(x.folder,x.name), s, "UniformOutput", false );
+[~, i] = unique( f, "stable" );
+s = s(i);
+
 end % dirstruct
