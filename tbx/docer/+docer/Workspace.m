@@ -119,7 +119,7 @@ classdef Workspace < handle
 
             % Evaluate
             try
-                eval_single( obj, expr )
+                eval_statement( obj, expr )
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -151,7 +151,7 @@ classdef Workspace < handle
 
             % Evaluate
             try
-                eval_single( obj, expr )
+                eval_statement( obj, expr )
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -183,7 +183,7 @@ classdef Workspace < handle
 
             % Evaluate
             try
-                eval_single( obj, expr )
+                eval_statement( obj, expr )
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -233,7 +233,7 @@ classdef Workspace < handle
             %
             %   evalc_block splits the block b into statements, prepares
             %   the statements for evaluation with capture, and forwards
-            %   each statement in turn to eval_single.
+            %   each statement in turn to eval_statement.
 
             arguments
                 obj (1,1) % workspace
@@ -261,7 +261,7 @@ classdef Workspace < handle
                 escapedStatement = sprintf( "builtin(""evalc"",""%s"")", ...
                     strrep( statements, """", """""" ) ); % escape and wrap
                 [varargout{1:nargout}] = ...
-                    eval_single( obj, escapedStatement ); % evaluate
+                    eval_statement( obj, escapedStatement ); % evaluate
                 varargout{1} = string( varargout{1} ); % convert
                 if show, fprintf( 1, "%s", varargout{1} ); end % echo
             else % multiple statements
@@ -276,22 +276,22 @@ classdef Workspace < handle
 
         end % evalc_block
 
-        function varargout = eval_single( obj, statement )
-            %eval_single  Evaluate a single statement
+        function varargout = eval_statement( obj, statement )
+            %eval_statement  Evaluate a single statement
             %
-            %   eval_single(w,s) evaluates the statement s in the
+            %   eval_statement(w,s) evaluates the statement s in the
             %   workspace w.
             %
-            %   [o1,o2,...] = eval_single(...) returns outputs o1, o2, ...
-            %   of the evaluation.
+            %   [o1,o2,...] = eval_statement(...) returns outputs o1, o2,
+            %   ... of the evaluation.
             %
-            %   eval_single works in tandem with eval_do to evaluate the
+            %   eval_statement works in tandem with eval_do to evaluate the
             %   statement in a context containing only the workspace
             %   variables.
 
             [varargout{1:nargout}] = eval_do( obj, statement ); % do
 
-        end % eval_single
+        end % eval_statement
 
         function varargout = eval_do( obj, statement )
             %eval_do  Evaluate a single statement in caller workspace
@@ -303,7 +303,7 @@ classdef Workspace < handle
             %   [o1,o2,...] = eval_do(...) returns outputs o1, o2, ... of
             %   the evaluation.
             %
-            %   eval_do is part of the implementation of eval_single and
+            %   eval_do is part of the implementation of eval_statement and
             %   should not be called directly.
 
             % Unpack
