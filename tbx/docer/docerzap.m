@@ -6,7 +6,7 @@ function docerzap( filename, options )
 %   string including wildcards, a cellstr or string array, or a dir struct.
 %
 %   docerzap(...,"Level",level) specifies the batching level.  With level 0
-%   (default), all blocks in the document are executed in a single batch.
+%   (default), all blocks in a document are executed in a single batch.
 %   With level n, each level-n heading is executed as a separate batch,
 %   with the workspace cleared and figures closed between batches.
 %
