@@ -23,8 +23,7 @@ xToc = docer.md2xml( mToc ); % parse
 docer.linkrep( xToc, ".md", ".html" ) % replace links
 
 % Extract name
-h1 = xToc.getElementsByTagName( "h1" ); % headings
-h1 = docer.list2array( h1 );
+h1 = docer.list2array( xToc.getElementsByTagName( "h1" ) ); % headings
 if isempty( h1 )
     name = "Unknown Toolbox"; % unknown
 else

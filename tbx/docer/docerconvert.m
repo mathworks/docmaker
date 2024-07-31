@@ -135,8 +135,7 @@ meta.setAttribute( "content", "MATLAB " + matlabRelease().Release + ...
     " with " + v(1).Name + " " + v(1).Version );
 
 % Add title
-h1 = getElementsByTagName( xml, "h1" );
-h1 = docer.list2array( h1 );
+h1 = docer.list2array( getElementsByTagName( xml, "h1" ) );
 if ~isempty( h1 )
     title = doc.createElement( "title" );
     title.TextContent = docer.rmemoji( h1(1).TextContent );
@@ -178,8 +177,7 @@ appendChild( main, div );
 
 % Remove permalinks (anchors with attribute "aria-label" starting with
 % "Permalink: ")
-anchors = doc.getElementsByTagName( "a" );
-anchors = docer.list2array( anchors );
+anchors = docer.list2array( doc.getElementsByTagName( "a" ) );
 for ii = 1:numel( anchors )
     anchor = anchors(ii);
     if anchor.hasAttribute( "aria-label" ) && startsWith( ...

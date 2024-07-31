@@ -15,8 +15,7 @@ arguments
     new (1,1) string
 end
 
-aa = doc.getElementsByTagName( "a" );
-aa = docer.list2array( aa );
+aa = docer.list2array( doc.getElementsByTagName( "a" ) );
 for ii = 1:numel( aa )
     a = aa(ii);
     if a.hasAttribute( "href" )
