@@ -67,10 +67,10 @@ allDivs = docer.list2array( doc.getElementsByTagName( "div" ) );
 root = doc.getDocumentElement();
 from = root; % start from root
 if mode == "auto"
-    zap = true; % on
+    zapping = true; % on
     zapLevel = 0; % lowest
 else
-    zap = false; % off
+    zapping = false; % off
     zapLevel = 6; % highest
 end
 oldFigures = docer.figures(); % existing figures
@@ -91,9 +91,9 @@ while true
     end
 
     % Update zap level
-    if fromLevel ~= 0 && ( fromLevel <= zapLevel || zap == false )
+    if fromLevel ~= 0 && ( fromLevel <= zapLevel || zapping == false )
         zapLevel = fromLevel;
-        zap = endsWith( from.TextContent, char( 9889 ) );
+        zapping = endsWith( from.TextContent, char( 9889 ) );
     end
 
     % Find divs before next heading
@@ -107,7 +107,7 @@ while true
     % Zap source divs, remove old output divs
     for ii = 1:numel( divs )
         div = divs( ii );
-        if zap && div.hasAttribute( "class" ) && contains( ... % MATLAB input
+        if zapping && div.hasAttribute( "class" ) && contains( ... % MATLAB input
                 div.getAttribute( "class" ), "highlight-source-matlab" )
             zapDiv( div, w ) % zap
         elseif div.hasAttribute( "class" ) && contains( ... % MATLAB output
