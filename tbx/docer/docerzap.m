@@ -3,7 +3,7 @@ function docerzap( filename, wslevel, zap )
 arguments
     filename (1,1) string {mustBeFile}
     wslevel (1,1) double {mustBeInteger,mustBeInRange(wslevel,0,6)} = 0
-    zap (1,1) matlab.lang.OnOffSwitchState = "off"
+    zap (1,1) matlab.lang.OnOffSwitchState = "on"
 end
 
 % Read from file
@@ -12,42 +12,48 @@ parser.Configuration.AllowDoctype = true;
 doc = parser.parseFile( filename );
 
 % Find all headings and divs
-allHeadings = cell( 6, 1 ); % preallocate
-for ii = 1:numel( allHeadings )
+nHeadings = 6; % # HTML heading levels
+allHeadings = cell( nHeadings, 1 ); % preallocate
+for ii = 1:nHeadings
     allHeadings{ii} = elements( doc.getElementsByTagName( "h"+ii ) );
 end
 allDivs = elements( doc.getElementsByTagName( "div" ) );
-tf = true( size( allDivs ) );
-for ii = 1:numel( allDivs )
-    tf(ii) = allDivs(ii).hasAttribute( "class" ) && ( ...
-        contains( allDivs(ii).getAttribute( "class" ), "highlight-source-matlab" ) || ...
-        contains( allDivs(ii).getAttribute( "class" ), "highlight-output-matlab" ) );
-end
-allDivs(~tf) = [];
 
-from = doc.getDocumentElement; % start from root
+% Initialize
+root = doc.getDocumentElement();
+oldFigures = docer.figures();
+from = root; % start from root
 if zap, zaplevel = 0; else, zaplevel = 6; end
+
 while ~isempty( from )
+
     % Get current level
-    if from == doc.getDocumentElement()
+    if from == root
         fromlevel = 0;
     else
         fromlevel = sscanf( from.TagName, "h%d" );
     end
+
     % Find next heading
     to = getNextHeading( from, allHeadings );
+
     % Find divs before next heading
     if isempty( to )
         divs = allDivs(isAfter( allDivs, from ));
     else
         divs = allDivs(isBetween( allDivs, from, to ));
     end
-    % Create fresh workspace if necessary
+
+    % Reset if necessary
     if fromlevel <= wslevel
         w = docer.Workspace();
+        delete( setdiff( docer.figures(), oldFigures ) )
     end
+
     % Update zap level
-    if fromlevel <= zaplevel
+    if fromlevel == 0
+        % already initialized
+    elseif fromlevel < zaplevel
         zaplevel = fromlevel;
         zap = endsWith( from.TextContent, char( 9889 ) );
     elseif fromlevel == zaplevel
@@ -57,26 +63,48 @@ while ~isempty( from )
         zap = endsWith( from.TextContent, char( 9889 ) );
     end
 
-    
+    % Process divs
+    for ii = 1:numel( divs )
+        div = divs( ii );
+        if zap && div.hasAttribute( "class" ) && contains( ... % MATLAB input
+                div.getAttribute( "class" ), "highlight-source-matlab" )
+            docer.zap( div, w ) % zap
+        elseif div.hasAttribute( "class" ) && contains( ... % MATLAB output
+                div.getAttribute( "class" ), "highlight-output-matlab" )
+            div.getParentNode().removeChild( div ); % delete
+            allDivs(allDivs == div) = [];
+        end
+    end
 
-
-
+    % Advance
     from = to;
 
 end % while
 
+% Clean up
+delete( setdiff( docer.figures(), oldFigures ) )
+
+% Write to file
+writer = matlab.io.xml.dom.DOMWriter();
+writer.writeToFile( doc, filename );
+
 end % docerzap
 
 function ee = elements( nn )
+%elements  Convert dynamic node list to static element vector
 
 ee = matlab.io.xml.dom.Element.empty( 0, 1 );
 for ii = 1:nn.Length
-    ee(ii) = nn.node( ii );
+    ee(ii,1) = nn.node( ii );
 end
 
 end % elements
 
 function nextHeading = getNextHeading( e, allHeadings )
+%getNextHeading  Get next heading
+%
+%   h = getNextHeading(e,ah) returns the next heading h from among all
+%   headings ah after the element e.
 
 nextHeading = [];
 for ii = 1:numel( allHeadings )
@@ -91,26 +119,23 @@ for ii = 1:numel( allHeadings )
     end
 end
 
-end
+end % getNextHeading
 
 function tf = isAfter( a, b )
 %isAfter  True if an element is after another
 %
 %   tf = isAfter(a,b) is true if a is after b, and false otherwise.
+%
+%   https://www.w3schools.com/jsref/met_node_comparedocumentposition.asp
 
 [a, b] = expand( a, b ); % expand scalars
 tf = true( size( a ) ); % preallocate
 for ii = 1:numel( a )
-    tf(ii) = bitget( uint8( compareDocumentPosition( b(ii), a(ii) ) ), 3 );
+    c = uint8( compareDocumentPosition( b(ii), a(ii) ) );
+    tf(ii) = bitget( c, 1 ) == false && bitget( c, 3 ) == true;
 end
 
-end
-
-function tf = isBefore( a, b )
-
-tf = isAfter( b, a );
-
-end % isBefore
+end % isAfter
 
 function tf = isBetween( a, b, c )
 %isBetween  True if an element is between two others
@@ -125,6 +150,12 @@ end % isBetween
 
 function varargout = expand( varargin )
 %expand  Perform scalar expansion
+%
+%   [a,b] = expand(a,b) expands scalar a to match the size of nonscalar b,
+%   or vice versa.
+%
+%   [a,b,c,...] = expand(a,b,c,...) performs scalar expansion on as many
+%   variables as requested.
 
 for ii = 1:nargin
     for jj = ii+1:nargin
