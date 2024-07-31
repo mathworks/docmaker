@@ -67,8 +67,6 @@ uicontrol('Parent',g,'Background','y')
 set(g,'Widths',[-1 100 -2],'Heights',[-1 100])
 ```
 
-![Output](griddemo1.png)
-
 ## See also
 
 [:house:](index.md) | :arrow_right: [HBox](hbox.md) | :arrow_down: [VBox](vbox.md) | :symbols: [Grid](grid.md) | :card_index: [CardPanel](CardPanel.md) | :point_right: [TabPanel](TabPanel.md) | :scroll: [ScrollingPanel](ScrollingPanel.md) | :white_square_button: [BoxPanel](BoxPanel.md) | :vertical_traffic_light: [VButtonBox](VButtonBox.md) | :traffic_light: [HButtonBox](VButtonBox.md)

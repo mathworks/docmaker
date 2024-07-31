@@ -318,7 +318,7 @@ classdef Workspace < handle
             [varargout{1:nargout}] = builtin( "evalin", "caller", statement );
 
             % Repack
-            newNames = reshape( string( evalin( "caller", "who" ) ), 1, [] );
+            newNames = string( evalin( "caller", "who" ) );
             newValues = cell( size( newNames ) ); % preallocate
             for ii = 1:numel( newNames )
                 newValues{ii} = builtin( "evalin", "caller", newNames(ii) );
@@ -357,8 +357,8 @@ classdef Workspace < handle
             assert( ~exist( "db16a6c786", "var" ) && ~exist( "db2ccd973c", "var" ), ...
                 "docer:InvalidArgument", "%s", ...
                 "Cannot commit workspace with reserved variable name(s)." )
-            db16a6c786 = who(); % variable names
-            db16a6c786 = reshape( string( db16a6c786 ), 1, [] );
+            db16a6c786 = string( who() ); % variable names
+            db16a6c786 = db16a6c786(:);
             db2ccd973c = eval( "{" + strjoin( db16a6c786, " " ) + "}" );
 
         end % keyboard_do

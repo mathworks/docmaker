@@ -5,6 +5,8 @@ function docerconvert( sMd, options )
 %   be a char or string including wildcards, a cellstr or string array, or
 %   a dir struct.
 %
+%   Multiple documents can also be specified as docerconvert(md1,md2,...).
+%
 %   docerconvert(...,"Stylesheets",css) includes the stylesheet(s) css.
 %   Stylesheets "github-markdown.css" and "matlaby.css" are always
 %   included.
@@ -103,7 +105,7 @@ end
 end % docerconvert
 
 function doc = convert( fMd, fCss, fJs )
-%convert  Convert Markdown file to HTML with stylesheets and scripts
+%convert  Convert Markdown document to HTML with stylesheets and scripts
 %
 %  convert(md,css,js) converts the Markdown file md to HTML and includes
 %  references to the stylesheets css and scripts js.
@@ -138,8 +140,9 @@ meta.setAttribute( "content", "MATLAB " + matlabRelease().Release + ...
 h1 = docer.list2array( getElementsByTagName( xml, "h1" ) );
 if ~isempty( h1 )
     title = doc.createElement( "title" );
-    title.TextContent = docer.rmemoji( h1(1).TextContent );
     head.appendChild( title );
+    titleText = doc.createTextNode( docer.rmemoji( h1(1).TextContent ) );
+    title.appendChild( titleText );
 end
 
 % Add stylesheets

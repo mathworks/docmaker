@@ -1,9 +1,12 @@
-function docerzap( filename, options )
-%docerzap  Execute code blocks and insert textual and graphical results
+function docerzap( sHtml, options )
+%docerzap  Execute MATLAB code blocks in HTML documents, and insert results
 %
-%   docerzap(html) executes MATLAB code blocks in the HTML document(s) html
-%   and inserts the textual and graphical output.  html can be a char or
-%   string including wildcards, a cellstr or string array, or a dir struct.
+%   docerzap(html) executes MATLAB code blocks in the HTML document(s)
+%   html, and inserts the textual and graphical output.  html can be a char
+%   or string including wildcards, a cellstr or string array, or a dir
+%   struct.
+%
+%   Multiple documents can also be specified as docerzap(html1,html2,...).
 %
 %   docerzap(...,"Level",level) specifies the batching level.  With level 0
 %   (default), all blocks in a document are executed in a single batch.
@@ -17,16 +20,46 @@ function docerzap( filename, options )
 
 %   Copyright 2024 The MathWorks, Inc.
 
+arguments ( Repeating )
+    sHtml
+end
+
 arguments
-    filename (1,1) string {mustBeFile}
     options.Level (1,1) double {mustBeInteger,mustBeInRange(options.Level,0,6)} = 0
     options.Mode (1,1) string {mustBeMember(options.Mode,["auto","manual"])} = "auto"
 end
 
+% Check documents
+sHtml = docer.dir( sHtml{:} );
+assert( all( docer.extensions( sHtml ) == ".html" ), ...
+    "docer:InvalidArgument", ...
+    "HTML files must all have extension .html." )
+if isempty( sHtml ), return, end
+
+% Execute and insert
+for ii = 1:numel( sHtml ) % loop over files
+    fHtml = fullfile( sHtml(ii).folder, sHtml(ii).name ); % this file
+    try
+        zap( fHtml, options.Level, options.Mode )
+        fprintf( 1, "[%s] %s\n", char( 9889 ), fHtml );
+    catch e
+        warning( e.identifier, '%s', e.message ) % rethrow as warning
+    end
+end
+
+end % docerzap
+
+function zap( html, batchLevel, mode )
+%zap  Execute MATLAB code blocks in HTML document, and insert results
+%
+%   docerzap(html,level,mode) executes MATLAB code blocks in the HTML
+%   document html with the specified batching level and execution mode, and
+%   inserts the textual and graphical output.
+
 % Read from file
 parser = matlab.io.xml.dom.Parser();
 parser.Configuration.AllowDoctype = true;
-doc = parser.parseFile( filename );
+doc = parser.parseFile( html );
 
 % Find all headings and divs
 nHeadings = 6; % # HTML heading levels
@@ -39,11 +72,11 @@ allDivs = docer.list2array( doc.getElementsByTagName( "div" ) );
 % Initialize
 root = doc.getDocumentElement();
 from = root; % start from root
-if options.Mode == "auto"
-    zap = true; % on
+if mode == "auto"
+    zapping = true; % on
     zapLevel = 0; % lowest
 else
-    zap = false; % off
+    zapping = false; % off
     zapLevel = 6; % highest
 end
 oldFigures = docer.figures(); % existing figures
@@ -58,15 +91,15 @@ while true
     end
 
     % Update workspace and figures
-    if fromLevel <= options.Level % reset
+    if fromLevel <= batchLevel % reset
         w = docer.Workspace();
         delete( setdiff( docer.figures(), oldFigures ) )
     end
 
     % Update zap level
-    if fromLevel ~= 0 && ( fromLevel <= zapLevel || zap == false )
+    if fromLevel ~= 0 && ( fromLevel <= zapLevel || zapping == false )
         zapLevel = fromLevel;
-        zap = endsWith( from.TextContent, char( 9889 ) );
+        zapping = endsWith( from.TextContent, char( 9889 ) );
     end
 
     % Find divs before next heading
@@ -80,9 +113,9 @@ while true
     % Zap source divs, remove old output divs
     for ii = 1:numel( divs )
         div = divs( ii );
-        if zap && div.hasAttribute( "class" ) && contains( ... % MATLAB input
+        if zapping && div.hasAttribute( "class" ) && contains( ... % MATLAB input
                 div.getAttribute( "class" ), "highlight-source-matlab" )
-            docer.zap( div, w ) % zap
+            zapDiv( div, w ) % zap
         elseif div.hasAttribute( "class" ) && contains( ... % MATLAB output
                 div.getAttribute( "class" ), "highlight-output-matlab" )
             div.getParentNode().removeChild( div ); % remove
@@ -103,19 +136,9 @@ delete( setdiff( docer.figures(), oldFigures ) )
 
 % Write to file
 writer = matlab.io.xml.dom.DOMWriter();
-writer.writeToFile( doc, filename );
+writer.writeToFile( doc, html );
 
 end % docerzap
-
-function ee = elements( nn )
-%elements  Convert dynamic node list to static element vector
-
-ee = matlab.io.xml.dom.Element.empty( 0, 1 );
-for ii = 1:nn.Length
-    ee(ii,1) = nn.node( ii );
-end
-
-end % elements
 
 function nextHeading = getNextHeading( e, allHeadings )
 %getNextHeading  Get next heading
@@ -188,3 +211,100 @@ end
 varargout = varargin; % return; varargin is not a valid output
 
 end % expand
+
+function zapDiv( div, w )
+%zap  Execute MATLAB code and insert textual and graphical output
+%
+%   zapDiv(d,w) executes the MATLAB code block from the div d in the
+%   workspace w, and inserts the textual and graphical output between d and
+%   its next sibling.
+%
+%   Textual output is text written to the command window.  Graphical output
+%   is new figures or changes to existing figures.
+
+% Get related helper elements
+doc = div.getOwnerDocument(); % for node creation
+next = div.getNextSibling(); % for result insertion
+
+% Extract code
+inDiv = div;
+inString = div.TextContent;
+
+% Capture initial figures and their 'prints
+oldFigures = docer.figures();
+oldPrints = arrayfun( @docer.capture, oldFigures, "UniformOutput", false );
+
+% Evaluate expression and capture output
+try
+    outString = string( evalinc( w, inString ) );
+    ok = true; % ok
+catch e
+    warning( e.identifier, "%s", e.message ) % rethrow as warning
+    outString = e.message;
+    ok = false; % error
+end
+
+% Capture final figures and their 'prints
+newFigures = docer.figures();
+newPrints = arrayfun( @docer.capture, newFigures, "UniformOutput", false );
+
+% Return new and modified figures
+wasPrints = cell( size( newPrints ) ); % preallocate
+[tf, loc] = ismember( oldFigures, newFigures ); % match
+wasPrints(loc(tf)) = oldPrints(tf); % corresponding
+outFigures = newFigures(~cellfun( @isequal, newPrints, wasPrints )); % select
+outFigures = outFigures(:); % return column vector
+
+% Add text output
+if strlength( outString ) > 0
+
+    % Strip out markup
+    parser = matlab.io.xml.dom.Parser();
+    outDoc = parser.parseString( "<pre>" + strtrim( outString ) + "</pre>" );
+    outString = strtrim( outDoc.getDocumentElement().TextContent );
+
+    % Create HTML elements div, pre, text
+    outDiv = doc.createElement( "div" );
+    outDiv.setAttribute( "class", "highlight highlight-output-matlab" );
+    outPre = doc.createElement( "pre" );
+    outPre.setAttribute( "style", "background-color:var(--bgColor-default);" );
+    if ~ok % error, style text color
+        outPre.setAttribute( "style", outPre.getAttribute( "style" ) + ...
+            " color:var(--fgColor-danger);" );
+    end
+    outDiv.appendChild( outPre );
+    outText = doc.createTextNode( outString );
+    outPre.appendChild( outText );
+
+    % Add output to document
+    if isempty( next )
+        inDiv.getParentNode().appendChild( outDiv ); % end
+    else
+        inDiv.getParentNode().insertBefore( outDiv, next );
+    end
+
+end
+
+% Add figure output
+for jj = 1:numel( outFigures )
+
+    outFigure = outFigures(jj);
+
+    % Create HTML elements div, img
+    outDiv = doc.createElement( "div" );
+    outDiv.setAttribute( "class", "highlight highlight-output-matlab" );
+    outImg = doc.createElement( "img" );
+    outImg.setAttribute( "src", "data:image/png;base64, " + ...
+        docer.encode( outFigure ) );
+    outDiv.appendChild( outImg );
+
+    % Add output to document
+    if isempty( next )
+        inDiv.getParentNode().appendChild( outDiv ); % end
+    else
+        inDiv.getParentNode().insertBefore( outDiv, next );
+    end
+
+end
+
+end % zapDiv
