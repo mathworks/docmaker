@@ -1,21 +1,21 @@
 function docerrun( sHtml, options )
-%docerzap  Run MATLAB code in HTML documents and insert output
+%docerrun  Run MATLAB code in HTML documents and insert output
 %
-%   docerzap(html) runs MATLAB code blocks in the HTML document(s) html,
+%   docerrun(html) runs MATLAB code blocks in the HTML document(s) html,
 %   and inserts the textual and graphical output.  html can be a char or
 %   string including wildcards, a cellstr or string array, or a dir struct.
 %
 %   Textual output is text written to the command window.  Graphical output
 %   is new figures or changes to existing figures.
 %
-%   Multiple documents can also be specified as docerzap(html1,html2,...).
+%   Multiple documents can also be specified as docerrun(html1,html2,...).
 %
-%   docerzap(...,"Level",level) specifies the batching level.  With level 0
+%   docerrun(...,"Level",level) specifies the batching level.  With level 0
 %   (default), all blocks in a document are run in a single batch. With
 %   level n, each level-n heading is run as a separate batch, with the
 %   workspace cleared and figures closed between batches.
 %
-%   docerzap(...,"Mode",mode) specifies the execution mode.  With mode
+%   docerrun(...,"Mode",mode) specifies the execution mode.  With mode
 %   "auto" (default), all blocks are run.  With mode "manual", only blocks
 %   under headings marked with :zap: are run.  Higher level :zap:s apply to
 %   lower level headings.
@@ -49,14 +49,14 @@ for ii = 1:numel( sHtml ) % loop over files
     end
 end
 
-end % docerzap
+end % docerrun
 
 function zap( html, batchLevel, mode )
 %zap  Run MATLAB code in an HTML document and insert output
 %
-%   docerzap(html,level,mode) runs MATLAB code blocks in the HTML document
-%   html with the specified batching level and execution mode, and inserts
-%   the textual and graphical output.
+%   zap(html,level,mode) runs MATLAB code blocks in the HTML document html
+%   with the specified batching level and execution mode, and inserts the
+%   textual and graphical output.
 
 % Read from file
 parser = matlab.io.xml.dom.Parser();
@@ -140,7 +140,7 @@ delete( setdiff( docer.figures(), oldFigures ) )
 writer = matlab.io.xml.dom.DOMWriter();
 writer.writeToFile( doc, html );
 
-end % docerzap
+end % zap
 
 function nextHeading = getNextHeading( e, allHeadings )
 %getNextHeading  Get next heading
