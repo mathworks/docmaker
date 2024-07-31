@@ -33,7 +33,7 @@ classdef Workspace < handle
             % Evaluate
             try
                 [~, varargout{1:nargout}] = ... % do not return output
-                    evalc_multi( obj, block, true ); % but do show
+                    evalc_block( obj, block, true ); % but do show
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -44,7 +44,7 @@ classdef Workspace < handle
             %evalinc  Evaluate block in workspace and capture output
             %
             %   c = evalinc(w,b) evaluates the block b in the
-            %   workspace w and returns the command window output c.
+            %   workspace w, and returns the command window output c.
             %
             %   [c,o1,o2,...] = evalinc(w,e) also returns the outputs from
             %   the evaluation, if the block contains a single statement.
@@ -59,7 +59,7 @@ classdef Workspace < handle
             % Evaluate
             try
                 [varargout{1:max( nargout, 1 )}] = ... % return output
-                    evalc_multi( obj, block, false ); % but do not show
+                    evalc_block( obj, block, false ); % but do not show
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -119,7 +119,7 @@ classdef Workspace < handle
 
             % Evaluate
             try
-                eval_single( obj, expr )
+                eval_statement( obj, expr )
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -151,7 +151,7 @@ classdef Workspace < handle
 
             % Evaluate
             try
-                eval_single( obj, expr )
+                eval_statement( obj, expr )
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -183,7 +183,7 @@ classdef Workspace < handle
 
             % Evaluate
             try
-                eval_single( obj, expr )
+                eval_statement( obj, expr )
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -218,22 +218,22 @@ classdef Workspace < handle
 
     methods ( Access = private )
 
-        function varargout = evalc_multi( obj, block, show )
-            %evalc_multi  Evaluate multiple statements and capture output
+        function varargout = evalc_block( obj, block, show )
+            %evalc_block  Evaluate multiple statements and capture output
             %
-            %   c = evalc_multi(w,b) evaluates the block b in the
-            %   workspace w and returns the command window output o.
+            %   c = evalc_block(w,b) evaluates the block b in the
+            %   workspace w, and returns the command window output o.
             %
-            %   c = evalc_multi(w,b,true) also shows the command window
+            %   c = evalc_block(w,b,true) also shows the command window
             %   output.
             %
-            %   [c,o1,o2,...] = evalc_multi(...) also returns the outputs
+            %   [c,o1,o2,...] = evalc_block(...) also returns the outputs
             %   from the evaluation, if the block contains a single
             %   statement.
             %
-            %   evalc_multi splits the block b into statements, prepares
+            %   evalc_block splits the block b into statements, prepares
             %   the statements for evaluation with capture, and forwards
-            %   each statement in turn to eval_single.
+            %   each statement in turn to eval_statement.
 
             arguments
                 obj (1,1) % workspace
@@ -261,7 +261,7 @@ classdef Workspace < handle
                 escapedStatement = sprintf( "builtin(""evalc"",""%s"")", ...
                     strrep( statements, """", """""" ) ); % escape and wrap
                 [varargout{1:nargout}] = ...
-                    eval_single( obj, escapedStatement ); % evaluate
+                    eval_statement( obj, escapedStatement ); % evaluate
                 varargout{1} = string( varargout{1} ); % convert
                 if show, fprintf( 1, "%s", varargout{1} ); end % echo
             else % multiple statements
@@ -269,29 +269,29 @@ classdef Workspace < handle
                     "Cannot return output(s) from multiple statements." )
                 varargout{1} = strings( size( statements ) ); % preallocate
                 for ii = 1:numel( statements ) % loop over statements
-                    varargout{1}(ii) = evalc_multi( obj, statements(ii), show ); % recurse
+                    varargout{1}(ii) = evalc_block( obj, statements(ii), show ); % recurse
                 end
                 varargout{1} = strjoin( varargout{1}, "" ); % combine outputs
             end
 
-        end % evalc_multi
+        end % evalc_block
 
-        function varargout = eval_single( obj, statement )
-            %eval_single  Evaluate a single statement
+        function varargout = eval_statement( obj, statement )
+            %eval_statement  Evaluate a single statement
             %
-            %   eval_single(w,s) evaluates the statement s in the
+            %   eval_statement(w,s) evaluates the statement s in the
             %   workspace w.
             %
-            %   [o1,o2,...] = eval_single(...) returns outputs o1, o2, ...
-            %   of the evaluation.
+            %   [o1,o2,...] = eval_statement(...) returns outputs o1, o2,
+            %   ... of the evaluation.
             %
-            %   eval_single works in tandem with eval_do to evaluate the
+            %   eval_statement works in tandem with eval_do to evaluate the
             %   statement in a context containing only the workspace
             %   variables.
 
             [varargout{1:nargout}] = eval_do( obj, statement ); % do
 
-        end % eval_single
+        end % eval_statement
 
         function varargout = eval_do( obj, statement )
             %eval_do  Evaluate a single statement in caller workspace
@@ -303,7 +303,7 @@ classdef Workspace < handle
             %   [o1,o2,...] = eval_do(...) returns outputs o1, o2, ... of
             %   the evaluation.
             %
-            %   eval_do is part of the implementation of eval_single and
+            %   eval_do is part of the implementation of eval_statement and
             %   should not be called directly.
 
             % Unpack

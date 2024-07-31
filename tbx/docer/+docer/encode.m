@@ -3,10 +3,12 @@ function s = encode( fig )
 %
 %   s = docer.encode(f) encodes the figure f to the string s using Base
 %   64 encoding.
-%
-%   First, the figure is captured.  Second, the captured data is written to
-%   a temporary image file.  Third, the binary data is read from the file.
-%   Fourth, the binary data is encoded.
+% 
+%   The process consists of 4 steps:
+%   1. Capture the image data from the figure
+%   2. Write the image data to a temporary file
+%   3. Read the file as binary data
+%   4. Encode the binary data
 %
 %   See also: docer.capture
 

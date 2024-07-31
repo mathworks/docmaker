@@ -31,8 +31,8 @@ arguments
 end
 
 % Check documents
-sMd = dirstruct( sMd{:} );
-assert( all( extensions( sMd ) == ".md" ), ...
+sMd = docer.dir( sMd{:} );
+assert( all( docer.extensions( sMd ) == ".md" ), ...
     "docer:InvalidArgument", ...
     "Markdown files must all have extension .md." )
 if isempty( sMd ), return, end
@@ -55,10 +55,10 @@ pRez = fullfile( pRoot, 'resources' );
 if ~isfolder( pRez ), mkdir( pRez ), end
 
 % Check and copy stylesheets
-sCss = dirstruct( fullfile( pTem, ["github-markdown.css" "matlaby.css"] ) );
+sCss = docer.dir( fullfile( pTem, ["github-markdown.css" "matlaby.css"] ) );
 if isfield( options, "Stylesheets" )
-    sCss = dirstruct( sCss, options.Stylesheets );
-    assert( all( extensions( sCss ) == ".css" ), ...
+    sCss = docer.dir( sCss, options.Stylesheets );
+    assert( all( docer.extensions( sCss ) == ".css" ), ...
         "docer:InvalidArgument", ...
         "Stylesheets must all have extension .css." )
 end
@@ -70,8 +70,8 @@ fCss = reshape( fullfile( pRez, {sCss.name} ), size( sCss ) );
 
 % Check and copy scripts
 if isfield( options, "Scripts" )
-    sJs = dirstruct( options.Scripts );
-    assert( all( extensions( sJs ) == ".js" ), ...
+    sJs = docer.dir( options.Scripts );
+    assert( all( docer.extensions( sJs ) == ".js" ), ...
         "docer:InvalidArgument", ...
         "Scripts must all have extension .js." )
 else
@@ -113,10 +113,10 @@ pMd = fileparts( fMd );
 md = fileread( fMd );
 
 % Convert Markdown to XML
-xml = md2xml( md );
+xml = docer.md2xml( md );
 
 % Replace Markdown links
-linkrep( xml, ".md", ".html" )
+docer.linkrep( xml, ".md", ".html" )
 
 % Create document
 doc = matlab.io.xml.dom.Document( "html", "html", "", "" );
@@ -135,11 +135,11 @@ meta.setAttribute( "content", "MATLAB " + matlabRelease().Release + ...
     " with " + v(1).Name + " " + v(1).Version );
 
 % Add title
-h1 = getElementsByTagName( xml, "h1" );
-if h1.Length > 0
-    title = createElement( doc, "title" );
-    appendChild( head, title );
-    title.TextContent = rmemoji( h1.item( 0 ).TextContent );
+h1 = docer.list2array( getElementsByTagName( xml, "h1" ) );
+if ~isempty( h1 )
+    title = doc.createElement( "title" );
+    title.TextContent = docer.rmemoji( h1(1).TextContent );
+    head.appendChild( title );
 end
 
 % Add stylesheets
@@ -175,7 +175,92 @@ appendChild( body, main );
 div = importNode( doc, getDocumentElement( xml ), true );
 appendChild( main, div );
 
-% Tidy up
-tidydoc( doc )
+% Remove permalinks (anchors with attribute "aria-label" starting with
+% "Permalink: ")
+anchors = docer.list2array( doc.getElementsByTagName( "a" ) );
+for ii = 1:numel( anchors )
+    anchor = anchors(ii);
+    if anchor.hasAttribute( "aria-label" ) && startsWith( ...
+            anchor.getAttribute( "aria-label" ), "Permalink: " )
+        anchor.getParentNode().removeChild( anchor );
+    end
+end
 
 end % convert
+
+function r = relpath( d, f )
+%relpath  Relative path from folder to file
+%
+%   r = relpath(d,f) returns the relative path r from the folder d to the
+%   file f.  The folder and file must exist, and can be specified as
+%   absolute or relative (with respect to the current folder) paths.
+
+% Canonicalize
+assert( isfolder( d ), "docer:NotFound", "Folder ""%s"" not found.", d )
+sd = dir( d );
+pd = string( sd(1).folder ); % first entry is "."
+assert( isfile( f ), "docer:NotFound", "File ""%s"" not found.", f )
+sf = dir( f );
+pf = string( sf(1).folder ); % single matching entry
+nf = string( sf(1).name ); % single matching entry
+
+% Find common ancestor folder
+ps = superfolder( pd, pf );
+if isequal( ps, [] )
+    r = fullfile( pf, nf ); % absolute
+else
+    tp = split( pd, filesep );
+    tf = split( pf, filesep );
+    ts = split( ps, filesep );
+    up = repmat( "..", numel( tp ) - numel( ts ), 1 ); % go up
+    dn = tf(numel( ts )+1:end,:); % then down
+    r = fullfile( join( up, filesep ), join( dn, filesep ), nf );
+end
+
+% Return matching datatype
+if ischar( d ) && ischar( f ), r = char( r ); end
+
+end % relpath
+
+function s = superfolder( varargin )
+%superfolder  Common ancestor folder
+%
+%   s = superfolder(p1,p2,...) returns the common ancestor of the folders
+%   p1, p2, ...  The folders must exist.  If there is no common ancestor
+%   then superfolder returns [].
+
+% Check inputs
+narginchk( 1, Inf )
+dd = string( varargin );
+
+% Canonicalize using dir
+for ii = 1:numel( dd )
+    d = dd(ii);
+    assert( isfolder( d ), "docer:NotFound", "Folder ""%s"" not found.", d )
+    sd = dir( d );
+    dd(ii) = sd(1).folder; % first entry is "."
+end
+
+% Loop, split, compare
+s = dd(1); % initialize
+for ii = 2:numel( dd )
+    d = dd(ii);
+    ts = split( s, filesep ); % split
+    td = split( d, filesep ); % split
+    n = min( numel( ts ), numel( td ) ); % comparable length
+    tf = ts(1:n) == td(1:n); % compare
+    i = find( tf == false, 1, "first" ); % first non-match
+    if i == 1 % immediate non-match
+        s = [];
+        return
+    elseif isempty( i ) % full match
+        s = join( ts(1:n), filesep );
+    else % partial match
+        s = join( ts(1:i-1), filesep );
+    end
+end
+
+% Return matching datatype
+if iscellstr( varargin ), s = char( s ); end %#ok<ISCLSTR>
+
+end % superfolder

@@ -32,9 +32,9 @@ doc = parser.parseFile( filename );
 nHeadings = 6; % # HTML heading levels
 allHeadings = cell( nHeadings, 1 ); % preallocate
 for ii = 1:nHeadings
-    allHeadings{ii} = elements( doc.getElementsByTagName( "h"+ii ) );
+    allHeadings{ii} = docer.list2array( doc.getElementsByTagName( "h"+ii ) );
 end
-allDivs = elements( doc.getElementsByTagName( "div" ) );
+allDivs = docer.list2array( doc.getElementsByTagName( "div" ) );
 
 % Initialize
 root = doc.getDocumentElement();
