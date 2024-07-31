@@ -4,6 +4,8 @@ function [output, modFigures] = eval( w, expr )
 %   [c,f] = docer.eval(w,e) evals the expression e in the workspace w, and
 %   returns the console output c and the created or modified figures f.
 
+%   Copyright 2024 The MathWorks, Inc.
+
 % Capture initial figures
 oldFigures = docer.figures();
 oldPrints = arrayfun( @docer.capture, oldFigures, "UniformOutput", false );

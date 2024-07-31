@@ -7,6 +7,8 @@ function s = encode( fig )
 %   First, the figure is captured.  Second, the captured data is written to
 %   a temporary image file.  Third, the binary data is read from the file.
 %   Fourth, the binary data is encoded.
+%
+%   See also: docer.capture
 
 %   Copyright 2024 The MathWorks, Inc.
 
