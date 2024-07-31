@@ -24,7 +24,7 @@ arguments
 end
 
 % Check inputs
-m = dirstruct( m{:} );
+m = docer.dirstruct( m{:} );
 assert( all( extensions( m ) == ".m" ), "docer:InvalidArgument", ...
     "MATLAB scripts must all have extension .m." )
 
