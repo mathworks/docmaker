@@ -1,8 +1,10 @@
-function docerzap( filename, wslevel, zap )
+function docerzap( filename, wsLevel, zap )
+
+%   Copyright 2024 The MathWorks, Inc.
 
 arguments
     filename (1,1) string {mustBeFile}
-    wslevel (1,1) double {mustBeInteger,mustBeInRange(wslevel,0,6)} = 0
+    wsLevel (1,1) double {mustBeInteger,mustBeInRange(wsLevel,0,6)} = 0
     zap (1,1) matlab.lang.OnOffSwitchState = "on"
 end
 
@@ -23,47 +25,38 @@ allDivs = elements( doc.getElementsByTagName( "div" ) );
 root = doc.getDocumentElement();
 oldFigures = docer.figures();
 from = root; % start from root
-if zap, zaplevel = 0; else, zaplevel = 6; end
+if zap, zapLevel = 0; else, zapLevel = 6; end
 
-while ~isempty( from )
+while true
 
     % Get current level
     if from == root
-        fromlevel = 0;
+        fromLevel = 0;
     else
-        fromlevel = sscanf( from.TagName, "h%d" );
+        fromLevel = sscanf( from.TagName, "h%d" );
     end
 
-    % Find next heading
-    to = getNextHeading( from, allHeadings );
+    % Update workspace and figures
+    if fromLevel <= wsLevel % reset
+        w = docer.Workspace();
+        delete( setdiff( docer.figures(), oldFigures ) )
+    end
+
+    % Update zap level
+    if fromLevel ~= 0 && ( fromLevel <= zapLevel || zap == false )
+        zapLevel = fromLevel;
+        zap = endsWith( from.TextContent, char( 9889 ) );
+    end
 
     % Find divs before next heading
+    to = getNextHeading( from, allHeadings );
     if isempty( to )
         divs = allDivs(isAfter( allDivs, from ));
     else
         divs = allDivs(isBetween( allDivs, from, to ));
     end
 
-    % Reset if necessary
-    if fromlevel <= wslevel
-        w = docer.Workspace();
-        delete( setdiff( docer.figures(), oldFigures ) )
-    end
-
-    % Update zap level
-    if fromlevel == 0
-        % already initialized
-    elseif fromlevel < zaplevel
-        zaplevel = fromlevel;
-        zap = endsWith( from.TextContent, char( 9889 ) );
-    elseif fromlevel == zaplevel
-        zap = endsWith( from.TextContent, char( 9889 ) ); % reset
-    elseif zap == false
-        zaplevel = fromlevel;
-        zap = endsWith( from.TextContent, char( 9889 ) );
-    end
-
-    % Process divs
+    % Zap source divs, remove old output divs
     for ii = 1:numel( divs )
         div = divs( ii );
         if zap && div.hasAttribute( "class" ) && contains( ... % MATLAB input
@@ -71,13 +64,16 @@ while ~isempty( from )
             docer.zap( div, w ) % zap
         elseif div.hasAttribute( "class" ) && contains( ... % MATLAB output
                 div.getAttribute( "class" ), "highlight-output-matlab" )
-            div.getParentNode().removeChild( div ); % delete
-            allDivs(allDivs == div) = [];
+            div.getParentNode().removeChild( div ); % remove
         end
     end
 
-    % Advance
-    from = to;
+    % Continue
+    if isempty( to )
+        break % done
+    else
+        from = to; % advance
+    end
 
 end % while
 
