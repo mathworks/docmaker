@@ -77,14 +77,14 @@ end
 % Create document
 doc = matlab.io.xml.dom.Document( "productinfo" );
 doc.XMLStandalone = true;
-pi = getDocumentElement( doc ); % root
+info = doc.getDocumentElement(); % root
 
 % Add elements
-addElement( pi, "matlabrelease", matlabRelease().Release )
-addElement( pi, "name", name )
-addElement( pi, "type", "toolbox" )
-addElement( pi, "icon", "$toolbox/matlab/icons/bookicon.gif" )
-addElement( pi, "help_location", "." )
+addElement( info, "matlabrelease", matlabRelease().Release )
+addElement( info, "name", name )
+addElement( info, "type", "toolbox" )
+addElement( info, "icon", "$toolbox/matlab/icons/bookicon.gif" )
+addElement( info, "help_location", "." )
 
 end % infoxml
 
@@ -94,9 +94,10 @@ function addElement( parent, name, value )
 %  addElement(p,n,v) adds an element with tag name n and value v to the
 %  parent node p.
 
-doc = getOwnerDocument( parent ); % document
-el = createElement( doc, name ); % create
-el.TextContent = value; % set value
-appendChild( parent, el ); % add
+doc = parent.getOwnerDocument(); % document
+element = doc.createElement( name ); % create
+parent.appendChild( element ); % add
+text = doc.createTextNode( value ); % create
+element.appendChild( text ); % add
 
 end % addElement

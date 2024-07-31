@@ -138,8 +138,9 @@ meta.setAttribute( "content", "MATLAB " + matlabRelease().Release + ...
 h1 = docer.list2array( getElementsByTagName( xml, "h1" ) );
 if ~isempty( h1 )
     title = doc.createElement( "title" );
-    title.TextContent = docer.rmemoji( h1(1).TextContent );
     head.appendChild( title );
+    titleText = doc.createTextNode( docer.rmemoji( h1(1).TextContent ) );
+    title.appendChild( titleText );
 end
 
 % Add stylesheets
