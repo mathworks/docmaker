@@ -54,39 +54,39 @@
             {
                 "mutuallyExclusiveGroup": [
                     {
-                        "name": "s",
+                        "name": "html",
                         "kind": "required",
-                        "type": "file=*.m",
-                        "purpose": "MATLAB script",
+                        "type": "file=*.html",
+                        "purpose": "HTML document",
                         "repeating": true
                     },
                     {
-                        "name": "s",
+                        "name": "html",
                         "kind": "required",
                         "type": [
                             "char",
-                            "choices={'*.m','**/*.m'}"
+                            "choices={'*.html','**/*.html'}"
                         ],
-                        "purpose": "MATLAB script common wildcard",
+                        "purpose": "HTML document common wildcard",
                         "repeating": false
                     },
                     {
-                        "name": "s",
+                        "name": "html",
                         "kind": "required",
-                        "purpose": "MATLAB script other wildcard",
+                        "purpose": "HTML document other wildcard",
                         "repeating": false
                     }
                 ]
             },
             {
-                "name": "Size",
+                "name": "Level",
                 "kind": "namevalue",
-                "purpose": "figure size"
+                "purpose": "batching level"
             },
             {
-                "name": "Resolution",
+                "name": "Mode",
                 "kind": "namevalue",
-                "purpose": "screenshot resolution"
+                "purpose": "execution mode"
             }
         ]
     }
