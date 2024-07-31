@@ -69,8 +69,6 @@ p.TabTitles = {'Red','Blue','Green'};
 p.Selection = 2;
 ```
 
-![Output](tabpaneldemo1.png)
-
 ## See also
 
 [:house:](index.md) | :arrow_right: [HBox](hbox.md) | :arrow_down: [VBox](vbox.md) | :symbols: [Grid](grid.md) | :card_index: [CardPanel](CardPanel.md) | :point_right: [TabPanel](TabPanel.md) | :scroll: [ScrollingPanel](ScrollingPanel.md) | :white_square_button: [BoxPanel](BoxPanel.md) | :vertical_traffic_light: [VButtonBox](VButtonBox.md) | :traffic_light: [HButtonBox](VButtonBox.md)
