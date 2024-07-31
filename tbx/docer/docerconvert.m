@@ -116,7 +116,7 @@ md = fileread( fMd );
 xml = docer.md2xml( md );
 
 % Replace Markdown links
-linkrep( xml, ".md", ".html" )
+docer.linkrep( xml, ".md", ".html" )
 
 % Create document
 doc = matlab.io.xml.dom.Document( "html", "html", "", "" );

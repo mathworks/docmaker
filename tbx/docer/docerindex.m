@@ -20,7 +20,7 @@ pRoot = sRoot(1).folder; % absolute
 fToc = fullfile( pRoot, "helptoc.md" ); % source
 mToc = fileread( fToc ); % Markdown
 xToc = docer.md2xml( mToc ); % parse
-linkrep( xToc, ".md", ".html" ) % replace links
+docer.linkrep( xToc, ".md", ".html" ) % replace links
 
 % Extract name
 h1 = xToc.getElementsByTagName( "h1" ); % headings
