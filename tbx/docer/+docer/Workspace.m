@@ -44,7 +44,7 @@ classdef Workspace < handle
             %evalinc  Evaluate block in workspace and capture output
             %
             %   c = evalinc(w,b) evaluates the block b in the
-            %   workspace w and returns the command window output c.
+            %   workspace w, and returns the command window output c.
             %
             %   [c,o1,o2,...] = evalinc(w,e) also returns the outputs from
             %   the evaluation, if the block contains a single statement.
@@ -222,7 +222,7 @@ classdef Workspace < handle
             %evalc_multi  Evaluate multiple statements and capture output
             %
             %   c = evalc_multi(w,b) evaluates the block b in the
-            %   workspace w and returns the command window output o.
+            %   workspace w, and returns the command window output o.
             %
             %   c = evalc_multi(w,b,true) also shows the command window
             %   output.

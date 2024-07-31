@@ -1,8 +1,9 @@
 function [output, modFigures] = eval( w, expr )
 %eval  Run code in workspace, return output and figures
 %
-%   [c,f] = docer.eval(w,e) evals the expression e in the workspace w, and
-%   returns the console output c and the created or modified figures f.
+%   [c,f] = docer.eval(w,b) evaluates the block b in the workspace w, and
+%   returns the command window output c and the created or modified figures
+%   f.
 
 %   Copyright 2024 The MathWorks, Inc.
 

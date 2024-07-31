@@ -1,8 +1,8 @@
 function zap( div, w )
 %zap  Execute MATLAB code and insert textual and graphical output
 %
-%   zap(d,w) executes the MATLAB code from the div d in the workspace w,
-%   and inserts the textual and graphical output between d and its next
+%   zap(d,w) executes the MATLAB code block from the div d in the workspace
+%   w, and inserts the textual and graphical output between d and its next
 %   sibling.
 %
 %   Textual output is text written to the command window.  Graphical output
