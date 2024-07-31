@@ -1,4 +1,4 @@
-function docerzap( sHtml, options )
+function docerrun( sHtml, options )
 %docerzap  Run MATLAB code in HTML documents and insert output
 %
 %   docerzap(html) runs MATLAB code blocks in the HTML document(s) html,
