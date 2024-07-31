@@ -41,4 +41,4 @@ end
 % Return matching datatype
 if iscellstr( varargin ), s = char( s ); end %#ok<ISCLSTR>
 
-end % superdir
+end % superfolder
