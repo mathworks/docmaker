@@ -112,12 +112,12 @@ while true
         divs = allDivs(isBetween( allDivs, from, to ));
     end
 
-    % Zap source divs, remove old output divs
+    % Run source divs, remove old output divs
     for ii = 1:numel( divs )
         div = divs( ii );
         if zapping && div.hasAttribute( "class" ) && contains( ... % MATLAB input
                 div.getAttribute( "class" ), "highlight-source-matlab" )
-            zapDiv( div, w ) % zap
+            runDiv( div, w ) % zap
         elseif div.hasAttribute( "class" ) && contains( ... % MATLAB output
                 div.getAttribute( "class" ), "highlight-output-matlab" )
             div.getParentNode().removeChild( div ); % remove
@@ -214,12 +214,11 @@ varargout = varargin; % return; varargin is not a valid output
 
 end % expand
 
-function zapDiv( div, w )
-%zap  Execute MATLAB code and insert textual and graphical output
+function runDiv( div, w )
+%runDiv  Run MATLAB code from a div and insert output
 %
-%   zapDiv(d,w) runs the MATLAB code block from the div d in the workspace
-%   w, and inserts the textual and graphical output between d and its next
-%   sibling.
+%   runDiv(d,w) runs the MATLAB code from the div d in the workspace w, and
+%   inserts the output between d and its next sibling.
 
 % Get related helper elements
 doc = div.getOwnerDocument(); % for node creation
@@ -306,4 +305,4 @@ for jj = 1:numel( outFigures )
 
 end
 
-end % zapDiv
+end % runDiv
