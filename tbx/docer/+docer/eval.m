@@ -6,7 +6,7 @@ function [output, modFigures] = eval( w, expr )
 
 %   Copyright 2024 The MathWorks, Inc.
 
-% Capture initial figures
+% Capture initial figures and their 'prints
 oldFigures = docer.figures();
 oldPrints = arrayfun( @docer.capture, oldFigures, "UniformOutput", false );
 
@@ -17,7 +17,7 @@ catch e
     rethrow( e ) % trim stack
 end
 
-% Capture final figures
+% Capture final figures and their 'prints
 newFigures = docer.figures();
 newPrints = arrayfun( @docer.capture, newFigures, "UniformOutput", false );
 

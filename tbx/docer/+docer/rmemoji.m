@@ -4,8 +4,7 @@ function s = rmemoji( s )
 %   s = docer.rmemoji(s) removes emojis from the string s.
 %
 %   Emojis are strings that begin and end with ":" with letters, numbers
-%   and underscores in between, and Unicode characters from U+2130 to
-%   U+1FFFF.
+%   and underscores in between, and Unicode characters from U+2130.
 
 %   Copyright 2024 The MathWorks, Inc.
 

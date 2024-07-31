@@ -1,8 +1,7 @@
 function x = capture( fig )
 %capture  Capture figure
 %
-%   x = docer.capture(f) captures the figure f to image data x using
-%   getframe.
+%   x = docer.capture(f) captures the figure f to image data x.
 %
 %   See also: getframe
 

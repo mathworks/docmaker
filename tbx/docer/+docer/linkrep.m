@@ -1,8 +1,8 @@
 function linkrep( doc, old, new )
 %linkrep  Replace links in XML document
 %
-%   docer.linkrep(x,o,n) replaces links with extension o in the XML document x
-%   with links with extension n.
+%   docer.linkrep(x,o,n) replaces link extensions o with n in the XML
+%   document x.
 %
 %   For example, replace Markdown links with HTML links using:
 %      docer.linkrep(x,".md",".html")
