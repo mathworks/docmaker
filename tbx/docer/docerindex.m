@@ -24,10 +24,11 @@ docer.linkrep( xToc, ".md", ".html" ) % replace links
 
 % Extract name
 h1 = xToc.getElementsByTagName( "h1" ); % headings
-if h1.Length > 0
-    name = docer.rmemoji( h1.item( 0 ).TextContent ); % first heading
-else
+h1 = docer.list2array( h1 );
+if isempty( h1 )
     name = "Unknown Toolbox"; % unknown
+else
+    name = docer.rmemoji( h1(1).TextContent ); % first heading
 end
 
 % Write info.xml

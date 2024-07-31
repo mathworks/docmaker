@@ -16,8 +16,9 @@ arguments
 end
 
 aa = doc.getElementsByTagName( "a" );
-for ii = 1:aa.Length
-    a = aa.item(ii-1);
+aa = docer.list2array( aa );
+for ii = 1:numel( aa )
+    a = aa(ii);
     if a.hasAttribute( "href" )
         href = matlab.net.URI( a.getAttribute( "href" ) );
         path = href.EncodedPath;
