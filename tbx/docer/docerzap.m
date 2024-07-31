@@ -1,22 +1,24 @@
 function docerzap( sHtml, options )
-%docerzap  Run MATLAB code in HTML documents and insert results
+%docerzap  Run MATLAB code in HTML documents and insert output
 %
-%   docerzap(html) executes MATLAB code blocks in the HTML document(s)
-%   html, and inserts the textual and graphical output.  html can be a char
-%   or string including wildcards, a cellstr or string array, or a dir
-%   struct.
+%   docerzap(html) runs MATLAB code blocks in the HTML document(s) html,
+%   and inserts the textual and graphical output.  html can be a char or
+%   string including wildcards, a cellstr or string array, or a dir struct.
+%
+%   Textual output is text written to the command window.  Graphical output
+%   is new figures or changes to existing figures.
 %
 %   Multiple documents can also be specified as docerzap(html1,html2,...).
 %
 %   docerzap(...,"Level",level) specifies the batching level.  With level 0
-%   (default), all blocks in a document are executed in a single batch.
-%   With level n, each level-n heading is executed as a separate batch,
-%   with the workspace cleared and figures closed between batches.
+%   (default), all blocks in a document are run in a single batch. With
+%   level n, each level-n heading is run as a separate batch, with the
+%   workspace cleared and figures closed between batches.
 %
 %   docerzap(...,"Mode",mode) specifies the execution mode.  With mode
-%   "auto" (default), all blocks are executed.  With mode "manual", only
-%   blocks under headings marked with :zap: are executed.  Higher level
-%   :zap:s apply to lower level headings.
+%   "auto" (default), all blocks are run.  With mode "manual", only blocks
+%   under headings marked with :zap: are run.  Higher level :zap:s apply to
+%   lower level headings.
 
 %   Copyright 2024 The MathWorks, Inc.
 
@@ -50,11 +52,11 @@ end
 end % docerzap
 
 function zap( html, batchLevel, mode )
-%zap  Run MATLAB code in an HTML document and insert results
+%zap  Run MATLAB code in an HTML document and insert output
 %
-%   docerzap(html,level,mode) executes MATLAB code blocks in the HTML
-%   document html with the specified batching level and execution mode, and
-%   inserts the textual and graphical output.
+%   docerzap(html,level,mode) runs MATLAB code blocks in the HTML document
+%   html with the specified batching level and execution mode, and inserts
+%   the textual and graphical output.
 
 % Read from file
 parser = matlab.io.xml.dom.Parser();
@@ -215,12 +217,9 @@ end % expand
 function zapDiv( div, w )
 %zap  Execute MATLAB code and insert textual and graphical output
 %
-%   zapDiv(d,w) executes the MATLAB code block from the div d in the
-%   workspace w, and inserts the textual and graphical output between d and
-%   its next sibling.
-%
-%   Textual output is text written to the command window.  Graphical output
-%   is new figures or changes to existing figures.
+%   zapDiv(d,w) runs the MATLAB code block from the div d in the workspace
+%   w, and inserts the textual and graphical output between d and its next
+%   sibling.
 
 % Get related helper elements
 doc = div.getOwnerDocument(); % for node creation
