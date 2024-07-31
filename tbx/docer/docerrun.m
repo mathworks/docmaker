@@ -38,11 +38,11 @@ assert( all( docer.extensions( sHtml ) == ".html" ), ...
     "HTML files must all have extension .html." )
 if isempty( sHtml ), return, end
 
-% Execute and insert
+% Run
 for ii = 1:numel( sHtml ) % loop over files
     fHtml = fullfile( sHtml(ii).folder, sHtml(ii).name ); % this file
     try
-        zap( fHtml, options.Level, options.Mode )
+        run( fHtml, options.Level, options.Mode )
         fprintf( 1, "[%s] %s\n", char( 9889 ), fHtml );
     catch e
         warning( e.identifier, '%s', e.message ) % rethrow as warning
@@ -51,10 +51,10 @@ end
 
 end % docerrun
 
-function zap( html, batchLevel, mode )
-%zap  Run MATLAB code in an HTML document and insert output
+function run( html, batchLevel, mode )
+%run  Run MATLAB code in an HTML document and insert output
 %
-%   zap(html,level,mode) runs MATLAB code blocks in the HTML document html
+%   run(html,level,mode) runs MATLAB code blocks in the HTML document html
 %   with the specified batching level and execution mode, and inserts the
 %   textual and graphical output.
 
@@ -140,7 +140,7 @@ delete( setdiff( docer.figures(), oldFigures ) )
 writer = matlab.io.xml.dom.DOMWriter();
 writer.writeToFile( doc, html );
 
-end % zap
+end % run
 
 function nextHeading = getNextHeading( e, allHeadings )
 %getNextHeading  Get next heading
