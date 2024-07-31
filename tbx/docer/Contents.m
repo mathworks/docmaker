@@ -3,6 +3,7 @@
 %
 % docerconvert - convert Markdown documents to HTML
 % docerrun     - run MATLAB scripts and save generated figures to image files
+% docerzap     - run MATLAB code in HTML documents and insert output
 % docerindex   - create documentation index files
 % docerdelete  - delete Doc_er artifacts
 

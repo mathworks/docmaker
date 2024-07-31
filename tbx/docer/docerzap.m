@@ -1,5 +1,5 @@
 function docerzap( sHtml, options )
-%docerzap  Execute MATLAB code blocks in HTML documents, and insert results
+%docerzap  Run MATLAB code in HTML documents and insert results
 %
 %   docerzap(html) executes MATLAB code blocks in the HTML document(s)
 %   html, and inserts the textual and graphical output.  html can be a char
@@ -50,7 +50,7 @@ end
 end % docerzap
 
 function zap( html, batchLevel, mode )
-%zap  Execute MATLAB code blocks in HTML document, and insert results
+%zap  Run MATLAB code in an HTML document and insert results
 %
 %   docerzap(html,level,mode) executes MATLAB code blocks in the HTML
 %   document html with the specified batching level and execution mode, and
