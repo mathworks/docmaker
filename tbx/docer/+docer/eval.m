@@ -26,7 +26,7 @@ newPrints = arrayfun( @docer.capture, newFigures, "UniformOutput", false );
 wasPrints = cell( size( newPrints ) ); % preallocate
 [tf, loc] = ismember( oldFigures, newFigures ); % match
 wasPrints(loc(tf)) = oldPrints(tf); % corresponding
-modFigures = newFigures(~cellfun( @isequal, newPrints, wasPrints )); %
-modFigures = reshape( modFigures, [], 1 ); % return column vector
+modFigures = newFigures(~cellfun( @isequal, newPrints, wasPrints )); % select
+modFigures = modFigures(:); % return column vector
 
 end % eval
