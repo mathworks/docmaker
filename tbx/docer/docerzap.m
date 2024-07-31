@@ -107,16 +107,6 @@ writer.writeToFile( doc, filename );
 
 end % docerzap
 
-function ee = elements( nn )
-%elements  Convert dynamic node list to static element vector
-
-ee = matlab.io.xml.dom.Element.empty( 0, 1 );
-for ii = 1:nn.Length
-    ee(ii,1) = nn.node( ii );
-end
-
-end % elements
-
 function nextHeading = getNextHeading( e, allHeadings )
 %getNextHeading  Get next heading
 %

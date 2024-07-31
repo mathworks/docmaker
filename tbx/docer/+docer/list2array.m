@@ -1,5 +1,5 @@
 function e = list2array( n )
-%elements  Convert node list to element array
+%list2array  Convert node list to element array
 %
 %   e = docer.list2array(n) converts the node list n to an element array e.
 %
