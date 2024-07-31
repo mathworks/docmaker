@@ -15,7 +15,7 @@ function docerrun( m, options )
 %   Copyright 2020-2024 The MathWorks, Inc.
 
 arguments ( Repeating )
-    m % convertible to dirstruct
+    m % convertible to folder struct
 end
 
 arguments
@@ -24,7 +24,7 @@ arguments
 end
 
 % Check inputs
-m = docer.dirstruct( m{:} );
+m = docer.dir( m{:} );
 assert( all( docer.extensions( m ) == ".m" ), "docer:InvalidArgument", ...
     "MATLAB scripts must all have extension .m." )
 

@@ -47,7 +47,7 @@ end
 
 % Delete XML files
 nXml = ["info.xml" "helptoc.xml" "helpindex.xml"]; % names
-sXml = docer.dirstruct( fullfile( pRoot, nXml ) ); % xmls
+sXml = docer.dir( fullfile( pRoot, nXml ) ); % xmls
 for ii = 1:numel( sXml ) % loop
     fXml = fullfile( sXml(ii).folder, sXml(ii).name ); % this xml
     if isfile( fXml )
@@ -58,7 +58,7 @@ end
 
 % Delete JSON files
 nJson = "custom_toolbox.json"; % names
-sJson = docer.dirstruct( fullfile( pRoot, nJson ) ); % jsons
+sJson = docer.dir( fullfile( pRoot, nJson ) ); % jsons
 for ii = 1:numel( sJson ) % loop
     fJson = fullfile( sJson(ii).folder, sJson(ii).name ); % this json
     if isfile( fJson )
@@ -68,7 +68,7 @@ for ii = 1:numel( sJson ) % loop
 end
 
 % Delete resources folder
-sRoot = docer.dirstruct( pRoot );
+sRoot = docer.dir( pRoot );
 fRez = fullfile( sRoot(1).folder, "resources" ); % folder
 if isfolder( fRez )
     rmdir( fRez, "s" ) % delete
@@ -76,7 +76,7 @@ if isfolder( fRez )
 end
 
 % Delete helpsearch folders
-sHelp = docer.dirstruct( fullfile( pRoot, "helpsearch-v*" ) ); % indices
+sHelp = docer.dir( fullfile( pRoot, "helpsearch-v*" ) ); % indices
 for ii = 1:numel( sHelp ) % loop
     if sHelp(ii).isdir
         fHelp = fullfile( sHelp(ii).folder, sHelp(ii).name ); % this index

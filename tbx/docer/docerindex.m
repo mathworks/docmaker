@@ -13,7 +13,7 @@ arguments
 end
 
 % Canonicalize
-sRoot = docer.dirstruct( pRoot );
+sRoot = docer.dir( pRoot );
 pRoot = sRoot(1).folder; % absolute
 
 % Read helptoc.md

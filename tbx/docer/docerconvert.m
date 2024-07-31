@@ -31,7 +31,7 @@ arguments
 end
 
 % Check documents
-sMd = docer.dirstruct( sMd{:} );
+sMd = docer.dir( sMd{:} );
 assert( all( docer.extensions( sMd ) == ".md" ), ...
     "docer:InvalidArgument", ...
     "Markdown files must all have extension .md." )
@@ -55,9 +55,9 @@ pRez = fullfile( pRoot, 'resources' );
 if ~isfolder( pRez ), mkdir( pRez ), end
 
 % Check and copy stylesheets
-sCss = docer.dirstruct( fullfile( pTem, ["github-markdown.css" "matlaby.css"] ) );
+sCss = docer.dir( fullfile( pTem, ["github-markdown.css" "matlaby.css"] ) );
 if isfield( options, "Stylesheets" )
-    sCss = docer.dirstruct( sCss, options.Stylesheets );
+    sCss = docer.dir( sCss, options.Stylesheets );
     assert( all( docer.extensions( sCss ) == ".css" ), ...
         "docer:InvalidArgument", ...
         "Stylesheets must all have extension .css." )
@@ -70,7 +70,7 @@ fCss = reshape( fullfile( pRez, {sCss.name} ), size( sCss ) );
 
 % Check and copy scripts
 if isfield( options, "Scripts" )
-    sJs = docer.dirstruct( options.Scripts );
+    sJs = docer.dir( options.Scripts );
     assert( all( docer.extensions( sJs ) == ".js" ), ...
         "docer:InvalidArgument", ...
         "Scripts must all have extension .js." )
