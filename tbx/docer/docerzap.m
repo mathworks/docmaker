@@ -23,10 +23,16 @@ arguments
     options.Mode (1,1) string {mustBeMember(options.Mode,["auto","manual"])} = "auto"
 end
 
+zap( filename, options.Level, options.Mode )
+
+end
+
+function zap( html, batchLevel, mode )
+
 % Read from file
 parser = matlab.io.xml.dom.Parser();
 parser.Configuration.AllowDoctype = true;
-doc = parser.parseFile( filename );
+doc = parser.parseFile( html );
 
 % Find all headings and divs
 nHeadings = 6; % # HTML heading levels
@@ -39,7 +45,7 @@ allDivs = docer.list2array( doc.getElementsByTagName( "div" ) );
 % Initialize
 root = doc.getDocumentElement();
 from = root; % start from root
-if options.Mode == "auto"
+if mode == "auto"
     zap = true; % on
     zapLevel = 0; % lowest
 else
@@ -58,7 +64,7 @@ while true
     end
 
     % Update workspace and figures
-    if fromLevel <= options.Level % reset
+    if fromLevel <= batchLevel % reset
         w = docer.Workspace();
         delete( setdiff( docer.figures(), oldFigures ) )
     end
@@ -103,7 +109,7 @@ delete( setdiff( docer.figures(), oldFigures ) )
 
 % Write to file
 writer = matlab.io.xml.dom.DOMWriter();
-writer.writeToFile( doc, filename );
+writer.writeToFile( doc, html );
 
 end % docerzap
 
