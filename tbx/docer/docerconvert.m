@@ -105,7 +105,7 @@ end
 end % docerconvert
 
 function doc = convert( fMd, fCss, fJs )
-%convert  Convert Markdown file to HTML with stylesheets and scripts
+%convert  Convert Markdown document to HTML with stylesheets and scripts
 %
 %  convert(md,css,js) converts the Markdown file md to HTML and includes
 %  references to the stylesheets css and scripts js.

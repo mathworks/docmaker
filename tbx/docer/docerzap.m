@@ -1,9 +1,10 @@
 function docerzap( sHtml, options )
-%docerzap  Execute code blocks and insert textual and graphical results
+%docerzap  Execute MATLAB code blocks in HTML documents, and insert results
 %
-%   docerzap(html) executes MATLAB code blocks in the HTML document(s) html
-%   and inserts the textual and graphical output.  html can be a char or
-%   string including wildcards, a cellstr or string array, or a dir struct.
+%   docerzap(html) executes MATLAB code blocks in the HTML document(s)
+%   html, and inserts the textual and graphical output.  html can be a char
+%   or string including wildcards, a cellstr or string array, or a dir
+%   struct.
 %
 %   Multiple documents can also be specified as docerzap(html1,html2,...).
 %
@@ -35,7 +36,7 @@ assert( all( docer.extensions( sHtml ) == ".html" ), ...
     "HTML files must all have extension .html." )
 if isempty( sHtml ), return, end
 
-% Zap
+% Execute and insert
 for ii = 1:numel( sHtml ) % loop over files
     fHtml = fullfile( sHtml(ii).folder, sHtml(ii).name ); % this file
     try
@@ -49,6 +50,11 @@ end
 end % docerzap
 
 function zap( html, batchLevel, mode )
+%zap  Execute MATLAB code blocks in HTML document, and insert results
+%
+%   docerzap(html,level,mode) executes MATLAB code blocks in the HTML
+%   document html with the specified batching level and execution mode, and
+%   inserts the textual and graphical output.
 
 % Read from file
 parser = matlab.io.xml.dom.Parser();
