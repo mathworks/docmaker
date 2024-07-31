@@ -18,19 +18,18 @@ next = div.getNextSibling(); % for result insertion
 inDiv = div;
 inString = div.TextContent;
 
-%%%
-expr = inString;
-%%%
-
 % Capture initial figures and their 'prints
 oldFigures = docer.figures();
 oldPrints = arrayfun( @docer.capture, oldFigures, "UniformOutput", false );
 
 % Evaluate expression and capture output
 try
-    output = string( evalinc( w, expr ) );
+    outString = string( evalinc( w, inString ) );
+    ok = true; % ok
 catch e
-    rethrow( e ) % trim stack
+    warning( e.identifier, "%s", e.message ) % rethrow as warning
+    outString = e.message;
+    ok = false; % error
 end
 
 % Capture final figures and their 'prints
@@ -41,13 +40,8 @@ newPrints = arrayfun( @docer.capture, newFigures, "UniformOutput", false );
 wasPrints = cell( size( newPrints ) ); % preallocate
 [tf, loc] = ismember( oldFigures, newFigures ); % match
 wasPrints(loc(tf)) = oldPrints(tf); % corresponding
-modFigures = newFigures(~cellfun( @isequal, newPrints, wasPrints )); % select
-modFigures = modFigures(:); % return column vector
-
-%%%
-outString = output;
-outFigs = modFigures;
-%%%
+outFigures = newFigures(~cellfun( @isequal, newPrints, wasPrints )); % select
+outFigures = outFigures(:); % return column vector
 
 % Add text output
 if strlength( outString ) > 0
@@ -62,6 +56,10 @@ if strlength( outString ) > 0
     outDiv.setAttribute( "class", "highlight highlight-output-matlab" );
     outPre = doc.createElement( "pre" );
     outPre.setAttribute( "style", "background-color:var(--bgColor-default);" );
+    if ~ok % error, style text color
+        outPre.setAttribute( "style", outPre.getAttribute( "style" ) + ...
+            " color:var(--fgColor-danger);" );
+    end
     outDiv.appendChild( outPre );
     outText = doc.createTextNode( outString );
     outPre.appendChild( outText );
@@ -76,16 +74,16 @@ if strlength( outString ) > 0
 end
 
 % Add figure output
-for jj = 1:numel( outFigs )
+for jj = 1:numel( outFigures )
 
-    outFig = outFigs(jj);
+    outFigure = outFigures(jj);
 
     % Create HTML elements div, img
     outDiv = doc.createElement( "div" );
     outDiv.setAttribute( "class", "highlight highlight-output-matlab" );
     outImg = doc.createElement( "img" );
     outImg.setAttribute( "src", "data:image/png;base64, " + ...
-        docer.encode( outFig ) );
+        docer.encode( outFigure ) );
     outDiv.appendChild( outImg );
 
     % Add output to document
