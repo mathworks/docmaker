@@ -9,7 +9,7 @@ function tidydoc( doc )
 % Remove permalinks
 rmpermalinks( doc )
 
-end % xhtmltidy
+end % tidydoc
 
 function rmpermalinks( doc )
 %rmpermalinks  Remove permalinks
