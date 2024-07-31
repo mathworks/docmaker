@@ -33,7 +33,7 @@ classdef Workspace < handle
             % Evaluate
             try
                 [~, varargout{1:nargout}] = ... % do not return output
-                    evalc_multi( obj, block, true ); % but do show
+                    evalc_block( obj, block, true ); % but do show
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -59,7 +59,7 @@ classdef Workspace < handle
             % Evaluate
             try
                 [varargout{1:max( nargout, 1 )}] = ... % return output
-                    evalc_multi( obj, block, false ); % but do not show
+                    evalc_block( obj, block, false ); % but do not show
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -218,20 +218,20 @@ classdef Workspace < handle
 
     methods ( Access = private )
 
-        function varargout = evalc_multi( obj, block, show )
-            %evalc_multi  Evaluate multiple statements and capture output
+        function varargout = evalc_block( obj, block, show )
+            %evalc_block  Evaluate multiple statements and capture output
             %
-            %   c = evalc_multi(w,b) evaluates the block b in the
+            %   c = evalc_block(w,b) evaluates the block b in the
             %   workspace w, and returns the command window output o.
             %
-            %   c = evalc_multi(w,b,true) also shows the command window
+            %   c = evalc_block(w,b,true) also shows the command window
             %   output.
             %
-            %   [c,o1,o2,...] = evalc_multi(...) also returns the outputs
+            %   [c,o1,o2,...] = evalc_block(...) also returns the outputs
             %   from the evaluation, if the block contains a single
             %   statement.
             %
-            %   evalc_multi splits the block b into statements, prepares
+            %   evalc_block splits the block b into statements, prepares
             %   the statements for evaluation with capture, and forwards
             %   each statement in turn to eval_single.
 
@@ -269,12 +269,12 @@ classdef Workspace < handle
                     "Cannot return output(s) from multiple statements." )
                 varargout{1} = strings( size( statements ) ); % preallocate
                 for ii = 1:numel( statements ) % loop over statements
-                    varargout{1}(ii) = evalc_multi( obj, statements(ii), show ); % recurse
+                    varargout{1}(ii) = evalc_block( obj, statements(ii), show ); % recurse
                 end
                 varargout{1} = strjoin( varargout{1}, "" ); % combine outputs
             end
 
-        end % evalc_multi
+        end % evalc_block
 
         function varargout = eval_single( obj, statement )
             %eval_single  Evaluate a single statement
