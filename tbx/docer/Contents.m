@@ -1,5 +1,5 @@
 % Doc_er
-% Version 0.1 (R2024a) 19-Jul-2024
+% Version 0.2 (R2024a) 31-Jul-2024
 %
 % docerconvert - convert Markdown documents to HTML
 % docerrun     - run MATLAB scripts and save generated figures to image files
