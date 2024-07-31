@@ -1,26 +1,26 @@
-function docerzap( filename, wsLevel, zap )
+function docerzap( filename, options )
 %docerzap  Execute code blocks and insert textual and graphical results
 %
 %   docerzap(html) executes MATLAB code blocks in the HTML document(s) html
 %   and inserts the textual and graphical output.  html can be a char or
 %   string including wildcards, a cellstr or string array, or a dir struct.
 %
-%   docerzap(...,"Level",level) specifies the batching level.  With level
-%   n, all blocks under each level-n heading are executed in separate
-%   batches. The workspace is cleared and figures closed between batches.
-%   With level 0 (default), all blocks in the document are executed in a
-%   single batch.
+%   docerzap(...,"Level",level) specifies the batching level.  With level 0
+%   (default), all blocks in the document are executed in a single batch.
+%   With level n, each level-n heading is executed as a separate batch,
+%   with the workspace cleared and figures closed between batches.
 %
 %   docerzap(...,"Mode",mode) specifies the execution mode.  With mode
-%   "auto" (default), all blocks are executed.  In mode "manual", only
-%   blocks under headings marked with :zap: are executed.
+%   "auto" (default), all blocks are executed.  With mode "manual", only
+%   blocks under headings marked with :zap: are executed.  Higher level
+%   :zap:s apply to lower level headings.
 
 %   Copyright 2024 The MathWorks, Inc.
 
 arguments
     filename (1,1) string {mustBeFile}
-    wsLevel (1,1) double {mustBeInteger,mustBeInRange(wsLevel,0,6)} = 0
-    zap (1,1) matlab.lang.OnOffSwitchState = "on"
+    options.Level (1,1) double {mustBeInteger,mustBeInRange(options.Level,0,6)} = 0
+    options.Mode (1,1) string {mustBeMember(options.Mode,["auto","manual"])} = "auto"
 end
 
 % Read from file
@@ -38,9 +38,15 @@ allDivs = elements( doc.getElementsByTagName( "div" ) );
 
 % Initialize
 root = doc.getDocumentElement();
-oldFigures = docer.figures();
 from = root; % start from root
-if zap, zapLevel = 0; else, zapLevel = 6; end
+if options.Mode == "auto"
+    zap = true; % on
+    zapLevel = 0; % lowest
+else
+    zap = false; % off
+    zapLevel = 6; % highest
+end
+oldFigures = docer.figures(); % existing figures
 
 while true
 
@@ -52,7 +58,7 @@ while true
     end
 
     % Update workspace and figures
-    if fromLevel <= wsLevel % reset
+    if fromLevel <= options.Level % reset
         w = docer.Workspace();
         delete( setdiff( docer.figures(), oldFigures ) )
     end
