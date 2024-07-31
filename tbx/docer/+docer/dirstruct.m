@@ -1,14 +1,23 @@
 function s = dirstruct( p, varargin )
 %dirstruct  List folder contents
 %
-%   s = docer.dirstruct(p) lists the contents of the folder p.  If p is a
-%   char or a string then s is dir(p).  If p is a cellstr or a string array
-%   then s is the concatenation of the results of calling dir on each
-%   element. If p is already a struct returned from dir then it is returned
-%   unaltered.
+%   s = docer.dirstruct(f) returns the contents of the folder f, which can
+%   be specified as an absolute or relative path, and can include
+%   wildcards.  The returned folder structure s contains fields name,
+%   folder, date, bytes, isdir, and datenum.  Duplicates are removed.
 %
-%   s = docer.dirstruct(p1,p2,...) is the concatenation of the results of
-%   docer.dirstruct(p1), docer.dirstruct(p2), ...
+%   docer.dirstruct(ff), where ff is nonscalar, concatentes and
+%   deduplicates the results of calling the function on each of the
+%   elements.
+%
+%   docer.dirstruct(f1,f2,...) concatenates and deduplicates the results of
+%   calling the function on each of the inputs.
+%
+%   docer.dirstruct(s), where s is a folder structure, deduplicates and
+%   returns the input.
+%
+%   docer.dirstruct is a wrapper for dir to support struct, nonscalar, and
+%   multiple inputs.
 %
 %   See also: dir
 
