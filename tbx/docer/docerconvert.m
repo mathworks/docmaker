@@ -113,7 +113,7 @@ pMd = fileparts( fMd );
 md = fileread( fMd );
 
 % Convert Markdown to XML
-xml = md2xml( md );
+xml = docer.md2xml( md );
 
 % Replace Markdown links
 linkrep( xml, ".md", ".html" )

@@ -19,7 +19,7 @@ pRoot = sRoot(1).folder; % absolute
 % Read helptoc.md
 fToc = fullfile( pRoot, "helptoc.md" ); % source
 mToc = fileread( fToc ); % Markdown
-xToc = md2xml( mToc ); % parse
+xToc = docer.md2xml( mToc ); % parse
 linkrep( xToc, ".md", ".html" ) % replace links
 
 % Extract name
