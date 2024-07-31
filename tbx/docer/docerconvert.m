@@ -5,6 +5,8 @@ function docerconvert( sMd, options )
 %   be a char or string including wildcards, a cellstr or string array, or
 %   a dir struct.
 %
+%   Multiple documents can also be specified as docerconvert(md1,md2,...).
+%
 %   docerconvert(...,"Stylesheets",css) includes the stylesheet(s) css.
 %   Stylesheets "github-markdown.css" and "matlaby.css" are always
 %   included.

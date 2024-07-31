@@ -1,9 +1,11 @@
-function docerzap( filename, options )
+function docerzap( sHtml, options )
 %docerzap  Execute code blocks and insert textual and graphical results
 %
 %   docerzap(html) executes MATLAB code blocks in the HTML document(s) html
 %   and inserts the textual and graphical output.  html can be a char or
 %   string including wildcards, a cellstr or string array, or a dir struct.
+%
+%   Multiple documents can also be specified as docerzap(html1,html2,...).
 %
 %   docerzap(...,"Level",level) specifies the batching level.  With level 0
 %   (default), all blocks in a document are executed in a single batch.
@@ -17,15 +19,34 @@ function docerzap( filename, options )
 
 %   Copyright 2024 The MathWorks, Inc.
 
+arguments ( Repeating )
+    sHtml
+end
+
 arguments
-    filename (1,1) string {mustBeFile}
     options.Level (1,1) double {mustBeInteger,mustBeInRange(options.Level,0,6)} = 0
     options.Mode (1,1) string {mustBeMember(options.Mode,["auto","manual"])} = "auto"
 end
 
-zap( filename, options.Level, options.Mode )
+% Check documents
+sHtml = docer.dir( sHtml{:} );
+assert( all( docer.extensions( sHtml ) == ".html" ), ...
+    "docer:InvalidArgument", ...
+    "HTML files must all have extension .html." )
+if isempty( sHtml ), return, end
 
+% Zap
+for ii = 1:numel( sHtml ) % loop over files
+    fHtml = fullfile( sHtml(ii).folder, sHtml(ii).name ); % this file
+    try
+        zap( fHtml, options.Level, options.Mode )
+        fprintf( 1, "[>] %s\n", fHtml );
+    catch e
+        warning( e.identifier, '%s', e.message ) % rethrow as warning
+    end
 end
+
+end % docerzap
 
 function zap( html, batchLevel, mode )
 
