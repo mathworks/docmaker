@@ -175,8 +175,8 @@ appendChild( body, main );
 div = importNode( doc, getDocumentElement( xml ), true );
 appendChild( main, div );
 
-% Remove permalinks -- elements with tag name "a" and attribute
-% "aria-label" starting with "Permalink: "
+% Remove permalinks (anchors with attribute "aria-label" starting with
+% "Permalink: ")
 anchors = doc.getElementsByTagName( "a" );
 for ii = anchors.Length:-1:1 % backwards
     anchor = anchors.node( ii );

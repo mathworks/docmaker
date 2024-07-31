@@ -23,7 +23,7 @@ for ii = 1:aa.Length
         path = href.EncodedPath;
         if endsWith( path, old )
             path = extractBefore( path, ...
-                1 + strlength( path )- strlength( old ) ) + new;
+                1 + strlength( path ) - strlength( old ) ) + new;
             href.EncodedPath = path;
             a.setAttribute( "href", string( href ) )
         end
