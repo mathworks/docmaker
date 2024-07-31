@@ -18,8 +18,36 @@ next = div.getNextSibling(); % for result insertion
 inDiv = div;
 inString = div.TextContent;
 
-% Evaluate code and capture output
-[outString, outFigs] = docer.eval( w, inString );
+%%%
+expr = inString;
+%%%
+
+% Capture initial figures and their 'prints
+oldFigures = docer.figures();
+oldPrints = arrayfun( @docer.capture, oldFigures, "UniformOutput", false );
+
+% Evaluate expression and capture output
+try
+    output = string( evalinc( w, expr ) );
+catch e
+    rethrow( e ) % trim stack
+end
+
+% Capture final figures and their 'prints
+newFigures = docer.figures();
+newPrints = arrayfun( @docer.capture, newFigures, "UniformOutput", false );
+
+% Return new and modified figures
+wasPrints = cell( size( newPrints ) ); % preallocate
+[tf, loc] = ismember( oldFigures, newFigures ); % match
+wasPrints(loc(tf)) = oldPrints(tf); % corresponding
+modFigures = newFigures(~cellfun( @isequal, newPrints, wasPrints )); % select
+modFigures = modFigures(:); % return column vector
+
+%%%
+outString = output;
+outFigs = modFigures;
+%%%
 
 % Add text output
 if strlength( outString ) > 0
