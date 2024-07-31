@@ -40,7 +40,7 @@ for ii = 1:numel( sHtml ) % loop over files
     fHtml = fullfile( sHtml(ii).folder, sHtml(ii).name ); % this file
     try
         zap( fHtml, options.Level, options.Mode )
-        fprintf( 1, "[>] %s\n", fHtml );
+        fprintf( 1, "[%s] %s\n", char( 9889 ), fHtml );
     catch e
         warning( e.identifier, '%s', e.message ) % rethrow as warning
     end
