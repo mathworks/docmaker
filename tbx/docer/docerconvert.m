@@ -139,7 +139,7 @@ h1 = getElementsByTagName( xml, "h1" );
 if h1.Length > 0
     title = createElement( doc, "title" );
     appendChild( head, title );
-    title.TextContent = rmemoji( h1.item( 0 ).TextContent );
+    title.TextContent = docer.rmemoji( h1.item( 0 ).TextContent );
 end
 
 % Add stylesheets

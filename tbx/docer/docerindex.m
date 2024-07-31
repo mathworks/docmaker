@@ -25,7 +25,7 @@ linkrep( xToc, ".md", ".html" ) % replace links
 % Extract name
 h1 = xToc.getElementsByTagName( "h1" ); % headings
 if h1.Length > 0
-    name = rmemoji( h1.item( 0 ).TextContent ); % first heading
+    name = docer.rmemoji( h1.item( 0 ).TextContent ); % first heading
 else
     name = "Unknown Toolbox"; % unknown
 end
