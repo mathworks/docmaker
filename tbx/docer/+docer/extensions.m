@@ -1,7 +1,8 @@
 function x = extensions( s )
 %extensions  File extensions
 %
-%   x = extensions(s) returns file extensions x from the folder struct s.
+%   x = docer.extensions(s) returns file extensions x from the folder
+%   struct s.
 
 %   Copyright 2024 The MathWorks, Inc.
 
