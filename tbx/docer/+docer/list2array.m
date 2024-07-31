@@ -9,8 +9,9 @@ function e = list2array( n )
 
 %   Copyright 2020-2024 The MathWorks, Inc.
 
+e = matlab.io.xml.dom.Element.empty( 0, 1 ); % in case n is empty
 for ii = 1:n.Length
-    e(ii) = n.node( ii ); %#ok<AGROW>
+    e(ii) = n.node( ii );
 end
 e = e(:); % return column vector
 
