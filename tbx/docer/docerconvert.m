@@ -175,19 +175,8 @@ appendChild( body, main );
 div = importNode( doc, getDocumentElement( xml ), true );
 appendChild( main, div );
 
-% Tidy up
-rmpermalinks( doc )
-
-end % convert
-
-function rmpermalinks( doc )
-%rmpermalinks  Remove permalinks
-%
-%   rmpermalinks(doc) removes permalinks from the document doc.
-%
-%   Permalinks are elements with tag name "a" and attribute "aria-label"
-%   starting with "Permalink: ".
-
+% Remove permalinks -- elements with tag name "a" and attribute
+% "aria-label" starting with "Permalink: "
 anchors = doc.getElementsByTagName( "a" );
 for ii = anchors.Length:-1:1 % backwards
     anchor = anchors.node( ii );
@@ -197,4 +186,4 @@ for ii = anchors.Length:-1:1 % backwards
     end
 end
 
-end % rmpermalinks
+end % convert
