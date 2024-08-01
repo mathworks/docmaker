@@ -12,7 +12,6 @@ function docerdelete( pRoot )
 
 %   Copyright 2020-2024 The MathWorks, Inc.
 
-% Check inputs
 arguments
     pRoot (1,1) string {mustBeFolder}
 end
