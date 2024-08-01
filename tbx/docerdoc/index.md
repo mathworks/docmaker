@@ -54,7 +54,7 @@ First, use [`docerconvert`](docerconvert.md) to convert your Markdown documents 
 
 ```matlab
 docerconvert tbx/docerdoc/**/*.md
-docerrun tbx/docerdoc/**/*.m
+docerrun tbx/docerdoc/**/*.html
 docerindex tbx/docerdoc 
 ```
 
