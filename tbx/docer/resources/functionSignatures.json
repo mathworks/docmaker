@@ -86,6 +86,10 @@
             {
                 "name": "Mode",
                 "kind": "namevalue",
+                "type": [
+                    "char",
+                    "choices={'auto','manual'}"
+                ],
                 "purpose": "execution mode"
             }
         ]
