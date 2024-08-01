@@ -20,49 +20,44 @@ Multiple documents may also be specified using `docerrun(html1,html2,...)`.
 ## Examples
 
 ```matlab
-docerrun("mickey/pluto.m") 
+docerrun("mickey/pluto.html") 
 ```
-runs a single MATLAB script `mickey/pluto.m`.  The file extension `.m` is optional.  Note that this path is *relative*.
+processes a single HTML document `mickey/pluto.html`.  Note that this path is *relative*.
 
 ```matlab
-docerrun("C:\daisy\mickey\pluto.m") 
+docerrun("C:\daisy\mickey\pluto.html") 
 ```
-also runs a single MATLAB script, this time specified using an *absolute* path.
+also processes a single HTML document, this time specified using an *absolute* path.
 
 ```matlab
-docerrun("mickey/*.m") 
+docerrun("mickey/*.html") 
 ```
-runs *all* MATLAB scripts in `mickey`.
+processes *all* HTML documents in `mickey`.
 
 ```matlab
-docerrun("mickey/**/*.m") 
+docerrun("mickey/**/*.html") 
 ```
-runs all MATLAB scripts in `mickey` *and its subfolders*.
+processes all HTML documents in `mickey` *and its subfolders*.
 
 ```matlab
-docerrun(["mickey/pluto.m" "mickey/donald.m"]) 
+docerrun(["mickey/pluto.html" "mickey/donald.html"]) 
 ```
-runs *multiple* MATLAB scripts.
-
-```matlab
-docerrun("mickey/pluto.m","Size",[400 300]) 
-```
-sets the figure size to 400-by-300 pixels.
-
-```matlab
-docerrun("mickey/pluto.m","Resolution",96) 
-```
-sets the screenshot resolution to 96 dpi.
+processes *multiple* HTML documents.
 
 ## Description
 
-## Steps
+MATLAB code blocks are designated with ` ```matlab `.  These blocks are syntax highlighted.
 
-Each run consists of 4 steps:
-1. Run the MATLAB script
-2. Resize the generated figure(s) to the specified size
-3. Save the figure(s) to image file(s) at the specified resolution next to the original script
-4. Close the generated figure(s)
+MATLAB code blocks that end with whitespace are not executed, but are syntax highlighted.
+
+### Steps
+
+Each run consists of 5 steps:
+1. Read the HTML document
+2. Remove previous MATLAB output
+3. Run each MATLAB code block in turn
+4. After each code block, insert textual and graphical output
+5. Write the modified HTML document
 
 ## See also
 
