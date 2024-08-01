@@ -48,7 +48,7 @@ Create a workspace, assign some variables, and evaluate an expression:
 w = docer.Workspace();
 assignin(w,"a",2,"b",3)
 evalin(w,"c=a+b;")
-w
+who(w)
 ```
 
 ### Capturing output
@@ -82,6 +82,6 @@ save data.mat % save from base to .mat
 w = docer.Workspace(); % create new workspace
 assignin(w,"b",-3,"c","pluto"); % data in workspace
 load(w,"data.mat") % load from .mat to workspace
-w
+who(w)
 delete("data.mat") % clean up
 ```
