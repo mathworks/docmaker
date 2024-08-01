@@ -48,9 +48,27 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
             %   displayScalarObject(w) displays a scalar workspace, showing
             %   the class and number of variables.
 
+            % Header
             c = matlab.mixin.CustomDisplay.getClassNameForHeader( obj );
-            n = numel( obj.Data.listVariables() );
-            fprintf( 1, "  %s with %d variable(s).\n\n", c, n );
+            n = obj.Data.listVariables();
+            switch numel( n )
+                case 0
+                    vs = "variables.";
+                case 1
+                    vs = "variable:";
+                otherwise
+                    vs = "variables:";
+            end
+            fprintf( 1, "  %s with %d %s\n\n", c, numel( n ), vs );
+
+            % Body
+            if numel( n ) > 0
+                s = struct();
+                for ii = 1:numel( n )
+                    s.( n(ii) ) = obj.Data.getValue( n(ii) );
+                end
+                disp( s )
+            end
 
         end % displayScalarObject
 
