@@ -55,7 +55,7 @@ First, use [`docerconvert`](docerconvert.md) to convert your Markdown documents 
 ```matlab
 docerconvert tbx/docerdoc/**/*.md
 docerrun tbx/docerdoc/**/*.m
-docerindex tbx/docerdoc
+docerindex tbx/docerdoc 
 ```
 
 Before you start, you may wish to delete previous Doc_er artifacts using [`docerdelete`](docerdelete.md).

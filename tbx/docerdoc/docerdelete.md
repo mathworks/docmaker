@@ -15,12 +15,12 @@ Delete Doc_er artifacts
 ## Examples
 
 ```matlab
-docerdelete("mickey/goofy")
+docerdelete("mickey/goofy") 
 ```
 deletes artifacts in the folder `mickey/goofy`.  Note that this path is *relative*.
 
 ```matlab
-docerconvert("C:\daisy\mickey\goofy")
+docerconvert("C:\daisy\mickey\goofy") 
 ```
 also deletes artifacts, this time specified using an *absolute* path.
 

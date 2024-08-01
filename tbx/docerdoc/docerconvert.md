@@ -26,42 +26,42 @@ Multiple documents may also be specified using `docerconvert(md1,md2,...)`.
 ## Examples
 
 ```matlab
-docerconvert("mickey/pluto.md")
+docerconvert("mickey/pluto.md") 
 ```
 converts a single Markdown document `mickey/pluto.md` to HTML.  Note that this path is *relative*.
 
 ```matlab
-docerconvert("C:\daisy\mickey\pluto.md")
+docerconvert("C:\daisy\mickey\pluto.md") 
 ```
 also converts a single Markdown document, this time specified using an *absolute* path.
 
 ```matlab
-docerconvert("mickey/*.md")
+docerconvert("mickey/*.md") 
 ```
 converts *all* Markdown documents in `mickey` to HTML.
 
 ```matlab
-docerconvert("mickey/**/*.md")
+docerconvert("mickey/**/*.md") 
 ```
 converts all Markdown documents in `mickey` *and its subfolders*.
 
 ```matlab
-docerconvert(["mickey/pluto.md" "mickey/donald.md"])
+docerconvert(["mickey/pluto.md" "mickey/donald.md"]) 
 ```
 converts *multiple* Markdown documents to HTML.
 
 ```matlab
-docerconvert("mickey/pluto.md","Stylesheets","huey/louie.css")
+docerconvert("mickey/pluto.md","Stylesheets","huey/louie.css") 
 ```
 copies the stylesheet `huey/louie.css` to the `resources` folder and includes a `<link>` in the HTML `<head>`.
 
 ```matlab
-docerconvert("mickey/pluto.md","Scripts","morty/ferdie.js")
+docerconvert("mickey/pluto.md","Scripts","morty/ferdie.js") 
 ```
 copies the script `morty/ferdie.js` to the `resources` folder and includes a `<script>` in the HTML `<head>`. :test_tube:
 
 ```matlab
-docerconvert("mickey/goofy/*.md","Root","mickey")
+docerconvert("mickey/goofy/*.md","Root","mickey") 
 ```
 sets the root folder to `mickey`, rather than the lowest common ancestor `mickey/goofy` of the Markdown documents.
 

@@ -15,7 +15,7 @@ Multiple documents may also be specified using `docerrun(html1,html2,...)`.
 | Input | Description | Type | Required |
 | :-: | --- | :-: | :-: |
 | `html` | HTML document(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
-| `b` | Batching level, from 0 to 6; default is 0 | double | |
+| `b` | Batching level, from 0 to 6; default is 0 | double | :test_tube: |
 
 ## Examples
 

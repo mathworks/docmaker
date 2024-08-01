@@ -15,12 +15,12 @@ Create documentation index files
 ## Examples
 
 ```matlab
-docerindex("mickey/goofy")
+docerindex("mickey/goofy") 
 ```
 indexes documentation in the folder `mickey/goofy`.  Note that this path is *relative*.
 
 ```matlab
-docerindex("C:\daisy\mickey\goofy")
+docerindex("C:\daisy\mickey\goofy") 
 ```
 also indexes documentation, this time specified using an *absolute* path.
 
