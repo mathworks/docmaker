@@ -72,19 +72,27 @@ classdef Workspace < handle
             %   assignin(w,n,v) assigns the value v to the variable n in
             %   the workspace w.
             %
+            %   assignin(w,n1,v1,n2,v2,...) assigns the values v1, v2, ...
+            %   to the variables n1, n2, ... in the workspace w.
+            %
             %   See also: assignin
 
             arguments
                 obj (1,1)
+            end
+
+            arguments ( Repeating )
                 name (1,1) string
                 value
             end
 
-            if ismember( name, obj.Names ) % existing
-                obj.Values{obj.Names == name} = value;
-            else % new
-                obj.Names(end+1) = name;
-                obj.Values{end+1} = value;
+            for ii = 1:numel( name ) % loop over assignments
+                if ismember( name{ii}, obj.Names ) % existing
+                    obj.Values{obj.Names == name{ii}} = value{ii};
+                else % new
+                    obj.Names(end+1) = name{ii};
+                    obj.Values{end+1} = value{ii};
+                end
             end
 
         end % assignin
