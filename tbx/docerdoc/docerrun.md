@@ -20,37 +20,37 @@ Multiple documents may also be specified using `docerrun(html1,html2,...)`.
 ## Examples
 
 ```matlab
-docerrun("mickey/pluto.m")
+docerrun("mickey/pluto.m") 
 ```
 runs a single MATLAB script `mickey/pluto.m`.  The file extension `.m` is optional.  Note that this path is *relative*.
 
 ```matlab
-docerrun("C:\daisy\mickey\pluto.m")
+docerrun("C:\daisy\mickey\pluto.m") 
 ```
 also runs a single MATLAB script, this time specified using an *absolute* path.
 
 ```matlab
-docerrun("mickey/*.m")
+docerrun("mickey/*.m") 
 ```
 runs *all* MATLAB scripts in `mickey`.
 
 ```matlab
-docerrun("mickey/**/*.m")
+docerrun("mickey/**/*.m") 
 ```
 runs all MATLAB scripts in `mickey` *and its subfolders*.
 
 ```matlab
-docerrun(["mickey/pluto.m" "mickey/donald.m"])
+docerrun(["mickey/pluto.m" "mickey/donald.m"]) 
 ```
 runs *multiple* MATLAB scripts.
 
 ```matlab
-docerrun("mickey/pluto.m","Size",[400 300])
+docerrun("mickey/pluto.m","Size",[400 300]) 
 ```
 sets the figure size to 400-by-300 pixels.
 
 ```matlab
-docerrun("mickey/pluto.m","Resolution",96)
+docerrun("mickey/pluto.m","Resolution",96) 
 ```
 sets the screenshot resolution to 96 dpi.
 
