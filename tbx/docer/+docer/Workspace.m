@@ -266,7 +266,7 @@ classdef Workspace < handle
                     "Cannot return output(s) from no statements." )
                 varargout{1} = ""; % no output
             elseif isscalar( statements ) % single statement
-                if nargout > 0 && any( iskind( tree, "EQUALS" ) )
+                if nargout > 1 && any( iskind( tree, "EQUALS" ) )
                     error( "docer:InvalidArgument", ...
                         "Cannot return output(s) from an assignment." )
                 end
