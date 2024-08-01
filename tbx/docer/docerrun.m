@@ -10,12 +10,12 @@ function docerrun( sHtml, options )
 %
 %   Multiple documents can also be specified as docerrun(html1,html2,...).
 %
-%   docerrun(...,"Level",level) specifies the batching level.  With level 0
+%   docerrun(...,"Level",b) specifies the batching level b.  With level 0
 %   (default), all blocks in a document are run in a single batch. With
 %   level n, each level-n heading is run as a separate batch, with the
 %   workspace cleared and figures closed between batches.
 %
-%   docerrun(...,"Mode",mode) specifies the execution mode.  With mode
+%   docerrun(...,"Mode",m) specifies the execution mode m.  With mode
 %   "auto" (default), all blocks are run.  With mode "manual", only blocks
 %   under headings marked with :zap: are run.  Higher level :zap:s apply to
 %   lower level headings.
