@@ -1,22 +1,24 @@
 # docerrun :runner:
 
-Run MATLAB scripts and save generated figures to image files
+Run MATLAB code in HTML documents and insert output
 
 ## Syntax
 
-`docerrun(s)` runs the MATLAB script(s) `s` and saves generated figures to image files.
+`docerrun(html)` runs MATLAB code blocks in the HTML document(s) html, and inserts the textual and graphical output.
 
-`docerrun(...,"Size",wh)` sets the size of the figures to [width height] `wh`.
+Multiple documents may also be specified using `docerrun(html1,html2,...)`.
+ 
+`docerrun(...,"Level",level)` specifies the batching level.  With level `0` (default), all blocks in a document are run in a single batch. With level `n`, each level-n heading is run as a separate batch, with the workspace cleared and figures closed between batches.
 
-`docerrun(...,"Resolution",r)` sets the resolution of the screenshots to `r` dpi.
+`docerrun(...,"Mode",mode)` specifies the execution mode.  With mode `auto` (default), all blocks are run.  With mode `manual`, only blocks under headings marked with :zap: `:zap:` are run.  Higher level :zap:s apply to lower level headings.
 
 ## Inputs
 
 | Input | Description | Type | Required |
 | :-: | --- | :-: | :-: |
-| `s` | MATLAB script(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
-| `wh` | Width and height of figures, in pixels | 1x2 double | |
-| `r` | Screenshot resolution, in dpi | double | |
+| `html` | HTML document(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
+| `level` | Batching level, from 0 to 6; default is 0 | double | |
+| `mode` | Execution mode; default is `auto` | `auto` or `manual` | |
 
 ## Examples
 
@@ -64,10 +66,6 @@ Each run consists of 4 steps:
 2. Resize the generated figure(s) to the specified size
 3. Save the figure(s) to image file(s) at the specified resolution next to the original script
 4. Close the generated figure(s)
-
-## Image filenames
-
-The generated image files are named after the corresponding MATLAB script.  For example, if a script `mickey/pluto.m` generates two figures, then these will be saved to `mickey/pluto1.png` and `mickey/pluto2.png`.
 
 ## See also
 
