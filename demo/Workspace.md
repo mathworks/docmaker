@@ -4,11 +4,15 @@ Workspace
 
 ## Syntax
 
+### Creation
+
 `w = docer.Workspace()` creates a new, empty workspace `w`.
+
+### Assignment and evaluation
 
 `assignin(w,n,v)` assigns the variable `n` to value `v` in the workspace `w`.
 
-`assignin(w,n1,v1,n2,v2,...)` assigns *multiple* variables `n1`, `n2`, etc. to values `v1`, `v2`, etc. respectively.
+`assignin(w,n1,v1,n2,v2,...)` assigns variable `n1` to value `v1`, variable `n2` to value `v2`, etc. in the workspace `w`.
 
 `evalin(w,b)` evaluates the code block `b` in the workspace `w`.
 
@@ -19,6 +23,8 @@ Workspace
 `[c,o1,o2,...] = evalinc(w,s)` evaluates the statement `s` in the workspace `w`, and returns the outputs `o1`, `o2`, etc. and the command window output `c`.
 
 `clearvars(w,n1,n2,...)` clears the variables `n1`, `n2`, etc. from the workspace `w`.
+
+### Loading and saving
 
 `save(w,f)` saves *all* variables in the workspace `w` to the file `f`.
 
@@ -53,6 +59,12 @@ Evaluate an expression without capturing the output:
 evalin(w,"d=a*b+c")
 ```
 
+Evaluate an expression *in* the workspace and assign the result to a variable in the *caller*:
+
+```matlab
+x = evalin(w,"a*b+c")
+```
+
 Capture the output and it is returned to the caller:
 
 ```matlab
@@ -60,15 +72,6 @@ evalinc(w,"e=a+b*c")
 ```
 
 ### Loading and saving
-
-Assign the result of an expression *in* the workspace to a variable in the *caller*:
-
-```matlab
-x = evalin(w,"a*b+c")
-```
-
-
-
 
 There is nothing special about the `.mat` files that `docer.Workspace` can load and save.  Let's save a `.mat` file from the *base* workspace and load it to a workspace *object*:
 
@@ -79,6 +82,6 @@ save data.mat % save from base to .mat
 w = docer.Workspace(); % create new workspace
 assignin(w,"b",-3,"c","pluto"); % data in workspace
 load(w,"data.mat") % load from .mat to workspace
-delete("data.mat")
 w
+delete("data.mat") % clean up
 ```
