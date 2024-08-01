@@ -1,4 +1,4 @@
-classdef Workspace < handle
+classdef Workspace < handle & matlab.mixin.CustomDisplay
     %docer.Workspace  Private workspace
     %
     %   docer.Workspace is a private workspace for assigning variables and
@@ -8,10 +8,53 @@ classdef Workspace < handle
 
     %   Copyright 2007-2024 The MathWorks, Inc.
 
-    properties ( SetAccess = private )
-        Names (1,:) string % variable names
-        Values (1,:) cell % variable values
+    properties ( Access = private )
+        Data % workspace data
     end
+
+    methods
+
+        function obj = Workspace( varargin )
+            %Workspace  Private workspace
+            %
+            %   w = docer.Workspace() creates an empty private workspace.
+            %
+            %   w = docer.Workspace(n1,v1,n2,v2,...) assigns the values v1,
+            %   v2, ... to the variables n1, n2, ...
+
+            % Create store
+            if isMATLABReleaseOlderThan( "R2024a" )
+                obj.Data = matlab.internal.lang.WorkspaceData;
+            else
+                obj.Data = matlab.lang.internal.WorkspaceData;
+            end
+
+            % Assign variables
+            try
+                obj.assignin( varargin{:} )
+            catch e
+                throwAsCaller( e )
+            end
+
+        end % constructor
+
+    end % structors
+
+    methods ( Access = protected )
+
+        function displayScalarObject( obj )
+            %displayScalarObject  Display scalar object
+            %
+            %   displayScalarObject(w) displays a scalar workspace, showing
+            %   the class and number of variables.
+
+            c = matlab.mixin.CustomDisplay.getClassNameForHeader( obj );
+            n = numel( obj.Data.listVariables() );
+            fprintf( 1, "  %s with %d variable(s).\n\n", c, n );
+
+        end % displayScalarObject
+
+    end % display methods
 
     methods
 
@@ -32,8 +75,7 @@ classdef Workspace < handle
 
             % Evaluate
             try
-                [~, varargout{1:nargout}] = ... % do not return output
-                    evalc_block( obj, block, true ); % but do show
+                [varargout{1:nargout}] = obj.Data.evaluateIn( block );
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -43,8 +85,8 @@ classdef Workspace < handle
         function varargout = evalinc( obj, block )
             %evalinc  Evaluate block in workspace and capture output
             %
-            %   c = evalinc(w,b) evaluates the block b in the
-            %   workspace w, and returns the command window output c.
+            %   c = evalinc(w,b) evaluates the block b in the workspace w,
+            %   and returns the command window output c.
             %
             %   [c,o1,o2,...] = evalinc(w,e) also returns the outputs from
             %   the evaluation, if the block contains a single statement.
@@ -58,8 +100,8 @@ classdef Workspace < handle
 
             % Evaluate
             try
-                [varargout{1:max( nargout, 1 )}] = ... % return output
-                    evalc_block( obj, block, false ); % but do not show
+                no = max( nargout, 1 ); % return at least 1 argument
+                [varargout{1:no}] = evalc( obj, block ); %#ok<*EVLC>
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -87,12 +129,7 @@ classdef Workspace < handle
             end
 
             for ii = 1:numel( name ) % loop over assignments
-                if ismember( name{ii}, obj.Names ) % existing
-                    obj.Values{obj.Names == name{ii}} = value{ii};
-                else % new
-                    obj.Names(end+1) = name{ii};
-                    obj.Values{end+1} = value{ii};
-                end
+                obj.Data.assignVariable( name{ii}, value{ii} )
             end
 
         end % assignin
@@ -127,12 +164,62 @@ classdef Workspace < handle
 
             % Evaluate
             try
-                eval_statement( obj, expr )
+                obj.Data.evaluateIn( expr )
             catch e
                 throwAsCaller( e ) % trim stack
             end
 
         end % clearvars
+
+        function varargout = who( obj, args )
+            %who  List workspace variables
+            %
+            %   who(w) lists the variables in the workspace w.
+            %
+            %   Other options of who are also supported.
+            %
+            %   See also: whos
+
+            arguments
+                obj (1,1)
+            end
+
+            arguments ( Repeating )
+                args (1,1) string
+            end
+
+            % Form expression
+            expr = "who" + sprintf( " %s", args{:} );
+
+            % Evaluate
+            [varargout{1:nargout}] = obj.Data.evaluateIn( expr );
+
+        end % who
+
+        function varargout = whos( obj, args )
+            %whos  List workspace variables with details
+            %
+            %   whos(w) lists the variables and details in the workspace w.
+            %
+            %   Other options of whos are also supported.
+            %
+            %   See also: who
+
+            arguments
+                obj (1,1)
+            end
+
+            arguments ( Repeating )
+                args (1,1) string
+            end
+
+            % Form expression
+            expr = "whos" + sprintf( " %s", args{:} );
+
+            % Evaluate
+            [varargout{1:nargout}] = obj.Data.evaluateIn( expr );
+
+        end % whos
 
         function save( obj, args )
             %save  Save workspace variables to file
@@ -159,7 +246,7 @@ classdef Workspace < handle
 
             % Evaluate
             try
-                eval_statement( obj, expr )
+                obj.Data.evaluateIn( expr )
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -191,7 +278,7 @@ classdef Workspace < handle
 
             % Evaluate
             try
-                eval_statement( obj, expr )
+                obj.Data.evaluateIn( expr )
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -215,9 +302,15 @@ classdef Workspace < handle
 
             % Debug
             try
-                [obj.Names, obj.Values] = keyboard_do( obj );
+                [names, values] = keyboard_do( obj );
             catch e
                 throwAsCaller( e ) % trim stack
+            end
+
+            % Repack
+            obj.Data.clearVariables();
+            for ii = 1:numel( names )
+                obj.Data.assignVariable( names(ii), values{ii} )
             end
 
         end % keyboard
@@ -226,27 +319,22 @@ classdef Workspace < handle
 
     methods ( Access = private )
 
-        function varargout = evalc_block( obj, block, show )
-            %evalc_block  Evaluate multiple statements and capture output
+        function varargout = evalc( obj, block )
+            %evalc  Evaluate multiple statements and capture output
             %
-            %   c = evalc_block(w,b) evaluates the block b in the
-            %   workspace w, and returns the command window output o.
+            %   c = evalc(w,b) evaluates the block b in the workspace w,
+            %   and returns the command window output o.
             %
-            %   c = evalc_block(w,b,true) also shows the command window
-            %   output.
+            %   [c,o1,o2,...] = evalc(...) also returns the outputs from
+            %   the evaluation, if the block contains a single statement.
             %
-            %   [c,o1,o2,...] = evalc_block(...) also returns the outputs
-            %   from the evaluation, if the block contains a single
-            %   statement.
-            %
-            %   evalc_block splits the block b into statements, prepares
-            %   the statements for evaluation with capture, and forwards
-            %   each statement in turn to eval_statement.
+            %   evalc splits the block b into statements, prepares the
+            %   statements for evaluation with capture, and evaluates each
+            %   statement in turn.
 
             arguments
                 obj (1,1) % workspace
                 block (1,1) string % text
-                show (1,1) matlab.lang.OnOffSwitchState = false % hide output
             end
 
             % Split into statements
@@ -273,72 +361,19 @@ classdef Workspace < handle
                 escapedStatement = sprintf( "builtin(""evalc"",""%s"")", ...
                     strrep( statements, """", """""" ) ); % escape and wrap
                 [varargout{1:nargout}] = ...
-                    eval_statement( obj, escapedStatement ); % evaluate
+                    obj.Data.evaluateIn( escapedStatement ); % evaluate
                 varargout{1} = string( varargout{1} ); % convert
-                if show, fprintf( 1, "%s", varargout{1} ); end % echo
             else % multiple statements
                 assert( nargout == 1, "docer:InvalidArgument", ...
                     "Cannot return output(s) from multiple statements." )
                 varargout{1} = strings( size( statements ) ); % preallocate
                 for ii = 1:numel( statements ) % loop over statements
-                    varargout{1}(ii) = evalc_block( obj, statements(ii), show ); % recurse
+                    varargout{1}(ii) = evalc( obj, statements(ii) ); % recurse
                 end
                 varargout{1} = strjoin( varargout{1}, "" ); % combine outputs
             end
 
-        end % evalc_block
-
-        function varargout = eval_statement( obj, statement )
-            %eval_statement  Evaluate a single statement
-            %
-            %   eval_statement(w,s) evaluates the statement s in the
-            %   workspace w.
-            %
-            %   [o1,o2,...] = eval_statement(...) returns outputs o1, o2,
-            %   ... of the evaluation.
-            %
-            %   eval_statement works in tandem with eval_do to evaluate the
-            %   statement in a context containing only the workspace
-            %   variables.
-
-            [varargout{1:nargout}] = eval_do( obj, statement ); % do
-
-        end % eval_statement
-
-        function varargout = eval_do( obj, statement )
-            %eval_do  Evaluate a single statement in caller workspace
-            %
-            %   eval_do(w,s) evaluates unpacks the workspace w, evaluates
-            %   the statement s, and repacks the workspace, all in scope of
-            %   the caller function.
-            %
-            %   [o1,o2,...] = eval_do(...) returns outputs o1, o2, ... of
-            %   the evaluation.
-            %
-            %   eval_do is part of the implementation of eval_statement and
-            %   should not be called directly.
-
-            % Unpack
-            builtin( "evalin", "caller", "clear" )
-            oldNames = obj.Names;
-            oldValues = obj.Values;
-            for ii = 1:numel( oldNames )
-                builtin( "assignin", "caller", oldNames(ii), oldValues{ii} )
-            end
-
-            % Evaluate
-            [varargout{1:nargout}] = builtin( "evalin", "caller", statement );
-
-            % Repack
-            newNames = string( evalin( "caller", "who" ) );
-            newValues = cell( size( newNames ) ); % preallocate
-            for ii = 1:numel( newNames )
-                newValues{ii} = builtin( "evalin", "caller", newNames(ii) );
-            end
-            obj.Names = newNames;
-            obj.Values = newValues;
-
-        end % eval_do
+        end % evalc
 
         function [db16a6c786, db2ccd973c] = keyboard_do( db16a6c786 )
             %keyboard  Prompt in workspace
@@ -351,12 +386,12 @@ classdef Workspace < handle
             %   to return the workspace names and values.
 
             % Unpack
-            assert( ~any( ismember( db16a6c786.Names, ["db16a6c786", "db2ccd973c"] ) ), ...
+            assert( ~any( ismember( db16a6c786.Data.listVariables(), ...
+                ["db16a6c786", "db2ccd973c"] ) ), ...
                 "docer:InvalidArgument", "%s", ...
                 "Cannot debug workspace with reserved variable name(s)." )
-            for db2ccd973c = 1:numel( db16a6c786.Names )
-                eval( db16a6c786.Names(db2ccd973c) + ...
-                    " = db16a6c786.Values{db2ccd973c};" )
+            for db2ccd973c = db16a6c786.Data.listVariables()'
+                eval( "db2ccd973c = db16a6c786.Store.getValue(db2ccd973c);" ) %#ok<EVLCS>
             end
             clear( "db16a6c786", "db2ccd973c" ) % temporary variables
 
