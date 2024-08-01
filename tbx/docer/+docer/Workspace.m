@@ -189,56 +189,6 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
 
         end % clearvars
 
-        function varargout = who( obj, args )
-            %who  List workspace variables
-            %
-            %   who(w) lists the variables in the workspace w.
-            %
-            %   Other options of who are also supported.
-            %
-            %   See also: whos
-
-            arguments
-                obj (1,1)
-            end
-
-            arguments ( Repeating )
-                args (1,1) string
-            end
-
-            % Form expression
-            expr = "who" + sprintf( " %s", args{:} );
-
-            % Evaluate
-            [varargout{1:nargout}] = obj.Data.evaluateIn( expr );
-
-        end % who
-
-        function varargout = whos( obj, args )
-            %whos  List workspace variables with details
-            %
-            %   whos(w) lists the variables and details in the workspace w.
-            %
-            %   Other options of whos are also supported.
-            %
-            %   See also: who
-
-            arguments
-                obj (1,1)
-            end
-
-            arguments ( Repeating )
-                args (1,1) string
-            end
-
-            % Form expression
-            expr = "whos" + sprintf( " %s", args{:} );
-
-            % Evaluate
-            [varargout{1:nargout}] = obj.Data.evaluateIn( expr );
-
-        end % whos
-
         function save( obj, args )
             %save  Save workspace variables to file
             %
