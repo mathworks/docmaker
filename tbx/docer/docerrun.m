@@ -14,11 +14,6 @@ function docerrun( sHtml, options )
 %   (default), all blocks in a document are run in a single batch. With
 %   level n, each level-n heading is run as a separate batch, with the
 %   workspace cleared and figures closed between batches.
-%
-%   docerrun(...,"Mode",m) specifies the execution mode m.  With mode
-%   "auto" (default), all blocks are run.  With mode "manual", only blocks
-%   under headings marked with :zap: are run.  Higher level :zap:s apply to
-%   lower level headings.
 
 %   Copyright 2024 The MathWorks, Inc.
 
@@ -28,7 +23,6 @@ end
 
 arguments
     options.Level (1,1) double {mustBeInteger,mustBeInRange(options.Level,0,6)} = 0
-    options.Mode (1,1) string {mustBeMember(options.Mode,["auto","manual"])} = "auto"
 end
 
 % Check documents
@@ -42,7 +36,7 @@ if isempty( sHtml ), return, end
 for ii = 1:numel( sHtml ) % loop over files
     fHtml = fullfile( sHtml(ii).folder, sHtml(ii).name ); % this file
     try
-        run( fHtml, options.Level, options.Mode )
+        run( fHtml, options.Level )
         fprintf( 1, "[%s] %s\n", char( 9889 ), fHtml );
     catch e
         warning( e.identifier, '%s', e.message ) % rethrow as warning
@@ -51,12 +45,11 @@ end
 
 end % docerrun
 
-function run( html, batchLevel, mode )
+function run( html, batchLevel )
 %run  Run MATLAB code in an HTML document and insert output
 %
-%   run(html,level,mode) runs MATLAB code blocks in the HTML document html
-%   with the specified batching level and execution mode, and inserts the
-%   textual and graphical output.
+%   run(html,b) runs MATLAB code blocks in the HTML document html with the
+%   batching level b, and inserts the textual and graphical output.
 
 % Read from file
 parser = matlab.io.xml.dom.Parser();
@@ -74,13 +67,6 @@ allDivs = docer.list2array( doc.getElementsByTagName( "div" ) );
 % Initialize
 root = doc.getDocumentElement();
 from = root; % start from root
-if mode == "auto"
-    zapping = true; % on
-    zapLevel = 0; % lowest
-else
-    zapping = false; % off
-    zapLevel = 6; % highest
-end
 oldFigures = docer.figures(); % existing figures
 
 while true
@@ -98,12 +84,6 @@ while true
         delete( setdiff( docer.figures(), oldFigures ) )
     end
 
-    % Update zap level
-    if fromLevel ~= 0 && ( fromLevel <= zapLevel || zapping == false )
-        zapLevel = fromLevel;
-        zapping = endsWith( from.TextContent, char( 9889 ) );
-    end
-
     % Find divs before next heading
     to = getNextHeading( from, allHeadings );
     if isempty( to )
@@ -115,8 +95,9 @@ while true
     % Run source divs, remove old output divs
     for ii = 1:numel( divs )
         div = divs( ii );
-        if zapping && div.hasAttribute( "class" ) && contains( ... % MATLAB input
-                div.getAttribute( "class" ), "highlight-source-matlab" )
+        if div.hasAttribute( "class" ) && contains( ... % MATLAB input
+                div.getAttribute( "class" ), "highlight-source-matlab" ) && ...
+                ~endsWith( div.TextContent, whitespacePattern() )
             runDiv( div, w ) % zap
         elseif div.hasAttribute( "class" ) && contains( ... % MATLAB output
                 div.getAttribute( "class" ), "highlight-output-matlab" )

@@ -86,15 +86,6 @@
                     "choices={0,1,2,3,4,5,6}"
                 ],
                 "purpose": "batching level"
-            },
-            {
-                "name": "Mode",
-                "kind": "namevalue",
-                "type": [
-                    "char",
-                    "choices={'auto','manual'}"
-                ],
-                "purpose": "execution mode"
             }
         ]
     }
