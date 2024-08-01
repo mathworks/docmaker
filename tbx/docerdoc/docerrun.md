@@ -10,15 +10,12 @@ Multiple documents may also be specified using `docerrun(html1,html2,...)`.
  
 `docerrun(...,"Level",b)` specifies the batching level `l`.  With level `0` (default), all blocks in a document are run in a single batch. With level `n`, each level-n heading is run as a separate batch, with the workspace cleared and figures closed between batches.
 
-`docerrun(...,"Mode",m)` specifies the execution mode `m`.  With mode `auto` (default), all blocks are run.  With mode `manual`, only blocks under headings marked with :zap: `:zap:` are run.  Higher level :zap:s apply to lower level headings.
-
 ## Inputs
 
 | Input | Description | Type | Required |
 | :-: | --- | :-: | :-: |
 | `html` | HTML document(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
 | `b` | Batching level, from 0 to 6; default is 0 | double | |
-| `m` | Execution mode; default is `auto` | `auto` or `manual` | |
 
 ## Examples
 
@@ -66,10 +63,6 @@ Each run consists of 4 steps:
 2. Resize the generated figure(s) to the specified size
 3. Save the figure(s) to image file(s) at the specified resolution next to the original script
 4. Close the generated figure(s)
-
-## Batching
-
-## Manual execution
 
 ## See also
 
