@@ -4,17 +4,29 @@ Workspace
 
 ## Syntax
 
-`w = docer.Workspace()`
+`w = docer.Workspace()` creates a new, empty workspace `w`.
 
-`assignin(w,n,v)`
+`assignin(w,n,v)` assigns the variable `n` to value `v` in the workspace `w`.
 
-`assignin(w,n1,v1,n2,v2,...)`
+`assignin(w,n1,v1,n2,v2,...)` assigns *multiple* variables `n1`, `n2`, etc. to values `v1`, `v2`, etc. respectively.
 
-`evalin(w,s)`
+`evalin(w,b)` evaluates the code block `b` in the workspace `w`.
 
-`c = evalinc(w,b)`
+`[o1,o2,...] = evalin(w,s)` evaluates the statement `s` in the workspace `w`, and returns the outputs `o1`, `o2`, etc.
 
-`[c,o1,o2,...] = evalinc(w,s)`
+`c = evalinc(w,b)` evaluates the code block `b` in the workspace `w`, and returns the command window output `c`.
+
+`[c,o1,o2,...] = evalinc(w,s)` evaluates the statement `s` in the workspace `w`, and returns the outputs `o1`, `o2`, etc. and the command window output `c`.
+
+`clearvars(w,n1,n2,...)` clears the variables `n1`, `n2`, etc. from the workspace `w`.
+
+`save(w,f)` saves *all* variables in the workspace `w` to the file `f`.
+
+`save(w,f,n1,n2,...)` saves the variables `n1`, `n2`, etc. in the workspace `w` to the file `f`.
+
+`load(w,f)` loads *all* variables from the file `f` into the workspace `w`.
+
+`load(w,f,n1,n2,...)` loads the variables `n1`, `n2`, etc. from the file `f` into the workspace `w`.
 
 
 
