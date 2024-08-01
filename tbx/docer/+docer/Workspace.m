@@ -82,7 +82,7 @@ classdef Workspace < handle
             end
 
             arguments ( Repeating )
-                name (1,1) string
+                name (1,1) string {mustBeValidVariableName}
                 value
             end
 
