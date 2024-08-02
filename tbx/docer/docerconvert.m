@@ -1,4 +1,4 @@
-function docerconvert( sMd, options )
+function varargout = docerconvert( sMd, options )
 %docerconvert  Convert Markdown documents to HTML
 %
 %   docerconvert(md) converts the Markdown document(s) md to HTML.  md can
@@ -17,6 +17,9 @@ function docerconvert( sMd, options )
 %   stylesheets and scripts in the subfolder "resources".  The root folder
 %   must be a common ancestor of the Markdown documents.  If not specified,
 %   the root folder is the lowest common ancestor.
+%
+%   html = docerconvert(...) returns the filenames of HTML documents
+%   created.
 %
 %   See also: docerindex, docerrun, docerdelete
 
@@ -85,14 +88,20 @@ for ii = 1:numel( sJs )
 end
 fJs = reshape( fullfile( pRez, {sJs.name} ), size( sJs ) );
 
+% Output documents
+sHtml = sMd; % copy and modify
+for ii = 1:numel( sHtml )
+    [~, nHtml, ~] = fileparts( fullfile( sHtml(ii).folder, sHtml(ii).name ) );
+    sHtml(ii).name = nHtml + ".html"; % replace extension with ".html"
+end
+
 % Publish
 writer = matlab.io.xml.dom.DOMWriter();
 writer.Configuration.XMLDeclaration = false;
 writer.Configuration.FormatPrettyPrint = false;
 for ii = 1:numel( sMd ) % loop over files
-    fMd = fullfile( sMd(ii).folder, sMd(ii).name ); % this file
-    [pHtml, nHtml, ~] = fileparts( fMd );
-    fHtml = fullfile( pHtml, nHtml + ".html" );
+    fMd = fullfile( sMd(ii).folder, sMd(ii).name );
+    fHtml = fullfile( sHtml(ii).folder, sHtml(ii).name );
     try
         doc = convert( fMd, fCss, fJs );
         writer.writeToFile( doc, fHtml, "utf-8" )
@@ -100,6 +109,12 @@ for ii = 1:numel( sMd ) % loop over files
     catch e
         warning( e.identifier, '%s', e.message ) % rethrow as warning
     end
+end
+
+% Return output
+if nargout > 0
+    aHtml = fullfile( string( {sHtml.folder} ), string( {sHtml.name} ) );
+    varargout{1} = aHtml(:);
 end
 
 end % docerconvert

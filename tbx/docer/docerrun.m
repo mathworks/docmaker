@@ -1,4 +1,4 @@
-function docerrun( sHtml, options )
+function varargout = docerrun( sHtml, options )
 %docerrun  Run MATLAB code in HTML documents and insert output
 %
 %   docerrun(html) runs MATLAB code blocks in the HTML document(s) html,
@@ -14,6 +14,8 @@ function docerrun( sHtml, options )
 %   (default), all blocks in a document are run in a single batch. With
 %   level n, each level-n heading is run as a separate batch, with the
 %   workspace cleared and figures closed between batches.
+%
+%   html = docerrun(...) returns the filenames of HTML documents processed.
 
 %   Copyright 2024 The MathWorks, Inc.
 
@@ -41,6 +43,12 @@ for ii = 1:numel( sHtml ) % loop over files
     catch e
         warning( e.identifier, '%s', e.message ) % rethrow as warning
     end
+end
+
+% Return output
+if nargout > 0
+    aHtml = fullfile( string( {sHtml.folder} ), string( {sHtml.name} ) );
+    varargout{1} = aHtml(:);
 end
 
 end % docerrun
