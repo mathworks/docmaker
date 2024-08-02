@@ -6,9 +6,13 @@ Delete Doc_er artifacts
 
 `docerdelete(d)` deletes Doc_er artifacts in the folder `d`.
 
+`[files,folders] = docerdelete(...)` returns the names of the files and folders deleted.
+
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
 | `d`:arrow_right: | Documentation folder, as an absolute or relative path | string | yes |
+| :arrow_right:`files` | files(s) deleted, as an absolute path | string(s) | |
+| :arrow_right:`folders` | folders(s) deleted, as an absolute path | string(s) | |
 
 ## Examples
 
