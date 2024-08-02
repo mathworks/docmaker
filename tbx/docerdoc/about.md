@@ -12,7 +12,7 @@ The author thanks [Ken Deeley](https://www.mathworks.com/matlabcentral/profile/a
 
 The [release notes](changelog.md) detail new features, bug fixes, and compatibility considerations for each version.
 
-Doc_er replaces a previous MathWorks internal documentation tool, *DocTools*, by [Ben Tordoff](https://www.mathworks.com/matlabcentral/profile/authors/1297191).  Doc_er seeks to improve on DocTools by supporting authoring in Markdown and leveraging the Markdown ecosystem.
+Doc_er replaces a previous MathWorks internal documentation tool, *DocTools*, by [Ben Tordoff](https://www.mathworks.com/matlabcentral/profile/authors/1297191).  Doc_er seeks to improve on DocTools by supporting authoring in Markdown.
 
 Doc_er was developed to build documentation for [GUI Layout Toolbox](http://www.mathworks.com/matlabcentral/fileexchange/47982-gui-layout-toolbox), [Package Jockey](https://insidelabs-git.mathworks.com/dsampson/pj), and [Doc_er](https://insidelabs-git.mathworks.com/dsampson/docer) itself!  The features of Doc_er reflect the needs of these projects.
 

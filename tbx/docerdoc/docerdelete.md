@@ -10,7 +10,7 @@ Delete Doc_er artifacts
 
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
-| `d`:arrow_right: | Documentation folder, as an absolute or relative path | string | yes |
+| `d`:arrow_right: | documentation folder, as an absolute or relative path | string | yes |
 | :arrow_right:`files` | files(s) deleted, as an absolute path | string(s) | |
 | :arrow_right:`folders` | folders(s) deleted, as an absolute path | string(s) | |
 

@@ -2,7 +2,7 @@
 
 Doc_er is a tool for generating MATLAB toolbox documentation.  With Doc_er, you can:
 * write documentation in [Markdown](https://commonmark.org/help/) and convert to HTML for viewing in MATLAB
-* run MATLAB scripts and capture output as images for inclusion in documentation
+* run MATLAB code blocks in documents and include textual and graphical output
 * create MATLAB documentation index files from a Markdown table of contents
 
 ## Documentation

@@ -10,7 +10,7 @@ Create documentation index files
 
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
-| `d`:arrow_right: | Documentation folder, as an absolute or relative path | string | yes |
+| `d`:arrow_right: | documentation folder, as an absolute or relative path | string | yes |
 | :arrow_right:`files` | XML files created, as an absolute path | strings | |
 | :arrow_right:`folders` | search database folder created, as an absolute path | string | |
 

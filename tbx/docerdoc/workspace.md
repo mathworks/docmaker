@@ -2,7 +2,11 @@
 
 Private workspace for assigning variables and evaluating expressions
 
-## Syntax
+## Properties
+
+`docer.Workspace` has no public properties.
+
+## Methods
 
 ### Creation
 
@@ -13,7 +17,7 @@ Private workspace for assigning variables and evaluating expressions
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
 | `n`:arrow_right: | variable name(s) | string(s) | |
-| `v`:arrow_right: | variable value(s) | string(s) | |
+| `v`:arrow_right: | variable value(s) | any | |
 | :arrow_right:`w` | workspace | `docer.Workspace` | |
 
 ### Assignment
@@ -26,7 +30,7 @@ Private workspace for assigning variables and evaluating expressions
 | :-: | --- | :-: | :-: |
 | `w`:arrow_right: | workspace | `docer.Workspace` | yes |
 | `n`:arrow_right: | variable name(s) | string(s) | |
-| `v`:arrow_right: | variable value(s) | string(s) | |
+| `v`:arrow_right: | variable value(s) | any | |
 
 ### Evaluation
 
