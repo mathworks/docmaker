@@ -308,7 +308,7 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
             % Split into statements
             tree = mtree( block ); % parse text
             if count( tree ) == 1 && iskind( tree, "ERR" )
-                error( "docer:InvalidArgument", ...
+                error( "docer:InvalidSyntax", ...
                     "Cannot parse text ""%s"".", block )
             end
             statements = tree2str( tree ); % convert back to statements
@@ -318,7 +318,7 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
 
             % Evaluate
             if isempty( statements ) % no statements
-                assert( nargout == 1, "docer:InvalidArgument", ...
+                assert( nargout == 1, "docer:InvalidSyntax", ...
                     "Cannot return output(s) from no statements." )
                 varargout{1} = ""; % no output
             elseif isscalar( statements ) % single statement
@@ -337,7 +337,7 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
                 end
                 varargout{1} = string( varargout{1} ); % convert
             else % multiple statements
-                assert( nargout == 1, "docer:InvalidArgument", ...
+                assert( nargout == 1, "docer:InvalidSyntax", ...
                     "Cannot return output(s) from multiple statements." )
                 varargout{1} = strings( size( statements ) ); % preallocate
                 for ii = 1:numel( statements ) % loop over statements
@@ -361,7 +361,7 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
             % Unpack
             assert( ~any( ismember( db16a6c786.Data.listVariables(), ...
                 ["db16a6c786", "db2ccd973c"] ) ), ...
-                "docer:InvalidArgument", "%s", ...
+                "docer:IllegalOperation", "%s", ...
                 "Cannot debug workspace with reserved variable name(s)." )
             for db2ccd973c = db16a6c786.Data.listVariables()'
                 eval( "db2ccd973c = db16a6c786.Store.getValue(db2ccd973c);" ) %#ok<EVLCS>
@@ -375,7 +375,7 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
 
             % Repack
             assert( ~exist( "db16a6c786", "var" ) && ~exist( "db2ccd973c", "var" ), ...
-                "docer:InvalidArgument", "%s", ...
+                "docer:IllegalOperation", "%s", ...
                 "Cannot commit workspace with reserved variable name(s)." )
             db16a6c786 = string( who() ); % variable names
             db16a6c786 = db16a6c786(:);
