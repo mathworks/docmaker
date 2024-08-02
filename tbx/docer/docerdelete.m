@@ -1,12 +1,14 @@
-function docerdelete( pRoot )
+function varargout = docerdelete( pRoot )
 %docerdelete  Delete Doc_er artifacts
 %
 %   docerdelete(d) deletes the Doc_er artifacts in the folder d:
 %   * HTML documents corresponding to Markdown documents
-%   * image files corresponding to MATLAB scripts
 %   * the resources subfolder, "resources"
 %   * the index files, "info.xml" and "helptoc.xml"
 %   * the search database subfolder, "helpsearch-v4"
+%
+%   [files,folders] = docerdelete(...) returns the names of the files and
+%   folders deleted.
 %
 %   See also: docerconvert, docerrun, docerindex
 
@@ -82,6 +84,10 @@ for ii = 1:numel( sHelp ) % loop
         rmdir( fHelp, "s" ) % delete
         fprintf( 1, "[-] %s\n", fHelp ); % echo
     end
+end
+
+if nargout > 0
+
 end
 
 end % docerdelete
