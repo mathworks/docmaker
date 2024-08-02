@@ -121,7 +121,7 @@ delete( setdiff( docer.figures(), oldFigures ) )
 writer = matlab.io.xml.dom.DOMWriter();
 writer.Configuration.XMLDeclaration = false;
 writer.Configuration.FormatPrettyPrint = false;
-writer.writeToFile( doc, html );
+writer.writeToFile( doc, html, "utf-8" );
 
 end % run
 
