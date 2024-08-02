@@ -84,7 +84,7 @@ plot(x,sin(x))
 
 `docerrun` evaluates each code block in turn in a MATLAB [workspace](workspace.md) that is *private* to the document.  Variables created in earlier blocks are available for use in later blocks.
 
-If an error occurs in one block then `docerrun` moves on to the next block.  However, it is likely that an error in an earlier block will lead to further errors in later blocks.
+If an error occurs in one block then `docerrun` rethrows the error as a warning (identifier `docer:EvalError`) and moves on to the next block.  However, it is likely that an error in an earlier block will lead to further errors in later blocks.
 
 If you wish to display *but not evaluate* MATLAB code, add trailing whitespace to the last line of the code block, and `docerrun` will leave it be.
 
