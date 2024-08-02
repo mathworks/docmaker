@@ -155,7 +155,7 @@ try
     outString = string( evalinc( w, inString ) );
     ok = true; % ok
 catch e
-    warning( e.identifier, "%s", e.message ) % rethrow as warning
+    warning( "docer:EvalError", "%s", e.message ) % rethrow as warning
     outString = e.message;
     ok = false; % error
 end
