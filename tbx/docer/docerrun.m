@@ -167,6 +167,8 @@ if strlength( outString ) > 0
 
     % Strip out markup
     parser = matlab.io.xml.dom.Parser();
+    backspacePattern = wildcardPattern(1) + characterListPattern(char(8));
+    outString = erase( outString, backspacePattern );
     outDoc = parser.parseString( "<pre>" + strtrim( outString ) + "</pre>" );
     outString = strtrim( outDoc.getDocumentElement().TextContent );
 
