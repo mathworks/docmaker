@@ -1,6 +1,10 @@
 # Release notes
 
-Doc_er is currently under development, with an initial release within MathWorks planned for Q3 2024.
+## Version 0.2
+
+Initial limited release within MathWorks :tada:.
+
+Core functionality is in place: `docerconvert`, `docerrun`, `docerindex`, and `docerdelete`.  This version of Doc_er uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) to convert Markdown to HTML.
 
 ## Version numbering
 

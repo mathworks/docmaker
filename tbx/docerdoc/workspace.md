@@ -142,7 +142,7 @@ w2
 
 `docer.Workspace` also adds `evalinc` -- "`evalin` with capture".  `evalin` is to `evalinc` as [`eval`](https://www.mathworks.com/help/matlab/ref/eval.html) is to [`evalc`](https://www.mathworks.com/help/matlab/ref/evalc.html).
 
-`docer.Workspace` was originally a standalone implementation, based on work from the 2000s, but now uses `matlab.lang.internal.WorkspaceData` :tada:.
+`docer.Workspace` was previously a standalone implementation, first implemented 20 years ago, but now uses `matlab.lang.internal.WorkspaceData` :heart:.
 
 ___
 
