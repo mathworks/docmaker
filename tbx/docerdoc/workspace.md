@@ -70,8 +70,6 @@ Private workspace for assigning variables and evaluating expressions
 | `f`:arrow_right: | filename | string | yes |
 | `n`:arrow_right: | variable name(s) | string(s) | |
 
-## Description
-
 ## Examples
 
 ### Creation, evaluation, and assignment
@@ -133,5 +131,13 @@ Load the contents of the first workspace into the second:
 load(w2,f)
 w2
 ```
+
+## Details
+
+`docer.Workspace` extends [`assignin`](https://www.mathworks.com/help/matlab/ref/assignin.html) and [`evalin`](https://www.mathworks.com/help/matlab/ref/evalin.html) from `base` and `caller` to workspace *objects*.
+
+`docer.Workspace` also adds `evalinc` -- "`evalin` with capture".  `evalin` is to `evalinc` as [`eval`](https://www.mathworks.com/help/matlab/ref/eval.html) is to [`evalc`](https://www.mathworks.com/help/matlab/ref/evalc.html).
+
+`docer.Workspace` was originally a standalone implementation, based on work from the 2000s, but now uses `matlab.lang.internal.WorkspaceData` :tada:.
 
 [home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024

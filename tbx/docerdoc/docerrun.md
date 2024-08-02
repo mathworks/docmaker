@@ -10,12 +10,10 @@ Multiple documents may also be specified using `docerrun(html1,html2,...)`.
  
 `docerrun(...,"Level",b)` specifies the batching level `l`.  With level `0` (default), all blocks in a document are run in a single batch. With level `n`, each level-n heading is run as a separate batch, with the workspace cleared and figures closed between batches.
 
-## Inputs
-
-| Input | Description | Type | Required |
+| Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
-| `html` | HTML document(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
-| `b` | Batching level, from 0 to 6; default is 0 | double | :test_tube: |
+| `html`:arrow_right: | HTML document(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
+| `b`:arrow_right: | Batching level, from 0 to 6; default is 0 | double | :test_tube: |
 
 ## Examples
 

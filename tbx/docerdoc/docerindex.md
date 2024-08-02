@@ -6,11 +6,9 @@ Create documentation index files
 
 `docerindex(d)` creates documentation index files `info.xml` and `helptoc.xml` and search database `helpsearch_v4` in the folder `d`.
 
-## Inputs
-
-| Input | Description | Type | Required |
+| Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
-| `d` | Documentation folder, as an absolute or relative path | string | yes |
+| `d`:arrow_right: | Documentation folder, as an absolute or relative path | string | yes |
 
 ## Examples
 
