@@ -7,5 +7,6 @@
     * [docerrun](docerrun.md)
     * [docerindex](docerindex.md)
     * [docerdelete](docerdelete.md)
+    * [docer.Workspace](workspace.md)
   * [About Doc_er](about.md)
   * [Licenses](license.md)
