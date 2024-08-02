@@ -89,7 +89,7 @@ while true
     if isempty( to )
         divs = allDivs(isAfter( allDivs, from ));
     else
-        divs = allDivs(isBetween( allDivs, from, to ));
+        divs = allDivs(isAfter( allDivs, from ) & isAfter( to, allDivs ));
     end
 
     % Run source divs, remove old output divs
@@ -248,7 +248,17 @@ function tf = isAfter( a, b )
 %
 %   https://www.w3schools.com/jsref/met_node_comparedocumentposition.asp
 
-[a, b] = expand( a, b ); % expand scalars
+% Check inputs and perform scalar expansion
+if isscalar( a ) && ~isscalar( b )
+    a = repmat( a, size( b ) );
+elseif ~isscalar( a ) && isscalar( b )
+    b = repmat( b, size( a ) );
+else
+    assert( isequal( size( a ), size( b ) ), "docer:InvalidArgument", ...
+        "Cannot compare element arrays of different sizes." )
+end
+
+% Compare each element in turn
 tf = true( size( a ) ); % preallocate
 for ii = 1:numel( a )
     c = uint8( compareDocumentPosition( b(ii), a(ii) ) );
@@ -256,38 +266,3 @@ for ii = 1:numel( a )
 end
 
 end % isAfter
-
-function tf = isBetween( a, b, c )
-%isBetween  True if an element is between two others
-%
-%   tf = isBetween(a,b,c) is true if a is between b and c, and false
-%   otherwise.
-
-[a, b, c] = expand( a, b, c ); % expand scalars
-tf = isAfter( a, b ) & isAfter( c, a );
-
-end % isBetween
-
-function varargout = expand( varargin )
-%expand  Perform scalar expansion
-%
-%   [a,b] = expand(a,b) expands scalar a to match the size of nonscalar b,
-%   or vice versa.
-%
-%   [a,b,c,...] = expand(a,b,c,...) performs scalar expansion on as many
-%   variables as requested.
-
-for ii = 1:nargin
-    for jj = ii+1:nargin
-        if isscalar( varargin{ii} ) && ~isscalar( varargin{jj} )
-            varargin{ii} = repmat( varargin{ii}, size( varargin{jj} ) );
-        elseif ~isscalar( varargin{ii} ) && isscalar( varargin{jj} )
-            varargin{jj} = repmat( varargin{jj}, size( varargin{ii} ) );
-        else
-            assert( isequal( size( varargin{ii} ), size( varargin{jj} ) ) )
-        end
-    end
-end
-varargout = varargin; % return; varargin is not a valid output
-
-end % expand
