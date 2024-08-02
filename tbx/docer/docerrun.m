@@ -248,7 +248,17 @@ function tf = isAfter( a, b )
 %
 %   https://www.w3schools.com/jsref/met_node_comparedocumentposition.asp
 
-[a, b] = expand( a, b ); % expand scalars
+% Check inputs and perform scalar expansion
+if isscalar( a ) && ~isscalar( b )
+    a = repmat( a, size( b ) );
+elseif ~isscalar( a ) && isscalar( b )
+    b = repmat( b, size( a ) );
+else
+    assert( isequal( size( a ), size( b ) ), "docer:InvalidArgument", ...
+        "Cannot compare element arrays of different sizes." )
+end
+
+% Compare each element in turn
 tf = true( size( a ) ); % preallocate
 for ii = 1:numel( a )
     c = uint8( compareDocumentPosition( b(ii), a(ii) ) );
