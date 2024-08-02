@@ -40,13 +40,9 @@ if isempty( sHtml ), return, end
 % Run
 for ii = 1:numel( sHtml ) % loop over files
     fHtml = fullfile( sHtml(ii).folder, sHtml(ii).name ); % this file
-    try
-        run( fHtml, options.Level )
-        fprintf( 1, "[%s] %s\n", char( 9889 ), fHtml );
-        oFiles(end+1,:) = fHtml; %#ok<AGROW>
-    catch e
-        warning( e.identifier, '%s', e.message ) % rethrow as warning
-    end
+    run( fHtml, options.Level )
+    fprintf( 1, "[%s] %s\n", char( 9889 ), fHtml );
+    oFiles(end+1,:) = fHtml; %#ok<AGROW>
 end
 
 % Return output

@@ -98,14 +98,10 @@ for ii = 1:numel( sMd ) % loop over files
     fMd = fullfile( sMd(ii).folder, sMd(ii).name );
     [pMd, nMd, ~] = fileparts( fMd );
     fHtml = fullfile( pMd, nMd + ".html" );
-    try
-        doc = convert( fMd, fCss, fJs );
-        writer.writeToFile( doc, fHtml, "utf-8" )
-        fprintf( 1, "[+] %s\n", fHtml );
-        oFiles(end+1,:) = fHtml; %#ok<AGROW>
-    catch e
-        warning( e.identifier, '%s', e.message ) % rethrow as warning
-    end
+    doc = convert( fMd, fCss, fJs );
+    writer.writeToFile( doc, fHtml, "utf-8" )
+    fprintf( 1, "[+] %s\n", fHtml );
+    oFiles(end+1,:) = fHtml; %#ok<AGROW>
 end
 
 % Return output
