@@ -89,7 +89,7 @@ while true
     if isempty( to )
         divs = allDivs(isAfter( allDivs, from ));
     else
-        divs = allDivs(isBetween( allDivs, from, to ));
+        divs = allDivs(isAfter( allDivs, from ) & isAfter( to, allDivs ));
     end
 
     % Run source divs, remove old output divs
