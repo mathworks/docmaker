@@ -7,7 +7,7 @@ With Doc_er, you can:
 * run MATLAB code blocks in documents and include textual and graphical output
 * create MATLAB documentation index files from a Markdown table of contents
 
-This is Doc_er version 0.1.  The [release notes](changelog.md) detail new features, bug fixes, and compatibility considerations for each version.
+This is Doc_er version 0.2.  The [release notes](changelog.md) detail new features, bug fixes, and compatibility considerations for each version.
 
 ## Getting started
 
@@ -54,8 +54,8 @@ First, use [`docerconvert`](docerconvert.md) to convert your Markdown documents 
 
 ```matlab
 docerconvert tbx/docerdoc/**/*.md
-docerrun tbx/docerdoc/**/*.m
-docerindex tbx/docerdoc
+docerrun tbx/docerdoc/**/*.html
+docerindex tbx/docerdoc 
 ```
 
 Before you start, you may wish to delete previous Doc_er artifacts using [`docerdelete`](docerdelete.md).
@@ -84,4 +84,4 @@ Doc_er is not an official MathWorks product, but support is provided by the [aut
 
 ## See also
 
-[home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024
+[home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024

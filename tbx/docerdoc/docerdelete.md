@@ -6,33 +6,30 @@ Delete Doc_er artifacts
 
 `docerdelete(d)` deletes Doc_er artifacts in the folder `d`.
 
-## Inputs
-
-| Input | Description | Type | Required |
+| Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
-| `d` | Documentation folder, as an absolute or relative path | string | yes |
+| `d`:arrow_right: | Documentation folder, as an absolute or relative path | string | yes |
 
 ## Examples
 
 ```matlab
-docerdelete("mickey/goofy")
+docerdelete("mickey/goofy") 
 ```
 deletes artifacts in the folder `mickey/goofy`.  Note that this path is *relative*.
 
 ```matlab
-docerconvert("C:\daisy\mickey\goofy")
+docerconvert("C:\daisy\mickey\goofy") 
 ```
 also deletes artifacts, this time specified using an *absolute* path.
 
 ## Details
 
-The deletion consists of 5 steps:
+The deletion consists of 4 steps:
 1. Delete HTML documents corresponding to Markdown documents
-2. Delete image files corresponding to MATLAB scripts
-3. Delete the resources subfolder, `resources`, containing stylesheets and scripts
-4. Delete the index files `info.xml` and `helptoc.xml`
-5. Delete the search database subfolder, `helpsearch-v4`
+2. Delete the resources subfolder, `resources`, containing stylesheets and scripts
+3. Delete the index files `info.xml` and `helptoc.xml`
+4. Delete the search database subfolder, `helpsearch-v4`
 
 ## See also
 
-[home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024
+[home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024

@@ -86,16 +86,16 @@ end
 fJs = reshape( fullfile( pRez, {sJs.name} ), size( sJs ) );
 
 % Publish
-w = matlab.io.xml.dom.DOMWriter();
-w.Configuration.XMLDeclaration = false;
-w.Configuration.FormatPrettyPrint = false;
+writer = matlab.io.xml.dom.DOMWriter();
+writer.Configuration.XMLDeclaration = false;
+writer.Configuration.FormatPrettyPrint = false;
 for ii = 1:numel( sMd ) % loop over files
     fMd = fullfile( sMd(ii).folder, sMd(ii).name ); % this file
     [pHtml, nHtml, ~] = fileparts( fMd );
     fHtml = fullfile( pHtml, nHtml + ".html" );
     try
         doc = convert( fMd, fCss, fJs );
-        writeToFile( w, doc, fHtml )
+        writer.writeToFile( doc, fHtml, "utf-8" )
         fprintf( 1, "[+] %s\n", fHtml );
     catch e
         warning( e.identifier, '%s', e.message ) % rethrow as warning
@@ -129,12 +129,17 @@ head = createElement( doc, "head" );
 appendChild( root, head );
 
 % Add generator
-meta = createElement( doc, "meta" );
-appendChild( head, meta );
+generator = createElement( doc, "meta" );
+appendChild( head, generator );
 v = ver( "docer" );
-meta.setAttribute( "name", "generator" );
-meta.setAttribute( "content", "MATLAB " + matlabRelease().Release + ...
+generator.setAttribute( "name", "generator" );
+generator.setAttribute( "content", "MATLAB " + matlabRelease().Release + ...
     " with " + v(1).Name + " " + v(1).Version );
+
+% Add charset
+charset = createElement( doc, "meta" );
+appendChild( head, charset );
+charset.setAttribute( "charset", "utf-8" );
 
 % Add title
 h1 = docer.list2array( getElementsByTagName( xml, "h1" ) );

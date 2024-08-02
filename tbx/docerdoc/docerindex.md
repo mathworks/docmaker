@@ -6,21 +6,19 @@ Create documentation index files
 
 `docerindex(d)` creates documentation index files `info.xml` and `helptoc.xml` and search database `helpsearch_v4` in the folder `d`.
 
-## Inputs
-
-| Input | Description | Type | Required |
+| Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
-| `d` | Documentation folder, as an absolute or relative path | string | yes |
+| `d`:arrow_right: | Documentation folder, as an absolute or relative path | string | yes |
 
 ## Examples
 
 ```matlab
-docerindex("mickey/goofy")
+docerindex("mickey/goofy") 
 ```
 indexes documentation in the folder `mickey/goofy`.  Note that this path is *relative*.
 
 ```matlab
-docerindex("C:\daisy\mickey\goofy")
+docerindex("C:\daisy\mickey\goofy") 
 ```
 also indexes documentation, this time specified using an *absolute* path.
 
@@ -63,4 +61,4 @@ The indexing consists of 4 steps:
 
 ## See also
 
-[home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024
+[home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024

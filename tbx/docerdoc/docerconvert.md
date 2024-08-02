@@ -6,60 +6,60 @@ Convert Markdown documents to HTML
 
 `docerconvert(md)` converts the Markdown document(s) `md` to HTML.
 
+Multiple documents may also be specified using `docerconvert(md1,md2,...)`.
+
 `docerconvert(...,"Stylesheets",css)` includes the stylesheet(s) `css`.  Doc_er stylesheets `github-markdown.css` and `matlaby.css` are always included.
 
 `docerconvert(...,"Scripts",js)` includes the script(s) `js`. :test_tube:
 
 `docerconvert(...,"Root",r)` publishes to the root folder `r`, placing stylesheets and scripts in the subfolder `resources`.The root folder must be a common ancestor of the Markdown documents.  If not specified, the root folder is the lowest common ancestor.
 
-## Inputs
-
-| Input | Description | Type | Required |
+| Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
-| `md` | Markdown document(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
-| `css` | CSS stylesheet(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | |
-| `js` | JavaScript script(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | :test_tube: |
-| `d` | Root folder, as an absolute or relative path; default is the lowest common ancestor of `md` | string | |
+| `md`:arrow_right: | Markdown document(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
+| `css`:arrow_right: | CSS stylesheet(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | |
+| `js`:arrow_right: | JavaScript script(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | :test_tube: |
+| `d`:arrow_right: | Root folder, as an absolute or relative path; default is the lowest common ancestor of `md` | string | |
 
 ## Examples
 
 ```matlab
-docerconvert("mickey/pluto.md")
+docerconvert("mickey/pluto.md") 
 ```
 converts a single Markdown document `mickey/pluto.md` to HTML.  Note that this path is *relative*.
 
 ```matlab
-docerconvert("C:\daisy\mickey\pluto.md")
+docerconvert("C:\daisy\mickey\pluto.md") 
 ```
 also converts a single Markdown document, this time specified using an *absolute* path.
 
 ```matlab
-docerconvert("mickey/*.md")
+docerconvert("mickey/*.md") 
 ```
 converts *all* Markdown documents in `mickey` to HTML.
 
 ```matlab
-docerconvert("mickey/**/*.md")
+docerconvert("mickey/**/*.md") 
 ```
 converts all Markdown documents in `mickey` *and its subfolders*.
 
 ```matlab
-docerconvert(["mickey/pluto.md" "mickey/donald.md"])
+docerconvert(["mickey/pluto.md" "mickey/donald.md"]) 
 ```
 converts *multiple* Markdown documents to HTML.
 
 ```matlab
-docerconvert("mickey/pluto.md","Stylesheets","huey/louie.css")
+docerconvert("mickey/pluto.md","Stylesheets","huey/louie.css") 
 ```
 copies the stylesheet `huey/louie.css` to the `resources` folder and includes a `<link>` in the HTML `<head>`.
 
 ```matlab
-docerconvert("mickey/pluto.md","Scripts","morty/ferdie.js")
+docerconvert("mickey/pluto.md","Scripts","morty/ferdie.js") 
 ```
 copies the script `morty/ferdie.js` to the `resources` folder and includes a `<script>` in the HTML `<head>`. :test_tube:
 
 ```matlab
-docerconvert("mickey/goofy/*.md","Root","mickey")
+docerconvert("mickey/goofy/*.md","Root","mickey") 
 ```
 sets the root folder to `mickey`, rather than the lowest common ancestor `mickey/goofy` of the Markdown documents.
 
@@ -110,4 +110,4 @@ This feature is experimental :test_tube: and may be removed in a future version.
 
 ## See also
 
-[home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024
+[home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024

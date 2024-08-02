@@ -1,37 +1,43 @@
-function docerrun( m, options )
-%docerrun  Run MATLAB scripts and save generated figures to image files
+function docerrun( sHtml, options )
+%docerrun  Run MATLAB code in HTML documents and insert output
 %
-%   docerrun(s) runs the MATLAB script(s) s and saves generated figures to
-%   image files.
+%   docerrun(html) runs MATLAB code blocks in the HTML document(s) html,
+%   and inserts the textual and graphical output.  html can be a char or
+%   string including wildcards, a cellstr or string array, or a dir struct.
 %
-%   docerrun(...,"Size",wh) sets the size of the figures to [width height]
-%   wh.
+%   Textual output is text written to the command window.  Graphical output
+%   is new figures or changes to existing figures.
 %
-%   docerrun(...,"Resolution",r) sets the resolution of the screenshots to
-%   r dpi.
+%   Multiple documents can also be specified as docerrun(html1,html2,...).
 %
-%   See also: docerconvert, docerindex, docerdelete
+%   docerrun(...,"Level",b) specifies the batching level b.  With level 0
+%   (default), all blocks in a document are run in a single batch. With
+%   level n, each level-n heading is run as a separate batch, with the
+%   workspace cleared and figures closed between batches.
 
-%   Copyright 2020-2024 The MathWorks, Inc.
+%   Copyright 2024 The MathWorks, Inc.
 
 arguments ( Repeating )
-    m % convertible to folder struct
+    sHtml
 end
 
 arguments
-    options.Size (1,2) double {mustBePositive} = [400 300]
-    options.Resolution (1,1) double {mustBeNonnegative} = 144
+    options.Level (1,1) double {mustBeInteger,mustBeInRange(options.Level,0,6)} = 0
 end
 
-% Check inputs
-m = docer.dir( m{:} );
-assert( all( docer.extensions( m ) == ".m" ), "docer:InvalidArgument", ...
-    "MATLAB scripts must all have extension .m." )
+% Check documents
+sHtml = docer.dir( sHtml{:} );
+assert( all( docer.extensions( sHtml ) == ".html" ), ...
+    "docer:InvalidArgument", ...
+    "HTML files must all have extension .html." )
+if isempty( sHtml ), return, end
 
-% Process
-for ii = 1:numel( m ) % loop
+% Run
+for ii = 1:numel( sHtml ) % loop over files
+    fHtml = fullfile( sHtml(ii).folder, sHtml(ii).name ); % this file
     try
-        run( m(ii), options.Size, options.Resolution )
+        run( fHtml, options.Level )
+        fprintf( 1, "[%s] %s\n", char( 9889 ), fHtml );
     catch e
         warning( e.identifier, '%s', e.message ) % rethrow as warning
     end
@@ -39,70 +45,249 @@ end
 
 end % docerrun
 
-function run( script, wh, res )
-%run  Run a single MATLAB script and capture output
+function run( html, batchLevel )
+%run  Run MATLAB code in an HTML document and insert output
 %
-%  run(s,wh,res) runs the script s and captures the output with figure
-%  [width height] wh and screenshot resolution r dpi.
+%   run(html,b) runs MATLAB code blocks in the HTML document html with the
+%   batching level b, and inserts the textual and graphical output.
 
-oldFolder = pwd;
-[~, name, ~] = fileparts( script.name );
-oldFigures = figures(); % existing figures
-try
-    cd( script.folder )
-    go() % run script
-    newFigures = setdiff( figures(), oldFigures ); % new figures
-    for ii = 1:numel( newFigures )
-        capture( newFigures(ii), string( name ) + ii + ".png", wh, res ) % capture
-    end
-    delete( setdiff( figures(), oldFigures ) ) % clean up
-    cd( oldFolder )
-catch e
-    delete( setdiff( figures(), oldFigures ) ) % clean up
-    cd( oldFolder )
-    rethrow( e )
+% Read from file
+parser = matlab.io.xml.dom.Parser();
+parser.Configuration.AllowDoctype = true;
+doc = parser.parseFile( html );
+
+% Find all headings and divs
+nHeadings = 6; % # HTML heading levels
+allHeadings = cell( nHeadings, 1 ); % preallocate
+for ii = 1:nHeadings
+    allHeadings{ii} = docer.list2array( doc.getElementsByTagName( "h"+ii ) );
 end
+allDivs = docer.list2array( doc.getElementsByTagName( "div" ) );
+
+% Initialize
+root = doc.getDocumentElement();
+from = root; % start from root
+oldFigures = docer.figures(); % existing figures
+
+while true
+
+    % Get current level
+    if from == root
+        fromLevel = 0;
+    else
+        fromLevel = sscanf( from.TagName, "h%d" );
+    end
+
+    % Update workspace and figures
+    if fromLevel <= batchLevel % reset
+        w = docer.Workspace();
+        delete( setdiff( docer.figures(), oldFigures ) )
+    end
+
+    % Find divs before next heading
+    to = getNextHeading( from, allHeadings );
+    if isempty( to )
+        divs = allDivs(isAfter( allDivs, from ));
+    else
+        divs = allDivs(isBetween( allDivs, from, to ));
+    end
+
+    % Run source divs, remove old output divs
+    for ii = 1:numel( divs )
+        div = divs( ii );
+        if div.hasAttribute( "class" ) && contains( ... % MATLAB input
+                div.getAttribute( "class" ), "highlight-source-matlab" ) && ...
+                ~endsWith( div.TextContent, whitespacePattern() )
+            runDiv( div, w ) % zap
+        elseif div.hasAttribute( "class" ) && contains( ... % MATLAB output
+                div.getAttribute( "class" ), "highlight-output-matlab" )
+            div.getParentNode().removeChild( div ); % remove
+        end
+    end
+
+    % Continue
+    if isempty( to )
+        break % done
+    else
+        from = to; % advance
+    end
+
+end % while
+
+% Clean up
+delete( setdiff( docer.figures(), oldFigures ) )
+
+% Write to file
+writer = matlab.io.xml.dom.DOMWriter();
+writer.Configuration.XMLDeclaration = false;
+writer.Configuration.FormatPrettyPrint = false;
+writer.writeToFile( doc, html, "utf-8" );
 
 end % run
 
-function f = figures()
-%figures  Find all figures
+function runDiv( div, w )
+%runDiv  Run MATLAB code from a div and insert output
 %
-%  f = figures() returns all current figures in ascending number order.
+%   runDiv(d,w) runs the MATLAB code from the div d in the workspace w, and
+%   inserts the output between d and its next sibling.
 
-f = findobj( groot(), "-Depth", 1, "Type", "figure", ...
-    "HandleVisibility", "on" ); % ignore HandleVisibility 'off'
-n = cell2mat( get( f, {"Number"} ) ); % figure numbers
-[~, i] = sort( n, "ascend" ); % sort ascending
-f = f(i); % return in ascending order of figure number
+% Get related helper elements
+doc = div.getOwnerDocument(); % for node creation
+next = div.getNextSibling(); % for result insertion
 
-end % figure
+% Extract code
+inDiv = div;
+inString = div.TextContent;
 
-function go()
-%go  Run script
+% Capture initial figures and their 'prints
+oldFigures = docer.figures();
+oldPrints = arrayfun( @docer.capture, oldFigures, "UniformOutput", false );
+
+% Evaluate expression and capture output
+try
+    outString = string( evalinc( w, inString ) );
+    ok = true; % ok
+catch e
+    warning( e.identifier, "%s", e.message ) % rethrow as warning
+    outString = e.message;
+    ok = false; % error
+end
+
+% Capture final figures and their 'prints
+newFigures = docer.figures();
+newPrints = arrayfun( @docer.capture, newFigures, "UniformOutput", false );
+
+% Return new and modified figures
+wasPrints = cell( size( newPrints ) ); % preallocate
+[tf, loc] = ismember( oldFigures, newFigures ); % match
+wasPrints(loc(tf)) = oldPrints(tf); % corresponding
+outFigures = newFigures(~cellfun( @isequal, newPrints, wasPrints )); % select
+outFigures = outFigures(:); % return column vector
+
+% Add text output
+if strlength( outString ) > 0
+
+    % Strip out markup
+    parser = matlab.io.xml.dom.Parser();
+    backspacePattern = wildcardPattern(1) + characterListPattern(char(8));
+    outString = erase( outString, backspacePattern );
+    outDoc = parser.parseString( "<pre>" + strtrim( outString ) + "</pre>" );
+    outString = strtrim( outDoc.getDocumentElement().TextContent );
+
+    % Create HTML elements div, pre, text
+    outDiv = doc.createElement( "div" );
+    outDiv.setAttribute( "class", "highlight highlight-output-matlab" );
+    outPre = doc.createElement( "pre" );
+    outPre.setAttribute( "style", "background-color:var(--bgColor-default);" );
+    if ~ok % error, style text color
+        outPre.setAttribute( "style", outPre.getAttribute( "style" ) + ...
+            " color:var(--fgColor-danger);" );
+    end
+    outDiv.appendChild( outPre );
+    outText = doc.createTextNode( outString );
+    outPre.appendChild( outText );
+
+    % Add output to document
+    if isempty( next )
+        inDiv.getParentNode().appendChild( outDiv ); % end
+    else
+        inDiv.getParentNode().insertBefore( outDiv, next );
+    end
+
+end
+
+% Add figure output
+for jj = 1:numel( outFigures )
+
+    outFigure = outFigures(jj);
+
+    % Create HTML elements div, img
+    outDiv = doc.createElement( "div" );
+    outDiv.setAttribute( "class", "highlight highlight-output-matlab" );
+    outImg = doc.createElement( "img" );
+    outImg.setAttribute( "src", "data:image/png;base64, " + ...
+        docer.encode( outFigure ) );
+    outDiv.appendChild( outImg );
+
+    % Add output to document
+    if isempty( next )
+        inDiv.getParentNode().appendChild( outDiv ); % end
+    else
+        inDiv.getParentNode().insertBefore( outDiv, next );
+    end
+
+end
+
+end % runDiv
+
+function nextHeading = getNextHeading( e, allHeadings )
+%getNextHeading  Get next heading
 %
-%  go() runs a script in a clean workspace.  The script name is the value
-%  of the variable 'name' in the caller workspace.
+%   h = getNextHeading(e,ah) returns the next heading h from among all
+%   headings ah after the element e.
 
-eval( evalin( 'caller', 'name' ) ) % run in clean workspace
+nextHeading = [];
+for ii = 1:numel( allHeadings )
+    thisHeadings = allHeadings{ii};
+    for jj = 1:numel( thisHeadings )
+        thisHeading = thisHeadings(jj);
+        if isAfter( thisHeading, e ) && ( isequal( nextHeading, [] ) || ...
+                isAfter( nextHeading, thisHeading ) )
+            nextHeading = thisHeading;
+            break
+        end
+    end
+end
 
-end % go
+end % getNextHeading
 
-function capture( f, png, wh, res )
-%capture  Capture figure to file
+function tf = isAfter( a, b )
+%isAfter  True if an element is after another
 %
-%  capture(f,png) prints the figure f to the filename png.
+%   tf = isAfter(a,b) is true if a is after b, and false otherwise.
 %
-%  capture(...,wh,r) specifies the figure width and height wh and the
-%  printing resolution r.
+%   https://www.w3schools.com/jsref/met_node_comparedocumentposition.asp
+
+[a, b] = expand( a, b ); % expand scalars
+tf = true( size( a ) ); % preallocate
+for ii = 1:numel( a )
+    c = uint8( compareDocumentPosition( b(ii), a(ii) ) );
+    tf(ii) = bitget( c, 1 ) == false && bitget( c, 3 ) == true;
+end
+
+end % isAfter
+
+function tf = isBetween( a, b, c )
+%isBetween  True if an element is between two others
 %
-%  See also: print
+%   tf = isBetween(a,b,c) is true if a is between b and c, and false
+%   otherwise.
 
-w = warning( "off", "MATLAB:print:ExcludesUIInFutureRelease" ); % suppress
-f.Position(3:4) = wh;
-drawnow()
-print( f, png, "-dpng", "-r" + res ) % save
-fprintf( 1, "[+] %s\n", png );
-warning( w ) % restore
+[a, b, c] = expand( a, b, c ); % expand scalars
+tf = isAfter( a, b ) & isAfter( c, a );
 
-end % capture
+end % isBetween
+
+function varargout = expand( varargin )
+%expand  Perform scalar expansion
+%
+%   [a,b] = expand(a,b) expands scalar a to match the size of nonscalar b,
+%   or vice versa.
+%
+%   [a,b,c,...] = expand(a,b,c,...) performs scalar expansion on as many
+%   variables as requested.
+
+for ii = 1:nargin
+    for jj = ii+1:nargin
+        if isscalar( varargin{ii} ) && ~isscalar( varargin{jj} )
+            varargin{ii} = repmat( varargin{ii}, size( varargin{jj} ) );
+        elseif ~isscalar( varargin{ii} ) && isscalar( varargin{jj} )
+            varargin{jj} = repmat( varargin{jj}, size( varargin{ii} ) );
+        else
+            assert( isequal( size( varargin{ii} ), size( varargin{jj} ) ) )
+        end
+    end
+end
+varargout = varargin; % return; varargin is not a valid output
+
+end % expand

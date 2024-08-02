@@ -22,6 +22,12 @@ function s = dir( p, varargin )
 
 %   Copyright 2024 The MathWorks, Inc.
 
+% Handle degenerate case of no inputs
+if nargin == 0
+    s = repmat( dir(), 0, 1 ); % empty struct with fieldnames
+    return
+end
+
 % Process first input
 narginchk( 1, Inf )
 if isstruct( p ) && all( ismember( fieldnames( p ), fieldnames( dir() ) ) )

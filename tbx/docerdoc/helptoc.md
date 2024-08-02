@@ -7,5 +7,8 @@
     * [docerrun](docerrun.md)
     * [docerindex](docerindex.md)
     * [docerdelete](docerdelete.md)
+    * [docer.Workspace](workspace.md)
   * [About Doc_er](about.md)
   * [Licenses](license.md)
+
+[home](index.md) :house: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024

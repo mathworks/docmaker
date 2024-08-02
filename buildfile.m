@@ -29,6 +29,7 @@ function docTask( ~ )
 doc = fullfile( fileparts( mfilename( "fullpath" ) ), "tbx", "docerdoc" );
 docerdelete( doc )
 docerconvert( fullfile( doc, "**/*.md" ) )
+docerrun( fullfile( doc, "**/*.html" ) )
 docerindex( doc )
 
 end % docTask
