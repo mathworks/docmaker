@@ -34,6 +34,6 @@ The deletion consists of 4 steps:
 3. Delete the index files `info.xml` and `helptoc.xml`
 4. Delete the search database subfolder, `helpsearch-v4`
 
-## See also
+___
 
 [home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024

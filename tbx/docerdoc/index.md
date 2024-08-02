@@ -82,6 +82,6 @@ From R2022b, you may wish to automate these steps using the [MATLAB Build Tool](
 
 Doc_er is not an official MathWorks product, but support is provided by the [author](https://www.mathworks.com/matlabcentral/profile/authors/16247) and his colleagues on a *best efforts* basis.  Please get in touch by [email](mailto:dsampson@mathworks.com) if you have problems, suggestions, or other comments.  MathWorks staff can raise issues directly in [GitLab](https://insidelabs-git.mathworks.com/dsampson/docer).
 
-## See also
+___
 
 [home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024

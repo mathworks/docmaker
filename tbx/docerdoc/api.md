@@ -4,8 +4,8 @@
 * [docerrun](docerrun.md) :runner: - run MATLAB scripts and save generated figures to image files
 * [docerindex](docerindex.md) :scroll: - create documentation index files
 * [docerdelete](docerdelete.md) :recycle: - delete Doc_er artifacts
-* [docer.Workspace](workspace.md) :construction_worker: - evaluate expressions privately
+* [docer.Workspace](workspace.md) :construction_worker: - assign variables and evaluate expressions
 
-## See also
+___
 
 [home](index.md) :house: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024
