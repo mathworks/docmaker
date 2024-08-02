@@ -34,6 +34,9 @@ arguments
     options.Root (1,1) string {mustBeFolder}
 end
 
+% Initialize output
+oFiles = strings( 0, 1 );
+
 % Check documents
 sMd = docer.dir( sMd{:} );
 assert( all( docer.extensions( sMd ) == ".md" ), ...
@@ -87,24 +90,19 @@ for ii = 1:numel( sJs )
 end
 fJs = reshape( fullfile( pRez, {sJs.name} ), size( sJs ) );
 
-% Output documents
-sHtml = sMd; % copy and modify
-for ii = 1:numel( sHtml )
-    [~, nHtml, ~] = fileparts( fullfile( sHtml(ii).folder, sHtml(ii).name ) );
-    sHtml(ii).name = nHtml + ".html"; % replace extension with ".html"
-end
-
 % Publish
 writer = matlab.io.xml.dom.DOMWriter();
 writer.Configuration.XMLDeclaration = false;
 writer.Configuration.FormatPrettyPrint = false;
 for ii = 1:numel( sMd ) % loop over files
     fMd = fullfile( sMd(ii).folder, sMd(ii).name );
-    fHtml = fullfile( sHtml(ii).folder, sHtml(ii).name );
+    [pMd, nMd, ~] = fileparts( fMd );
+    fHtml = fullfile( pMd, nMd + ".html" );
     try
         doc = convert( fMd, fCss, fJs );
         writer.writeToFile( doc, fHtml, "utf-8" )
         fprintf( 1, "[+] %s\n", fHtml );
+        oFiles(end+1,:) = fHtml; %#ok<AGROW>
     catch e
         warning( e.identifier, '%s', e.message ) % rethrow as warning
     end
@@ -112,8 +110,7 @@ end
 
 % Return output
 if nargout > 0
-    varargout{1} = fullfile( string( {sHtml.folder} ), string( {sHtml.name} ) );
-    varargout{1} = varargout{1}(:);
+    varargout{1} = oFiles;
 end
 
 end % docerconvert

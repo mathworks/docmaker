@@ -18,6 +18,10 @@ arguments
     pRoot (1,1) string {mustBeFolder}
 end
 
+% Initialize output
+oFiles = strings( 0, 1 );
+oFolders = strings( 0, 1 );
+
 % Delete HTML files corresponding to Markdown files
 sMd = dir( fullfile( pRoot, '**', '*.md' ) ); % Markdown
 for ii = 1:numel( sMd ) % loop
@@ -27,22 +31,7 @@ for ii = 1:numel( sMd ) % loop
     if isfile( fHtml ) % corresponding
         delete( fHtml ) % delete
         fprintf( 1, '[-] %s\n', fHtml ); % echo
-    end
-end
-
-% Delete PNG files corresponding to MATLAB scripts
-sM = dir( fullfile( pRoot, '**', '*.m' ) ); % MATLAB scripts
-for ii = 1:numel( sM ) % loop
-    fM = fullfile( sM(ii).folder, sM(ii).name ); % this script
-    [pM, nM, ~] = fileparts( fM ); % path and name
-    for jj = 1:1e2
-        fPng = fullfile( pM, nM + string( jj ) + ".png" ); % this PNG
-        if isfile( fPng ) % corresponding
-            delete( fPng ) % delete
-            fprintf( 1, '[-] %s\n', fPng ); % echo
-        else
-            break % not found, next script
-        end
+        oFiles(end+1,:) = fHtml; %#ok<AGROW>
     end
 end
 
@@ -54,6 +43,7 @@ for ii = 1:numel( sXml ) % loop
     if isfile( fXml )
         delete( fXml ) % delete
         fprintf( 1, '[-] %s\n', fXml ); % echo
+        oFiles(end+1,:) = fXml; %#ok<AGROW>
     end
 end
 
@@ -65,6 +55,7 @@ for ii = 1:numel( sJson ) % loop
     if isfile( fJson )
         delete( fJson ) % delete
         fprintf( 1, '[-] %s\n', fJson ); % echo
+        oFiles(end+1,:) = fJson; %#ok<AGROW>
     end
 end
 
@@ -74,6 +65,7 @@ fRez = fullfile( sRoot(1).folder, "resources" ); % folder
 if isfolder( fRez )
     rmdir( fRez, "s" ) % delete
     fprintf( 1, "[-] %s\n", fRez ); % echo
+    oFolders(end+1,:) = fRez;
 end
 
 % Delete helpsearch folders
@@ -83,11 +75,14 @@ for ii = 1:numel( sHelp ) % loop
         fHelp = fullfile( sHelp(ii).folder, sHelp(ii).name ); % this index
         rmdir( fHelp, "s" ) % delete
         fprintf( 1, "[-] %s\n", fHelp ); % echo
+        oFolders(end+1,:) = fHelp; %#ok<AGROW>
     end
 end
 
+% Return outputs
 if nargout > 0
-
+    varargout{1} = oFiles;
+    varargout{2} = oFolders;
 end
 
 end % docerdelete

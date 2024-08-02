@@ -27,6 +27,9 @@ arguments
     options.Level (1,1) double {mustBeInteger,mustBeInRange(options.Level,0,6)} = 0
 end
 
+% Initialize output
+oFiles = strings( 0, 1 );
+
 % Check documents
 sHtml = docer.dir( sHtml{:} );
 assert( all( docer.extensions( sHtml ) == ".html" ), ...
@@ -40,6 +43,7 @@ for ii = 1:numel( sHtml ) % loop over files
     try
         run( fHtml, options.Level )
         fprintf( 1, "[%s] %s\n", char( 9889 ), fHtml );
+        oFiles(end+1,:) = fHtml; %#ok<AGROW>
     catch e
         warning( e.identifier, '%s', e.message ) % rethrow as warning
     end
@@ -47,8 +51,7 @@ end
 
 % Return output
 if nargout > 0
-    aHtml = fullfile( string( {sHtml.folder} ), string( {sHtml.name} ) );
-    varargout{1} = aHtml(:);
+    varargout{1} = oFiles;
 end
 
 end % docerrun
