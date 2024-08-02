@@ -48,7 +48,7 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
             %   displayScalarObject(w) displays a scalar workspace, showing
             %   the class and number of variables.
 
-            % Header
+            % Header -- class and number of variables
             c = matlab.mixin.CustomDisplay.getClassNameForHeader( obj );
             n = obj.Data.listVariables();
             switch numel( n )
@@ -61,7 +61,7 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
             end
             fprintf( 1, "  %s with %d %s\n\n", c, numel( n ), vs );
 
-            % Body
+            % Body -- struct-style display of variables and values
             if numel( n ) > 0
                 s = struct();
                 for ii = 1:numel( n )
@@ -326,10 +326,15 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
                     error( "docer:InvalidArgument", ...
                         "Cannot return output(s) from an assignment." )
                 end
-                escapedStatement = sprintf( "builtin(""evalc"",""%s"")", ...
-                    strrep( statements, """", """""" ) ); % escape and wrap
-                [varargout{1:nargout}] = ...
-                    obj.Data.evaluateIn( escapedStatement ); % evaluate
+                escapedStatement = strrep( statements, """", """""" ); % escape
+                try
+                    [varargout{1:nargout}] = evalc( ... % with capture
+                        "obj.Data.evaluateIn(""" + escapedStatement + """)" );
+                catch e
+                    error( e.identifier, ...
+                        "Error evaluating statement: %s\n%s", ...
+                        statements, e.message ) % add statement to message
+                end
                 varargout{1} = string( varargout{1} ); % convert
             else % multiple statements
                 assert( nargout == 1, "docer:InvalidArgument", ...
