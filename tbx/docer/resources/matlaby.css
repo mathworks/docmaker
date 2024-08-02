@@ -6,3 +6,7 @@ th {
     color: white;
     background-color: rgb(213, 80, 0);
 }
+
+.markdown-body hr {
+    height: 1px;
+}

@@ -6,9 +6,13 @@ Delete Doc_er artifacts
 
 `docerdelete(d)` deletes Doc_er artifacts in the folder `d`.
 
+`[files,folders] = docerdelete(...)` returns the names of the files and folders deleted.
+
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
 | `d`:arrow_right: | Documentation folder, as an absolute or relative path | string | yes |
+| :arrow_right:`files` | files(s) deleted, as an absolute path | string(s) | |
+| :arrow_right:`folders` | folders(s) deleted, as an absolute path | string(s) | |
 
 ## Examples
 
@@ -30,6 +34,6 @@ The deletion consists of 4 steps:
 3. Delete the index files `info.xml` and `helptoc.xml`
 4. Delete the search database subfolder, `helpsearch-v4`
 
-## See also
+___
 
 [home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024

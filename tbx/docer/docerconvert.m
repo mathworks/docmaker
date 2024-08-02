@@ -1,4 +1,4 @@
-function docerconvert( sMd, options )
+function varargout = docerconvert( sMd, options )
 %docerconvert  Convert Markdown documents to HTML
 %
 %   docerconvert(md) converts the Markdown document(s) md to HTML.  md can
@@ -18,6 +18,8 @@ function docerconvert( sMd, options )
 %   must be a common ancestor of the Markdown documents.  If not specified,
 %   the root folder is the lowest common ancestor.
 %
+%   files = docerconvert(...) returns the names of the files created.
+%
 %   See also: docerindex, docerrun, docerdelete
 
 %   Copyright 2020-2024 The MathWorks, Inc.
@@ -31,6 +33,9 @@ arguments
     options.Scripts (1,:) string {mustBeFile}
     options.Root (1,1) string {mustBeFolder}
 end
+
+% Initialize output
+oFiles = strings( 0, 1 );
 
 % Check documents
 sMd = docer.dir( sMd{:} );
@@ -90,16 +95,22 @@ writer = matlab.io.xml.dom.DOMWriter();
 writer.Configuration.XMLDeclaration = false;
 writer.Configuration.FormatPrettyPrint = false;
 for ii = 1:numel( sMd ) % loop over files
-    fMd = fullfile( sMd(ii).folder, sMd(ii).name ); % this file
-    [pHtml, nHtml, ~] = fileparts( fMd );
-    fHtml = fullfile( pHtml, nHtml + ".html" );
+    fMd = fullfile( sMd(ii).folder, sMd(ii).name );
+    [pMd, nMd, ~] = fileparts( fMd );
+    fHtml = fullfile( pMd, nMd + ".html" );
     try
         doc = convert( fMd, fCss, fJs );
         writer.writeToFile( doc, fHtml, "utf-8" )
         fprintf( 1, "[+] %s\n", fHtml );
+        oFiles(end+1,:) = fHtml; %#ok<AGROW>
     catch e
         warning( e.identifier, '%s', e.message ) % rethrow as warning
     end
+end
+
+% Return output
+if nargout > 0
+    varargout{1} = oFiles;
 end
 
 end % docerconvert

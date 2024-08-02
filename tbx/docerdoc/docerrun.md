@@ -10,10 +10,13 @@ Multiple documents may also be specified using `docerrun(html1,html2,...)`.
  
 `docerrun(...,"Level",b)` specifies the batching level `l`.  With level `0` (default), all blocks in a document are run in a single batch. With level `n`, each level-n heading is run as a separate batch, with the workspace cleared and figures closed between batches.
 
+`files = docerrun(...)` returns the names of the files modified.
+
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
 | `html`:arrow_right: | HTML document(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
-| `b`:arrow_right: | Batching level, from 0 to 6; default is 0 | double | :test_tube: |
+| `b`:arrow_right: | batching level, from 0 to 6; default is 0 | double | :test_tube: |
+| :arrow_right:`files` | HTML document(s) modified, as an absolute path | string(s) | |
 
 ## Examples
 
@@ -113,6 +116,6 @@ m = magick(4)
 
 `docerrun` inserts MATLAB outputs into HTML documents in `<div>`s with `class` `highlight-output-matlab`.  Previous outputs are removed.
 
-## See also
+___
 
 [home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024

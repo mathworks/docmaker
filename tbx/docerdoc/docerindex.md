@@ -6,9 +6,13 @@ Create documentation index files
 
 `docerindex(d)` creates documentation index files `info.xml` and `helptoc.xml` and search database `helpsearch_v4` in the folder `d`.
 
+`[files,folders] = docerindex(...)` returns the names of the files and folders created.
+
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
 | `d`:arrow_right: | Documentation folder, as an absolute or relative path | string | yes |
+| :arrow_right:`files` | XML files created, as an absolute path | strings | |
+| :arrow_right:`folders` | search database folder created, as an absolute path | string | |
 
 ## Examples
 
@@ -59,6 +63,6 @@ The indexing consists of 4 steps:
    * `<tocitem>` content set to the list item link text
 4. Run [`builddocsearchdb`](https://www.mathworks.com/help/matlab/ref/builddocsearchdb.html) in the specified folder to build the documentation search database.
 
-## See also
+___
 
 [home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024
