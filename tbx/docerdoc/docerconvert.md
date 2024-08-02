@@ -14,12 +14,15 @@ Multiple documents may also be specified using `docerconvert(md1,md2,...)`.
 
 `docerconvert(...,"Root",r)` publishes to the root folder `r`, placing stylesheets and scripts in the subfolder `resources`.The root folder must be a common ancestor of the Markdown documents.  If not specified, the root folder is the lowest common ancestor.
 
+`files = docerconvert(...)` returns the names of the files created.
+
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
 | `md`:arrow_right: | Markdown document(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
 | `css`:arrow_right: | CSS stylesheet(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | |
 | `js`:arrow_right: | JavaScript script(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | :test_tube: |
-| `d`:arrow_right: | Root folder, as an absolute or relative path; default is the lowest common ancestor of `md` | string | |
+| `d`:arrow_right: | root folder, as an absolute or relative path; default is the lowest common ancestor of `md` | string | |
+| :arrow_right:`files` | HTML document(s), as an absolute path | string(s) | |
 
 ## Examples
 
