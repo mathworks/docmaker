@@ -1,8 +1,11 @@
-function docerindex( pRoot )
+function varargout = docerindex( pRoot )
 %docerindex  Create info.xml and helptoc.xml from helptoc.md
 %
 %   docerindex(d) creates documentation index files "info.xml" and
 %   "helptoc.xml" and search database "helpsearch-v4" in the folder d.
+%
+%   [xml,db] = docerindex(...) returns the filenames xml of XML documents
+%   created and the name db of the search database created.
 %
 %   See also: docerconvert, docerrun, docerdelete, builddocsearchdb
 
@@ -52,11 +55,18 @@ fprintf( 1, "[+] %s\n", fHelp ); % echo
 % Build search database
 search = ['builddocsearchdb(''', strrep( pRoot, '''', '''''' ), ''')']; % command
 evalc( search ); % build without echo
-fDatabase = dir( fullfile( pRoot, "helpsearch-v4*" ) ); % find database
-fDatabase = fDatabase([fDatabase.isdir]); % only folders
-fprintf( 1, "[+] %s\n", fullfile( fDatabase(1).folder, fDatabase(1).name ) ); % echo
+sDatabase = dir( fullfile( pRoot, "helpsearch-v4*" ) ); % find database
+sDatabase = sDatabase([sDatabase.isdir]); % only folders
+fDatabase = fullfile( sDatabase(1).folder, sDatabase(1).name );
+fprintf( 1, "[+] %s\n", fDatabase ); % echo
 fDrool = fullfile( pRoot, "custom_toolbox.json" ); % drool
 if isfile( fDrool ), delete( fDrool ), end % clean up
+
+% Return outputs
+if nargout > 0
+    varargout{1} = [fInfo; fHelp];
+    varargout{2} = fDatabase;
+end
 
 end % docerindex
 
