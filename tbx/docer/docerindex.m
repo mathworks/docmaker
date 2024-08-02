@@ -4,8 +4,8 @@ function varargout = docerindex( pRoot )
 %   docerindex(d) creates documentation index files "info.xml" and
 %   "helptoc.xml" and search database "helpsearch-v4" in the folder d.
 %
-%   [xml,db] = docerindex(...) returns the filenames xml of XML documents
-%   created and the name db of the search database created.
+%   [files,folders] = docerindex(...) returns the names of the files and
+%   folders created.
 %
 %   See also: docerconvert, docerrun, docerdelete, builddocsearchdb
 

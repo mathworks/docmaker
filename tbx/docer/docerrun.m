@@ -15,7 +15,7 @@ function varargout = docerrun( sHtml, options )
 %   level n, each level-n heading is run as a separate batch, with the
 %   workspace cleared and figures closed between batches.
 %
-%   html = docerrun(...) returns the filenames of HTML documents processed.
+%   files = docerrun(...) returns the names of the files modified.
 
 %   Copyright 2024 The MathWorks, Inc.
 

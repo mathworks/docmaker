@@ -18,8 +18,7 @@ function varargout = docerconvert( sMd, options )
 %   must be a common ancestor of the Markdown documents.  If not specified,
 %   the root folder is the lowest common ancestor.
 %
-%   html = docerconvert(...) returns the filenames of HTML documents
-%   created.
+%   files = docerconvert(...) returns the names of the files created.
 %
 %   See also: docerindex, docerrun, docerdelete
 
@@ -113,8 +112,8 @@ end
 
 % Return output
 if nargout > 0
-    aHtml = fullfile( string( {sHtml.folder} ), string( {sHtml.name} ) );
-    varargout{1} = aHtml(:);
+    varargout{1} = fullfile( string( {sHtml.folder} ), string( {sHtml.name} ) );
+    varargout{1} = varargout{1}(:);
 end
 
 end % docerconvert
