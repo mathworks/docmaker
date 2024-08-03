@@ -13,7 +13,8 @@ function varargout = docerrun( sHtml, options )
 %   docerrun(...,"Level",b) specifies the batching level b.  With level 0
 %   (default), all blocks in a document are run in a single batch. With
 %   level n, each level-n heading is run as a separate batch, with the
-%   workspace cleared and figures closed between batches.
+%   workspace cleared and figures closed between batches.  With level 7,
+%   the each block is run as a separate batch.
 %
 %   files = docerrun(...) returns the names of the files modified.
 
@@ -24,7 +25,7 @@ arguments ( Repeating )
 end
 
 arguments
-    options.Level (1,1) double {mustBeInteger,mustBeInRange(options.Level,0,6)} = 0
+    options.Level (1,1) double {mustBeInteger,mustBeInRange(options.Level,0,7)} = 0
 end
 
 % Initialize output
