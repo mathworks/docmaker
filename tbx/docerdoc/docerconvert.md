@@ -21,7 +21,7 @@ Multiple documents may also be specified using `docerconvert(md1,md2,...)`.
 | `md`:arrow_right: | Markdown document(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
 | `css`:arrow_right: | CSS stylesheet(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | |
 | `js`:arrow_right: | JavaScript script(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | :test_tube: |
-| `d`:arrow_right: | root folder, as an absolute or relative path; default is the lowest common ancestor of `md` | string | |
+| `r`:arrow_right: | root folder, as an absolute or relative path; default is the lowest common ancestor of `md` | string | |
 | :arrow_right:`files` | HTML document(s) created, as an absolute path | string(s) | |
 
 ## Examples

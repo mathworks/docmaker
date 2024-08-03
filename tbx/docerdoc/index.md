@@ -50,7 +50,7 @@ If you need a list item to group child items, specify an empty link URL, e.g. `*
 
 ### Publish documentation
 
-First, use [`docerconvert`](docerconvert.md) to convert your Markdown documents to HTML.  Next, use [`docerrun`](docerrun.md) to run your MATLAB scripts and capture output as images.  Finally, use [`docerindex`](docerindex.md) to generate documentation index files.  Here is a complete example, to generate the Doc_er documentation:
+First, use [`docerconvert`](docerconvert.md) to convert your Markdown documents to HTML.  Next, use [`docerrun`](docerrun.md) to run MATLAB code blocks in the HTML documents and insert textual and graphical output.  Finally, use [`docerindex`](docerindex.md) to generate documentation index files.  Here is a complete example, to generate the Doc_er documentation:
 
 ```matlab
 docerconvert tbx/docerdoc/**/*.md

@@ -1,4 +1,4 @@
-# Workspace :construction_worker:
+# docer.Workspace :construction_worker:
 
 Private workspace for assigning variables and evaluating expressions
 
@@ -138,9 +138,7 @@ w2
 
 ## Details
 
-`docer.Workspace` extends [`assignin`](https://www.mathworks.com/help/matlab/ref/assignin.html) and [`evalin`](https://www.mathworks.com/help/matlab/ref/evalin.html) from `base` and `caller` to workspace *objects*.
-
-`docer.Workspace` also adds `evalinc` -- "`evalin` with capture".  `evalin` is to `evalinc` as [`eval`](https://www.mathworks.com/help/matlab/ref/eval.html) is to [`evalc`](https://www.mathworks.com/help/matlab/ref/evalc.html).
+`docer.Workspace` extends [`assignin`](https://www.mathworks.com/help/matlab/ref/assignin.html) and [`evalin`](https://www.mathworks.com/help/matlab/ref/evalin.html) from `base` and `caller` to workspace *objects*.  `docer.Workspace` also adds `evalinc` -- "`evalin` with capture".  `evalin` is to `evalinc` as [`eval`](https://www.mathworks.com/help/matlab/ref/eval.html) is to [`evalc`](https://www.mathworks.com/help/matlab/ref/evalc.html).
 
 `docer.Workspace` was previously a standalone implementation, first implemented 20 years ago, but now uses `matlab.lang.internal.WorkspaceData` :heart:.
 
