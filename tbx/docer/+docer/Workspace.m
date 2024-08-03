@@ -326,10 +326,10 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
                     error( "docer:InvalidArgument", ...
                         "Cannot return output(s) from an assignment." )
                 end
-                escapedStatement = strrep( statements, """", """""" );
+                escStatement = strrep( statements, """", """""" );
                 try
                     [varargout{1:nargout}] = evalc( ... % with capture
-                        "obj.Data.evaluateIn(""" + escapedStatement + """)" );
+                        "obj.Data.evaluateIn(""" + escStatement + """)" );
                 catch e
                     error( e.identifier, ...
                         "Error evaluating statement: %s\n%s", ...

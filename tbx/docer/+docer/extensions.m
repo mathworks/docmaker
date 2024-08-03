@@ -4,7 +4,7 @@ function x = extensions( s )
 %   x = docer.extensions(s) returns file extensions x from the folder
 %   struct s.
 %
-%   See also: docer.dir
+%   See also: docer.dir, fileparts
 
 %   Copyright 2024 The MathWorks, Inc.
 

@@ -1,4 +1,4 @@
-function e = list2array( n )
+function elements = list2array( nodeList )
 %list2array  Convert node list to element array
 %
 %   e = docer.list2array(n) converts the node list n to an element array e.
@@ -9,10 +9,14 @@ function e = list2array( n )
 
 %   Copyright 2020-2024 The MathWorks, Inc.
 
-e = matlab.io.xml.dom.Element.empty( 0, 1 ); % in case n is empty
-for ii = 1:n.Length
-    e(ii) = n.node( ii );
+arguments
+    nodeList (1,1) matlab.io.xml.dom.NodeList
 end
-e = e(:); % return column vector
+
+elements = matlab.io.xml.dom.Element.empty( 0, 1 ); % in case n is empty
+for ii = 1:nodeList.Length
+    elements(ii) = nodeList.node( ii );
+end
+elements = elements(:); % return column vector
 
 end % list2array

@@ -8,9 +8,10 @@ function f = figures()
 
 f = findobj( groot(), "-Depth", 1, "Type", "figure", ...
     "HandleVisibility", "on" ); % ignore HandleVisibility 'off'
-c = get( f, {"Number"} ); % figure numbers
-c(cellfun( @isempty, c )) = {NaN};
-[~, i] = sort( cell2mat( c ), "ascend" ); % sort ascending
+cn = get( f, {"Number"} ); % cell array of figure numbers
+cn(cellfun( @isempty, cn )) = {NaN}; % replace missing
+n = cell2mat( cn ); % unpack
+[~, i] = sort( n, "ascend" ); % sort ascending
 f = f(i); % return in ascending order of figure number
 
 end % figures
