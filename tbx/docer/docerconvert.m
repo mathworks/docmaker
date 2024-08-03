@@ -137,16 +137,16 @@ appendChild( root, head );
 
 % Add generator
 generator = createElement( doc, "meta" );
-appendChild( head, generator );
 v = ver( "docer" );
 generator.setAttribute( "name", "generator" );
 generator.setAttribute( "content", "MATLAB " + matlabRelease().Release + ...
     " with " + v(1).Name + " " + v(1).Version );
+appendChild( head, generator );
 
 % Add charset
 charset = createElement( doc, "meta" );
-appendChild( head, charset );
 charset.setAttribute( "charset", "utf-8" );
+appendChild( head, charset );
 
 % Add title
 h1 = docer.list2array( getElementsByTagName( xml, "h1" ) );
@@ -162,9 +162,9 @@ for ii = 1:numel( fCss )
     rCss = relpath( pMd, fCss{ii} );
     rCss = strrep( rCss, filesep, "/" );
     link = createElement( doc, "link" );
-    appendChild( head, link );
     link.setAttribute( "rel", "stylesheet" );
     link.setAttribute( "href", rCss );
+    appendChild( head, link );
 end
 
 % Add scripts
@@ -172,8 +172,8 @@ for ii = 1:numel( fJs )
     rJs = relpath( pMd, fJs{ii} );
     rJs = strrep( rJs, filesep, "/" );
     script = createElement( doc, "script" );
-    appendChild( head, script );
     script.setAttribute( "src", rJs );
+    appendChild( head, script );
 end
 
 % Add body

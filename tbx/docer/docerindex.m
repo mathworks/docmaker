@@ -35,10 +35,10 @@ end
 
 % Write info.xml
 xInfo = infoxml( name ); % build
-w = matlab.io.xml.dom.DOMWriter(); % writer
-w.Configuration.FormatPrettyPrint = true;
+writer = matlab.io.xml.dom.DOMWriter(); % writer
+writer.Configuration.FormatPrettyPrint = true;
 fInfo = fullfile( pRoot, "info.xml" ); % output
-w.writeToFile( xInfo, fInfo ) % write
+writer.writeToFile( xInfo, fInfo ) % write
 fprintf( 1, "[+] %s\n", fInfo ); % echo
 
 % Write helptoc.xml
