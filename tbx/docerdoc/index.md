@@ -29,7 +29,7 @@ Doc_er uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) 
 
 ### Write documentation
 
-Write documentation in Markdown using your favorite editor.  Include code, images, and links.  Indicate MATLAB code blocks with ` ```matlab `.  You can use the Doc_er documentation as inspiration for your own documentation.
+Write documentation in Markdown using your favorite editor.  Include code, images, and links.  To designate a MATLAB code block ` ```matlab ` as for *display only*, not evaluation, add trailing whitespace to the last line.  You can use the Doc_er documentation as inspiration for your own documentation!
 
 Write a table of contents called `helptoc.md`, also in Markdown.  This document should contain:
 * a level-1 heading `# Heading` with the name of the toolbox
