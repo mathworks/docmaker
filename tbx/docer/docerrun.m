@@ -10,11 +10,11 @@ function varargout = docerrun( sHtml, options )
 %
 %   Multiple documents can also be specified as docerrun(html1,html2,...).
 %
-%   docerrun(...,"Level",b) specifies the batching level b.  With level 0
+%   docerrun(...,"Level",n) specifies the batching level n.  With level 0
 %   (default), all blocks in a document are run in a single batch. With
 %   level n, each level-n heading is run as a separate batch, with the
 %   workspace cleared and figures closed between batches.  With level 7,
-%   the each block is run as a separate batch.
+%   each block is run as a separate batch.
 %
 %   files = docerrun(...) returns the names of the files modified.
 
