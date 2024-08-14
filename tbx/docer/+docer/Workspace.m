@@ -114,25 +114,24 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
                 block (1,1) string
             end
 
-            % Check inputs
-            if nargout > 1 % returning outputs
-                tree = mtree( block );
-                lines = strsplit( string( tree2str( tree ) ), newline() );
-                nLines = numel( lines(strlength( lines ) > 0) ); % non-empty
-                if nLines < 1
-                    throwAsCaller( MException( "docer:InvalidArgument", ...
-                        "Cannot return output(s) from an empty block." ) )
-                elseif nLines > 1
-                    throwAsCaller( MException( "docer:InvalidArgument", ...
-                        "Cannot return output(s) from a multiline block." ) )
-                elseif any( iskind( tree, "EQUALS" ) )
-                    throwAsCaller( MException( "docer:InvalidArgument", ...
-                        "Cannot return output(s) from an assignment." ) )
-                end
-            end
-
-            % Evaluate
             try
+                % Check input if outputs are requested
+                if nargout > 1
+                    t = mtree( block ); % parse
+                    lines = strsplit( string( tree2str( t ) ), newline() );
+                    lines(strlength( lines )==0) = []; % remove empty
+                    if numel( lines ) < 1
+                        error( "docer:InvalidArgument", ...
+                            "Cannot return output(s) from an empty block." )
+                    elseif numel( lines ) > 1
+                        error( "docer:InvalidArgument", ...
+                            "Cannot return output(s) from a multiline block." )
+                    elseif any( iskind( t, "EQUALS" ) )
+                        error( "docer:InvalidArgument", ...
+                            "Cannot return output(s) from an assignment." )
+                    end
+                end
+                % Evaluate
                 [varargout{1:max( nargout, 1 )}] = ... % return at least 1 output
                     evalc( "obj.Data.evaluateIn(block)" ); % supports multiline
                 varargout{1} = string( varargout{1} ); % convert
