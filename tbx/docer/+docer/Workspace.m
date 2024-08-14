@@ -108,18 +108,34 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
             %
             %   [c,o1,o2,...] = evalinc(w,e) also returns the outputs from
             %   the evaluation, if the block contains a single statement.
-            %
-            %   See also: evalc
 
             arguments
-                obj (1,1)
+                obj (1,1) %#ok<INUSA>
                 block (1,1) string
+            end
+
+            % Check inputs
+            if nargout > 1 % returning outputs
+                tree = mtree( block );
+                lines = strsplit( string( tree2str( tree ) ), newline() );
+                nLines = numel( lines(strlength( lines ) > 0) ); % non-empty
+                if nLines < 1
+                    throwAsCaller( MException( "docer:InvalidArgument", ...
+                        "Cannot return output(s) from an empty block." ) )
+                elseif nLines > 1
+                    throwAsCaller( MException( "docer:InvalidArgument", ...
+                        "Cannot return output(s) from a multiline block." ) )
+                elseif any( iskind( tree, "EQUALS" ) )
+                    throwAsCaller( MException( "docer:InvalidArgument", ...
+                        "Cannot return output(s) from an assignment." ) )
+                end
             end
 
             % Evaluate
             try
-                no = max( nargout, 1 ); % return at least 1 argument
-                [varargout{1:no}] = evalc( obj, block ); %#ok<*EVLC>
+                [varargout{1:max( nargout, 1 )}] = ... % return at least 1 output
+                    evalc( "obj.Data.evaluateIn(block)" ); % supports multiline
+                varargout{1} = string( varargout{1} ); % convert
             catch e
                 throwAsCaller( e ) % trim stack
             end
@@ -286,48 +302,6 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
     end % public methods
 
     methods ( Access = private )
-
-        function varargout = evalc( obj, block )
-            %evalc  Evaluate multiple statements and capture output
-            %
-            %   c = evalc(w,b) evaluates the block b in the workspace w,
-            %   and returns the command window output o.
-            %
-            %   [c,o1,o2,...] = evalc(...) also returns the outputs from
-            %   the evaluation, if the block contains a single statement.
-            %
-            %   evalc splits the block b into statements, prepares the
-            %   statements for evaluation with capture, and evaluates each
-            %   statement in turn.
-
-            arguments
-                obj (1,1) % workspace
-                block (1,1) string % text
-            end
-
-            % Analyze statements
-            tree = mtree( block ); % parse text
-            n = sum( isstmt( tree ) ); % number of statements
-            if n == 0 && any( iskind( tree, "ERR" ) )
-                error( "docer:InvalidSyntax", ...
-                    "Cannot parse text ""%s"".", block )
-            elseif n == 0 && nargout > 1
-                error( "docer:InvalidSyntax", ...
-                    "Cannot return output(s) from no statements." )
-            elseif n == 1 && nargout > 1 && any( iskind( tree, "EQUALS" ) )
-                error( "docer:InvalidArgument", ...
-                    "Cannot return output(s) from an assignment." )
-            elseif n > 1 && nargout > 1
-                error( "docer:InvalidSyntax", ...
-                    "Cannot return output(s) from multiple statements." )
-            end
-
-            % Evaluate
-            [varargout{1:nargout}] = obj.Data.evaluateIn( ...
-                "evalc(evalin(""caller"",""block""))" ); % supports multiline
-            varargout{1} = string( varargout{1} ); % convert
-
-        end % evalc
 
         function [db16a6c786, db2ccd973c] = keyboard_do( db16a6c786 )
             %keyboard  Prompt in workspace
