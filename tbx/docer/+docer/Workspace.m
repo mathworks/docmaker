@@ -305,46 +305,27 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
                 block (1,1) string % text
             end
 
-            % Split into statements
+            % Analyze statements
             tree = mtree( block ); % parse text
-            if count( tree ) == 1 && iskind( tree, "ERR" )
+            n = sum( isstmt( tree ) ); % number of statements
+            if n == 0 && any( iskind( tree, "ERR" ) )
                 error( "docer:InvalidSyntax", ...
                     "Cannot parse text ""%s"".", block )
+            elseif n == 0 && nargout > 1
+                error( "docer:InvalidSyntax", ...
+                    "Cannot return output(s) from no statements." )
+            elseif n == 1 && nargout > 1 && any( iskind( tree, "EQUALS" ) )
+                error( "docer:InvalidArgument", ...
+                    "Cannot return output(s) from an assignment." )
+            elseif n > 1 && nargout > 1
+                error( "docer:InvalidSyntax", ...
+                    "Cannot return output(s) from multiple statements." )
             end
-            statements = tree2str( tree ); % convert back to statements
-            statements = strsplit( statements, newline ); % split lines
-            statements(strlength( statements ) == 0) = []; % remove empty lines
-            statements = string( statements(:) ); % convert and reshape
 
             % Evaluate
-            if isempty( statements ) % no statements
-                assert( nargout == 1, "docer:InvalidSyntax", ...
-                    "Cannot return output(s) from no statements." )
-                varargout{1} = ""; % no output
-            elseif isscalar( statements ) % single statement
-                if nargout > 1 && any( iskind( tree, "EQUALS" ) )
-                    error( "docer:InvalidArgument", ...
-                        "Cannot return output(s) from an assignment." )
-                end
-                escStatement = strrep( statements, """", """""" );
-                try
-                    [varargout{1:nargout}] = evalc( ... % with capture
-                        "obj.Data.evaluateIn(""" + escStatement + """)" );
-                catch e
-                    error( e.identifier, ...
-                        "Error evaluating statement: %s\n%s", ...
-                        statements, e.message ) % add statement to message
-                end
-                varargout{1} = string( varargout{1} ); % convert
-            else % multiple statements
-                assert( nargout == 1, "docer:InvalidSyntax", ...
-                    "Cannot return output(s) from multiple statements." )
-                varargout{1} = strings( size( statements ) ); % preallocate
-                for ii = 1:numel( statements ) % loop over statements
-                    varargout{1}(ii) = evalc( obj, statements(ii) ); % recurse
-                end
-                varargout{1} = strjoin( varargout{1}, "" ); % combine outputs
-            end
+            [varargout{1:nargout}] = obj.Data.evaluateIn( ...
+                "evalc(evalin(""caller"",""block""))" ); % supports multiline
+            varargout{1} = string( varargout{1} ); % convert
 
         end % evalc
 
