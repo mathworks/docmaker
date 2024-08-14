@@ -20,7 +20,7 @@ Doc_er was developed to build documentation for [GUI Layout Toolbox](http://www.
 
 The "doc" in "Doc_er" stands for "documentation".
 
-Doc_er is pronounced the same as, but should not to be confused with, [Docker](https://docs.docker.com/) :whale:.
+Doc_er is pronounced the same as, but should not be confused with, [Docker](https://docs.docker.com/) :whale:.
 
 ___
 
