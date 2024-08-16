@@ -6,7 +6,7 @@ function f = figures()
 
 %   Copyright 2024 The MathWorks, Inc.
 
-f = findobj( groot(), "-Depth", 1, "Type", "figure" ); % all figures
+f = findall( groot(), "-Depth", 1, "Type", "figure" ); % all figures
 cn = get( f, {"Number"} ); % cell array of figure numbers
 cn(cellfun( @isempty, cn )) = {NaN}; % replace missing
 n = cell2mat( cn ); % unpack
