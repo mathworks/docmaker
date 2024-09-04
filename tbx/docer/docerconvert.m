@@ -202,6 +202,18 @@ for ii = 1:numel( anchors )
     end
 end
 
+% Set external anchor targets to _top
+anchors = docer.list2array( doc.getElementsByTagName( "a" ) );
+for ii = 1:numel( anchors )
+    anchor = anchors(ii);
+    if anchor.hasAttribute( "href" )
+        uri = matlab.net.URI( anchor.getAttribute( "href" ) );
+        if ~isempty( uri.Host )
+            anchor.setAttribute( "target", "_top" );
+        end
+    end
+end
+
 end % convert
 
 function r = relpath( d, f )
