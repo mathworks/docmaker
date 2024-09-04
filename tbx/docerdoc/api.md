@@ -1,4 +1,4 @@
-# Function reference :hippopotamus:
+# Function reference :hatching_chick:
 
 * [docerconvert](docerconvert.md) :arrow_right: - convert Markdown documents to HTML
 * [docerrun](docerrun.md) :runner: - run MATLAB scripts and save generated figures to image files
@@ -8,4 +8,4 @@
 
 ___
 
-[home](index.md) :house: | [about](about.md) :hippopotamus: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024
+[home](index.md) :house: | [about](about.md) :hatching_chick: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024
