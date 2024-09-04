@@ -8,6 +8,6 @@
     "AuthorEmail":"dsampson@mathworks.com",
     "ToolboxFolder":"./tbx",
     "ToolboxMatlabPath": ["./tbx/docer", "./tbx/docerdoc"],
-    "ToolboxImageFile":"./hippo.png",
+    "ToolboxImageFile":"./docer.png",
     "MinimumMatlabRelease":"R2021b"
 }
