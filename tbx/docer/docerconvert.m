@@ -179,7 +179,6 @@ end
 % Add body
 body = createElement( doc, "body" );
 body.setAttribute( "class", "markdown-body" )
-body.setAttribute( "style", "margin-left: 1em; margin-right: 1em;" )
 appendChild( root, body );
 
 % Add main
