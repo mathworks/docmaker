@@ -184,6 +184,7 @@ appendChild( root, body );
 % Add main
 main = createElement( doc, "main" );
 main.setAttribute( "class", "markdown-body" ) % for embedding in <template>
+main.setAttribute( "style", "margin-left: 1em; margin-right: 1em;" )
 appendChild( body, main );
 
 % Add converted Markdown
