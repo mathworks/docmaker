@@ -19,7 +19,10 @@ end
 method = matlab.net.http.RequestMethod.POST;
 request = matlab.net.http.RequestMessage( method, [], md );
 request = addFields( request, "Content-Type", "text/plain" );
-if ~verLessThan( "MATLAB", "24.1" ) && isSecret( "GitHub API token" ) %#ok<VERLESSMATLAB>
+if ~isempty(getenv("DOCER_GITHUB_TOKEN"))
+    request = addFields( request, "Authorization", ...
+        "Bearer " + getenv("DOCER_GITHUB_TOKEN"));
+elseif ~verLessThan( "MATLAB", "24.1" ) && isSecret( "GitHub API token" ) %#ok<VERLESSMATLAB>
     request = addFields( request, "Authorization", ...
         "Bearer " + getSecret( "GitHub API token" ) );
 elseif ispref( "docer", "token" )
