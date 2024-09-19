@@ -76,13 +76,12 @@ end
 fCss = reshape( fullfile( pRez, {sCss.name} ), size( sCss ) );
 
 % Check and copy scripts
+sJs = docer.dir( fullfile( pTem, "copycode.js" ) );
 if isfield( options, "Scripts" )
     sJs = docer.dir( options.Scripts );
     assert( all( docer.extensions( sJs ) == ".js" ), ...
         "docer:InvalidArgument", ...
         "Scripts must all have extension .js." )
-else
-    sJs = repmat( dir( "." ), [0 1] );
 end
 for ii = 1:numel( sJs )
     copyfile( fullfile( sJs(ii).folder, sJs(ii).name ), pRez )
@@ -173,6 +172,8 @@ for ii = 1:numel( fJs )
     rJs = strrep( rJs, filesep, "/" );
     script = createElement( doc, "script" );
     script.setAttribute( "src", rJs );
+    script.setAttribute( "defer", "" );
+    script.TextContent = "//"; % comment, not empty
     appendChild( head, script );
 end
 
@@ -199,6 +200,21 @@ for ii = 1:numel( anchors )
     if anchor.hasAttribute( "aria-label" ) && startsWith( ...
             anchor.getAttribute( "aria-label" ), "Permalink: " )
         anchor.getParentNode().removeChild( anchor );
+    end
+end
+
+% Add copy button to MATLAB source code
+divs = docer.list2array( doc.getElementsByTagName( "div" ) );
+for ii = 1:numel( divs )
+    div = divs(ii);
+    if div.hasAttribute( "class" )
+        classes = strsplit( div.getAttribute( "class" ), " " );
+        if any( strcmp( classes, "highlight-source-matlab" ) )
+            button = doc.createElement( "button" );
+            button.TextContent = "Copy";
+            button.setAttribute( "class", "copy" );
+            div.insertBefore( button, div.getFirstChild() )
+        end
     end
 end
 
