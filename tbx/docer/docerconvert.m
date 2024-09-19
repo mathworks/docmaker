@@ -185,7 +185,6 @@ appendChild( root, body );
 % Add main
 main = createElement( doc, "main" );
 main.setAttribute( "class", "markdown-body" ) % for embedding in <template>
-main.setAttribute( "style", "margin-left: 1em; margin-right: 1em;" )
 appendChild( body, main );
 
 % Add converted Markdown
@@ -210,10 +209,14 @@ for ii = 1:numel( divs )
     if div.hasAttribute( "class" )
         classes = strsplit( div.getAttribute( "class" ), " " );
         if any( strcmp( classes, "highlight-source-matlab" ) )
-            button = doc.createElement( "button" );
-            button.TextContent = "Copy";
-            button.setAttribute( "class", "copy" );
-            div.insertBefore( button, div.getFirstChild() )
+            pres = docer.list2array( div.getElementsByTagName( "pre" ) );
+            for jj = 1:numel( pres )
+                pre = pres(jj);
+                button = doc.createElement( "button" );
+                button.TextContent = "Copy";
+                button.setAttribute( "class", "copy" );
+                pre.insertBefore( button, pre.getFirstChild() );
+            end
         end
     end
 end

@@ -10,3 +10,41 @@ th {
 .markdown-body hr {
     height: 1px;
 }
+
+main.markdown-body {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.copy {
+    position: relative;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Hide the original text and use ::after to display new text */
+.copy::after {
+    content: '✔'; /* New text to display */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+/* When a class is added to the button, show the new text */
+.copy.checked::after {
+    display: flex;
+}
+
+.copy.checked {
+    color: transparent; /* Hide original text */
+}
