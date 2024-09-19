@@ -16,35 +16,35 @@ main.markdown-body {
     margin-right: 1em;
 }
 
-.copy {
+:root {
+    --copy-text: 'Copy';
+    --checked-text: '✔';
+}
+
+.copy-button {
     position: relative;
     padding: 5px 10px;
     background-color: #007bff;
-    color: white;
+    color: transparent; /* Hide the actual text */
     border: none;
     cursor: pointer;
     border-radius: 5px;
+    margin-top: 10px; /* Adjust as needed */
 }
 
-/* Hide the original text and use ::after to display new text */
-.copy::after {
-    content: '✔'; /* New text to display */
+.copy-button::before {
+    content: var(--copy-text); /* Default text */
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
     color: white;
 }
 
-/* When a class is added to the button, show the new text */
-.copy.checked::after {
-    display: flex;
-}
-
-.copy.checked {
-    color: transparent; /* Hide original text */
+.copy-button.checked::before {
+    content: var(--checked-text); /* Text when checked */
 }
