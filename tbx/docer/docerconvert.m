@@ -202,25 +202,6 @@ for ii = 1:numel( anchors )
     end
 end
 
-% Add copy button to MATLAB source code
-divs = docer.list2array( doc.getElementsByTagName( "div" ) );
-for ii = 1:numel( divs )
-    div = divs(ii);
-    if div.hasAttribute( "class" )
-        classes = strsplit( div.getAttribute( "class" ), " " );
-        if any( strcmp( classes, "highlight-source-matlab" ) )
-            pres = docer.list2array( div.getElementsByTagName( "pre" ) );
-            for jj = 1:numel( pres )
-                pre = pres(jj);
-                button = doc.createElement( "button" );
-                button.TextContent = "Copy";
-                button.setAttribute( "class", "copy" );
-                pre.insertBefore( button, pre.getFirstChild() );
-            end
-        end
-    end
-end
-
 % Set external anchor targets to _top
 anchors = docer.list2array( doc.getElementsByTagName( "a" ) );
 for ii = 1:numel( anchors )
