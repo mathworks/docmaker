@@ -1,9 +1,5 @@
 .highlight-source-matlab pre {
     position: relative;
-    padding: 16px;
-    background-color: #f5f5f5;
-    border-radius: 4px;
-    overflow: auto;
 }
 
 .copy-button {

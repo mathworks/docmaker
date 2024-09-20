@@ -8,7 +8,7 @@ document.querySelectorAll('.highlight-source-matlab pre').forEach(pre => {
         </svg>
     `;
 
-    button.onclick = function() {
+    button.onclick = function () {
         docerCopyCode(pre, button);
     };
 
@@ -19,11 +19,11 @@ function docerCopyCode(pre, button) {
     // Extract the full text content from the <pre> element
     let code = pre.textContent;
 
-    // Trim trailing spaces from each line and remove extra newlines at the end
+    // Trim trailing spaces from each line and remove extra whitespace at the end
     code = code.split('\n')
-        .map(line => line.replace(/\s+$/, '')) // trim trailing spaces
+        .map(line => line.replace(/\s+$/, ''))
         .join('\n')
-        .trim(); // trim any trailing newlines or spaces from the entire string
+        .trim();
 
     navigator.clipboard.writeText(code).then(() => {
         const originalIcon = button.innerHTML;
