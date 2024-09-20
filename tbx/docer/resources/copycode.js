@@ -16,7 +16,15 @@ document.querySelectorAll('.highlight-source-matlab pre').forEach(pre => {
 });
 
 function docerCopyCode(pre, button) {
-    const code = pre.textContent;
+    // Extract the full text content from the <pre> element
+    let code = pre.textContent;
+
+    // Trim trailing spaces from each line and remove extra newlines at the end
+    code = code.split('\n')
+        .map(line => line.replace(/\s+$/, '')) // trim trailing spaces
+        .join('\n')
+        .trim(); // trim any trailing newlines or spaces from the entire string
+
     navigator.clipboard.writeText(code).then(() => {
         const originalIcon = button.innerHTML;
         button.innerHTML = '&#10003;'; // Unicode check mark
