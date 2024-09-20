@@ -1,25 +1,30 @@
-:root {
-    --copy-text: 'Copy';
-    --checked-text: '✔';
+.highlight-source-matlab pre {
+    position: relative;
+    padding: 16px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    overflow: auto;
 }
 
 .copy-button {
-    padding: 5px 10px;
-    background-color: #007bff;
-    color: transparent;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.copy-button::before {
-    content: var(--copy-text);
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    color: white;
+    padding: 4px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    transition: opacity 0.3s;
+    font-size: 16px;
 }
 
-.copy-button.checked::before {
-    content: var(--checked-text);
+.copy-button:hover {
+    opacity: 0.7;
+}
+
+.copy-button-icon {
+    width: 16px;
+    height: 16px;
 }
