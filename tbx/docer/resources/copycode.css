@@ -1,0 +1,28 @@
+:root {
+    --copy-text: 'Copy';
+    --checked-text: '✔';
+}
+
+.copy-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.copy-button::before {
+    content: var(--copy-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.copy-button.checked::before {
+    content: var(--checked-text);
+}

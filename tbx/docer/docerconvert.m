@@ -62,7 +62,7 @@ pRez = fullfile( pRoot, 'resources' );
 if ~isfolder( pRez ), mkdir( pRez ), end
 
 % Check and copy stylesheets
-sCss = docer.dir( fullfile( pTem, ["github-markdown.css" "matlaby.css"] ) );
+sCss = docer.dir( fullfile( pTem, ["github-markdown.css" "matlaby.css" "copycode.css"] ) );
 if isfield( options, "Stylesheets" )
     sCss = docer.dir( sCss, options.Stylesheets );
     assert( all( docer.extensions( sCss ) == ".css" ), ...
