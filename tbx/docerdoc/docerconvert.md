@@ -59,7 +59,7 @@ copies the stylesheet `huey/louie.css` to the `resources` folder and includes a 
 ```matlab
 docerconvert("mickey/pluto.md","Scripts","morty/ferdie.js") 
 ```
-copies the script `morty/ferdie.js` to the `resources` folder and includes a `<script>` in the HTML `<head>`. :test_tube:
+copies the script `morty/ferdie.js` to the `resources` folder and includes a `<script>` in the HTML `<body>`. :test_tube:
 
 ```matlab
 docerconvert("mickey/goofy/*.md","Root","mickey") 
