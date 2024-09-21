@@ -62,23 +62,26 @@ function docerCopyCode(pre, button) {
 }
 
 function docerCopyToClipboard(text, body) {
-    // Try using the modern Clipboard API
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text)
-            .then(() => {
-                console.log('Text copied to clipboard using Clipboard API');
-            })
-            .catch(err => {
-                console.error('Failed to copy using Clipboard API, falling back to execCommand:', err);
-                oldCopyToClipboard(text, body);
-            });
-    } else {
-        // Fallback to execCommand if Clipboard API is not supported
-        oldCopyToClipboard(text, body);
-    }
+    return new Promise((resolve, reject) => {
+        // Try using the modern Clipboard API
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    console.log('Text copied to clipboard using Clipboard API');
+                    resolve(); // Resolve the promise on success
+                })
+                .catch(err => {
+                    console.error('Failed to copy using Clipboard API, falling back to execCommand:', err);
+                    oldCopyToClipboard(text, body, resolve, reject);
+                });
+        } else {
+            // Fallback to execCommand if Clipboard API is not supported
+            oldCopyToClipboard(text, body, resolve, reject);
+        }
+    });
 
     // Fallback method using execCommand
-    function oldCopyToClipboard(text, body) {
+    function oldCopyToClipboard(text, body, resolve, reject) {
         const textArea = document.createElement('textarea');
         textArea.value = text;
         body.appendChild(textArea);
@@ -87,11 +90,14 @@ function docerCopyToClipboard(text, body) {
             const successful = document.execCommand('copy');
             if (successful) {
                 console.log('Text copied to clipboard using execCommand');
+                resolve(); // Resolve the promise on success
             } else {
                 console.error('Failed to copy text using execCommand');
+                reject(new Error('Failed to copy text using execCommand'));
             }
         } catch (err) {
             console.error('Oops, unable to copy using execCommand', err);
+            reject(err); // Reject the promise on error
         } finally {
             body.removeChild(textArea);
         }
