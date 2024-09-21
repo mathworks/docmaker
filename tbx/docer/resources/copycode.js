@@ -1,6 +1,6 @@
 document.querySelectorAll('pre').forEach(pre => {
     // Check if the <pre> element has an ancestor with the class 'highlight-output'
-    if (pre.closest('.highlight-output')) { 
+    if (pre.closest('.highlight-output')) {
         return; // skip
     }
 
@@ -36,13 +36,22 @@ function docerCopyCode(pre, button) {
         .join('\n')
         .trim();
 
-    navigator.clipboard.writeText(code).then(() => {
-        const originalIcon = button.innerHTML;
-        button.innerHTML = '&#10003;'; // Unicode check mark
-        setTimeout(() => {
-            button.innerHTML = originalIcon;
-        }, 1000);
-    }).catch(err => {
-        console.error('Error copying text: ', err);
-    });
+    // Capture button state, to restore later
+    const originalIcon = button.innerHTML;
+
+    // Copy to clipboard
+    navigator.clipboard.writeText(code)
+        .then(() => {
+            button.innerHTML = '&#10003;'; // Unicode check mark, for success
+        })
+        .catch(err => {
+            console.error('Error copying text: ', err);
+            button.innerHTML = '&#10060;'; // Unicode cross mark, for error
+        })
+        .finally(() => {
+            // Restore the original button icon after a delay in both cases
+            setTimeout(() => {
+                button.innerHTML = originalIcon;
+            }, 1000);
+        });
 }
