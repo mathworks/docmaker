@@ -1,28 +1,20 @@
-document.querySelectorAll('pre:not(.highlight-output)').forEach(pre => {
-    if (docerIsCopyableCode(pre)) {
-        const button = document.createElement('button');
-        button.className = 'copy-button';
-        button.innerHTML = `
+document.querySelectorAll('pre').forEach(pre => {
+    if (pre.closest('.highlight-output')) { return; } // skip pre elements with .highlight-output parents
+    const button = document.createElement('button');
+    button.className = 'copy-button';
+    button.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="copy-button-icon">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
             </svg>
         `;
 
-        button.onclick = function () {
-            docerCopyCode(pre, button);
-        };
+    button.onclick = function () {
+        docerCopyCode(pre, button);
+    };
 
-        pre.appendChild(button);
-    }
+    pre.appendChild(button);
 });
-
-function docerIsCopyableCode(pre) {
-    const isOutput = pre.closest('.highlight-output') !== null;
-    const hasCode = pre.querySelector('code') !== null;
-
-    return !isOutput || hasCode;
-}
 
 function docerCopyCode(pre, button) {
     // Extract the full text content from the <pre> element
