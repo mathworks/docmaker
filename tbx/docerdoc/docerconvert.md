@@ -8,11 +8,11 @@ Convert Markdown documents to HTML
 
 Multiple documents may also be specified using `docerconvert(md1,md2,...)`.
 
-`docerconvert(...,"Stylesheets",css)` includes the stylesheet(s) `css`.  Doc_er stylesheets `github-markdown.css` and `matlaby.css` are always included.
+`docerconvert(...,"Stylesheets",css)` includes the stylesheet(s) `css`.  Doc_er stylesheets `github-markdown.css` and `matlaby.css` are included by default.
 
-`docerconvert(...,"Scripts",js)` includes the script(s) `js`. :test_tube:
+`docerconvert(...,"Scripts",js)` includes the script(s) `js`.  Doc_er script `copycode.js` is included by default.  Scripts are added to the end of the body in the order specified to ensure that the HTML content is loaded and rendered before the scripts run.  :test_tube:
 
-`docerconvert(...,"Root",r)` publishes to the root folder `r`, placing stylesheets and scripts in the subfolder `resources`.The root folder must be a common ancestor of the Markdown documents.  If not specified, the root folder is the lowest common ancestor.
+`docerconvert(...,"Root",r)` publishes to the root folder `r`, placing stylesheets and scripts in the subfolder `resources`.  The root folder must be a common ancestor of the Markdown documents.  If not specified, the root folder is the lowest common ancestor.
 
 `files = docerconvert(...)` returns the names of the files created.
 
