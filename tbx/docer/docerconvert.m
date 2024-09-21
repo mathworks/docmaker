@@ -12,8 +12,8 @@ function varargout = docerconvert( sMd, options )
 %   default.
 %
 %   docerconvert(...,"Scripts",js) includes the script(s) js.  Scripts are
-%   added to the end of the body in the order specified to ensure that the
-%   HTML content is loaded and rendered before the scripts run.  Script
+%   included at the end of the body in the order specified to ensure that
+%   the HTML content is loaded and rendered before the scripts run.  Script
 %   "copycode.js" is included by default.
 %
 %   docerconvert(...,"Root",r) publishes to the root folder r, placing
