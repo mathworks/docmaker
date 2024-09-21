@@ -16,6 +16,7 @@ document.querySelectorAll('pre').forEach(pre => {
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
         </svg>
     `;
+    button.title = 'copy';
 
     // Set up the onclick event handler for the button
     button.onclick = function () {
@@ -38,20 +39,61 @@ function docerCopyCode(pre, button) {
 
     // Capture button state, to restore later
     const originalIcon = button.innerHTML;
+    const originalTitle = button.title;
 
     // Copy to clipboard
-    navigator.clipboard.writeText(code)
+    docerCopyToClipboard(code, button.ownerDocument.body)
         .then(() => {
             button.innerHTML = '&#10003;'; // Unicode check mark, for success
+            button.title = 'copied';
         })
         .catch(err => {
             console.error('Error copying text: ', err);
             button.innerHTML = '&#10060;'; // Unicode cross mark, for error
+            button.title = 'failed';
         })
         .finally(() => {
             // Restore the original button icon after a delay in both cases
             setTimeout(() => {
                 button.innerHTML = originalIcon;
+                button.title = originalTitle;
             }, 1000);
         });
+}
+
+function docerCopyToClipboard(text, body) {
+    // Try using the modern Clipboard API
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                console.log('Text copied to clipboard using Clipboard API');
+            })
+            .catch(err => {
+                console.error('Failed to copy using Clipboard API, falling back to execCommand:', err);
+                oldCopyToClipboard(text, body);
+            });
+    } else {
+        // Fallback to execCommand if Clipboard API is not supported
+        oldCopyToClipboard(text, body);
+    }
+
+    // Fallback method using execCommand
+    function oldCopyToClipboard(text, body) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        body.appendChild(textArea);
+        textArea.select();
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                console.log('Text copied to clipboard using execCommand');
+            } else {
+                console.error('Failed to copy text using execCommand');
+            }
+        } catch (err) {
+            console.error('Oops, unable to copy using execCommand', err);
+        } finally {
+            body.removeChild(textArea);
+        }
+    }
 }
