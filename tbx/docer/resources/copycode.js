@@ -71,7 +71,6 @@ function docerCopyToClipboard(text, body) {
                     resolve(); // Resolve the promise on success
                 })
                 .catch(err => {
-                    console.error('Failed to copy using Clipboard API, falling back to execCommand:', err);
                     oldCopyToClipboard(text, body, resolve, reject);
                 });
         } else {
@@ -92,7 +91,6 @@ function docerCopyToClipboard(text, body) {
                 console.log('Text copied to clipboard using execCommand');
                 resolve(); // Resolve the promise on success
             } else {
-                console.error('Failed to copy text using execCommand');
                 reject(new Error('Failed to copy text using execCommand'));
             }
         } catch (err) {
