@@ -8,10 +8,13 @@ function varargout = docerconvert( sMd, options )
 %   Multiple documents can also be specified as docerconvert(md1,md2,...).
 %
 %   docerconvert(...,"Stylesheets",css) includes the stylesheet(s) css.
-%   Stylesheets "github-markdown.css" and "matlaby.css" are always
-%   included.
+%   Stylesheets "github-markdown.css" and "matlaby.css" are included by
+%   default.
 %
-%   docerconvert(...,"Scripts",js) includes the script(s) js.
+%   docerconvert(...,"Scripts",js) includes the script(s) js.  Scripts are
+%   included at the end of the body in the order specified to ensure that
+%   the HTML content is loaded and rendered before the scripts run.  Script
+%   "copycode.js" is included by default.
 %
 %   docerconvert(...,"Root",r) publishes to the root folder r, placing
 %   stylesheets and scripts in the subfolder "resources".  The root folder
@@ -62,7 +65,7 @@ pRez = fullfile( pRoot, 'resources' );
 if ~isfolder( pRez ), mkdir( pRez ), end
 
 % Check and copy stylesheets
-sCss = docer.dir( fullfile( pTem, ["github-markdown.css" "matlaby.css"] ) );
+sCss = docer.dir( fullfile( pTem, ["github-markdown.css" "matlaby.css" "copycode.css"] ) );
 if isfield( options, "Stylesheets" )
     sCss = docer.dir( sCss, options.Stylesheets );
     assert( all( docer.extensions( sCss ) == ".css" ), ...
@@ -76,13 +79,12 @@ end
 fCss = reshape( fullfile( pRez, {sCss.name} ), size( sCss ) );
 
 % Check and copy scripts
+sJs = docer.dir( fullfile( pTem, "copycode.js" ) );
 if isfield( options, "Scripts" )
     sJs = docer.dir( options.Scripts );
     assert( all( docer.extensions( sJs ) == ".js" ), ...
         "docer:InvalidArgument", ...
         "Scripts must all have extension .js." )
-else
-    sJs = repmat( dir( "." ), [0 1] );
 end
 for ii = 1:numel( sJs )
     copyfile( fullfile( sJs(ii).folder, sJs(ii).name ), pRez )
@@ -167,15 +169,6 @@ for ii = 1:numel( fCss )
     appendChild( head, link );
 end
 
-% Add scripts
-for ii = 1:numel( fJs )
-    rJs = relpath( pMd, fJs{ii} );
-    rJs = strrep( rJs, filesep, "/" );
-    script = createElement( doc, "script" );
-    script.setAttribute( "src", rJs );
-    appendChild( head, script );
-end
-
 % Add body
 body = createElement( doc, "body" );
 body.setAttribute( "class", "markdown-body" )
@@ -184,7 +177,6 @@ appendChild( root, body );
 % Add main
 main = createElement( doc, "main" );
 main.setAttribute( "class", "markdown-body" ) % for embedding in <template>
-main.setAttribute( "style", "margin-left: 1em; margin-right: 1em;" )
 appendChild( body, main );
 
 % Add converted Markdown
@@ -202,16 +194,14 @@ for ii = 1:numel( anchors )
     end
 end
 
-% Set external anchor targets to _top
-anchors = docer.list2array( doc.getElementsByTagName( "a" ) );
-for ii = 1:numel( anchors )
-    anchor = anchors(ii);
-    if anchor.hasAttribute( "href" )
-        uri = matlab.net.URI( anchor.getAttribute( "href" ) );
-        if ~isempty( uri.Host )
-            anchor.setAttribute( "target", "_top" );
-        end
-    end
+% Add scripts
+for ii = 1:numel( fJs )
+    rJs = relpath( pMd, fJs{ii} );
+    rJs = strrep( rJs, filesep, "/" );
+    script = createElement( doc, "script" );
+    script.setAttribute( "src", rJs );
+    script.TextContent = "//"; % comment, not empty
+    appendChild( body, script );
 end
 
 end % convert

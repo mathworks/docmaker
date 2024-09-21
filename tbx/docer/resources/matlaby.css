@@ -10,3 +10,8 @@ th {
 .markdown-body hr {
     height: 1px;
 }
+
+main.markdown-body {
+    margin-left: 1em;
+    margin-right: 1em;
+}

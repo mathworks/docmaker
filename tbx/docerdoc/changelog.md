@@ -1,5 +1,11 @@
 # Release notes
 
+## Version 0.3
+
+* Added copy button to code blocks
+* Added support for custom JavaScript scripts to `docerconvert`
+* Works with MATLAB in the system browser from R2024b
+
 ## Version 0.2
 
 Initial limited release within MathWorks :tada:.
