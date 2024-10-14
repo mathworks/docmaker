@@ -1,5 +1,9 @@
 # Release notes
 
+## Version 0.3
+
+* Added copy button to code blocks
+
 ## Version 0.2
 
 Initial limited release within MathWorks :tada:.
