@@ -279,17 +279,17 @@ function s = rmlinks( s )
 %   s = rmlinks(s) removes links from the text s, replacing <a ...>c</a>
 %   with c.
 
-po = "<a " + wildcardPattern + ">"; % opening
-pc = "</a>"; % closing
+to = "<a " + wildcardPattern + ">"; % opening
+tc = "</a>"; % closing
 while true
-    li = extractBetween( s, po, pc, "Boundaries", "inclusive" ); % find
+    li = extractBetween( s, to, tc, "Boundaries", "inclusive" ); % find
     if isempty( li )
         break % no links, break
     end
     li = li(1); % first
     po = strfind( s, li ); % find
     po = po(1); % first
-    t = extractBetween( li, po, pc ); % text
+    t = extractBetween( li, to, tc ); % text
     s = replaceBetween( s, po, po + strlength( li ) - 1, t ); % strip
 end
 s = strtrim( s ); % tidy
