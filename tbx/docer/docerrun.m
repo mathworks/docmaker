@@ -176,11 +176,9 @@ outFigures = outFigures(:); % return column vector
 if strlength( outString ) > 0
 
     % Strip out markup
-    parser = matlab.io.xml.dom.Parser();
     backspacePattern = wildcardPattern(1) + characterListPattern(char(8));
     outString = erase( outString, backspacePattern );
-    outDoc = parser.parseString( "<pre>" + strtrim( outString ) + "</pre>" );
-    outString = strtrim( outDoc.getDocumentElement().TextContent );
+    outString = rmlinks( outString );
 
     % Create HTML elements div, pre, text
     outDiv = doc.createElement( "div" );
@@ -274,3 +272,26 @@ for ii = 1:numel( a )
 end
 
 end % isAfter
+
+function s = rmlinks( s )
+%rmlinks  Remove links from output text
+%
+%   s = rmlinks(s) removes links from the text s, replacing <a ...>c</a>
+%   with c.
+
+po = "<a " + wildcardPattern + ">"; % opening
+pc = "</a>"; % closing
+while true
+    li = extractBetween( s, po, pc, "Boundaries", "inclusive" ); % find
+    if isempty( li )
+        break % no links, break
+    end
+    li = li(1); % first
+    po = strfind( s, li ); % find
+    po = po(1); % first
+    t = extractBetween( li, po, pc ); % text
+    s = replaceBetween( s, po, po + strlength( li ) - 1, t ); % strip
+end
+s = strtrim( s ); % tidy
+
+end % rmlinks
