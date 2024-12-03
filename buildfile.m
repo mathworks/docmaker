@@ -3,8 +3,7 @@ function plan = buildfile()
 
 %   Copyright 2023-2024 The MathWorks, Inc.
 
-import matlab.buildtool.tasks.CodeIssuesTask
-import matlab.buildtool.tasks.TestTask
+import matlab.buildtool.tasks.*
 
 % Create a plan from task functions
 plan = buildplan( localfunctions() );
