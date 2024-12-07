@@ -213,6 +213,10 @@ for jj = 1:numel( outFigures )
     outImg = doc.createElement( "img" );
     outImg.setAttribute( "src", "data:image/png;base64, " + ...
         docer.encode( outFigure ) );
+    outPosition = hgconvertunits( outFigure, outFigure.Position, ...
+        outFigure.Units, "pixels", groot() ); % pixels
+    outImg.setAttribute( "style", "width: " + outPosition(3) + ...
+        "px; height: auto" ); % apply display scaling
     outDiv.appendChild( outImg );
 
     % Add output to document
