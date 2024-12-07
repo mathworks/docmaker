@@ -1,5 +1,9 @@
 # Release notes
 
+## Version 0.3.2
+
+* `docerrun` inserts screenshot at correct size, irrespective of display scaling
+
 ## Version 0.3.1
 
 * `docerrun` works when console output contains `<`
