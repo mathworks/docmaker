@@ -116,6 +116,12 @@ m = magick(4)
 
 `docerrun` inserts MATLAB outputs into HTML documents in `<div>`s with `class` `highlight-output-matlab`.  Previous outputs are removed.
 
+### Display scaling
+
+Display scaling is a feature that adjusts the size of elements on screen to ensure they are easily readable and usable, regardless of the resolution of your display. This is particularly useful for high-resolution displays, where elements can appear too small to see comfortably at the native resolution.
+
+`docerrun` uses `getframe` to capture screenshots.  `getframe` captures screenshots using native resolution, to maximize quality.  In versions prior to 0.4, this led to inconsistencies in image sizes between applications and machines.  From version 0.4, `docerrun` includes scaled image sizes in the generated HTML.
+
 ___
 
 [home](index.md) :house: | [convert](docerconvert.md) :arrow_right: | [run](docerrun.md) :runner: | [index](docerindex.md) :scroll: | [delete](docerdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hatching_chick: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024
