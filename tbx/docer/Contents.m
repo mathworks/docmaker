@@ -1,5 +1,5 @@
 % Doc_er
-% Version 0.3.1 (R2024b) 26-Oct-2024
+% Version 0.3.2 (R2024b) 07-Dec-2024
 %
 % docerconvert - convert Markdown documents to HTML
 % docerrun     - run MATLAB code in HTML documents and insert output
