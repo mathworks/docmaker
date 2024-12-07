@@ -120,7 +120,7 @@ m = magick(4)
 
 Display scaling is a feature that adjusts the size of elements on screen to ensure they are easily readable and usable, regardless of the resolution of your display. This is particularly useful for high-resolution displays, where elements can appear too small to see comfortably at the native resolution.
 
-`docerrun` uses `getframe` to capture screenshots.  `getframe` captures screenshots using native resolution, to maximize quality.  In versions prior to 0.3.2, this led to inconsistencies in image sizes between applications and machines.  From version 0.3.2, `docerrun` includes scaled image sizes in the generated HTML.
+`docerrun` uses `getframe` to capture screenshots.  `getframe` captures screenshots using native resolution, to maximize quality.  In versions prior to 0.4, this led to inconsistencies in image sizes between applications and machines.  From version 0.4, `docerrun` includes scaled image sizes in the generated HTML.
 
 ___
 

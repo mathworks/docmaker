@@ -1,6 +1,6 @@
 # Release notes
 
-## Version 0.3.2
+## Version 0.4
 
 * `docerrun` inserts screenshot at correct size, irrespective of display scaling
 
