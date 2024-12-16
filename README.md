@@ -6,10 +6,13 @@ Doc_er is a tool for generating MATLAB toolbox documentation.  With Doc_er, you 
 * create MATLAB documentation index files from a Markdown table of contents
 
 ## Documentation
+
 [Browse](./tbx/docerdoc/index.md)
 
 ## License
+
 [MathWorks Limited License](./LICENSE)
 
 ## Project status
-:sunglasses: Storming
+
+Doc_er is in use at MathWorks for internal and consulting projects.  A public release is planned for 2025.
