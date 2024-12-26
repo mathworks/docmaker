@@ -1,7 +1,7 @@
 function plan = buildfile()
 %buildfile  Doc_er buildfile
 
-%   Copyright 2023-2024 The MathWorks, Inc.
+%  Copyright 2023-2024 The MathWorks, Inc.
 
 import matlab.buildtool.tasks.*
 
@@ -11,25 +11,44 @@ plan = buildplan( localfunctions() );
 % Add a task to identify code issues
 plan( "check" ) = CodeIssuesTask();
 
-% Add a task to run tests
-plan( "test" ) = TestTask();
-
-% Set up task dependencies
-plan( "package" ).Dependencies = ["check" "test" "doc"];
+% Set up task inputs and dependencies
+plan( "doc" ).Inputs = fullfile( plan.RootFolder, "tbx", "docerdoc" );
+plan( "doc" ).Dependencies = "check";
+plan( "package" ).Dependencies = "doc";
 
 % Set default task
 plan.DefaultTasks = "package";
 
 end % buildfile
 
-function docTask( ~ )
+function docTask( c )
 %docTask  Generate documentation
 
-doc = fullfile( fileparts( mfilename( "fullpath" ) ), "tbx", "docerdoc" );
-docerdelete( doc )
-docerconvert( fullfile( doc, "**/*.md" ) )
-docerrun( fullfile( doc, "**/*.html" ) )
-docerindex( doc )
+% Documentation folder
+d = c.Task.Inputs.Path;
+
+% Remove old documentation
+docerdelete( d )
+fprintf( 1, "** Deleted old doc\n" )
+
+% Convert Markdown to HTML
+docerconvert( fullfile( d, "**/*.md" ) )
+fprintf( 1, "** Converted Markdown doc to HTML\n" )
+
+% Temporarily override graphics defaults
+g = groot();
+st = get( g, "DefaultFigureWindowStyle" ); % capture default
+po = get( g, "DefaultFigurePosition" ); % capture default
+cl = onCleanup( @()set(g,"DefaultFigureWindowStyle",st,"DefaultFigurePosition",po) ); % reset defaults
+set( g, "DefaultFigureWindowStyle", "normal", "DefaultFigurePosition", [100 100 400 300] ) % override defaults
+
+% Run code and insert output
+docerrun( fullfile( d, "**/*.html" ) )
+fprintf( 1, "** Inserted MATLAB output into doc\n" )
+
+% Index documentation
+docerindex( d )
+fprintf( 1, "** Indexed doc\n" )
 
 end % docTask
 
@@ -39,7 +58,7 @@ function packageTask( c )
 % Toolbox short name
 n = "docer";
 
-% Environment
+% Root folder
 d = c.Plan.RootFolder;
 
 % Load and tweak metadata
