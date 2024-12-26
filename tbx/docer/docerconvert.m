@@ -75,6 +75,9 @@ end
 for ii = 1:numel( sCss )
     copyfile( fullfile( sCss(ii).folder, sCss(ii).name ), pRez )
     fprintf( 1, "[+] %s\n", fullfile( pRez, sCss(ii).name ) );
+    if strcmp( sCss(ii).folder, pTem ) && startsWith( sCss(ii).name, "github-markdown" )
+        copyfile( fullfile( sCss(ii).folder, "license" ), pRez )
+    end
 end
 fCss = reshape( fullfile( pRez, {sCss.name} ), size( sCss ) );
 
