@@ -69,6 +69,6 @@ fprintf( 1, "[+] %s\n", o.OutputFile );
 
 % Add license
 lic = fileread( fullfile( d, "LICENSE" ) );
-mlAddonSetLicense( char( o.OutputFile ), struct( "type", 'MLL', "text", lic ) );
+mlAddonSetLicense( char( o.OutputFile ), struct( "type", 'BSD', "text", lic ) );
 
 end % packageTask
