@@ -3,13 +3,11 @@ function plan = buildfile()
 
 %  Copyright 2023-2024 The MathWorks, Inc.
 
-import matlab.buildtool.tasks.*
-
 % Create a plan from task functions
 plan = buildplan( localfunctions() );
 
 % Add standard tasks
-plan( "clean" ) = CleanTask;
+plan( "clean" ) = matlab.buildtool.tasks.CleanTask;
 
 % Set up task inputs and dependencies
 plan( "doc" ).Inputs = fullfile( plan.RootFolder, "tbx", "docerdoc" );
