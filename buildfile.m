@@ -33,18 +33,14 @@ docerindex( doc )
 
 end % docTask
 
-function packageTask( ~ )
+function packageTask( c )
 %packageTask  Package toolbox
 
-% Define name
+% Toolbox short name
 n = "docer";
 
-% Check environment
-d = fileparts( mfilename( "fullpath" ) );
-p = matlab.project.currentProject();
-if isempty( p ) || p.RootFolder ~= d
-    error( "Run the release script from within its project at %s.", d )
-end
+% Environment
+d = c.Plan.RootFolder;
 
 % Load and tweak metadata
 s = jsondecode( fileread( fullfile( d, n + ".json" ) ) );
