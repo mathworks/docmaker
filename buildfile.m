@@ -8,8 +8,8 @@ import matlab.buildtool.tasks.*
 % Create a plan from task functions
 plan = buildplan( localfunctions() );
 
-% Add a task to identify code issues
-plan( "check" ) = CodeIssuesTask();
+% Add standard tasks
+plan( "clean" ) = CleanTask;
 
 % Set up task inputs and dependencies
 plan( "doc" ).Inputs = fullfile( plan.RootFolder, "tbx", "docerdoc" );
@@ -21,8 +21,31 @@ plan.DefaultTasks = "package";
 
 end % buildfile
 
+function checkTask( c )
+% Identify code and project issues
+
+% Check code
+t = matlab.buildtool.tasks.CodeIssuesTask( c.Plan.RootFolder, ...
+    "WarningThreshold", 0 );
+t.analyze( c )
+fprintf( 1, "** Code checks passed\n" )
+
+% Check project
+p = currentProject();
+p.updateDependencies()
+t = table( p.runChecks() );
+ok = t.Passed;
+if any( ~ok )
+    disp( t(~ok,:) )
+    error( "buildfile:Project", "Project check(s) failed." )
+else
+    fprintf( 1, "** Project checks passed\n" )
+end
+
+end % checkTask
+
 function docTask( c )
-%docTask  Generate documentation
+% Generate documentation
 
 % Documentation folder
 d = c.Task.Inputs.Path;
@@ -53,7 +76,7 @@ fprintf( 1, "** Indexed doc\n" )
 end % docTask
 
 function packageTask( c )
-%packageTask  Package toolbox
+% Package toolbox
 
 % Toolbox short name
 n = "docer";
