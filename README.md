@@ -15,4 +15,4 @@ Doc_er is a tool for generating MATLAB toolbox documentation.  With Doc_er, you 
 
 Doc_er is developed by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) at [MathWorks](https://www.mathworks.com/services/consulting.html).
 
-Doc_er is currently used internally at MathWorks, with a public release planned for Q1 2025.
+Doc_er is in use at MathWorks for internal and consulting projects.  A public release is planned for 2025.
