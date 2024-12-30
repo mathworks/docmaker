@@ -8,9 +8,11 @@ Convert Markdown documents to HTML
 
 Multiple documents may also be specified using `docerconvert(md1,md2,...)`.
 
-`docerconvert(...,"Stylesheets",css)` includes the stylesheet(s) `css`.  Doc_er stylesheets `github-markdown.css` and `matlaby.css` are included by default.
+`docerconvert(...,"Theme",t)` sets the theme `t`.  Available themes are `light`, `dark`, and `auto` (responsive, default).
 
-`docerconvert(...,"Scripts",js)` includes the script(s) `js`.  Doc_er script `copycode.js` is included by default.  Scripts are included at the end of the body in the order specified to ensure that the HTML content is loaded and rendered before the scripts run.  :test_tube:
+`docerconvert(...,"Stylesheets",css)` includes the stylesheet(s) `css`.  Doc_er stylesheets `matlaby.css` and `copycode.css` are always included.
+
+`docerconvert(...,"Scripts",js)` includes the script(s) `js`.  Doc_er script `copycode.js` is always included.  Scripts are included at the end of the body in the order specified to ensure that the HTML content is loaded and rendered before the scripts run.  :test_tube:
 
 `docerconvert(...,"Root",r)` publishes to the root folder `r`, placing stylesheets and scripts in the subfolder `resources`.  The root folder must be a common ancestor of the Markdown documents.  If not specified, the root folder is the lowest common ancestor.
 
@@ -19,6 +21,7 @@ Multiple documents may also be specified using `docerconvert(md1,md2,...)`.
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
 | `md`:arrow_right: | Markdown document(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
+| `t`:arrow_right: | Theme, `light`, `dark`, or `auto`; default is `auto` | string(s) | |
 | `css`:arrow_right: | CSS stylesheet(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | |
 | `js`:arrow_right: | JavaScript script(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | :test_tube: |
 | `r`:arrow_right: | root folder, as an absolute or relative path; default is the lowest common ancestor of `md` | string | |

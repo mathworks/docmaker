@@ -7,9 +7,11 @@ function varargout = docerconvert( sMd, options )
 %
 %   Multiple documents can also be specified as docerconvert(md1,md2,...).
 %
+%   docerconvert(...,"Theme",t) sets the theme t.  Available themes are
+%   "light", "dark", and "auto" (responsive, default).
+%
 %   docerconvert(...,"Stylesheets",css) includes the stylesheet(s) css.
-%   Stylesheets "github-markdown.css" and "matlaby.css" are included by
-%   default.
+%   Stylesheets "matlaby.css" and "copycode.css" are included by default.
 %
 %   docerconvert(...,"Scripts",js) includes the script(s) js.  Scripts are
 %   included at the end of the body in the order specified to ensure that
@@ -32,6 +34,7 @@ arguments ( Repeating )
 end
 
 arguments
+    options.Theme (1,1) string {mustBeMember(options.Theme,["light","dark","auto"])} = "auto"
     options.Stylesheets (1,:) string {mustBeFile}
     options.Scripts (1,:) string {mustBeFile}
     options.Root (1,1) string {mustBeFolder}
@@ -65,7 +68,13 @@ pRez = fullfile( pRoot, 'resources' );
 if ~isfolder( pRez ), mkdir( pRez ), end
 
 % Check and copy stylesheets
-sCss = docer.dir( fullfile( pTem, ["github-markdown.css" "matlaby.css" "copycode.css"] ) );
+switch options.Theme
+    case "auto"
+        nGmd = "github-markdown.css";
+    otherwise
+        nGmd = "github-markdown-" + options.Theme + ".css";
+end
+sCss = docer.dir( fullfile( pTem, [nGmd "matlaby.css" "copycode.css"] ) );
 if isfield( options, "Stylesheets" )
     sCss = docer.dir( sCss, options.Stylesheets );
     assert( all( docer.extensions( sCss ) == ".css" ), ...
@@ -75,10 +84,8 @@ end
 for ii = 1:numel( sCss )
     copyfile( fullfile( sCss(ii).folder, sCss(ii).name ), pRez )
     fprintf( 1, "[+] %s\n", fullfile( pRez, sCss(ii).name ) );
-    if strcmp( sCss(ii).folder, pTem ) && startsWith( sCss(ii).name, "github-markdown" )
-        copyfile( fullfile( sCss(ii).folder, "license" ), pRez )
-    end
 end
+copyfile( fullfile( pTem, "license" ), pRez )
 fCss = reshape( fullfile( pRez, {sCss.name} ), size( sCss ) );
 
 % Check and copy scripts

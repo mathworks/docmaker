@@ -24,6 +24,8 @@ function checkTask( c )
 
 % Check code
 t = matlab.buildtool.tasks.CodeIssuesTask( c.Plan.RootFolder, ...
+    "Configuration", "factory", ...
+    "IncludeSubfolders", true, ...
     "WarningThreshold", 0 );
 t.analyze( c )
 fprintf( 1, "** Code checks passed\n" )
@@ -35,7 +37,7 @@ t = table( p.runChecks() );
 ok = t.Passed;
 if any( ~ok )
     disp( t(~ok,:) )
-    error( "buildfile:Project", "Project check(s) failed." )
+    error( "build:Project", "Project check(s) failed." )
 else
     fprintf( 1, "** Project checks passed\n" )
 end
@@ -53,7 +55,7 @@ docerdelete( d )
 fprintf( 1, "** Deleted old doc\n" )
 
 % Convert Markdown to HTML
-docerconvert( fullfile( d, "**/*.md" ) )
+docerconvert( fullfile( d, "**/*.md" ), "Theme", "light" )
 fprintf( 1, "** Converted Markdown doc to HTML\n" )
 
 % Temporarily override graphics defaults

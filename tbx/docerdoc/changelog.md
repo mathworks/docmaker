@@ -1,5 +1,9 @@
 # Release notes
 
+## Version 0.5
+
+* Added theme support to `docerconvert`
+
 ## Version 0.4.1
 
 * `docerconvert` copies [third-party license](https://github.com/sindresorhus/github-markdown-css) into output
