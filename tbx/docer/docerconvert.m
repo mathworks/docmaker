@@ -68,7 +68,13 @@ pRez = fullfile( pRoot, 'resources' );
 if ~isfolder( pRez ), mkdir( pRez ), end
 
 % Check and copy stylesheets
-sCss = docer.dir( fullfile( pTem, ["github-markdown.css" "matlaby.css" "copycode.css"] ) );
+switch options.Theme
+    case "auto"
+        nGmd = "github-markdown.css";
+    otherwise
+        nGmd = "github-markdown-" + options.Theme + ".css";
+end
+sCss = docer.dir( fullfile( pTem, [nGmd "matlaby.css" "copycode.css"] ) );
 if isfield( options, "Stylesheets" )
     sCss = docer.dir( sCss, options.Stylesheets );
     assert( all( docer.extensions( sCss ) == ".css" ), ...
@@ -78,10 +84,8 @@ end
 for ii = 1:numel( sCss )
     copyfile( fullfile( sCss(ii).folder, sCss(ii).name ), pRez )
     fprintf( 1, "[+] %s\n", fullfile( pRez, sCss(ii).name ) );
-    if strcmp( sCss(ii).folder, pTem ) && startsWith( sCss(ii).name, "github-markdown" )
-        copyfile( fullfile( sCss(ii).folder, "license" ), pRez )
-    end
 end
+copyfile( fullfile( pTem, "license" ), pRez )
 fCss = reshape( fullfile( pRez, {sCss.name} ), size( sCss ) );
 
 % Check and copy scripts
