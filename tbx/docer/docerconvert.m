@@ -34,6 +34,7 @@ arguments ( Repeating )
 end
 
 arguments
+    options.Theme (1,1) string {mustBeMember(options.Theme,["light","dark","auto"])} = "auto"
     options.Stylesheets (1,:) string {mustBeFile}
     options.Scripts (1,:) string {mustBeFile}
     options.Root (1,1) string {mustBeFolder}
