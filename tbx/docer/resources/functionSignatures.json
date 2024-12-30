@@ -30,6 +30,15 @@
                 ]
             },
             {
+                "name": "Theme",
+                "kind": "namevalue",
+                "type": [
+                    "char",
+                    "choices={'auto','light','dark'}"
+                ],
+                "purpose": "Theme"
+            },
+            {
                 "name": "Stylesheets",
                 "kind": "namevalue",
                 "type": "file=*.css",
