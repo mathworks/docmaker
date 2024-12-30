@@ -7,9 +7,11 @@ function varargout = docerconvert( sMd, options )
 %
 %   Multiple documents can also be specified as docerconvert(md1,md2,...).
 %
+%   docerconvert(...,"Theme",t) sets the theme t.  Available themes are
+%   "light", "dark", and "auto" (responsive, default).
+%
 %   docerconvert(...,"Stylesheets",css) includes the stylesheet(s) css.
-%   Stylesheets "github-markdown.css" and "matlaby.css" are included by
-%   default.
+%   Stylesheets "matlaby.css" and "copycode.css" are included by default.
 %
 %   docerconvert(...,"Scripts",js) includes the script(s) js.  Scripts are
 %   included at the end of the body in the order specified to ensure that
