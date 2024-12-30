@@ -55,7 +55,7 @@ docerdelete( d )
 fprintf( 1, "** Deleted old doc\n" )
 
 % Convert Markdown to HTML
-docerconvert( fullfile( d, "**/*.md" ) )
+docerconvert( fullfile( d, "**/*.md" ), "Theme", "light" )
 fprintf( 1, "** Converted Markdown doc to HTML\n" )
 
 % Temporarily override graphics defaults
