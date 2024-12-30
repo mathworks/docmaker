@@ -11,12 +11,10 @@ function varargout = docerconvert( sMd, options )
 %   "light", "dark", and "auto" (responsive, default).
 %
 %   docerconvert(...,"Stylesheets",css) includes the stylesheet(s) css.
-%   Stylesheets "matlaby.css" and "copycode.css" are included by default.
 %
 %   docerconvert(...,"Scripts",js) includes the script(s) js.  Scripts are
 %   included at the end of the body in the order specified to ensure that
-%   the HTML content is loaded and rendered before the scripts run.  Script
-%   "copycode.js" is included by default.
+%   the HTML content is loaded and rendered before the scripts run.
 %
 %   docerconvert(...,"Root",r) publishes to the root folder r, placing
 %   stylesheets and scripts in the subfolder "resources".  The root folder
@@ -86,6 +84,7 @@ for ii = 1:numel( sCss )
     fprintf( 1, "[+] %s\n", fullfile( pRez, sCss(ii).name ) );
 end
 copyfile( fullfile( pTem, "license" ), pRez )
+fprintf( 1, "[+] %s\n", fullfile( pRez, "license" ) );
 fCss = reshape( fullfile( pRez, {sCss.name} ), size( sCss ) );
 
 % Check and copy scripts
