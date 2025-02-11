@@ -1,5 +1,10 @@
 # Release notes
 
+## Version 0.5.1
+
+* Changed token secret to `Doc_er GitHub token`
+* Documented token search order
+
 ## Version 0.5
 
 * Added theme support to `docerconvert`
