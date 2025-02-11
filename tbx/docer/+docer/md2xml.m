@@ -9,7 +9,7 @@ function doc = md2xml( md )
 %   * setSecret("GitHub API token"), or
 %   * setpref("docer","token",t)
 
-%   Copyright 2024 The MathWorks, Inc.
+%   Copyright 2024-2025 The MathWorks, Inc.
 
 arguments
     md (1,1) string
@@ -22,7 +22,11 @@ request = addFields( request, "Content-Type", "text/plain" );
 if ~isempty( getenv( "DOCER_GITHUB_TOKEN" ) )
     request = addFields( request, "Authorization", ...
         "Bearer " + getenv("DOCER_GITHUB_TOKEN"));
+elseif ~verLessThan( "MATLAB", "24.1" ) && isSecret( "Doc_er GitHub token" ) %#ok<VERLESSMATLAB>
+    request = addFields( request, "Authorization", ...
+        "Bearer " + getSecret( "Doc_er GitHub token" ) );
 elseif ~verLessThan( "MATLAB", "24.1" ) && isSecret( "Doc'er GitHub token" ) %#ok<VERLESSMATLAB>
+    warning( "docer:Deprecated", "Please use the secret name ""Doc_er GitHub token""." )
     request = addFields( request, "Authorization", ...
         "Bearer " + getSecret( "Doc'er GitHub token" ) );
 elseif ispref( "docer", "token" )
