@@ -9,7 +9,7 @@ function doc = md2xml( md )
 %   * setSecret("GitHub API token"), or
 %   * setpref("docer","token",t)
 
-%   Copyright 2024 The MathWorks, Inc.
+%   Copyright 2024-2025 The MathWorks, Inc.
 
 arguments
     md (1,1) string
