@@ -7,7 +7,7 @@ With Doc_er, you can:
 * run MATLAB code blocks in documents and include textual and graphical output
 * create MATLAB documentation index files from a Markdown table of contents
 
-Doc_er ships with [documentation](./tbx/docerdoc/index.md) including [release notes](./tbx/docerdoc/changelog.md).
+Doc_er ships with [documentation](./tbx/docerdoc/index.md), including [release notes](./tbx/docerdoc/changelog.md) that detail new features, bug fixes, and compatibility considerations for each version.
 
 ## Getting started
 
