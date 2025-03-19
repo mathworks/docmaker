@@ -51,11 +51,11 @@ function docTask( c )
 d = c.Task.Inputs.Path;
 
 % Remove old documentation
-docstardelete( d )
+docdelete( d )
 fprintf( 1, "** Deleted old doc\n" )
 
 % Convert Markdown to HTML
-docstarconvert( fullfile( d, "**/*.md" ), "Theme", "light" )
+docconvert( fullfile( d, "**/*.md" ), "Theme", "light" )
 fprintf( 1, "** Converted Markdown doc to HTML\n" )
 
 % Temporarily override graphics defaults
@@ -66,11 +66,11 @@ cl = onCleanup( @()set(g,"DefaultFigureWindowStyle",st,"DefaultFigurePosition",p
 set( g, "DefaultFigureWindowStyle", "normal", "DefaultFigurePosition", [100 100 400 300] ) % override defaults
 
 % Run code and insert output
-docstarrun( fullfile( d, "**/*.html" ) )
+docrun( fullfile( d, "**/*.html" ) )
 fprintf( 1, "** Inserted MATLAB output into doc\n" )
 
 % Index documentation
-docstarindex( d )
+docindex( d )
 fprintf( 1, "** Indexed doc\n" )
 
 end % docTask

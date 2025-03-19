@@ -1,4 +1,4 @@
-function varargout = docstarconvert( sMd, options )
+function varargout = docconvert( sMd, options )
 %docstarconvert  Convert Markdown documents to HTML
 %
 %   docstarconvert(md) converts the Markdown document(s) md to HTML.  md can

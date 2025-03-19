@@ -1,4 +1,4 @@
-function varargout = docstardelete( pRoot )
+function varargout = docdelete( pRoot )
 %docstardelete  Delete DocStar artifacts
 %
 %   docstardelete(d) deletes the DocStar artifacts in the folder d:

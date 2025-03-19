@@ -1,4 +1,4 @@
-function varargout = docstarrun( sHtml, options )
+function varargout = docrun( sHtml, options )
 %docstarrun  Run MATLAB code in HTML documents and insert output
 %
 %   docstarrun(html) runs MATLAB code blocks in the HTML document(s) html,

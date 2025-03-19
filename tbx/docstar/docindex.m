@@ -1,4 +1,4 @@
-function varargout = docstarindex( pRoot )
+function varargout = docindex( pRoot )
 %docstarindex  Create info.xml and helptoc.xml from helptoc.md
 %
 %   docstarindex(d) creates documentation index files "info.xml" and
