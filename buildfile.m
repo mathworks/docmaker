@@ -1,5 +1,5 @@
 function plan = buildfile()
-%buildfile  Doc_er buildfile
+%buildfile  DocStar buildfile
 
 %  Copyright 2023-2024 The MathWorks, Inc.
 
@@ -10,7 +10,7 @@ plan = buildplan( localfunctions() );
 plan( "clean" ) = matlab.buildtool.tasks.CleanTask;
 
 % Set up task inputs and dependencies
-plan( "doc" ).Inputs = fullfile( plan.RootFolder, "tbx", "docerdoc" );
+plan( "doc" ).Inputs = fullfile( plan.RootFolder, "tbx", "docstardoc" );
 plan( "doc" ).Dependencies = "check";
 plan( "package" ).Dependencies = "doc";
 
@@ -51,11 +51,11 @@ function docTask( c )
 d = c.Task.Inputs.Path;
 
 % Remove old documentation
-docerdelete( d )
+docstardelete( d )
 fprintf( 1, "** Deleted old doc\n" )
 
 % Convert Markdown to HTML
-docerconvert( fullfile( d, "**/*.md" ), "Theme", "light" )
+docstarconvert( fullfile( d, "**/*.md" ), "Theme", "light" )
 fprintf( 1, "** Converted Markdown doc to HTML\n" )
 
 % Temporarily override graphics defaults
@@ -66,11 +66,11 @@ cl = onCleanup( @()set(g,"DefaultFigureWindowStyle",st,"DefaultFigurePosition",p
 set( g, "DefaultFigureWindowStyle", "normal", "DefaultFigurePosition", [100 100 400 300] ) % override defaults
 
 % Run code and insert output
-docerrun( fullfile( d, "**/*.html" ) )
+docstarrun( fullfile( d, "**/*.html" ) )
 fprintf( 1, "** Inserted MATLAB output into doc\n" )
 
 % Index documentation
-docerindex( d )
+docstarindex( d )
 fprintf( 1, "** Indexed doc\n" )
 
 end % docTask
@@ -79,7 +79,7 @@ function packageTask( c )
 % Package toolbox
 
 % Toolbox short name
-n = "docer";
+n = "docstar";
 
 % Root folder
 d = c.Plan.RootFolder;

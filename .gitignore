@@ -1,10 +1,10 @@
 # List of untracked files to ignore
 .buildtool
-tbx/docerdoc/**/*.html
-tbx/docerdoc/**/*.png
-tbx/docerdoc/helptoc.xml
-tbx/docerdoc/info.xml
-tbx/docerdoc/custom_toolbox.json
-tbx/docerdoc/resources
-tbx/docerdoc/helpsearch-v*
+tbx/docstardoc/**/*.html
+tbx/docstardoc/**/*.png
+tbx/docstardoc/helptoc.xml
+tbx/docstardoc/info.xml
+tbx/docstardoc/custom_toolbox.json
+tbx/docstardoc/resources
+tbx/docstardoc/helpsearch-v*
 releases/*.mltbx

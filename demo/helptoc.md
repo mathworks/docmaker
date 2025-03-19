@@ -1,4 +1,4 @@
-# Doc_er
+# DocStar
 
 * [A](a.md)
 * [B](b.md)
