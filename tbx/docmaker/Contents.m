@@ -1,4 +1,4 @@
-% MATLAB DocMaker
+% DocMaker
 % Version 1.0 (R2024b) 12-Sep-2025
 %
 % docconvert - convert Markdown documents to HTML
