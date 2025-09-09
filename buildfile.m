@@ -89,9 +89,10 @@ s = jsondecode( fileread( fullfile( d, n + ".json" ) ) );
 s.ToolboxMatlabPath = fullfile( d, s.ToolboxMatlabPath );
 s.ToolboxFolder = fullfile( d, s.ToolboxFolder );
 s.ToolboxImageFile = fullfile( d, s.ToolboxImageFile );
-v = feval( @(s)s(1).Version, ver( n ) ); %#ok<FVAL>
-s.ToolboxVersion = v;
-s.OutputFile = fullfile( d, "releases", s.ToolboxName + " " + v + ".mltbx" );
+v = feval( @(s)s(1), ver( n ) ); %#ok<FVAL>
+s.ToolboxName = v.Name;
+s.ToolboxVersion = v.Version;
+s.OutputFile = fullfile( d, "releases", v.Name + " " + v.Version + ".mltbx" );
 
 % Create options object
 f = s.ToolboxFolder; % mandatory
