@@ -7,7 +7,7 @@
 
 ## Version 0.5.1
 
-* Changed token secret to `DocMaker GitHub token`
+* Changed token secret to `Doc_er GitHub token`
 * Documented token search order
 
 ## Version 0.5
@@ -20,11 +20,11 @@
 
 ## Version 0.4
 
-* `docrun` inserts screenshot at correct size, irrespective of display scaling
+* `docerrun` inserts screenshot at correct size, irrespective of display scaling
 
 ## Version 0.3.1
 
-* `docrun` works when console output contains `<`
+* `docerrun` works when console output contains `<`
 
 ## Version 0.3
 
@@ -36,7 +36,7 @@
 
 Initial limited release within MathWorks :tada:.
 
-Core functionality is in place: `docerconvert`, `docrun`, `docerindex`, and `docerdelete`.  This version of DocMaker uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) to convert Markdown to HTML.
+Core functionality is in place: `docerconvert`, `docerrun`, `docerindex`, and `docerdelete`.  This version of Doc_er uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) to convert Markdown to HTML.
 
 ___
 
