@@ -1,6 +1,6 @@
 # Release notes
 
-## Version 1.0
+## Version 0.6
 
 * Changed name from "Doc_er" to "DocMaker"
 * Changed function names from `docer...` to `doc...`
