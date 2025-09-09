@@ -16,12 +16,6 @@ DocMaker replaces a previous MathWorks internal documentation tool, *DocTools*, 
 
 DocMaker was developed to build documentation for [GUI Layout Toolbox](http://www.mathworks.com/matlabcentral/fileexchange/47982-gui-layout-toolbox), [Package Jockey](https://insidelabs-git.mathworks.com/dsampson/pj), and [DocMaker](https://insidelabs-git.mathworks.com/dsampson/docmaker) itself!  The features of DocMaker reflect the needs of these projects.
 
-## DocMaker (disambiguation)
-
-The "doc" in "DocMaker" stands for "documentation".
-
-DocMaker is pronounced the same as, but should not be confused with, [Docker](https://docs.docker.com/) :whale:.
-
 ___
 
 [home](index.md) :house: | [convert](docconvert.md) :arrow_right: | [run](docrun.md) :runner: | [index](docindex.md) :scroll: | [delete](docdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hatching_chick: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2025
