@@ -10,7 +10,7 @@ plan = buildplan( localfunctions() );
 plan( "clean" ) = matlab.buildtool.tasks.CleanTask;
 
 % Set up task inputs and dependencies
-plan( "doc" ).Inputs = fullfile( plan.RootFolder, "tbx", "docstardoc" );
+plan( "doc" ).Inputs = fullfile( plan.RootFolder, "tbx", "docmakerdoc" );
 plan( "doc" ).Dependencies = "check";
 plan( "package" ).Dependencies = "doc";
 
@@ -79,7 +79,7 @@ function packageTask( c )
 % Package toolbox
 
 % Toolbox short name
-n = "docstar";
+n = "docmaker";
 
 % Root folder
 d = c.Plan.RootFolder;
