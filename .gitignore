@@ -1,10 +1,10 @@
 # List of untracked files to ignore
 .buildtool
-tbx/docstardoc/**/*.html
-tbx/docstardoc/**/*.png
-tbx/docstardoc/helptoc.xml
-tbx/docstardoc/info.xml
-tbx/docstardoc/custom_toolbox.json
-tbx/docstardoc/resources
-tbx/docstardoc/helpsearch-v*
+tbx/docmakerdoc/**/*.html
+tbx/docmakerdoc/**/*.png
+tbx/docmakerdoc/helptoc.xml
+tbx/docmakerdoc/info.xml
+tbx/docmakerdoc/custom_toolbox.json
+tbx/docmakerdoc/resources
+tbx/docmakerdoc/helpsearch-v*
 releases/*.mltbx
