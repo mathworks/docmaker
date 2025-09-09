@@ -1,7 +1,7 @@
 function plan = buildfile()
-%buildfile  DocStar buildfile
+%buildfile  DocMaker buildfile
 
-%  Copyright 2023-2024 The MathWorks, Inc.
+%  Copyright 2023-2025 The MathWorks, Inc.
 
 % Create a plan from task functions
 plan = buildplan( localfunctions() );
