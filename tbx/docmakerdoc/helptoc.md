@@ -1,4 +1,4 @@
-# MATLAB&#174; DocMaker
+# MATLAB DocMaker
 
 * [DocMaker](index.md)
   * [Release notes](changelog.md)
