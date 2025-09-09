@@ -6,7 +6,7 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
     %
     %   w = docmaker.Workspace() creates a private workspace.
 
-    %   Copyright 2007-2024 The MathWorks, Inc.
+    %   Copyright 2007-2025 The MathWorks, Inc.
 
     properties ( Access = private )
         Data % workspace data
@@ -121,13 +121,13 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
                     lines = strsplit( string( tree2str( t ) ), newline() );
                     lines(strlength( lines )==0) = []; % remove empty
                     if numel( lines ) < 1
-                        error( "docstar:InvalidArgument", ...
+                        error( "docmaker:InvalidArgument", ...
                             "Cannot return output(s) from an empty block." )
                     elseif numel( lines ) > 1
-                        error( "docstar:InvalidArgument", ...
+                        error( "docmaker:InvalidArgument", ...
                             "Cannot return output(s) from a multiline block." )
                     elseif any( iskind( t, "EQUALS" ) )
-                        error( "docstar:InvalidArgument", ...
+                        error( "docmaker:InvalidArgument", ...
                             "Cannot return output(s) from an assignment." )
                     end
                 end
@@ -315,7 +315,7 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
             % Unpack
             assert( ~any( ismember( db16a6c786.Data.listVariables(), ...
                 ["db16a6c786", "db2ccd973c"] ) ), ...
-                "docstar:IllegalOperation", "%s", ...
+                "docmaker:IllegalOperation", "%s", ...
                 "Cannot debug workspace with reserved variable name(s)." )
             for db2ccd973c = db16a6c786.Data.listVariables()'
                 eval( "db2ccd973c = db16a6c786.Store.getValue(db2ccd973c);" ) %#ok<EVLCS>
@@ -329,7 +329,7 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
 
             % Repack
             assert( ~exist( "db16a6c786", "var" ) && ~exist( "db2ccd973c", "var" ), ...
-                "docstar:IllegalOperation", "%s", ...
+                "docmaker:IllegalOperation", "%s", ...
                 "Cannot commit workspace with reserved variable name(s)." )
             db16a6c786 = string( who() ); % variable names
             db16a6c786 = db16a6c786(:);

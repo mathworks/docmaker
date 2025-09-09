@@ -25,9 +25,9 @@ DocMaker is distributed as a MATLAB toolbox file (`.mltbx`).  See the MATLAB doc
 
 DocMaker uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) to convert from Markdown to HTML.  Requests to this service are rate limited, and [authenticated requests](https://docs.github.com/en/rest/authentication/authenticating-to-the-rest-api) get a higher limit.  To authenticate, [generate a GitHub access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) (with no permissions), and register the token with MATLAB. MATLAB looks for the token:
 
-1. first, in the [ environment variable](https://www.mathworks.com/help/matlab/ref/setenv.html) `DOCSTAR_GITHUB_TOKEN`
+1. first, in the [environment variable](https://www.mathworks.com/help/matlab/ref/setenv.html) `DOCMAKER_GITHUB_TOKEN`
 ```matlab
-setenv("DOCSTAR_GITHUB_TOKEN",token)
+setenv("DOCMAKER_GITHUB_TOKEN",token)
 ```
 2. then, in the [secret](https://www.mathworks.com/help/matlab/ref/setsecret.html) `DocMaker GitHub token`
 ```matlab

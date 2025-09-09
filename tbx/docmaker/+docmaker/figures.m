@@ -4,7 +4,7 @@ function f = figures()
 %   f = docmaker.figures() returns all current figures in ascending number
 %   order.
 
-%   Copyright 2024 The MathWorks, Inc.
+%   Copyright 2024-2025 The MathWorks, Inc.
 
 f = findall( groot(), "-Depth", 1, "Type", "figure" ); % all figures
 cn = get( f, {"Number"} ); % cell array of figure numbers

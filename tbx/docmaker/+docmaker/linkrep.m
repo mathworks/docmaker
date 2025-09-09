@@ -7,7 +7,7 @@ function linkrep( doc, old, new )
 %   For example, replace Markdown links with HTML links using:
 %      docmaker.linkrep(x,".md",".html")
 
-%   Copyright 2024 The MathWorks, Inc.
+%   Copyright 2024-2025 The MathWorks, Inc.
 
 arguments
     doc (1,1) matlab.io.xml.dom.Document

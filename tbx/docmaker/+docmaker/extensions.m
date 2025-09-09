@@ -6,7 +6,7 @@ function x = extensions( s )
 %
 %   See also: docmaker.dir, fileparts
 
-%   Copyright 2024 The MathWorks, Inc.
+%   Copyright 2024-2025 The MathWorks, Inc.
 
 x = cell( size( s ) ); % preallocate
 for ii = 1:numel( s )

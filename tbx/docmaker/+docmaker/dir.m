@@ -20,7 +20,7 @@ function s = dir( p, varargin )
 %
 %   See also: dir
 
-%   Copyright 2024 The MathWorks, Inc.
+%   Copyright 2024-2025 The MathWorks, Inc.
 
 % Handle degenerate case of no inputs
 if nargin == 0

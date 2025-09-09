@@ -5,7 +5,7 @@ function x = capture( fig )
 %
 %   See also: getframe
 
-%   Copyright 2024 The MathWorks, Inc.
+%   Copyright 2024-2025 The MathWorks, Inc.
 
 arguments
     fig (1,1) matlab.ui.Figure

@@ -6,8 +6,8 @@ function doc = md2xml( md )
 %
 %   Authenticated requests get a higher API rate limit.  To authenticate,
 %   set the secret or preference using:
-%   * setSecret("GitHub API token"), or
-%   * setpref("docstar","token",t)
+%   * setSecret("DocMaker GitHub token"), or
+%   * setpref("docmaker","token",t)
 
 %   Copyright 2024-2025 The MathWorks, Inc.
 
@@ -19,19 +19,19 @@ end
 method = matlab.net.http.RequestMethod.POST;
 request = matlab.net.http.RequestMessage( method, [], md );
 request = addFields( request, "Content-Type", "text/plain" );
-if ~isempty( getenv( "DOCER_GITHUB_TOKEN" ) )
+if ~isempty( getenv( "DOCMAKER_GITHUB_TOKEN" ) )
     request = addFields( request, "Authorization", ...
-        "Bearer " + getenv("DOCER_GITHUB_TOKEN"));
-elseif ~verLessThan( "MATLAB", "24.1" ) && isSecret( "DocStar GitHub token" ) %#ok<VERLESSMATLAB>
+        "Bearer " + getenv( "DOCMAKER_GITHUB_TOKEN" ) );
+elseif ~verLessThan( "MATLAB", "24.1" ) && isSecret( "DocMaker GitHub token" ) %#ok<VERLESSMATLAB>
     request = addFields( request, "Authorization", ...
-        "Bearer " + getSecret( "DocStar GitHub token" ) );
+        "Bearer " + getSecret( "DocMaker GitHub token" ) );
 elseif ~verLessThan( "MATLAB", "24.1" ) && isSecret( "Doc'er GitHub token" ) %#ok<VERLESSMATLAB>
-    warning( "docstar:Deprecated", "Please use the secret name ""DocStar GitHub token""." )
+    warning( "docmaker:Deprecated", "Please use the secret name ""DocMaker GitHub token""." )
     request = addFields( request, "Authorization", ...
         "Bearer " + getSecret( "Doc'er GitHub token" ) );
-elseif ispref( "docstar", "token" )
+elseif ispref( "docmaker", "token" )
     request = addFields( request, "Authorization", ...
-        "Bearer " + getpref( "docstar", "token" ) );
+        "Bearer " + getpref( "docmaker", "token" ) );
 end
 uri = matlab.net.URI( "https://api.github.com/markdown/raw" );
 response = request.send( uri );
@@ -42,7 +42,7 @@ switch response.StatusCode
         xml = response.Body.Data;
         xml = strtrim( xml );
     otherwise
-        throw( MException( "docstar:UnhandledError", "[%s] %s", ...
+        throw( MException( "docmaker:UnhandledError", "[%s] %s", ...
             string( response.StatusLine ), response.Body.Data.message ) )
 end
 
