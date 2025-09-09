@@ -1,31 +1,31 @@
 function varargout = docconvert( sMd, options )
-%docstarconvert  Convert Markdown documents to HTML
+%docconvert  Convert Markdown documents to HTML
 %
-%   docstarconvert(md) converts the Markdown document(s) md to HTML.  md can
-%   be a char or string including wildcards, a cellstr or string array, or
-%   a dir struct.
+%   docconvert(md) converts the Markdown document(s) md to HTML.  md can be
+%   a char or string including wildcards, a cellstr or string array, or a
+%   dir struct.
 %
-%   Multiple documents can also be specified as docstarconvert(md1,md2,...).
+%   Multiple documents can also be specified as docconvert(md1,md2,...).
 %
-%   docstarconvert(...,"Theme",t) sets the theme t.  Available themes are
+%   docconvert(...,"Theme",t) sets the theme t.  Available themes are
 %   "light", "dark", and "auto" (responsive, default).
 %
-%   docstarconvert(...,"Stylesheets",css) includes the stylesheet(s) css.
+%   docconvert(...,"Stylesheets",css) includes the stylesheet(s) css.
 %
-%   docstarconvert(...,"Scripts",js) includes the script(s) js.  Scripts are
+%   docconvert(...,"Scripts",js) includes the script(s) js.  Scripts are
 %   included at the end of the body in the order specified to ensure that
 %   the HTML content is loaded and rendered before the scripts run.
 %
-%   docstarconvert(...,"Root",r) publishes to the root folder r, placing
+%   docconvert(...,"Root",r) publishes to the root folder r, placing
 %   stylesheets and scripts in the subfolder "resources".  The root folder
 %   must be a common ancestor of the Markdown documents.  If not specified,
 %   the root folder is the lowest common ancestor.
 %
-%   files = docstarconvert(...) returns the names of the files created.
+%   files = docconvert(...) returns the names of the files created.
 %
-%   See also: docstarindex, docstarrun, docstardelete
+%   See also: docindex, docrun, docdelete
 
-%   Copyright 2020-2024 The MathWorks, Inc.
+%   Copyright 2020-2025 The MathWorks, Inc.
 
 arguments ( Repeating )
     sMd
@@ -44,7 +44,7 @@ oFiles = strings( 0, 1 );
 % Check documents
 sMd = docmaker.dir( sMd{:} );
 assert( all( docmaker.extensions( sMd ) == ".md" ), ...
-    "docstar:InvalidArgument", ...
+    "docmaker:InvalidArgument", ...
     "Markdown files must all have extension .md." )
 if isempty( sMd ), return, end
 
@@ -54,7 +54,7 @@ if isfield( options, "Root" )
     sRoot = dir( options.Root );
     pRoot = sRoot(1).folder; % absolute path
     assert( isequal( superfolder( pRoot, pMd{:} ), pRoot ), ...
-        "docstar:InvalidArgument", ...
+        "docmaker:InvalidArgument", ...
         "Markdown files must be under folder %s.", pRoot )
 else
     pRoot = superfolder( pMd{:} );
@@ -76,7 +76,7 @@ sCss = docmaker.dir( fullfile( pTem, [nGmd "matlaby.css" "copycode.css"] ) );
 if isfield( options, "Stylesheets" )
     sCss = docmaker.dir( sCss, options.Stylesheets );
     assert( all( docmaker.extensions( sCss ) == ".css" ), ...
-        "docstar:InvalidArgument", ...
+        "docmaker:InvalidArgument", ...
         "Stylesheets must all have extension .css." )
 end
 for ii = 1:numel( sCss )
@@ -92,7 +92,7 @@ sJs = docmaker.dir( fullfile( pTem, "copycode.js" ) );
 if isfield( options, "Scripts" )
     sJs = docmaker.dir( options.Scripts );
     assert( all( docmaker.extensions( sJs ) == ".js" ), ...
-        "docstar:InvalidArgument", ...
+        "docmaker:InvalidArgument", ...
         "Scripts must all have extension .js." )
 end
 for ii = 1:numel( sJs )
@@ -120,7 +120,7 @@ if nargout > 0
     varargout{1} = oFiles;
 end
 
-end % docstarconvert
+end % docconvert
 
 function doc = convert( fMd, fCss, fJs )
 %convert  Convert Markdown document to HTML with stylesheets and scripts
@@ -148,7 +148,7 @@ appendChild( root, head );
 
 % Add generator
 generator = createElement( doc, "meta" );
-v = ver( "docstar" );
+v = ver( "docmaker" );
 generator.setAttribute( "name", "generator" );
 generator.setAttribute( "content", "MATLAB " + matlabRelease().Release + ...
     " with " + v(1).Name + " " + v(1).Version );
@@ -223,10 +223,10 @@ function r = relpath( d, f )
 %   absolute or relative (with respect to the current folder) paths.
 
 % Canonicalize
-assert( isfolder( d ), "docstar:NotFound", "Folder ""%s"" not found.", d )
+assert( isfolder( d ), "docmaker:NotFound", "Folder ""%s"" not found.", d )
 sd = dir( d );
 pd = string( sd(1).folder ); % first entry is "."
-assert( isfile( f ), "docstar:NotFound", "File ""%s"" not found.", f )
+assert( isfile( f ), "docmaker:NotFound", "File ""%s"" not found.", f )
 sf = dir( f );
 pf = string( sf(1).folder ); % single matching entry
 nf = string( sf(1).name ); % single matching entry
@@ -263,7 +263,7 @@ dd = string( varargin );
 % Canonicalize using dir
 for ii = 1:numel( dd )
     d = dd(ii);
-    assert( isfolder( d ), "docstar:NotFound", "Folder ""%s"" not found.", d )
+    assert( isfolder( d ), "docmaker:NotFound", "Folder ""%s"" not found.", d )
     sd = dir( d );
     dd(ii) = sd(1).folder; % first entry is "."
 end
