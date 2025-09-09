@@ -1,14 +1,14 @@
-# DocStar
+# DocMaker
 
-* [DocStar](index.md)
+* [DocMaker](index.md)
   * [Release notes](changelog.md)
   * [Function reference](api.md)
-    * [docstarconvert](docstarconvert.md)
-    * [docstarrun](docstarrun.md)
-    * [docstarindex](docstarindex.md)
-    * [docstardelete](docstardelete.md)
-    * [docstar.Workspace](workspace.md)
-  * [About DocStar](about.md)
+    * [docconvert](docconvert.md)
+    * [docrun](docrun.md)
+    * [docindex](docindex.md)
+    * [docdelete](docdelete.md)
+    * [docmaker.Workspace](workspace.md)
+  * [About DocMaker](about.md)
   * [Licenses](license.md)
 
 ___

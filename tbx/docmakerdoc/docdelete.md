@@ -1,12 +1,12 @@
-# docstardelete :recycle:
+# docdelete :recycle:
 
-Delete DocStar artifacts
+Delete DocMaker artifacts
 
 ## Syntax
 
-`docstardelete(d)` deletes DocStar artifacts in the folder `d`.
+`docdelete(d)` deletes DocMaker artifacts in the folder `d`.
 
-`[files,folders] = docstardelete(...)` returns the names of the files and folders deleted.
+`[files,folders] = docdelete(...)` returns the names of the files and folders deleted.
 
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
@@ -17,12 +17,12 @@ Delete DocStar artifacts
 ## Examples
 
 ```matlab
-docstardelete("mickey/goofy") 
+docdelete("mickey/goofy") 
 ```
 deletes artifacts in the folder `mickey/goofy`.  Note that this path is *relative*.
 
 ```matlab
-docstarconvert("C:\daisy\mickey\goofy") 
+docconvert("C:\daisy\mickey\goofy") 
 ```
 also deletes artifacts, this time specified using an *absolute* path.
 
@@ -36,4 +36,4 @@ The deletion consists of 4 steps:
 
 ___
 
-[home](index.md) :house: | [convert](docstarconvert.md) :arrow_right: | [run](docstarrun.md) :runner: | [index](docstarindex.md) :scroll: | [delete](docstardelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hatching_chick: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2025
+[home](index.md) :house: | [convert](docconvert.md) :arrow_right: | [run](docrun.md) :runner: | [index](docindex.md) :scroll: | [delete](docdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hatching_chick: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2025

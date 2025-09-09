@@ -1,24 +1,24 @@
-# docstar.Workspace :construction_worker:
+# docmaker.Workspace :construction_worker:
 
 Private workspace for assigning variables and evaluating expressions
 
 ## Properties
 
-`docstar.Workspace` has no public properties.
+`docmaker.Workspace` has no public properties.
 
 ## Methods
 
 ### Creation
 
-`w = docstar.Workspace()` creates a new, empty workspace `w`.
+`w = docmaker.Workspace()` creates a new, empty workspace `w`.
 
-`w = docstar.Workspace(n1,v1,n2,v2,...)` creates a workspace `w`, and assigns variable `n1` to value `v1`, variable `n2` to value `v2`, etc.
+`w = docmaker.Workspace(n1,v1,n2,v2,...)` creates a workspace `w`, and assigns variable `n1` to value `v1`, variable `n2` to value `v2`, etc.
 
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
 | `n`:arrow_right: | variable name(s) | string(s) | |
 | `v`:arrow_right: | variable value(s) | any | |
-| :arrow_right:`w` | workspace | `docstar.Workspace` | |
+| :arrow_right:`w` | workspace | `docmaker.Workspace` | |
 
 ### Assignment
 
@@ -28,7 +28,7 @@ Private workspace for assigning variables and evaluating expressions
 
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
-| `w`:arrow_right: | workspace | `docstar.Workspace` | yes |
+| `w`:arrow_right: | workspace | `docmaker.Workspace` | yes |
 | `n`:arrow_right: | variable name(s) | string(s) | |
 | `v`:arrow_right: | variable value(s) | any | |
 
@@ -44,7 +44,7 @@ Private workspace for assigning variables and evaluating expressions
 
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
-| `w`:arrow_right: | workspace | `docstar.Workspace` | yes |
+| `w`:arrow_right: | workspace | `docmaker.Workspace` | yes |
 | `s`:arrow_right: | statement(s) | string | yes |
 | :arrow_right:`c` | command window output | string | |
 | :arrow_right:`o` | output(s) | any | |
@@ -55,7 +55,7 @@ Private workspace for assigning variables and evaluating expressions
 
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
-| `w`:arrow_right: | workspace | `docstar.Workspace` | yes |
+| `w`:arrow_right: | workspace | `docmaker.Workspace` | yes |
 | `n`:arrow_right: | variable name(s) | string(s) | |
 
 ### Loading and saving
@@ -70,7 +70,7 @@ Private workspace for assigning variables and evaluating expressions
 
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
-| `w`:arrow_right: | workspace | `docstar.Workspace` | yes |
+| `w`:arrow_right: | workspace | `docmaker.Workspace` | yes |
 | `f`:arrow_right: | filename | string | yes |
 | `n`:arrow_right: | variable name(s) | string(s) | |
 
@@ -81,7 +81,7 @@ Private workspace for assigning variables and evaluating expressions
 Create a workspace, assign some variables, and evaluate an expression:
 
 ```matlab
-w = docstar.Workspace("a",2,"b",3);
+w = docmaker.Workspace("a",2,"b",3);
 evalin(w,"c=a+b;")
 w
 ```
@@ -113,7 +113,7 @@ evalinc(w,"e=a+b*c")
 Create a workspace, and assign some variables:
 
 ```matlab
-w1 = docstar.Workspace("a",-1,"b","mickey")
+w1 = docmaker.Workspace("a",-1,"b","mickey")
 ```
 
 Save the workspace contents to a `.mat` file:
@@ -126,7 +126,7 @@ save(w1,f)
 Create a second workspace, and assign some variables:
 
 ```matlab
-w2 = docstar.Workspace("b",2,"c","pluto")
+w2 = docmaker.Workspace("b",2,"c","pluto")
 ```
 
 Load the contents of the first workspace into the second:
@@ -138,10 +138,10 @@ w2
 
 ## Details
 
-`docstar.Workspace` extends [`assignin`](https://www.mathworks.com/help/matlab/ref/assignin.html) and [`evalin`](https://www.mathworks.com/help/matlab/ref/evalin.html) from `base` and `caller` to workspace *objects*.  `docstar.Workspace` also adds `evalinc` -- "`evalin` with capture".  `evalin` is to `evalinc` as [`eval`](https://www.mathworks.com/help/matlab/ref/eval.html) is to [`evalc`](https://www.mathworks.com/help/matlab/ref/evalc.html).
+`docmaker.Workspace` extends [`assignin`](https://www.mathworks.com/help/matlab/ref/assignin.html) and [`evalin`](https://www.mathworks.com/help/matlab/ref/evalin.html) from `base` and `caller` to workspace *objects*.  `docmaker.Workspace` also adds `evalinc` -- "`evalin` with capture".  `evalin` is to `evalinc` as [`eval`](https://www.mathworks.com/help/matlab/ref/eval.html) is to [`evalc`](https://www.mathworks.com/help/matlab/ref/evalc.html).
 
-`docstar.Workspace` was previously a standalone implementation, first implemented 20 years ago, but now uses `matlab.lang.internal.WorkspaceData` :heart:.
+`docmaker.Workspace` was previously a standalone implementation, first implemented 20 years ago, but now uses `matlab.lang.internal.WorkspaceData` :heart:.
 
 ___
 
-[home](index.md) :house: | [convert](docstarconvert.md) :arrow_right: | [run](docstarrun.md) :runner: | [index](docstarindex.md) :scroll: | [delete](docstardelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hatching_chick: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2025
+[home](index.md) :house: | [convert](docconvert.md) :arrow_right: | [run](docrun.md) :runner: | [index](docindex.md) :scroll: | [delete](docdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hatching_chick: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2025

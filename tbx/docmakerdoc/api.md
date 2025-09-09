@@ -1,10 +1,10 @@
 # Function reference :hatching_chick:
 
-* [docstarconvert](docstarconvert.md) :arrow_right: - convert Markdown documents to HTML
-* [docstarrun](docstarrun.md) :runner: - run MATLAB scripts and save generated figures to image files
-* [docstarindex](docstarindex.md) :scroll: - create documentation index files
-* [docstardelete](docstardelete.md) :recycle: - delete DocStar artifacts
-* [docstar.Workspace](workspace.md) :construction_worker: - assign variables and evaluate expressions
+* [docconvert](docconvert.md) :arrow_right: - convert Markdown documents to HTML
+* [docrun](docrun.md) :runner: - run MATLAB scripts and save generated figures to image files
+* [docindex](docindex.md) :scroll: - create documentation index files
+* [docdelete](docdelete.md) :recycle: - delete DocMaker artifacts
+* [docmaker.Workspace](workspace.md) :construction_worker: - assign variables and evaluate expressions
 
 ___
 

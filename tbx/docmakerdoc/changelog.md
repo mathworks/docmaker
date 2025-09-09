@@ -2,12 +2,12 @@
 
 ## Version 0.6
 
-* Changed name from "Doc_er" to "DocStar"
-* Changed function names from `docer...` to `docstar...`
+* Changed name from "DocMaker" to "DocMaker"
+* Changed function names from `docer...` to `docmaker...`
 
 ## Version 0.5.1
 
-* Changed token secret to `Doc_er GitHub token`
+* Changed token secret to `DocMaker GitHub token`
 * Documented token search order
 
 ## Version 0.5
@@ -20,11 +20,11 @@
 
 ## Version 0.4
 
-* `docerrun` inserts screenshot at correct size, irrespective of display scaling
+* `docrun` inserts screenshot at correct size, irrespective of display scaling
 
 ## Version 0.3.1
 
-* `docerrun` works when console output contains `<`
+* `docrun` works when console output contains `<`
 
 ## Version 0.3
 
@@ -36,8 +36,8 @@
 
 Initial limited release within MathWorks :tada:.
 
-Core functionality is in place: `docerconvert`, `docerrun`, `docerindex`, and `docerdelete`.  This version of Doc_er uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) to convert Markdown to HTML.
+Core functionality is in place: `docerconvert`, `docrun`, `docerindex`, and `docerdelete`.  This version of DocMaker uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) to convert Markdown to HTML.
 
 ___
 
-[home](index.md) :house: | [convert](docstarconvert.md) :arrow_right: | [run](docstarrun.md) :runner: | [index](docstarindex.md) :scroll: | [delete](docstardelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hatching_chick: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2025-2025
+[home](index.md) :house: | [convert](docconvert.md) :arrow_right: | [run](docrun.md) :runner: | [index](docindex.md) :scroll: | [delete](docdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hatching_chick: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2025-2025

@@ -1,12 +1,12 @@
-# docstarindex :scroll:
+# docindex :scroll:
 
 Create documentation index files
 
 ## Syntax
 
-`docstarindex(d)` creates documentation index files `info.xml` and `helptoc.xml` and search database `helpsearch_v4` in the folder `d`.
+`docindex(d)` creates documentation index files `info.xml` and `helptoc.xml` and search database `helpsearch_v4` in the folder `d`.
 
-`[files,folders] = docstarindex(...)` returns the names of the files and folders created.
+`[files,folders] = docindex(...)` returns the names of the files and folders created.
 
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
@@ -17,12 +17,12 @@ Create documentation index files
 ## Examples
 
 ```matlab
-docstarindex("mickey/goofy") 
+docindex("mickey/goofy") 
 ```
 indexes documentation in the folder `mickey/goofy`.  Note that this path is *relative*.
 
 ```matlab
-docstarindex("C:\daisy\mickey\goofy") 
+docindex("C:\daisy\mickey\goofy") 
 ```
 also indexes documentation, this time specified using an *absolute* path.
 
@@ -65,4 +65,4 @@ The indexing consists of 4 steps:
 
 ___
 
-[home](index.md) :house: | [convert](docstarconvert.md) :arrow_right: | [run](docstarrun.md) :runner: | [index](docstarindex.md) :scroll: | [delete](docstardelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hatching_chick: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2025
+[home](index.md) :house: | [convert](docconvert.md) :arrow_right: | [run](docrun.md) :runner: | [index](docindex.md) :scroll: | [delete](docdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hatching_chick: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2025

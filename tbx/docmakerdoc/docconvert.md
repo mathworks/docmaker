@@ -1,22 +1,22 @@
-# docstarconvert :arrow_right:
+# docconvert :arrow_right:
 
 Convert Markdown documents to HTML
 
 ## Syntax
 
-`docstarconvert(md)` converts the Markdown document(s) `md` to HTML.
+`docconvert(md)` converts the Markdown document(s) `md` to HTML.
 
-Multiple documents may also be specified using `docstarconvert(md1,md2,...)`.
+Multiple documents may also be specified using `docconvert(md1,md2,...)`.
 
-`docstarconvert(...,"Theme",t)` sets the theme `t`.  Available themes are `light`, `dark`, and `auto` (responsive, default).
+`docconvert(...,"Theme",t)` sets the theme `t`.  Available themes are `light`, `dark`, and `auto` (responsive, default).
 
-`docstarconvert(...,"Stylesheets",css)` includes the stylesheet(s) `css`.
+`docconvert(...,"Stylesheets",css)` includes the stylesheet(s) `css`.
 
-`docstarconvert(...,"Scripts",js)` includes the script(s) `js`.  Scripts are included at the end of the body in the order specified to ensure that the HTML content is loaded and rendered before the scripts run.  :test_tube:
+`docconvert(...,"Scripts",js)` includes the script(s) `js`.  Scripts are included at the end of the body in the order specified to ensure that the HTML content is loaded and rendered before the scripts run.  :test_tube:
 
-`docstarconvert(...,"Root",r)` publishes to the root folder `r`, placing stylesheets and scripts in the subfolder `resources`.  The root folder must be a common ancestor of the Markdown documents.  If not specified, the root folder is the lowest common ancestor.
+`docconvert(...,"Root",r)` publishes to the root folder `r`, placing stylesheets and scripts in the subfolder `resources`.  The root folder must be a common ancestor of the Markdown documents.  If not specified, the root folder is the lowest common ancestor.
 
-`files = docstarconvert(...)` returns the names of the files created.
+`files = docconvert(...)` returns the names of the files created.
 
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
@@ -30,42 +30,42 @@ Multiple documents may also be specified using `docstarconvert(md1,md2,...)`.
 ## Examples
 
 ```matlab
-docstarconvert("mickey/pluto.md") 
+docconvert("mickey/pluto.md") 
 ```
 converts a single Markdown document `mickey/pluto.md` to HTML.  Note that this path is *relative*.
 
 ```matlab
-docstarconvert("C:\daisy\mickey\pluto.md") 
+docconvert("C:\daisy\mickey\pluto.md") 
 ```
 also converts a single Markdown document, this time specified using an *absolute* path.
 
 ```matlab
-docstarconvert("mickey/*.md") 
+docconvert("mickey/*.md") 
 ```
 converts *all* Markdown documents in `mickey` to HTML.
 
 ```matlab
-docstarconvert("mickey/**/*.md") 
+docconvert("mickey/**/*.md") 
 ```
 converts all Markdown documents in `mickey` *and its subfolders*.
 
 ```matlab
-docstarconvert(["mickey/pluto.md" "mickey/donald.md"]) 
+docconvert(["mickey/pluto.md" "mickey/donald.md"]) 
 ```
 converts *multiple* Markdown documents to HTML.
 
 ```matlab
-docstarconvert("mickey/pluto.md","Stylesheets","huey/louie.css") 
+docconvert("mickey/pluto.md","Stylesheets","huey/louie.css") 
 ```
 copies the stylesheet `huey/louie.css` to the `resources` folder and includes a `<link>` in the HTML `<head>`.
 
 ```matlab
-docstarconvert("mickey/pluto.md","Scripts","morty/ferdie.js") 
+docconvert("mickey/pluto.md","Scripts","morty/ferdie.js") 
 ```
 copies the script `morty/ferdie.js` to the `resources` folder and includes a `<script>` in the HTML `<body>`. :test_tube:
 
 ```matlab
-docstarconvert("mickey/goofy/*.md","Root","mickey") 
+docconvert("mickey/goofy/*.md","Root","mickey") 
 ```
 sets the root folder to `mickey`, rather than the lowest common ancestor `mickey/goofy` of the Markdown documents.
 
@@ -86,7 +86,7 @@ The conversion consists of 7 steps:
 
 ### Styling
 
-DocStar seeks to provide pleasant style by default, but you can override the default styles by specifying your own stylesheets.
+DocMaker seeks to provide pleasant style by default, but you can override the default styles by specifying your own stylesheets.
 
 For example, to make level-2 headings `## Heading` blue, create and specify a stylesheet with:
 ```css
@@ -107,4 +107,4 @@ This feature is experimental :test_tube: and may be removed in a future version.
 
 ___
 
-[home](index.md) :house: | [convert](docstarconvert.md) :arrow_right: | [run](docstarrun.md) :runner: | [index](docstarindex.md) :scroll: | [delete](docstardelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hatching_chick: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2025
+[home](index.md) :house: | [convert](docconvert.md) :arrow_right: | [run](docrun.md) :runner: | [index](docindex.md) :scroll: | [delete](docdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hatching_chick: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2025

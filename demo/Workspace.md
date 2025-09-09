@@ -1,4 +1,4 @@
-# docstar.Workspace :astronaut:
+# docmaker.Workspace :astronaut:
 
 Workspace
 
@@ -6,7 +6,7 @@ Workspace
 
 ### Creation
 
-`w = docstar.Workspace()` creates a new, empty workspace `w`.
+`w = docmaker.Workspace()` creates a new, empty workspace `w`.
 
 ### Assignment and evaluation
 
@@ -45,7 +45,7 @@ Workspace
 Create a workspace, assign some variables, and evaluate an expression:
 
 ```matlab
-w = docstar.Workspace();
+w = docmaker.Workspace();
 assignin(w,"a",2,"b",3)
 evalin(w,"c=a+b;")
 w
@@ -73,13 +73,13 @@ evalinc(w,"e=a+b*c")
 
 ### Loading and saving
 
-There is nothing special about the `.mat` files that `docstar.Workspace` can load and save.  Let's save a `.mat` file from the *base* workspace and load it to a workspace *object*:
+There is nothing special about the `.mat` files that `docmaker.Workspace` can load and save.  Let's save a `.mat` file from the *base* workspace and load it to a workspace *object*:
 
 ```matlab
 clear
 a = -1; b = "mickey"; % data in base
 save data.mat % save from base to .mat
-w = docstar.Workspace(); % create new workspace
+w = docmaker.Workspace(); % create new workspace
 assignin(w,"b",-3,"c","pluto"); % data in workspace
 load(w,"data.mat") % load from .mat to workspace
 w

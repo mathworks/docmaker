@@ -1,4 +1,4 @@
-# DocStar
+# DocMaker
 
 * [A](a.md)
 * [B](b.md)
