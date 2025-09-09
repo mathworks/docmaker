@@ -1,13 +1,13 @@
 function varargout = docindex( pRoot )
-%docstarindex  Create info.xml and helptoc.xml from helptoc.md
+%docindex  Create info.xml and helptoc.xml from helptoc.md
 %
-%   docstarindex(d) creates documentation index files "info.xml" and
+%   docindex(d) creates documentation index files "info.xml" and
 %   "helptoc.xml" and search database "helpsearch-v4" in the folder d.
 %
-%   [files,folders] = docstarindex(...) returns the names of the files and
+%   [files,folders] = docindex(...) returns the names of the files and
 %   folders created.
 %
-%   See also: docstarconvert, docstarrun, docstardelete, builddocsearchdb
+%   See also: docconvert, docrun, docdelete, builddocsearchdb
 
 %   Copyright 2020-2024 The MathWorks, Inc.
 
@@ -16,21 +16,21 @@ arguments
 end
 
 % Canonicalize
-sRoot = docstar.dir( pRoot );
+sRoot = docmaker.dir( pRoot );
 pRoot = sRoot(1).folder; % absolute
 
 % Read helptoc.md
 fToc = fullfile( pRoot, "helptoc.md" ); % source
 mToc = fileread( fToc ); % Markdown
-xToc = docstar.md2xml( mToc ); % parse
-docstar.linkrep( xToc, ".md", ".html" ) % replace links
+xToc = docmaker.md2xml( mToc ); % parse
+docmaker.linkrep( xToc, ".md", ".html" ) % replace links
 
 % Extract name
-h1 = docstar.list2array( xToc.getElementsByTagName( "h1" ) ); % headings
+h1 = docmaker.list2array( xToc.getElementsByTagName( "h1" ) ); % headings
 if isempty( h1 )
     name = "Unknown Toolbox"; % unknown
 else
-    name = docstar.rmemoji( h1(1).TextContent ); % first heading
+    name = docmaker.rmemoji( h1(1).TextContent ); % first heading
 end
 
 % Write info.xml
@@ -68,7 +68,7 @@ if nargout > 0
     varargout{2} = fDatabase;
 end
 
-end % docstarindex
+end % docindex
 
 function doc = infoxml( name )
 %infoxml  Create info.xml document

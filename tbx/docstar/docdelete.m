@@ -1,18 +1,18 @@
 function varargout = docdelete( pRoot )
-%docstardelete  Delete DocStar artifacts
+%docdelete  Delete DocMaker artifacts
 %
-%   docstardelete(d) deletes the DocStar artifacts in the folder d:
+%   docdelete(d) deletes the DocMaker artifacts in the folder d:
 %   * HTML documents corresponding to Markdown documents
 %   * the resources subfolder, "resources"
 %   * the index files, "info.xml" and "helptoc.xml"
 %   * the search database subfolder, "helpsearch-v4"
 %
-%   [files,folders] = docstardelete(...) returns the names of the files and
+%   [files,folders] = docdelete(...) returns the names of the files and
 %   folders deleted.
 %
-%   See also: docstarconvert, docstarrun, docstarindex
+%   See also: docconvert, docrun, docindex
 
-%   Copyright 2020-2024 The MathWorks, Inc.
+%   Copyright 2024-2025 The MathWorks, Inc.
 
 arguments
     pRoot (1,1) string {mustBeFolder}
@@ -37,7 +37,7 @@ end
 
 % Delete XML files
 nXml = ["info.xml" "helptoc.xml" "helpindex.xml"]; % names
-sXml = docstar.dir( fullfile( pRoot, nXml ) ); % xmls
+sXml = docmaker.dir( fullfile( pRoot, nXml ) ); % xmls
 for ii = 1:numel( sXml ) % loop
     fXml = fullfile( sXml(ii).folder, sXml(ii).name ); % this xml
     if isfile( fXml )
@@ -49,7 +49,7 @@ end
 
 % Delete JSON files
 nJson = "custom_toolbox.json"; % names
-sJson = docstar.dir( fullfile( pRoot, nJson ) ); % jsons
+sJson = docmaker.dir( fullfile( pRoot, nJson ) ); % jsons
 for ii = 1:numel( sJson ) % loop
     fJson = fullfile( sJson(ii).folder, sJson(ii).name ); % this json
     if isfile( fJson )
@@ -60,7 +60,7 @@ for ii = 1:numel( sJson ) % loop
 end
 
 % Delete resources folder
-sRoot = docstar.dir( pRoot );
+sRoot = docmaker.dir( pRoot );
 fRez = fullfile( sRoot(1).folder, "resources" ); % folder
 if isfolder( fRez )
     rmdir( fRez, "s" ) % delete
@@ -69,7 +69,7 @@ if isfolder( fRez )
 end
 
 % Delete helpsearch folders
-sHelp = docstar.dir( fullfile( pRoot, "helpsearch-v*" ) ); % indices
+sHelp = docmaker.dir( fullfile( pRoot, "helpsearch-v*" ) ); % indices
 for ii = 1:numel( sHelp ) % loop
     if sHelp(ii).isdir
         fHelp = fullfile( sHelp(ii).folder, sHelp(ii).name ); % this index
@@ -85,4 +85,4 @@ if nargout > 0
     varargout{2} = oFolders;
 end
 
-end % docstardelete
+end % docdelete

@@ -1,24 +1,24 @@
 function varargout = docrun( sHtml, options )
-%docstarrun  Run MATLAB code in HTML documents and insert output
+%docrun  Run MATLAB code in HTML documents and insert output
 %
-%   docstarrun(html) runs MATLAB code blocks in the HTML document(s) html,
-%   and inserts the textual and graphical output.  html can be a char or
-%   string including wildcards, a cellstr or string array, or a dir struct.
+%   docrun(html) runs MATLAB code blocks in the HTML document(s) html, and
+%   inserts the textual and graphical output.  html can be a char or string
+%   including wildcards, a cellstr or string array, or a dir struct.
 %
 %   Textual output is text written to the command window.  Graphical output
 %   is new figures or changes to existing figures.
 %
-%   Multiple documents can also be specified as docstarrun(html1,html2,...).
+%   Multiple documents can also be specified as docrun(html1,html2,...).
 %
-%   docstarrun(...,"Level",n) specifies the batching level n.  With level 0
+%   docrun(...,"Level",n) specifies the batching level n.  With level 0
 %   (default), all blocks in a document are run in a single batch. With
 %   level n, each level-n heading is run as a separate batch, with the
 %   workspace cleared and figures closed between batches.  With level 7,
 %   each block is run as a separate batch.
 %
-%   files = docstarrun(...) returns the names of the files modified.
+%   files = docrun(...) returns the names of the files modified.
 
-%   Copyright 2024 The MathWorks, Inc.
+%   Copyright 2024-2025 The MathWorks, Inc.
 
 arguments ( Repeating )
     sHtml
@@ -32,9 +32,9 @@ end
 oFiles = strings( 0, 1 );
 
 % Check documents
-sHtml = docstar.dir( sHtml{:} );
-assert( all( docstar.extensions( sHtml ) == ".html" ), ...
-    "docstar:InvalidArgument", ...
+sHtml = docmaker.dir( sHtml{:} );
+assert( all( docmaker.extensions( sHtml ) == ".html" ), ...
+    "docmaker:InvalidArgument", ...
     "HTML files must all have extension .html." )
 if isempty( sHtml ), return, end
 
@@ -51,7 +51,7 @@ if nargout > 0
     varargout{1} = oFiles;
 end
 
-end % docstarrun
+end % docrun
 
 function run( html, batchLevel )
 %run  Run MATLAB code in an HTML document and insert output
@@ -68,14 +68,14 @@ doc = parser.parseFile( html );
 nHeadings = 6; % # HTML heading levels
 allHeadings = cell( nHeadings, 1 ); % preallocate
 for ii = 1:nHeadings
-    allHeadings{ii} = docstar.list2array( doc.getElementsByTagName( "h"+ii ) );
+    allHeadings{ii} = docmaker.list2array( doc.getElementsByTagName( "h"+ii ) );
 end
-allDivs = docstar.list2array( doc.getElementsByTagName( "div" ) );
+allDivs = docmaker.list2array( doc.getElementsByTagName( "div" ) );
 
 % Initialize
 root = doc.getDocumentElement();
 from = root; % start from root
-oldFigures = docstar.figures(); % existing figures
+oldFigures = docmaker.figures(); % existing figures
 
 while true
 
@@ -88,8 +88,8 @@ while true
 
     % Update workspace and figures
     if fromLevel <= batchLevel % reset
-        w = docstar.Workspace();
-        delete( setdiff( docstar.figures(), oldFigures ) )
+        w = docmaker.Workspace();
+        delete( setdiff( docmaker.figures(), oldFigures ) )
     end
 
     % Find divs before next heading
@@ -123,7 +123,7 @@ while true
 end % while
 
 % Clean up
-delete( setdiff( docstar.figures(), oldFigures ) )
+delete( setdiff( docmaker.figures(), oldFigures ) )
 
 % Write to file
 writer = matlab.io.xml.dom.DOMWriter();
@@ -148,22 +148,22 @@ inDiv = div;
 inString = div.TextContent;
 
 % Capture initial figures and their 'prints
-oldFigures = docstar.figures();
-oldPrints = arrayfun( @docstar.capture, oldFigures, "UniformOutput", false );
+oldFigures = docmaker.figures();
+oldPrints = arrayfun( @docmaker.capture, oldFigures, "UniformOutput", false );
 
 % Evaluate expression and capture output
 try
     outString = string( evalinc( w, inString ) );
     ok = true; % ok
 catch e
-    warning( "docstar:EvalError", "%s", e.message ) % rethrow as warning
+    warning( "docmaker:EvalError", "%s", e.message ) % rethrow as warning
     outString = e.message;
     ok = false; % error
 end
 
 % Capture final figures and their 'prints
-newFigures = docstar.figures();
-newPrints = arrayfun( @docstar.capture, newFigures, "UniformOutput", false );
+newFigures = docmaker.figures();
+newPrints = arrayfun( @docmaker.capture, newFigures, "UniformOutput", false );
 
 % Return new and modified figures
 wasPrints = cell( size( newPrints ) ); % preallocate
@@ -212,7 +212,7 @@ for jj = 1:numel( outFigures )
     outDiv.setAttribute( "class", "highlight highlight-output-matlab" );
     outImg = doc.createElement( "img" );
     outImg.setAttribute( "src", "data:image/png;base64, " + ...
-        docstar.encode( outFigure ) );
+        docmaker.encode( outFigure ) );
     outPosition = hgconvertunits( outFigure, outFigure.Position, ...
         outFigure.Units, "pixels", groot() ); % pixels
     outImg.setAttribute( "style", "width: " + outPosition(3) + ...
@@ -264,7 +264,7 @@ if isscalar( a ) && ~isscalar( b )
 elseif ~isscalar( a ) && isscalar( b )
     b = repmat( b, size( a ) );
 else
-    assert( isequal( size( a ), size( b ) ), "docstar:InvalidArgument", ...
+    assert( isequal( size( a ), size( b ) ), "docmaker:InvalidArgument", ...
         "Cannot compare element arrays of different sizes." )
 end
 
