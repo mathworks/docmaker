@@ -1,4 +1,4 @@
-# DocMaker :hatching_chick:
+# MATLAB DocMaker :hatching_chick:
 
 DocMaker is a tool for generating MATLAB toolbox documentation.
 
@@ -27,7 +27,7 @@ DocMaker uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown
 
 1. first, in the [ environment variable](https://www.mathworks.com/help/matlab/ref/setenv.html) `docmaker_GITHUB_TOKEN`
 ```matlab
-setenv("DOCSTAR_GITHUB_TOKEN",token)
+setenv("DOCMAKER_GITHUB_TOKEN",token)
 ```
 2. then, in the [secret](https://www.mathworks.com/help/matlab/ref/setsecret.html) `DocMaker GitHub token`
 ```matlab
