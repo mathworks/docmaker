@@ -27,15 +27,15 @@ DocMaker uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown
 
 1. first, in the [environment variable](https://www.mathworks.com/help/matlab/ref/setenv.html) `DOCMAKER_GITHUB_TOKEN`
 ```matlab
-setenv("DOCMAKER_GITHUB_TOKEN",token)
+setenv("DOCMAKER_GITHUB_TOKEN",token) 
 ```
 2. then, in the [secret](https://www.mathworks.com/help/matlab/ref/setsecret.html) `DocMaker GitHub token`
 ```matlab
-setSecret("DocMaker GitHub token")
+setSecret("DocMaker GitHub token") 
 ```
 3. finally, in the [preference](https://www.mathworks.com/help/matlab/ref/setpref.html) `token` in the group `docmaker`
 ```matlab
-setpref("docmaker","token",token)
+setpref("docmaker","token",token) 
 ```
 
 ## Working with DocMaker
