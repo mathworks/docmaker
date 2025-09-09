@@ -1,4 +1,4 @@
-# About DocMaker :hatching_chick:
+# About MATLAB&#174; DocMaker :hatching_chick:
 
 ## Contributors
 

@@ -2,7 +2,7 @@
 
 ## Version 0.6
 
-* Changed name from "Doc_er" to "DocMaker"
+* Changed name from "Doc_er" to "MATLAB&#174; DocMaker"
 * Changed function names from `docer...` to `doc...`
 
 ## Version 0.5.1

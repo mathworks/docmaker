@@ -1,4 +1,4 @@
-# MATLAB DocMaker :hatching_chick:
+# MATLAB&#174; DocMaker :hatching_chick:
 
 DocMaker is a tool for generating MATLAB toolbox documentation.
 
