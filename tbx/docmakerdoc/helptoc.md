@@ -1,6 +1,6 @@
-# DocMaker
+# MATLAB DocMaker
 
-* [DocMaker](index.md)
+* [MATLAB DocMaker](index.md)
   * [Release notes](changelog.md)
   * [Function reference](api.md)
     * [docconvert](docconvert.md)
