@@ -20,14 +20,14 @@ document.querySelectorAll('pre').forEach(pre => {
 
     // Set up the onclick event handler for the button
     button.onclick = function () {
-        docerCopyCode(pre, button);
+        docmakerCopyCode(pre, button);
     };
 
     // Append the button to the <pre> element
     pre.appendChild(button);
 });
 
-function docerCopyCode(pre, button) {
+function docmakerCopyCode(pre, button) {
     // Extract the full text content from the <pre> element
     let code = pre.textContent;
 
@@ -42,7 +42,7 @@ function docerCopyCode(pre, button) {
     const originalTitle = button.title;
 
     // Copy to clipboard
-    docerCopyToClipboard(code, button.ownerDocument.body)
+    docmakerCopyToClipboard(code, button.ownerDocument.body)
         .then(() => {
             button.innerHTML = '&#10003;'; // Unicode check mark, for success
             button.title = 'copied';
@@ -61,7 +61,7 @@ function docerCopyCode(pre, button) {
         });
 }
 
-function docerCopyToClipboard(text, body) {
+function docmakerCopyToClipboard(text, body) {
     return new Promise((resolve, reject) => {
         // Try using the modern Clipboard API
         if (navigator.clipboard && navigator.clipboard.writeText) {
