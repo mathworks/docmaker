@@ -1,8 +1,8 @@
 {
-    "ToolboxName":"Doc_er",
+    "ToolboxName":"MATLAB DocMaker",
     "Identifier":"ae82d5d2-45be-4fc5-a01b-70d8bb905ca2",
     "Summary":"Create MATLAB toolbox documentation from Markdown documents and MATLAB scripts",
-    "Description":"With Doc_er, you can:\n* write documentation in Markdown and convert to HTML for viewing in MATLAB\n* run MATLAB scripts and capture output as images for inclusion in documentation\n* create MATLAB documentation index files from a Markdown table of contents",
+    "Description":"With MATLAB DocMaker, you can:\n* write documentation in Markdown and convert to HTML for viewing in MATLAB\n* run MATLAB scripts and capture output as images for inclusion in documentation\n* create MATLAB documentation index files from a Markdown table of contents",
     "AuthorCompany":"MathWorks",
     "AuthorName":"David Sampson",
     "AuthorEmail":"dsampson@mathworks.com",

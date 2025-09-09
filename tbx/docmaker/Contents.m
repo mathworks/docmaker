@@ -1,9 +1,9 @@
-% DocStar
-% Version 0.6 (R2024b) 19-Mar-2025
+% MATLAB DocMaker
+% Version 1.0 (R2024b) 12-Sep-2025
 %
-% docstarconvert - convert Markdown documents to HTML
-% docstarrun     - run MATLAB code in HTML documents and insert output
-% docstarindex   - create documentation index files
-% docstardelete  - delete DocStar artifacts
+% docconvert - convert Markdown documents to HTML
+% docrun     - run MATLAB code in HTML documents and insert output
+% docindex   - create documentation index files
+% docdelete  - delete DocStar artifacts
 
 %   Copyright 2020-2025 The MathWorks, Inc.
