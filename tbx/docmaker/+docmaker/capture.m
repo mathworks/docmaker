@@ -1,7 +1,7 @@
 function x = capture( fig )
 %capture  Capture figure
 %
-%   x = docstar.capture(f) captures the figure f to image data x.
+%   x = docmaker.capture(f) captures the figure f to image data x.
 %
 %   See also: getframe
 

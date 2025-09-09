@@ -1,7 +1,7 @@
 function f = figures()
 %figures  Find all figures
 %
-%   f = docstar.figures() returns all current figures in ascending number
+%   f = docmaker.figures() returns all current figures in ascending number
 %   order.
 
 %   Copyright 2024 The MathWorks, Inc.

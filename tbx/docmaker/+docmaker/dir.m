@@ -1,21 +1,21 @@
 function s = dir( p, varargin )
 %dir  List folder contents
 %
-%   s = docstar.dir(f) returns the contents of the folder f, which can be
+%   s = docmaker.dir(f) returns the contents of the folder f, which can be
 %   specified as an absolute or relative path, and can include wildcards.
 %   The returned folder struct s contains fields name, folder, date, bytes,
 %   isdir, and datenum.  Duplicates are removed.
 %
-%   docstar.dir(ff), where ff is nonscalar, concatentes and deduplicates
+%   docmaker.dir(ff), where ff is nonscalar, concatentes and deduplicates
 %   the results of calling the function on each of the elements.
 %
-%   docstar.dir(f1,f2,...) concatenates and deduplicates the results of
+%   docmaker.dir(f1,f2,...) concatenates and deduplicates the results of
 %   calling the function on each of the inputs.
 %
-%   docstar.dir(s), where s is a folder struct, deduplicates and returns
+%   docmaker.dir(s), where s is a folder struct, deduplicates and returns
 %   the input.
 %
-%   docstar.dir is a wrapper for dir to support struct, nonscalar, and
+%   docmaker.dir is a wrapper for dir to support struct, nonscalar, and
 %   multiple inputs.
 %
 %   See also: dir
@@ -43,7 +43,7 @@ end
 
 % Process subsequent inputs
 if nargin > 1
-    s = [s; docstar.dir( varargin{:} )];
+    s = [s; docmaker.dir( varargin{:} )];
 end
 
 % Deduplicate

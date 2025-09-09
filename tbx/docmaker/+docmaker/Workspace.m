@@ -1,10 +1,10 @@
 classdef Workspace < handle & matlab.mixin.CustomDisplay
-    %docstar.Workspace  Private workspace
+    %docmaker.Workspace  Private workspace
     %
-    %   docstar.Workspace is a private workspace for assigning variables
+    %   docmaker.Workspace is a private workspace for assigning variables
     %   and evaluating expressions.
     %
-    %   w = docstar.Workspace() creates a private workspace.
+    %   w = docmaker.Workspace() creates a private workspace.
 
     %   Copyright 2007-2024 The MathWorks, Inc.
 
@@ -17,9 +17,9 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
         function obj = Workspace( varargin )
             %Workspace  Private workspace
             %
-            %   w = docstar.Workspace() creates an empty private workspace.
+            %   w = docmaker.Workspace() creates an empty private workspace.
             %
-            %   w = docstar.Workspace(n1,v1,n2,v2,...) assigns the values
+            %   w = docmaker.Workspace(n1,v1,n2,v2,...) assigns the values
             %   v1, v2, ... to the variables n1, n2, ...
 
             % Create store

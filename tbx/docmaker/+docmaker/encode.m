@@ -1,7 +1,7 @@
 function s = encode( fig )
 %encode  Encode image data
 %
-%   s = docstar.encode(f) encodes the figure f to the string s using Base
+%   s = docmaker.encode(f) encodes the figure f to the string s using Base
 %   64 encoding.
 % 
 %   The process consists of 5 steps:
@@ -11,7 +11,7 @@ function s = encode( fig )
 %   4. Delete the temporary file
 %   5. Encode the binary data
 %
-%   See also: docstar.capture
+%   See also: docmaker.capture
 
 %   Copyright 2024 The MathWorks, Inc.
 
@@ -34,7 +34,7 @@ else
 end
 
 % Capture
-x = docstar.capture( fig );
+x = docmaker.capture( fig );
 
 % Write to temporary file
 filename = tempname() + "." + format; % filename

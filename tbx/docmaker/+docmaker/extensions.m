@@ -1,10 +1,10 @@
 function x = extensions( s )
 %extensions  File extensions
 %
-%   x = docstar.extensions(s) returns file extensions x from the folder
+%   x = docmaker.extensions(s) returns file extensions x from the folder
 %   struct s.
 %
-%   See also: docstar.dir, fileparts
+%   See also: docmaker.dir, fileparts
 
 %   Copyright 2024 The MathWorks, Inc.
 

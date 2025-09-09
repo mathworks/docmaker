@@ -1,11 +1,11 @@
 function linkrep( doc, old, new )
 %linkrep  Replace links in XML document
 %
-%   docstar.linkrep(x,o,n) replaces link extensions o with n in the XML
+%   docmaker.linkrep(x,o,n) replaces link extensions o with n in the XML
 %   document x.
 %
 %   For example, replace Markdown links with HTML links using:
-%      docstar.linkrep(x,".md",".html")
+%      docmaker.linkrep(x,".md",".html")
 
 %   Copyright 2024 The MathWorks, Inc.
 
@@ -15,7 +15,7 @@ arguments
     new (1,1) string
 end
 
-aa = docstar.list2array( doc.getElementsByTagName( "a" ) );
+aa = docmaker.list2array( doc.getElementsByTagName( "a" ) );
 for ii = 1:numel( aa )
     a = aa(ii);
     if a.hasAttribute( "href" )

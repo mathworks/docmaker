@@ -42,8 +42,8 @@ end
 oFiles = strings( 0, 1 );
 
 % Check documents
-sMd = docstar.dir( sMd{:} );
-assert( all( docstar.extensions( sMd ) == ".md" ), ...
+sMd = docmaker.dir( sMd{:} );
+assert( all( docmaker.extensions( sMd ) == ".md" ), ...
     "docstar:InvalidArgument", ...
     "Markdown files must all have extension .md." )
 if isempty( sMd ), return, end
@@ -72,10 +72,10 @@ switch options.Theme
     otherwise
         nGmd = "github-markdown-" + options.Theme + ".css";
 end
-sCss = docstar.dir( fullfile( pTem, [nGmd "matlaby.css" "copycode.css"] ) );
+sCss = docmaker.dir( fullfile( pTem, [nGmd "matlaby.css" "copycode.css"] ) );
 if isfield( options, "Stylesheets" )
-    sCss = docstar.dir( sCss, options.Stylesheets );
-    assert( all( docstar.extensions( sCss ) == ".css" ), ...
+    sCss = docmaker.dir( sCss, options.Stylesheets );
+    assert( all( docmaker.extensions( sCss ) == ".css" ), ...
         "docstar:InvalidArgument", ...
         "Stylesheets must all have extension .css." )
 end
@@ -88,10 +88,10 @@ fprintf( 1, "[+] %s\n", fullfile( pRez, "license" ) );
 fCss = reshape( fullfile( pRez, {sCss.name} ), size( sCss ) );
 
 % Check and copy scripts
-sJs = docstar.dir( fullfile( pTem, "copycode.js" ) );
+sJs = docmaker.dir( fullfile( pTem, "copycode.js" ) );
 if isfield( options, "Scripts" )
-    sJs = docstar.dir( options.Scripts );
-    assert( all( docstar.extensions( sJs ) == ".js" ), ...
+    sJs = docmaker.dir( options.Scripts );
+    assert( all( docmaker.extensions( sJs ) == ".js" ), ...
         "docstar:InvalidArgument", ...
         "Scripts must all have extension .js." )
 end
@@ -133,10 +133,10 @@ pMd = fileparts( fMd );
 md = fileread( fMd );
 
 % Convert Markdown to XML
-xml = docstar.md2xml( md );
+xml = docmaker.md2xml( md );
 
 % Replace Markdown links
-docstar.linkrep( xml, ".md", ".html" )
+docmaker.linkrep( xml, ".md", ".html" )
 
 % Create document
 doc = matlab.io.xml.dom.Document( "html", "html", "", "" );
@@ -160,11 +160,11 @@ charset.setAttribute( "charset", "utf-8" );
 appendChild( head, charset );
 
 % Add title
-h1 = docstar.list2array( getElementsByTagName( xml, "h1" ) );
+h1 = docmaker.list2array( getElementsByTagName( xml, "h1" ) );
 if ~isempty( h1 )
     title = doc.createElement( "title" );
     head.appendChild( title );
-    titleText = doc.createTextNode( docstar.rmemoji( h1(1).TextContent ) );
+    titleText = doc.createTextNode( docmaker.rmemoji( h1(1).TextContent ) );
     title.appendChild( titleText );
 end
 
@@ -194,7 +194,7 @@ appendChild( main, div );
 
 % Remove permalinks (anchors with attribute "aria-label" starting with
 % "Permalink: ")
-anchors = docstar.list2array( doc.getElementsByTagName( "a" ) );
+anchors = docmaker.list2array( doc.getElementsByTagName( "a" ) );
 for ii = 1:numel( anchors )
     anchor = anchors(ii);
     if anchor.hasAttribute( "aria-label" ) && startsWith( ...

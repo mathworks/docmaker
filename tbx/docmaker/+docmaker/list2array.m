@@ -1,7 +1,7 @@
 function elements = list2array( nodeList )
 %list2array  Convert node list to element array
 %
-%   e = docstar.list2array(n) converts the node list n to an element array
+%   e = docmaker.list2array(n) converts the node list n to an element array
 %   e.
 %
 %   Node lists are unstable, so moving nodes around in a document can
