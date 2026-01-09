@@ -73,8 +73,12 @@ cl = onCleanup( @()set(g,"DefaultFigureWindowStyle",st,"DefaultFigurePosition",p
 set( g, "DefaultFigureWindowStyle", "normal", "DefaultFigurePosition", [100 100 400 300] ) % override defaults
 
 % Run code and insert output
+s = settings;
+t = s.matlab.appearance.MATLABTheme.ActiveValue;
+s.matlab.appearance.MATLABTheme.TemporaryValue = "Light";
 docrun( fullfile( d, "**/*.html" ) )
 fprintf( 1, "** Inserted MATLAB output into doc\n" )
+s.matlab.appearance.MATLABTheme.TemporaryValue = t;
 
 % Index documentation
 docindex( d )
