@@ -182,7 +182,7 @@ if strlength( outString ) > 0
 
     % Create HTML elements div, pre, text
     outDiv = doc.createElement( "div" );
-    outDiv.setAttribute( "class", "highlight highlight-output" );
+    outDiv.setAttribute( "class", "highlight highlight-output-matlab" );
     outPre = doc.createElement( "pre" );
     outPre.setAttribute( "style", "background-color:var(--bgColor-default);" );
     if ~ok % error, style text color
