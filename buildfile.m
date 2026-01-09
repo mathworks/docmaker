@@ -72,7 +72,6 @@ cl = onCleanup( @()set(g,"DefaultFigureWindowStyle",st,"DefaultFigurePosition",p
 set( g, "DefaultFigureWindowStyle", "normal", "DefaultFigurePosition", [100 100 400 300] ) % override defaults
 
 % Run code and insert output
-undo = setTemporaryTheme( "Light" ); %#ok<NASGU>
 docrun( fullfile( d, "**/*.html" ) )
 fprintf( 1, "** Inserted MATLAB output into doc\n" )
 
@@ -118,15 +117,3 @@ lic = fileread( fullfile( d, "LICENSE" ) );
 mlAddonSetLicense( char( o.OutputFile ), struct( "type", 'BSD', "text", lic ) );
 
 end % packageTask
-
-function undo = setTemporaryTheme( t )
-
-s = settings();
-if s.matlab.hasGroup( 'appearance' ) && s.matlab.appearance.hasSetting( 'MATLABTheme' )
-    s.matlab.appearance.MATLABTheme.TemporaryValue = t;
-    undo = onCleanup( @()clearTemporaryValue(s.matlab.appearance.MATLABTheme) );
-else
-    undo = [];
-end
-
-end % unsetTheme
