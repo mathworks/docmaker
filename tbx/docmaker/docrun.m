@@ -20,7 +20,7 @@ function varargout = docrun( sHtml, options )
 %   workspace cleared and figures closed between batches.  With level 7,
 %   each block is run as a separate batch.
 %
-%   docrun(...,"Theme",t) specifies the theme t.    Available themes are
+%   docrun(...,"Theme",t) specifies the theme t.  Available themes are
 %   "none" (as is, default), "light", "dark" and "auto" (responsive).
 %
 %   files = docrun(...) returns the names of the files modified.
@@ -312,6 +312,9 @@ s = strtrim( s ); % tidy
 end % rmlinks
 
 function t = getTheme( f )
+%getTheme  Get figure theme
+%
+%   t = getTheme(f) returns the theme t of the figure f.
 
 t = cell( size( f ) );
 for ii = 1:numel( f )
@@ -323,9 +326,13 @@ for ii = 1:numel( f )
 end
 t = cell2mat( t );
 
-end
+end % getTheme
 
 function setTheme( f, t )
+%setTheme  Set figure theme
+%
+%   setTheme(f,t) sets the theme of the figure f to the theme t.  t can be
+%   a string ("none", "light", "dark" or "auto") or a GraphicsTheme object.
 
 % Handle inputs
 if ischar( t ), t = string( t ); end % convert
