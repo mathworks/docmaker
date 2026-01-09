@@ -18,8 +18,7 @@ plan( "test" ) = matlab.buildtool.tasks.TestTask( testFolder, ...
     "SourceFiles", codeFolder );
 plan( "test" ).Dependencies = "check";
 plan( "doc" ).Inputs = fullfile( projectRoot, "tbx", "docmakerdoc" );
-plan( "doc" ).Dependencies = "test";
-plan( "package" ).Dependencies = "doc";
+plan( "package" ).Dependencies = ["test", "doc"];
 
 % Set default task
 plan.DefaultTasks = "package";
@@ -73,12 +72,9 @@ cl = onCleanup( @()set(g,"DefaultFigureWindowStyle",st,"DefaultFigurePosition",p
 set( g, "DefaultFigureWindowStyle", "normal", "DefaultFigurePosition", [100 100 400 300] ) % override defaults
 
 % Run code and insert output
-s = settings;
-t = s.matlab.appearance.MATLABTheme.ActiveValue;
-s.matlab.appearance.MATLABTheme.TemporaryValue = "Light";
+undo = setTemporaryTheme( "Light" ); %#ok<NASGU>
 docrun( fullfile( d, "**/*.html" ) )
 fprintf( 1, "** Inserted MATLAB output into doc\n" )
-s.matlab.appearance.MATLABTheme.TemporaryValue = t;
 
 % Index documentation
 docindex( d )
@@ -122,3 +118,15 @@ lic = fileread( fullfile( d, "LICENSE" ) );
 mlAddonSetLicense( char( o.OutputFile ), struct( "type", 'BSD', "text", lic ) );
 
 end % packageTask
+
+function undo = setTemporaryTheme( t )
+
+s = settings();
+if s.matlab.hasGroup( 'appearance' ) && s.matlab.appearance.hasSetting( 'MATLABTheme' )
+    s.matlab.appearance.MATLABTheme.TemporaryValue = t;
+    undo = onCleanup( @()clearTemporaryValue(s.matlab.appearance.MATLABTheme) );
+else
+    undo = [];
+end
+
+end % unsetTheme
