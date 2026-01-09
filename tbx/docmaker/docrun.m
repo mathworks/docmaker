@@ -8,6 +8,10 @@ function varargout = docrun( sHtml, options )
 %   Textual output is text written to the command window.  Graphical output
 %   is new figures or changes to existing figures.
 %
+%   docrun runs arbitrary MATLAB code blocks in HTML documents.  This is a
+%   potential vector for malicious attacks.  Only run code from people or
+%   organizations you trust.
+%
 %   Multiple documents can also be specified as docrun(html1,html2,...).
 %
 %   docrun(...,"Level",n) specifies the batching level n.  With level 0

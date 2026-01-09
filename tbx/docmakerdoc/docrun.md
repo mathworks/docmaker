@@ -82,6 +82,8 @@ plot(x,sin(x))
 
 ### Executing MATLAB code
 
+`docrun` runs arbitrary MATLAB code blocks in HTML documents.  This is a potential vector for malicious attacks.  **Only run code from people or organizations you trust.**
+
 `docrun` evaluates each code block in turn in a MATLAB [workspace](workspace.md) that is *private* to the document.  Variables created in earlier blocks are available for use in later blocks.
 
 If an error occurs in one block then `docrun` rethrows the error as a warning (identifier `docmaker:EvalError`) and moves on to the next block.  However, it is likely that an error in an earlier block will lead to further errors in later blocks.
