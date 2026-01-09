@@ -10,23 +10,6 @@ classdef tDocMaker < matlab.unittest.TestCase
         HelpTOCFile(:, 1) string {mustBeFile}
     end % properties ( Access = protected )
 
-    methods ( TestClassSetup )
-
-        function setToken( testCase )
-            %SETTOKEN Set the required token for use in BaT.
-
-            token = "github_pat_11AVHHRSQ0glxgp2SgWJ0i_" + ...
-                "5kHWdoDiAcaLFIi7DML84IKPefC68YUx85" + ...
-                "gM7lkNlQSYLG2MSRFNS6MIhzK";
-            name = "DOCMAKER_GITHUB_TOKEN";
-            existingToken = getenv( name );
-            testCase.addTeardown( @() setenv( name, existingToken ) )
-            setenv( name, token )
-
-        end % setToken
-
-    end % methods ( TestClassSetup )
-
     methods ( TestMethodSetup )
 
         function applyFolderFixture( testCase )
