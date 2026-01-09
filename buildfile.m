@@ -72,7 +72,7 @@ cl = onCleanup( @()set(g,"DefaultFigureWindowStyle",st,"DefaultFigurePosition",p
 set( g, "DefaultFigureWindowStyle", "normal", "DefaultFigurePosition", [100 100 400 300] ) % override defaults
 
 % Run code and insert output
-docrun( fullfile( d, "**/*.html" ) )
+docrun( fullfile( d, "**/*.html" ), "Theme", "light" )
 fprintf( 1, "** Inserted MATLAB output into doc\n" )
 
 % Index documentation
