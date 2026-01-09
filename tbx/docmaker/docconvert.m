@@ -25,7 +25,7 @@ function varargout = docconvert( sMd, options )
 %
 %   See also: docindex, docrun, docdelete
 
-%   Copyright 2020-2025 The MathWorks, Inc.
+%   Copyright 2020-2026 The MathWorks, Inc.
 
 arguments ( Repeating )
     sMd

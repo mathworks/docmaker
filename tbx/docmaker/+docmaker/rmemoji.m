@@ -6,7 +6,7 @@ function s = rmemoji( s )
 %   Emojis are strings that begin and end with ":" with letters, numbers
 %   and underscores in between, and Unicode characters from U+2130.
 
-%   Copyright 2024-2025 The MathWorks, Inc.
+%   Copyright 2024-2026 The MathWorks, Inc.
 
 arguments
     s (1,1) string

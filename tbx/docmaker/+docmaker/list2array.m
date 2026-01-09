@@ -8,7 +8,7 @@ function elements = list2array( nodeList )
 %   affect the order in the list.  Element arrays in contrast are stable,
 %   and so more suitable for iteration.
 
-%   Copyright 2020-2025 The MathWorks, Inc.
+%   Copyright 2020-2026 The MathWorks, Inc.
 
 arguments
     nodeList (1,1) matlab.io.xml.dom.NodeList
