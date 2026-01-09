@@ -83,8 +83,8 @@ for ii = 1:numel( sCss )
     copyfile( fullfile( sCss(ii).folder, sCss(ii).name ), pRez )
     fprintf( 1, "[+] %s\n", fullfile( pRez, sCss(ii).name ) );
 end
-copyfile( fullfile( pTem, "license" ), pRez )
-fprintf( 1, "[+] %s\n", fullfile( pRez, "license" ) );
+copyfile( fullfile( pTem, "github-markdown-css.rights" ), pRez )
+fprintf( 1, "[+] %s\n", fullfile( pRez, "github-markdown-css.rights" ) );
 fCss = reshape( fullfile( pRez, {sCss.name} ), size( sCss ) );
 
 % Check and copy scripts
