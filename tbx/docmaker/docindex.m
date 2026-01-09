@@ -57,7 +57,7 @@ search = ['builddocsearchdb(''', strrep( pRoot, '''', '''''' ), ''')']; % comman
 evalc( search ); % build without echo
 sDatabase = dir( fullfile( pRoot, "helpsearch-v4*" ) ); % find database
 sDatabase = sDatabase([sDatabase.isdir]); % only folders
-fDatabase = fullfile( sDatabase(1).folder, sDatabase(1).name );
+fDatabase = string( fullfile( sDatabase(1).folder, sDatabase(1).name ) );
 fprintf( 1, "[+] %s\n", fDatabase ); % echo
 fDrool = fullfile( pRoot, "custom_toolbox.json" ); % drool
 if isfile( fDrool ), delete( fDrool ), end % clean up

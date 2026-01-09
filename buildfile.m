@@ -10,8 +10,15 @@ plan = buildplan( localfunctions() );
 plan( "clean" ) = matlab.buildtool.tasks.CleanTask;
 
 % Set up task inputs and dependencies
-plan( "doc" ).Inputs = fullfile( plan.RootFolder, "tbx", "docmakerdoc" );
-plan( "doc" ).Dependencies = "check";
+projectRoot = plan.RootFolder;
+testFolder = fullfile( projectRoot, "tests" );
+codeFolder = fullfile( projectRoot, "tbx" );
+plan( "test" ) = matlab.buildtool.tasks.TestTask( testFolder, ...
+    "Strict", true, ...
+    "SourceFiles", codeFolder );
+plan( "test" ).Dependencies = "check";
+plan( "doc" ).Inputs = fullfile( projectRoot, "tbx", "docmakerdoc" );
+plan( "doc" ).Dependencies = "test";
 plan( "package" ).Dependencies = "doc";
 
 % Set default task
