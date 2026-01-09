@@ -4,6 +4,7 @@
 
 * Changed name from "Doc_er" to "MATLAB&#174; DocMaker"
 * Changed function names from `docer...` to `doc...`
+* Changed token secret to `DocMaker GitHub token`
 
 ## Version 0.5.1
 
