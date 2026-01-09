@@ -21,7 +21,7 @@ Multiple documents may also be specified using `docconvert(md1,md2,...)`.
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
 | `md`:arrow_right: | Markdown document(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
-| `t`:arrow_right: | Theme, `light`, `dark`, or `auto`; default is `auto` | string(s) | |
+| `t`:arrow_right: | theme: `light`, `dark`, or `auto`; default is `auto` | string(s) | |
 | `css`:arrow_right: | CSS stylesheet(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | |
 | `js`:arrow_right: | JavaScript script(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | :test_tube: |
 | `r`:arrow_right: | root folder, as an absolute or relative path; default is the lowest common ancestor of `md` | string | |

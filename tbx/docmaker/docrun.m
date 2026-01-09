@@ -5,6 +5,8 @@ function varargout = docrun( sHtml, options )
 %   inserts the textual and graphical output.  html can be a char or string
 %   including wildcards, a cellstr or string array, or a dir struct.
 %
+%   Multiple documents can also be specified as docrun(html1,html2,...).
+%
 %   Textual output is text written to the command window.  Graphical output
 %   is new figures or changes to existing figures.
 %
@@ -12,13 +14,14 @@ function varargout = docrun( sHtml, options )
 %   potential vector for malicious attacks.  Only run code from people or
 %   organizations you trust.
 %
-%   Multiple documents can also be specified as docrun(html1,html2,...).
-%
 %   docrun(...,"Level",n) specifies the batching level n.  With level 0
 %   (default), all blocks in a document are run in a single batch. With
 %   level n, each level-n heading is run as a separate batch, with the
 %   workspace cleared and figures closed between batches.  With level 7,
 %   each block is run as a separate batch.
+%
+%   docrun(...,"Theme",t) specifies the theme t.    Available themes are
+%   "none" (as is, default), "light", "dark" and "auto" (responsive).
 %
 %   files = docrun(...) returns the names of the files modified.
 
@@ -30,6 +33,7 @@ end
 
 arguments
     options.Level (1,1) double {mustBeInteger,mustBeInRange(options.Level,0,7)} = 0
+    options.Theme (1,1) string {mustBeMember(options.Theme,["none","light","dark","auto"])} = "none"
 end
 
 % Initialize output
@@ -45,7 +49,7 @@ if isempty( sHtml ), return, end
 % Run
 for ii = 1:numel( sHtml ) % loop over files
     fHtml = fullfile( sHtml(ii).folder, sHtml(ii).name ); % this file
-    run( fHtml, options.Level )
+    run( fHtml, options.Level, options.Theme )
     fprintf( 1, "[%s] %s\n", char( 9889 ), fHtml );
     oFiles(end+1,:) = fHtml; %#ok<AGROW>
 end
@@ -57,7 +61,7 @@ end
 
 end % docrun
 
-function run( html, batchLevel )
+function run( html, batchLevel, theme )
 %run  Run MATLAB code in an HTML document and insert output
 %
 %   run(html,b) runs MATLAB code blocks in the HTML document html with the
@@ -110,7 +114,7 @@ while true
         if div.hasAttribute( "class" ) && contains( ... % MATLAB input
                 div.getAttribute( "class" ), "highlight-source-matlab" ) && ...
                 ~endsWith( div.TextContent, whitespacePattern() )
-            runDiv( div, w ) % zap
+            runDiv( div, w, theme ) % zap
         elseif div.hasAttribute( "class" ) && contains( ... % MATLAB output
                 div.getAttribute( "class" ), "highlight-output-matlab" )
             div.getParentNode().removeChild( div ); % remove
@@ -137,7 +141,7 @@ writer.writeToFile( doc, html, "utf-8" );
 
 end % run
 
-function runDiv( div, w )
+function runDiv( div, w, theme )
 %runDiv  Run MATLAB code from a div and insert output
 %
 %   runDiv(d,w) runs the MATLAB code from the div d in the workspace w, and
@@ -215,8 +219,11 @@ for jj = 1:numel( outFigures )
     outDiv = doc.createElement( "div" );
     outDiv.setAttribute( "class", "highlight highlight-output-matlab" );
     outImg = doc.createElement( "img" );
-    outImg.setAttribute( "src", "data:image/png;base64, " + ...
-        docmaker.encode( outFigure ) );
+    oldTheme = getTheme( outFigure );
+    setTheme( outFigure, theme )
+    outData = docmaker.encode( outFigure );
+    setTheme( outFigure, oldTheme )
+    outImg.setAttribute( "src", "data:image/png;base64, " + outData );
     outPosition = hgconvertunits( outFigure, outFigure.Position, ...
         outFigure.Units, "pixels", groot() ); % pixels
     outImg.setAttribute( "style", "width: " + outPosition(3) + ...
@@ -303,3 +310,33 @@ end
 s = strtrim( s ); % tidy
 
 end % rmlinks
+
+function t = getTheme( f )
+
+t = cell( size( f ) );
+for ii = 1:numel( f )
+    if isprop( f(ii), "Theme" )
+        t{ii} = f(ii).Theme;
+    else
+        t{ii} = "";
+    end
+end
+t = cell2mat( t );
+
+end
+
+function setTheme( f, t )
+
+% Handle inputs
+if ischar( t ), t = string( t ); end % convert
+if isscalar( t ), t = repmat( t, size( f ) ); end % scalar expand
+if isequal( t, "none" ), return, end
+
+% Set
+for ii = 1:numel( f )
+    if isprop( f(ii), "Theme" )
+        f(ii).Theme = t(ii);
+    end
+end
+
+end % setTheme

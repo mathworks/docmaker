@@ -34,7 +34,7 @@
                 "kind": "namevalue",
                 "type": [
                     "char",
-                    "choices={'auto','light','dark'}"
+                    "choices={'none','light','dark','auto'}"
                 ],
                 "purpose": "Theme"
             },
@@ -95,6 +95,15 @@
                     "choices={0,1,2,3,4,5,6}"
                 ],
                 "purpose": "batching level"
+            },
+            {
+                "name": "Theme",
+                "kind": "namevalue",
+                "type": [
+                    "char",
+                    "choices={'none','light','dark','auto'}"
+                ],
+                "purpose": "theme"
             }
         ]
     }
