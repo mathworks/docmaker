@@ -1,6 +1,6 @@
 {
     "_schemaVersion": "1.0.0",
-    "docstarconvert": {
+    "docconvert": {
         "inputs": [
             {
                 "mutuallyExclusiveGroup": [
@@ -58,7 +58,7 @@
             }
         ]
     },
-    "docstarrun": {
+    "docrun": {
         "inputs": [
             {
                 "mutuallyExclusiveGroup": [
