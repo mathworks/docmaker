@@ -6,7 +6,7 @@ classdef Workspace < handle & matlab.mixin.CustomDisplay
     %
     %   w = docmaker.Workspace() creates a private workspace.
 
-    %   Copyright 2007-2025 The MathWorks, Inc.
+    %   Copyright 2007-2026 The MathWorks, Inc.
 
     properties ( Access = private )
         Data % workspace data

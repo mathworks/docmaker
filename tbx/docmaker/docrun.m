@@ -18,7 +18,7 @@ function varargout = docrun( sHtml, options )
 %
 %   files = docrun(...) returns the names of the files modified.
 
-%   Copyright 2024-2025 The MathWorks, Inc.
+%   Copyright 2024-2026 The MathWorks, Inc.
 
 arguments ( Repeating )
     sHtml

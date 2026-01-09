@@ -9,7 +9,7 @@ function varargout = docindex( pRoot )
 %
 %   See also: docconvert, docrun, docdelete, builddocsearchdb
 
-%   Copyright 2020-2024 The MathWorks, Inc.
+%   Copyright 2020-2026 The MathWorks, Inc.
 
 arguments
     pRoot (1,1) string {mustBeFolder}

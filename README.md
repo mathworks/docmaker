@@ -95,4 +95,4 @@ From R2022b, you may wish to automate these steps using the [MATLAB Build Tool](
 
 DocMaker is developed by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) at [MathWorks](https://www.mathworks.com/services/consulting.html).
 
-DocMaker is in use at MathWorks for internal and consulting projects.  A public release is proposed for 2025.
+DocMaker is in use at MathWorks for internal and consulting projects.  A public release is proposed for 2026.
