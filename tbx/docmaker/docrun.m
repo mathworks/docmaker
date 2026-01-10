@@ -316,7 +316,7 @@ function img = createSimpleImage( doc, f )
 
 data = docmaker.encode( f );
 img = doc.createElement( "img" );
-img.setAttribute( "src", "data:image/png;base64, " + data );
+img.setAttribute( "src", "data:image/png;base64," + data );
 position = hgconvertunits( f, f.Position, ...
     f.Units, "pixels", groot() ); % pixels
 img.setAttribute( "style", "width: " + position(3) + ...
@@ -335,7 +335,7 @@ undo = onCleanup( @()set( f, "Theme", oldTheme ) );
 f.Theme = newTheme;
 data = docmaker.encode( f );
 img = doc.createElement( "img" );
-img.setAttribute( "src", "data:image/png;base64, " + data );
+img.setAttribute( "src", "data:image/png;base64," + data );
 position = hgconvertunits( f, f.Position, ...
     f.Units, "pixels", groot() ); % pixels
 img.setAttribute( "style", "width: " + position(3) + ...
@@ -371,7 +371,7 @@ darkSrc.setAttribute( "srcset", "data:image/png;base64," + darkData );
 %     "px; height: auto" ); % apply display scaling
 picture.appendChild( darkSrc );
 img = doc.createElement( "img" );
-img.setAttribute( "src", "data:image/png;base64, " + lightData );
+img.setAttribute( "src", "data:image/png;base64," + lightData );
 img.setAttribute( "style", "width: " + position(3) + ...
     "px; height: auto" ); % apply display scaling
 picture.appendChild( img );
