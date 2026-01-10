@@ -32,7 +32,7 @@ Multiple documents may also be specified using `docconvert(md1,md2,...)`.
 ```matlab
 docconvert("mickey/pluto.md") 
 ```
-converts a single Markdown document `mickey/pluto.md` to HTML.  Note that this path is *relative*.
+converts a single Markdown document `mickey/pluto.md` to HTML `mickey/pluto.html`.  Note that this path is *relative*.
 
 ```matlab
 docconvert("C:\daisy\mickey\pluto.md") 
