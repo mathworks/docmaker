@@ -34,7 +34,7 @@
                 "kind": "namevalue",
                 "type": [
                     "char",
-                    "choices={'none','light','dark','auto'}"
+                    "choices={'light','dark','auto'}"
                 ],
                 "purpose": "Theme"
             },
