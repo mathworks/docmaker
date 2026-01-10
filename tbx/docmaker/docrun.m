@@ -355,23 +355,18 @@ f.Theme = "light";
 lightData = docmaker.encode( f );
 f.Theme = "dark";
 darkData = docmaker.encode( f );
-position = hgconvertunits( f, f.Position, ...
-    f.Units, "pixels", groot() ); % pixels
 picture = doc.createElement( "picture" );
 lightSrc = doc.createElement( "source" );
 lightSrc.setAttribute( "media", "(prefers-color-scheme: light)" );
 lightSrc.setAttribute( "srcset", "data:image/png;base64," + lightData );
-% lightSrc.setAttribute( "style", "width: " + position(3) + ...
-%     "px; height: auto" ); % apply display scaling
 picture.appendChild( lightSrc );
 darkSrc = doc.createElement( "source" );
 darkSrc.setAttribute( "media", "(prefers-color-scheme: dark)" );
 darkSrc.setAttribute( "srcset", "data:image/png;base64," + darkData );
-% darkSrc.setAttribute( "style", "width: " + position(3) + ...
-%     "px; height: auto" ); % apply display scaling
 picture.appendChild( darkSrc );
 img = doc.createElement( "img" );
 img.setAttribute( "src", "data:image/png;base64," + lightData );
+position = hgconvertunits( f, f.Position, f.Units, "pixels", groot() ); % pixels
 img.setAttribute( "style", "width: " + position(3) + ...
     "px; height: auto" ); % apply display scaling
 picture.appendChild( img );
