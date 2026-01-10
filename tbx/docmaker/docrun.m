@@ -21,7 +21,8 @@ function varargout = docrun( sHtml, options )
 %   each block is run as a separate batch.
 %
 %   docrun(...,"Theme",t) specifies the theme t.  Available themes are
-%   "none" (as is, default), "light", "dark" and "auto" (responsive).
+%   "none" (as is, default), "light", "dark", "auto" (responsive), or a
+%   GraphicsTheme.
 %
 %   files = docrun(...) returns the names of the files modified.
 
@@ -33,8 +34,11 @@ end
 
 arguments
     options.Level (1,1) double {mustBeInteger,mustBeInRange(options.Level,0,7)} = 0
-    options.Theme (1,1) string {mustBeMember(options.Theme,["none","light","dark","auto"])} = "none"
+    options.Theme {mustBeTheme(options.Theme)} = "none"
 end
+
+% Validate inputs
+if ischar( options.Theme ), options.Theme = string( options.Theme ); end
 
 % Initialize output
 oFiles = strings( 0, 1 );
@@ -309,7 +313,7 @@ s = strtrim( s ); % tidy
 end % rmlinks
 
 function img = createSimpleImage( doc, f )
-%createSimpleImage  Create as-is image from figure
+%createSimpleImage  Create as is image from figure
 %
 %   e = createSimpleImage(doc,f) creates an image element from the figure f
 %   in the document doc.
@@ -372,3 +376,14 @@ img.setAttribute( "style", "width: " + position(3) + ...
 picture.appendChild( img );
 
 end % createResponsiveImage
+
+function mustBeTheme( t )
+%mustBeTheme  Validation function for optional named argument Theme
+
+themes = ["none","light","dark","auto"];
+assert( ( ischar( t ) && ismember( t, themes ) ) || ...
+    ( isstring( t ) && isscalar( t ) && ismember( t, themes ) ) || ...
+    ( isa( t, "matlab.graphics.theme.GraphicsTheme" ) && isscalar( t ) ), ...
+    "Theme must be ""none"", ""light"", ""dark"", ""auto"", or a GraphicsTheme." )
+
+end % mustBeTheme
