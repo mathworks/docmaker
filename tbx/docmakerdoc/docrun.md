@@ -48,6 +48,16 @@ docrun(["mickey/pluto.html" "mickey/donald.html"])
 ```
 processes *multiple* HTML documents.
 
+```matlab
+docrun("mickey/pluto.html","Theme","light") 
+```
+generates output in light mode.
+
+```matlab
+docrun("mickey/pluto.html","Theme","auto") 
+```
+generates responsive output -- light in light mode, dark in dark mode.  If `Theme` is not specified -- or is specified as `none` -- then output is generated in the current MATLAB mode.
+
 ## Description
 
 ### Steps
@@ -108,7 +118,7 @@ m = magic(4)
 Figures are inserted, at the on-screen size.
 
 ```matlab
-f = figure("Color",[213 80 0]/255,"Position",[1 1 400 300]);
+f = figure("Position",[1 1 400 300]);
 movegui(f,"center")
 peaks
 ```
