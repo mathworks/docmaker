@@ -218,16 +218,13 @@ for jj = 1:numel( outFigures )
     % Create HTML elements div, img
     outDiv = doc.createElement( "div" );
     outDiv.setAttribute( "class", "highlight highlight-output-matlab" );
-    outImg = doc.createElement( "img" );
-    oldTheme = getTheme( outFigure );
-    setTheme( outFigure, theme )
-    outData = docmaker.encode( outFigure );
-    setTheme( outFigure, oldTheme )
-    outImg.setAttribute( "src", "data:image/png;base64, " + outData );
-    outPosition = hgconvertunits( outFigure, outFigure.Position, ...
-        outFigure.Units, "pixels", groot() ); % pixels
-    outImg.setAttribute( "style", "width: " + outPosition(3) + ...
-        "px; height: auto" ); % apply display scaling
+    if ~isprop( outFigure, "Theme" ) || isequal( theme, "none" )
+        outImg = createSimpleImage( doc, outFigure );
+    elseif isequal( theme, "auto" )
+        outImg = createResponsiveImage( doc, outFigure );
+    else
+        outImg = createThemedImage( doc, outFigure, theme );
+    end
     outDiv.appendChild( outImg );
 
     % Add output to document
@@ -311,39 +308,72 @@ s = strtrim( s ); % tidy
 
 end % rmlinks
 
-function t = getTheme( f )
-%getTheme  Get figure theme
+function img = createSimpleImage( doc, f )
+%createSimpleImage  Create as-is image from figure
 %
-%   t = getTheme(f) returns the theme t of the figure f.
+%   e = createSimpleImage(doc,f) creates an image element from the figure f
+%   in the document doc.
 
-t = cell( size( f ) );
-for ii = 1:numel( f )
-    if isprop( f(ii), "Theme" )
-        t{ii} = f(ii).Theme;
-    else
-        t{ii} = "";
-    end
-end
-t = cell2mat( t );
+data = docmaker.encode( f );
+img = doc.createElement( "img" );
+img.setAttribute( "src", "data:image/png;base64, " + data );
+position = hgconvertunits( f, f.Position, ...
+    f.Units, "pixels", groot() ); % pixels
+img.setAttribute( "style", "width: " + position(3) + ...
+    "px; height: auto" ); % apply display scaling
 
-end % getTheme
+end % createSimpleImage
 
-function setTheme( f, t )
-%setTheme  Set figure theme
+function img = createThemedImage( doc, f, newTheme  )
+%createThemedImage  Create themed image from figure
 %
-%   setTheme(f,t) sets the theme of the figure f to the theme t.  t can be
-%   a string ("none", "light", "dark" or "auto") or a GraphicsTheme object.
+%   e = createThemedImage(doc,f,t) creates an image element from the figure
+%   f with the theme t in the document doc.
 
-% Handle inputs
-if ischar( t ), t = string( t ); end % convert
-if isscalar( t ), t = repmat( t, size( f ) ); end % scalar expand
-if isequal( t, "none" ), return, end
+oldTheme = f.Theme;
+undo = onCleanup( @()set( f, "Theme", oldTheme ) );
+f.Theme = newTheme;
+data = docmaker.encode( f );
+img = doc.createElement( "img" );
+img.setAttribute( "src", "data:image/png;base64, " + data );
+position = hgconvertunits( f, f.Position, ...
+    f.Units, "pixels", groot() ); % pixels
+img.setAttribute( "style", "width: " + position(3) + ...
+    "px; height: auto" ); % apply display scaling
 
-% Set
-for ii = 1:numel( f )
-    if isprop( f(ii), "Theme" )
-        f(ii).Theme = t(ii);
-    end
-end
+end % createThemedImage
 
-end % setTheme
+function picture = createResponsiveImage( doc, f )
+%createResponsiveImage  Create responsive image from figure
+%
+%   e = createThemedImage(doc,f) creates a responsive image element from
+%   the figure f in the document doc.
+
+oldTheme = f.Theme;
+undo = onCleanup( @()set( f, "Theme", oldTheme ) );
+f.Theme = "light";
+lightData = docmaker.encode( f );
+f.Theme = "dark";
+darkData = docmaker.encode( f );
+position = hgconvertunits( f, f.Position, ...
+    f.Units, "pixels", groot() ); % pixels
+picture = doc.createElement( "picture" );
+lightSrc = doc.createElement( "source" );
+lightSrc.setAttribute( "media", "(prefers-color-scheme: light)" );
+lightSrc.setAttribute( "srcset", "data:image/png;base64, " + lightData );
+% lightSrc.setAttribute( "style", "width: " + position(3) + ...
+%     "px; height: auto" ); % apply display scaling
+% picture.appendChild( lightSrc );
+darkSrc = doc.createElement( "source" );
+darkSrc.setAttribute( "media", "(prefers-color-scheme: dark)" );
+darkSrc.setAttribute( "srcset", "data:image/png;base64, " + darkData );
+% darkSrc.setAttribute( "style", "width: " + position(3) + ...
+%     "px; height: auto" ); % apply display scaling
+% picture.appendChild( darkSrc );
+img = doc.createElement( "img" );
+img.setAttribute( "src", "data:image/png;base64, " + lightData );
+img.setAttribute( "style", "width: " + position(3) + ...
+    "px; height: auto" ); % apply display scaling
+picture.appendChild( img );
+
+end % createResponsiveImage
