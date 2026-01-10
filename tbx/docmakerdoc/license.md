@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 ## Third-party licenses
 
-[sindresorhus/github-markdown-css](https://github.com/sindresorhus/github-markdown-css) is licensed under the **MIT License**:
+[github-markdown-css](https://github.com/sindresorhus/github-markdown-css) is licensed under the **MIT License**:
 
 ```
 MIT License
