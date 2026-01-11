@@ -21,8 +21,8 @@ plan( "test" ).Dependencies = "check";
 doc = fullfile( prj, "tbx", "docmakerdoc" );
 plan( "doc" ).Inputs = doc;
 plan( "doc" ).Outputs = [ ...
-    fullfile( doc, "**", "*.html" ), fullfile( doc, "resources" ), ...
-    fullfile( doc, "*.xml" ), fullfile( doc, "helpsearch-v4_en" )];
+    fullfile( doc, "**", "*.html" ), fullfile( doc, "*.xml" ), ...
+    fullfile( doc, "resources" ), fullfile( doc, "helpsearch-v4*" )];
 
 % Package task
 plan( "package" ).Dependencies = ["test", "doc"];
