@@ -20,6 +20,9 @@ function varargout = docrun( sHtml, options )
 %   workspace cleared and figures closed between batches.  With level 7,
 %   each block is run as a separate batch.
 %
+%   docrun(...,"FigureSize",s) specifies the default figure size s, in
+%   default figure Units.
+%
 %   docrun(...,"Theme",t) specifies the theme t.  Available themes are
 %   "none" (as is, default), "light", "dark", "auto" (responsive), or a
 %   GraphicsTheme.
@@ -44,7 +47,10 @@ if ischar( options.Theme ), options.Theme = string( options.Theme ); end
 % Set default figure size, temporarily
 oldWindowStyle = get( 0, "DefaultFigureWindowStyle" ); % old default
 oldPosition = get( 0, "DefaultFigurePosition" ); % old default
-set( 0, "DefaultFigurePosition", [1 1 options.FigureSize] ) % override
+screenSize = get( 0, "ScreenSize" ); % primary
+newPosition = [screenSize(1:2) + (screenSize(3:4)-options.FigureSize)/2, ...
+    options.FigureSize]; % centered
+set( 0, "DefaultFigurePosition", newPosition ) % override
 undo = onCleanup( @()set( 0, "DefaultFigureWindowStyle", oldWindowStyle, ...
     "DefaultFigurePosition", oldPosition ) ); % revert
 
