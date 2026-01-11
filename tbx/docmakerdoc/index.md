@@ -125,16 +125,22 @@ Specifying the outputs in this way enables:
 ### FAQs
 
 How do I ensure that MATLAB&#174; DocMaker is available in my developer and build environments?
-* You could script installation from a known location in the project setup or the `buildfile`: `matlab.addons.install("path/to/DocMaker.mltbx")`
-* You could use a package manager such as [Package Jockey](https://insidelabs-git.mathworks.com/dsampson/pj) from [MathWorks Consulting](https://www.mathworks.com/consulting/): `pjadd docmaker`
+* You can check that DocMaker is available using `ver`.  :point_right: `ver("docmaker")`.
+* You could script installation from a known location in the project setup or the `buildfile`.  :point_right: `matlab.addons.install("path/to/DocMaker.mltbx")`
+* You could use a package manager such as [Package Jockey](https://insidelabs-git.mathworks.com/dsampson/pj) from [MathWorks Consulting](https://www.mathworks.com/consulting/).  :point_right: `pjadd docmaker`
 
 Where in my project should I put my documentation source?
 * You could put your Markdown files under the toolbox root.  This is useful when you are including examples that need to be on the path.  You may then wish to exclude the Markdown files from packaging.
 * You can put your Markdown files outside the toolbox root.  You will need to move the generated HTML and other artifacts to under the toolbox root for packaging.  You should adapt the build task outputs accordingly.
 
 Should I generate responsive documentation?
-* For viewing as part of the MATLAB documentation, especially prior to R2025a, light mode works best: `docconvert ... Theme light`, `docrun ... Theme light`
-* For viewing standalone, responsive mode works well: `docconvert ... Theme auto`, `docrun ... Theme auto`
+* For viewing as part of the MATLAB documentation, especially prior to R2025a, light mode works best.  :point_right: `docconvert ... Theme light`, `docrun ... Theme light`
+* For viewing standalone, responsive mode works well.  :point_right: `docconvert ... Theme auto`, `docrun ... Theme auto`
+
+How can I control the size of images in my documentation?
+* DocMaker honors on-screen size when inserting figures into documentation.
+* You may wish to set the default figure size in your build task, before `docrun`.  You should also ensure that figures are undocked by default.  :point_right: `set(0,"DefaultFigureWindowStyle","normal","DefaultFigurePosition",[x y w h])`
+* You should reset the default `WindowStyle` and `Position` back to the original values at the end of the build task.
 
 ___
 
