@@ -118,8 +118,7 @@ m = magic(4)
 Figures are inserted, at the on-screen size.
 
 ```matlab
-f = figure("Position",[1 1 400 300]);
-movegui(f,"center")
+f = figure();
 peaks
 ```
 
