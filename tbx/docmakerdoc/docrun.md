@@ -10,6 +10,8 @@ Multiple documents may also be specified using `docrun(html1,html2,...)`.
  
 `docrun(...,"Level",n)` specifies the batching level `n`.  With level 0 (default), all blocks in a document are run in a single batch. With level `n`, each level-n heading is run as a separate batch, with the workspace cleared and figures closed between batches.  With level 7, each block is run as a separate batch.
 
+`docrun(...,"FigureSize",s)` sets the default figure size `s`.  Size is `[width height]` in default figure `Units`.
+
 `docrun(...,"Theme",t)` sets the theme `t`.  Available themes are `none` (as is, default), `light`, `dark`, and `auto` (responsive).
 
 `files = docrun(...)` returns the names of the files modified.
@@ -18,6 +20,7 @@ Multiple documents may also be specified using `docrun(html1,html2,...)`.
 | :-: | --- | :-: | :-: |
 | `html`:arrow_right: | HTML document(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | yes |
 | `n`:arrow_right: | batching level, from 0 to 7; default is 0 | double | :test_tube: |
+| `s`:arrow_right: | default figure size, in default figure `Units` | double | |
 | `t`:arrow_right: | theme: `none`, `light`, `dark`, or `auto`; default is `none` | string(s) | |
 | :arrow_right:`files` | HTML document(s) modified, as an absolute path | string(s) | |
 
@@ -57,6 +60,11 @@ generates output in light mode.
 docrun("mickey/pluto.html","Theme","auto") 
 ```
 generates responsive output -- light in light mode, dark in dark mode.  If `Theme` is not specified -- or is specified as `none` -- then output is generated in the current MATLAB mode.
+
+```matlab
+docrun("mickey/pluto.html","FigureSize",[600 400]) 
+```
+sets the default figure size to 600 wide by 400 high.  The previous default figure size is restored when `docrun` completes.
 
 ## Description
 
