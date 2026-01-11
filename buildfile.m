@@ -5,22 +5,29 @@ function plan = buildfile()
 
 % Create a plan from task functions
 plan = buildplan( localfunctions() );
+prj = plan.RootFolder;
 
 % Add standard tasks
 plan( "clean" ) = matlab.buildtool.tasks.CleanTask;
 
-% Set up task inputs and dependencies
-projectRoot = plan.RootFolder;
-testFolder = fullfile( projectRoot, "tests" );
-codeFolder = fullfile( projectRoot, "tbx" );
-plan( "test" ) = matlab.buildtool.tasks.TestTask( testFolder, ...
-    "Strict", true, ...
-    "SourceFiles", codeFolder );
+% Test task
+tbx = fullfile( prj, "tbx" );
+test = fullfile( prj, "tests" );
+plan( "test" ) = matlab.buildtool.tasks.TestTask( test, ...
+    "SourceFiles", tbx, "Strict", true );
 plan( "test" ).Dependencies = "check";
-plan( "doc" ).Inputs = fullfile( projectRoot, "tbx", "docmakerdoc" );
+
+% Documentation task
+doc = fullfile( prj, "tbx", "docmakerdoc" );
+plan( "doc" ).Inputs = doc;
+plan( "doc" ).Outputs = [ ...
+    fullfile( doc, "**", "*.html" ), fullfile( doc, "resources" ), ...
+    fullfile( doc, "*.xml" ), fullfile( doc, "helpsearch-v4_en" )];
+
+% Package task
 plan( "package" ).Dependencies = ["test", "doc"];
 
-% Set default task
+% Default task
 plan.DefaultTasks = "package";
 
 end % buildfile
@@ -54,29 +61,26 @@ function docTask( c )
 % Generate documentation
 
 % Documentation folder
-d = c.Task.Inputs.Path;
-
-% Remove old documentation
-docdelete( d )
-fprintf( 1, "** Deleted old doc\n" )
+doc = c.Task.Inputs.Path;
 
 % Convert Markdown to HTML
-docconvert( fullfile( d, "**/*.md" ), "Theme", "light" )
+md = fullfile( doc, "**", "*.md" );
+html = docconvert( md, "Theme", "light" );
 fprintf( 1, "** Converted Markdown doc to HTML\n" )
 
 % Temporarily override graphics defaults
 g = groot();
 st = get( g, "DefaultFigureWindowStyle" ); % capture default
 po = get( g, "DefaultFigurePosition" ); % capture default
-cl = onCleanup( @()set(g,"DefaultFigureWindowStyle",st,"DefaultFigurePosition",po) ); % reset defaults
+undo = onCleanup( @()set(g,"DefaultFigureWindowStyle",st,"DefaultFigurePosition",po) ); % reset defaults
 set( g, "DefaultFigureWindowStyle", "normal", "DefaultFigurePosition", [100 100 400 300] ) % override defaults
 
 % Run code and insert output
-docrun( fullfile( d, "**/*.html" ), "Theme", "light" )
+docrun( html, "Theme", "light" )
 fprintf( 1, "** Inserted MATLAB output into doc\n" )
 
 % Index documentation
-docindex( d )
+docindex( doc )
 fprintf( 1, "** Indexed doc\n" )
 
 end % docTask
