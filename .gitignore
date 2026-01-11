@@ -1,7 +1,6 @@
 # List of untracked files to ignore
 .buildtool
 tbx/docmakerdoc/**/*.html
-tbx/docmakerdoc/**/*.png
 tbx/docmakerdoc/helptoc.xml
 tbx/docmakerdoc/info.xml
 tbx/docmakerdoc/custom_toolbox.json
