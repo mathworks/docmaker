@@ -133,7 +133,7 @@ Where in my project should I put my documentation source?
 * You can put your Markdown files outside the toolbox root.  You will need to move the generated HTML and other artifacts to under the toolbox root for packaging.  You should adapt the build task outputs accordingly.
 
 Should I generate responsive documentation?
-* For viewing as part of the MATLAB documentation, especially prior to R2025a, light mode is preferred: `docconvert ... Theme light`, `docrun ... Theme light`
+* For viewing as part of the MATLAB documentation, especially prior to R2025a, light mode works best: `docconvert ... Theme light`, `docrun ... Theme light`
 * For viewing standalone, responsive mode works well: `docconvert ... Theme auto`, `docrun ... Theme auto`
 
 ___
