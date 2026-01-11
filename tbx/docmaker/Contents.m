@@ -1,5 +1,5 @@
 % MATLAB DocMaker
-% Version 0.6 (R2025b) 09-Jan-2026
+% Version 0.6 (R2025b) 11-Jan-2026
 %
 % docconvert - convert Markdown documents to HTML
 % docrun     - run MATLAB code in HTML documents and insert output
