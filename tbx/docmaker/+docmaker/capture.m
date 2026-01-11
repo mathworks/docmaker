@@ -22,7 +22,6 @@ end
 % Temporarily center on screen
 p = fig.Position;
 undo = onCleanup( @()set(fig,"Position",p));
-movegui( fig, "center" );
 
 % Capture
 [x, ~] = getframe( fig );
