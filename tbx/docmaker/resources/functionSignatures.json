@@ -104,6 +104,12 @@
                     "choices={'none','light','dark','auto'}"
                 ],
                 "purpose": "theme"
+            },
+            {
+                "name": "FigureSize",
+                "kind": "namevalue",
+                "type": ["double","positive","size=1,2"],
+                "purpose": "figuresize"
             }
         ]
     }

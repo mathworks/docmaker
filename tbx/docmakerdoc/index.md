@@ -137,11 +137,6 @@ Should I generate responsive documentation?
 * For viewing as part of the MATLAB documentation, especially prior to R2025a, light mode works best.  :point_right: `docconvert ... Theme light`, `docrun ... Theme light`
 * For viewing standalone, responsive mode works well.  :point_right: `docconvert ... Theme auto`, `docrun ... Theme auto`
 
-How can I control the size of images in my documentation?
-* DocMaker honors on-screen size when inserting figures into documentation.
-* You may wish to set the default figure size in your build task, before `docrun`.  You should also ensure that figures are undocked by default.  :point_right: `set(0,"DefaultFigureWindowStyle","normal","DefaultFigurePosition",[x y w h])`
-* You should reset the default `WindowStyle` and `Position` back to the original values at the end of the build task.
-
 ___
 
 [home](index.md) :house: | [convert](docconvert.md) :arrow_right: | [run](docrun.md) :runner: | [index](docindex.md) :scroll: | [delete](docdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hatching_chick: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2026

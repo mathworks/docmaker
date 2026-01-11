@@ -19,6 +19,10 @@ for ii = 1:numel( ax )
     ax(ii).Toolbar.Visible = false;
 end
 
+% Temporarily center on screen
+p = fig.Position;
+undo = onCleanup( @()set(fig,"Position",p));
+
 % Capture
 [x, ~] = getframe( fig );
 

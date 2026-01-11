@@ -5,6 +5,7 @@
 * Changed name from "Doc_er" to "MATLAB&#174; DocMaker"
 * Changed function names from `docer...` to `doc...`
 * Added theme support to `docrun`
+* Specify default figure size for `docrun`
 * Changed token secret to `DocMaker GitHub token`
 
 ## Version 0.5.1

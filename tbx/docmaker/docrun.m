@@ -20,6 +20,9 @@ function varargout = docrun( sHtml, options )
 %   workspace cleared and figures closed between batches.  With level 7,
 %   each block is run as a separate batch.
 %
+%   docrun(...,"FigureSize",s) specifies the default figure size s, in
+%   default figure Units.
+%
 %   docrun(...,"Theme",t) specifies the theme t.  Available themes are
 %   "none" (as is, default), "light", "dark", "auto" (responsive), or a
 %   GraphicsTheme.
@@ -35,10 +38,21 @@ end
 arguments
     options.Level (1,1) double {mustBeInteger,mustBeInRange(options.Level,0,7)} = 0
     options.Theme {mustBeTheme(options.Theme)} = "none"
+    options.FigureSize (1,2) double {mustBePositive,mustBeReal} = getDefaultFigureSize()
 end
 
 % Validate inputs
 if ischar( options.Theme ), options.Theme = string( options.Theme ); end
+
+% Set default figure size, temporarily
+oldWindowStyle = get( 0, "DefaultFigureWindowStyle" ); % old default
+oldPosition = get( 0, "DefaultFigurePosition" ); % old default
+screenSize = get( 0, "ScreenSize" ); % primary
+newPosition = [screenSize(1:2) + (screenSize(3:4)-options.FigureSize)/2, ...
+    options.FigureSize]; % centered
+set( 0, "DefaultFigurePosition", newPosition ) % override
+undo = onCleanup( @()set( 0, "DefaultFigureWindowStyle", oldWindowStyle, ...
+    "DefaultFigurePosition", oldPosition ) ); % revert
 
 % Initialize output
 oFiles = strings( 0, 1 );
@@ -312,53 +326,53 @@ s = strtrim( s ); % tidy
 
 end % rmlinks
 
-function img = createSimpleImage( doc, f )
+function img = createSimpleImage( doc, fig )
 %createSimpleImage  Create as is image from figure
 %
 %   e = createSimpleImage(doc,f) creates an image element from the figure f
 %   in the document doc.
 
-data = docmaker.encode( f );
+data = docmaker.encode( fig );
 img = doc.createElement( "img" );
 img.setAttribute( "src", "data:image/png;base64," + data );
-position = hgconvertunits( f, f.Position, ...
-    f.Units, "pixels", groot() ); % pixels
+position = hgconvertunits( fig, fig.Position, ...
+    fig.Units, "pixels", groot() ); % pixels
 img.setAttribute( "style", "width: " + position(3) + ...
     "px; height: auto" ); % apply display scaling
 
 end % createSimpleImage
 
-function img = createThemedImage( doc, f, newTheme  )
+function img = createThemedImage( doc, fig, newTheme  )
 %createThemedImage  Create themed image from figure
 %
 %   e = createThemedImage(doc,f,t) creates an image element from the figure
 %   f with the theme t in the document doc.
 
-oldTheme = f.Theme;
-undo = onCleanup( @()set( f, "Theme", oldTheme ) );
-f.Theme = newTheme;
-data = docmaker.encode( f );
+oldTheme = fig.Theme;
+undo = onCleanup( @()set( fig, "Theme", oldTheme ) );
+fig.Theme = newTheme;
+data = docmaker.encode( fig );
 img = doc.createElement( "img" );
 img.setAttribute( "src", "data:image/png;base64," + data );
-position = hgconvertunits( f, f.Position, ...
-    f.Units, "pixels", groot() ); % pixels
+position = hgconvertunits( fig, fig.Position, ...
+    fig.Units, "pixels", groot() ); % pixels
 img.setAttribute( "style", "width: " + position(3) + ...
     "px; height: auto" ); % apply display scaling
 
 end % createThemedImage
 
-function picture = createResponsiveImage( doc, f )
+function picture = createResponsiveImage( doc, fig )
 %createResponsiveImage  Create responsive image from figure
 %
 %   e = createThemedImage(doc,f) creates a responsive image element from
 %   the figure f in the document doc.
 
-oldTheme = f.Theme;
-undo = onCleanup( @()set( f, "Theme", oldTheme ) );
-f.Theme = "light";
-lightData = docmaker.encode( f );
-f.Theme = "dark";
-darkData = docmaker.encode( f );
+oldTheme = fig.Theme;
+undo = onCleanup( @()set( fig, "Theme", oldTheme ) );
+fig.Theme = "light";
+lightData = docmaker.encode( fig );
+fig.Theme = "dark";
+darkData = docmaker.encode( fig );
 picture = doc.createElement( "picture" );
 lightSrc = doc.createElement( "source" );
 lightSrc.setAttribute( "media", "(prefers-color-scheme: light)" );
@@ -370,20 +384,28 @@ darkSrc.setAttribute( "srcset", "data:image/png;base64," + darkData );
 picture.appendChild( darkSrc );
 img = doc.createElement( "img" );
 img.setAttribute( "src", "data:image/png;base64," + lightData );
-position = hgconvertunits( f, f.Position, f.Units, "pixels", groot() ); % pixels
+position = hgconvertunits( fig, fig.Position, fig.Units, "pixels", groot() ); % pixels
 img.setAttribute( "style", "width: " + position(3) + ...
     "px; height: auto" ); % apply display scaling
 picture.appendChild( img );
 
 end % createResponsiveImage
 
-function mustBeTheme( t )
+function mustBeTheme( theme )
 %mustBeTheme  Validation function for optional named argument Theme
 
 themes = ["none","light","dark","auto"];
-assert( ( ischar( t ) && ismember( t, themes ) ) || ...
-    ( isstring( t ) && isscalar( t ) && ismember( t, themes ) ) || ...
-    ( isa( t, "matlab.graphics.theme.GraphicsTheme" ) && isscalar( t ) ), ...
+assert( ( ischar( theme ) && ismember( theme, themes ) ) || ...
+    ( isstring( theme ) && isscalar( theme ) && ismember( theme, themes ) ) || ...
+    ( isa( theme, "matlab.graphics.theme.GraphicsTheme" ) && isscalar( theme ) ), ...
     "Theme must be ""none"", ""light"", ""dark"", ""auto"", or a GraphicsTheme." )
 
 end % mustBeTheme
+
+function s = getDefaultFigureSize()
+%getDefaultFigureSize  Default figure size
+
+p = get( 0, "DefaultFigurePosition" ); % [x y w h]
+s = p(3:4); % [w h]
+
+end % getDefaultFigureSize
