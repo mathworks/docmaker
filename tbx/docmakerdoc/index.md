@@ -40,7 +40,7 @@ setpref("docmaker","token",token)
 
 ## Working with DocMaker
 
-### Write documentation
+### Writing documentation
 
 Write documentation in Markdown using your favorite editor.  Include code, images, and links.  To designate a MATLAB code block ` ```matlab ` as for *display only*, not evaluation, add trailing whitespace to the last line.  You can use the DocMaker documentation as inspiration for your own documentation!
 
@@ -61,7 +61,7 @@ For example:
 
 If you need a list item to group child items, specify an empty link URL, e.g. `* [Function reference]()`.  Other content in `helptoc.md` -- including additional links and normal text in list items -- is ignored by but harmless to [`docindex`](docindex.md).
 
-### Publish documentation
+### Publishing documentation
 
 First, use [`docconvert`](docconvert.md) to convert your Markdown documents to HTML.  Next, use [`docrun`](docrun.md) to run MATLAB code blocks in the HTML documents and insert textual and graphical output.  Finally, use [`docindex`](docindex.md) to generate documentation index files.  Here is a complete example, to generate the DocMaker documentation:
 
@@ -73,13 +73,18 @@ docindex tbx/docmakerdoc
 
 Before you start, you may wish to delete previous DocMaker artifacts using [`docdelete`](docdelete.md).
 
-### Automate DevOps
+## Automating documentation generation
 
-You should commit your source files (`.md`, `.m`), but not the DocMaker generated files (`.html`, `.xml`), to source control.  An example `.gitignore` snippet, from DocMaker, is:
+In this age of DevOps, you will want to automate the generation of documentation as part of toolbox publishing.  This is achieved best by using projects, source control integration, and (from R2022b) the [MATLAB Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html).
+
+Here we set out an example using DocMaker itself.  You can adapt this example to your needs.
+
+### Tracking files
+
+Add only source artifacts (`*.md`, `*.m`) -- not generated artifacts (`*.html`, `*.xml`) -- to Git via `.gitignore`:
 
 ```
 tbx/docmakerdoc/**/*.html
-tbx/docmakerdoc/**/*.png
 tbx/docmakerdoc/info.xml
 tbx/docmakerdoc/helptoc.xml
 tbx/docmakerdoc/custom_toolbox.json
@@ -87,9 +92,49 @@ tbx/docmakerdoc/resources
 tbx/docmakerdoc/helpsearch-v*
 ```
 
-You should package the generated files, and optionally the source files, for distribution.
+### Generating documentation
 
-From R2022b, you may wish to automate these steps using the [MATLAB Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html).
+Create a build task to generate the documentation:
+
+```matlab
+function docTask(c)
+
+doc = c.Task.Inputs.Path; % source folder
+md = fullfile(doc,"**","*.md"); % Markdown files
+html = docconvert(md); % convert to HTML
+docrun(html) % run code and insert output
+docindex(doc) % index
+
+end 
+```
+
+Specify the task inputs and outputs:
+
+```matlab
+plan("doc").Inputs = doc; % source folder
+plan("doc").Outputs = [fullfile(doc,"**","*.html"), ... % output HTML
+    fullfile(doc,"*.xml"), ... % helptoc.xml and info.xml
+    fullfile(doc,"resources"), ... % stylesheets and scripts
+    fullfile(doc,"helpsearch-v4*")]; % search database 
+```
+
+Specifying the outputs in this way enables:
+1. incremental build: the task will be skipped if the input and output have not changed since the task last ran successfully
+2. output clean: `buildtool clean` will remove generated artifacts, without the need to call `docdelete` explicitly
+
+### FAQs
+
+How do I ensure that MATLAB&#174; DocMaker is available in my developer and build environments?
+* You could script installation from a known location in the project setup or the `buildfile`: `matlab.addons.install("path/to/DocMaker.mltbx")`
+* You could use a package manager such as [Package Jockey](https://insidelabs-git.mathworks.com/dsampson/pj) from [MathWorks Consulting](https://www.mathworks.com/consulting/): `pjadd docmaker`
+
+Where in my project should I put my documentation source?
+* You could put your Markdown files under the toolbox root.  This is useful when you are including examples that need to be on the path.  You may then wish to exclude the Markdown files from packaging.
+* You can put your Markdown files outside the toolbox root.  You will need to move the generated HTML and other artifacts to under the toolbox root for packaging.  You should adapt the build task outputs accordingly.
+
+Should I generate responsive documentation?
+* For viewing as part of the MATLAB documentation, especially prior to R2025a, light mode is preferred: `docconvert ... Theme light`, `docrun ... Theme light`
+* For viewing standalone, responsive mode works well: `docconvert ... Theme auto`, `docrun ... Theme auto`
 
 ___
 
