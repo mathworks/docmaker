@@ -35,7 +35,7 @@ end
 arguments
     options.Level (1,1) double {mustBeInteger,mustBeInRange(options.Level,0,7)} = 0
     options.Theme {mustBeTheme(options.Theme)} = "none"
-    options.FigurePosition (1,2) double {mustBePositive,mustBeReal} = getDefaultFigureSize()
+    options.FigureSize (1,2) double {mustBePositive,mustBeReal} = getDefaultFigureSize()
 end
 
 % Validate inputs
@@ -44,7 +44,7 @@ if ischar( options.Theme ), options.Theme = string( options.Theme ); end
 % Set default figure size, temporarily
 oldWindowStyle = get( 0, "DefaultFigureWindowStyle" ); % old default
 oldPosition = get( 0, "DefaultFigurePosition" ); % old default
-set( 0, "DefaultFigurePosition", [1 1 options.FigurePosition] ) % override
+set( 0, "DefaultFigurePosition", [1 1 options.FigureSize] ) % override
 undo = onCleanup( @()set( 0, "DefaultFigureWindowStyle", oldWindowStyle, ...
     "DefaultFigurePosition", oldPosition ) ); % revert
 

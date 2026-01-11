@@ -68,15 +68,8 @@ md = fullfile( doc, "**", "*.md" );
 html = docconvert( md, "Theme", "light" );
 fprintf( 1, "** Converted Markdown doc to HTML\n" )
 
-% Temporarily override graphics defaults
-g = groot();
-st = get( g, "DefaultFigureWindowStyle" ); % capture default
-po = get( g, "DefaultFigurePosition" ); % capture default
-undo = onCleanup( @()set(g,"DefaultFigureWindowStyle",st,"DefaultFigurePosition",po) ); % reset defaults
-set( g, "DefaultFigureWindowStyle", "normal", "DefaultFigurePosition", [100 100 400 300] ) % override defaults
-
 % Run code and insert output
-docrun( html, "Theme", "light" )
+docrun( html, "Theme", "light", "FigureSize", [600 400] )
 fprintf( 1, "** Inserted MATLAB output into doc\n" )
 
 % Index documentation
