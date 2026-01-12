@@ -1,8 +1,28 @@
-# Automating documentation generation
+# Build automation
 
 In this age of DevOps, you will want to automate the generation of documentation as part of toolbox publishing.  This is achieved best by using projects, source control integration, and (from R2022b) the [MATLAB Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html).
 
 Here we set out an example using DocMaker itself.  You can adapt this example to your needs.
+
+## Provisioning DocMaker
+
+You should provision DocMaker in both the developer and automation environments.  You can check that DocMaker is available using `ver`.
+
+```matlab
+ver("docmaker") 
+```
+
+You can script installation from a known location in the project setup or the `buildfile`.
+
+```matlab
+matlab.addons.install("path/to/DocMaker.mltbx") 
+```
+
+Alternatively, you can use a package manager such as [Package Jockey](https://insidelabs-git.mathworks.com/dsampson/pj) from [MathWorks Consulting](https://www.mathworks.com/consulting/).
+
+```matlab
+pjadd docmaker 
+```
 
 ## Tracking files
 
@@ -48,11 +68,6 @@ Specifying the outputs in this way enables:
 2. output clean: `buildtool clean` will remove generated artifacts, without the need to call `docdelete` explicitly
 
 ## FAQs
-
-How do I ensure that MATLAB&#174; DocMaker is available in my developer and build environments?
-* You can check that DocMaker is available using `ver`.  :point_right: `ver("docmaker")`.
-* You could script installation from a known location in the project setup or the `buildfile`.  :point_right: `matlab.addons.install("path/to/DocMaker.mltbx")`
-* You could use a package manager such as [Package Jockey](https://insidelabs-git.mathworks.com/dsampson/pj) from [MathWorks Consulting](https://www.mathworks.com/consulting/).  :point_right: `pjadd docmaker`
 
 Where in my project should I put my documentation source?
 * You could put your Markdown files under the toolbox root.  This is useful when you are including examples that need to be on the path.  You may then wish to exclude the Markdown files from packaging.
