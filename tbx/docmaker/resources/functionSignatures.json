@@ -109,7 +109,7 @@
                 "name": "FigureSize",
                 "kind": "namevalue",
                 "type": ["double","positive","size=1,2"],
-                "purpose": "figuresize"
+                "purpose": "figure size"
             }
         ]
     }
