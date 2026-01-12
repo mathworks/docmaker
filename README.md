@@ -1,4 +1,4 @@
-# MATLAB DocMaker :hatching_chick:
+# MATLAB&#174; DocMaker :hatching_chick:
 
 DocMaker is a tool for generating MATLAB toolbox documentation.
 
@@ -25,7 +25,7 @@ DocMaker is distributed as a MATLAB toolbox file (`.mltbx`).  See the MATLAB doc
 
 DocMaker uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) to convert from Markdown to HTML.  Requests to this service are rate limited, and [authenticated requests](https://docs.github.com/en/rest/authentication/authenticating-to-the-rest-api) get a higher limit.  To authenticate, [generate a GitHub access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) (with no permissions), and register the token with MATLAB. MATLAB looks for the token:
 
-1. first, in the [ environment variable](https://www.mathworks.com/help/matlab/ref/setenv.html) `docmaker_GITHUB_TOKEN`
+1. first, in the [environment variable](https://www.mathworks.com/help/matlab/ref/setenv.html) `DOCMAKER_GITHUB_TOKEN`
 ```matlab
 setenv("DOCMAKER_GITHUB_TOKEN",token)
 ```
@@ -40,7 +40,7 @@ setpref("docmaker","token",token)
 
 ## Working with DocMaker
 
-### Write documentation
+### Writing documentation
 
 Write documentation in Markdown using your favorite editor.  Include code, images, and links.  To designate a MATLAB code block ` ```matlab ` as for *display only*, not evaluation, add trailing whitespace to the last line.  You can use the DocMaker documentation as inspiration for your own documentation!
 
@@ -53,15 +53,15 @@ For example:
 ```md
 # Ducks Toolbox
 
-* [Getting started](./tbx/docmakerdoc/index.md)
-  * [Huey](./tbx/docmakerdoc/huey.md)
-  * [Louie](./tbx/docmakerdoc/louie.md)
-  * [Dewey](./tbx/docmakerdoc/dewey.md)
+* [Getting started](index.md)
+  * [Huey](huey.md)
+  * [Louie](louie.md)
+  * [Dewey](dewey.md)
 ```
 
-If you need a list item to group child items, specify an empty link URL, e.g. `* [Function reference](./tbx/docmakerdoc/)`.  Other content in `helptoc.md` -- including additional links and normal text in list items -- is ignored by but harmless to [`docindex`](./tbx/docmakerdoc/docindex.md).
+If you need a list item to group child items, specify an empty link URL, e.g. `* [Function reference]()`.  Other content in `helptoc.md` -- including additional links and normal text in list items -- is ignored by but harmless to [`docindex`](./tbx/docmakerdoc/docindex.md).
 
-### Publish documentation
+### Publishing documentation
 
 First, use [`docconvert`](./tbx/docmakerdoc/docconvert.md) to convert your Markdown documents to HTML.  Next, use [`docrun`](./tbx/docmakerdoc/docrun.md) to run MATLAB code blocks in the HTML documents and insert textual and graphical output.  Finally, use [`docindex`](./tbx/docmakerdoc/docindex.md) to generate documentation index files.  Here is a complete example, to generate the DocMaker documentation:
 
@@ -73,13 +73,18 @@ docindex tbx/docmakerdoc
 
 Before you start, you may wish to delete previous DocMaker artifacts using [`docdelete`](./tbx/docmakerdoc/docdelete.md).
 
-### Automate DevOps
+## Automating documentation generation
 
-You should commit your source files (`.md`, `.m`), but not the DocMaker generated files (`.html`, `.xml`), to source control.  An example `.gitignore` snippet, from DocMaker, is:
+In this age of DevOps, you will want to automate the generation of documentation as part of toolbox publishing.  This is achieved best by using projects, source control integration, and (from R2022b) the [MATLAB Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html).
+
+Here we set out an example using DocMaker itself.  You can adapt this example to your needs.
+
+### Tracking files
+
+Add only source artifacts (`*.md`, `*.m`) -- not generated artifacts (`*.html`, `*.xml`) -- to Git via `.gitignore`:
 
 ```
 tbx/docmakerdoc/**/*.html
-tbx/docmakerdoc/**/*.png
 tbx/docmakerdoc/info.xml
 tbx/docmakerdoc/helptoc.xml
 tbx/docmakerdoc/custom_toolbox.json
@@ -87,9 +92,35 @@ tbx/docmakerdoc/resources
 tbx/docmakerdoc/helpsearch-v*
 ```
 
-You should package the generated files, and optionally the source files, for distribution.
+### Generating documentation
 
-From R2022b, you may wish to automate these steps using the [MATLAB Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html).
+Create a build task to generate the documentation:
+
+```matlab
+function docTask(c)
+
+doc = c.Task.Inputs.Path; % source folder
+md = fullfile(doc,"**","*.md"); % Markdown files
+html = docconvert(md); % convert to HTML
+docrun(html) % run code and insert output
+docindex(doc) % index
+
+end 
+```
+
+Specify the task inputs and outputs:
+
+```matlab
+plan("doc").Inputs = doc; % source folder
+plan("doc").Outputs = [fullfile(doc,"**","*.html"), ... % output HTML
+    fullfile(doc,"*.xml"), ... % helptoc.xml and info.xml
+    fullfile(doc,"resources"), ... % stylesheets and scripts
+    fullfile(doc,"helpsearch-v4*")]; % search database 
+```
+
+Specifying the outputs in this way enables:
+1. incremental build: the task will be skipped if the input and output have not changed since the task last ran successfully
+2. output clean: `buildtool clean` will remove generated artifacts, without the need to call `docdelete` explicitly
 
 ## Project status
 
