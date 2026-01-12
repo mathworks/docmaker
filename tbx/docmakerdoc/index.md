@@ -155,24 +155,40 @@ opts.ToolboxFiles(mdIdx) = [];
 
 end % packageTask 
 ```
-* You can put your Markdown files outside the toolbox root.  You will need to move the generated HTML and other artifacts to under the toolbox root for packaging.  You should adapt the build task outputs accordingly.
+* You can put your Markdown files outside the toolbox root.  You will need to move the generated HTML and other artifacts to under the toolbox root for packaging.  You should adapt the `docTask` in the build file and its outputs accordingly.
 ```matlab
-function moveTask(c)
-%Move generated artifacts before packaging
+function docTask(c)
 
-filePaths = c.Plan.Task.Inputs.paths;
+doc = c.Task.Inputs.Path; % source folder
+md = fullfile(doc,"**","*.md"); % Markdown files
+html = docconvert(md); % convert to HTML
+docrun(html) % run code and insert output
+[indexFiles, databaseFolder] = docindex(doc); % index
+
+% Move the HTML files
 destinationFolder = c.Plan.Task.Outputs.paths;
-for fileIdx = 1:numel(filePaths)
+for fileIdx = 1:numel(html)
     movefile(filePaths(fileIdx), destinationFolder)
 end
 
+% Move the index files
+movefile(indexFiles(1), destinationFolder) % info.xml
+movefile(indexFiles(2), destinationFolder) % helptoc.xml
+movefile(databaseFolder, destinationFolder) % helpsearch-v4*
+
+% Move the resouces folder
+movefile(fullfile(doc, "resources"), destinationFolder)
+
 end % moveTask 
 ```
-Specify the task inputs, outputs, and dependencies:
+Adapt the task outputs:
 ```matlab
-plan("move").Inputs = plan("doc").Outputs;
-plan("move").Outputs = fullfile("tbx", "destinationFolder");
-plan("move").Dependencies = "doc"; 
+plan("doc").Inputs = doc; % source folder
+mydoc = fullfile("tbx", "mydoc"); % Specify doc target folder under tbx
+plan("doc").Outputs = [fullfile(mydoc,"**","*.html"), ... % output HTML
+    fullfile(mydoc,"*.xml"), ... % helptoc.xml and info.xml
+    fullfile(mydoc,"resources"), ... % stylesheets and scripts
+    fullfile(mydoc,"helpsearch-v4*")]; % search database
 ```
 
 Should I generate responsive documentation?
