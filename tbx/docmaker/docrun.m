@@ -50,7 +50,8 @@ oldPosition = get( 0, "DefaultFigurePosition" ); % old default
 screenSize = get( 0, "ScreenSize" ); % primary
 newPosition = [screenSize(1:2) + (screenSize(3:4)-options.FigureSize)/2, ...
     options.FigureSize]; % centered
-set( 0, "DefaultFigurePosition", newPosition ) % override
+set( 0, "DefaultFigureWindowStyle", "normal", ...
+    "DefaultFigurePosition", newPosition ) % override
 undo = onCleanup( @()set( 0, "DefaultFigureWindowStyle", oldWindowStyle, ...
     "DefaultFigurePosition", oldPosition ) ); % revert
 
