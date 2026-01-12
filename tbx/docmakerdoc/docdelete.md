@@ -1,10 +1,10 @@
 # docdelete :recycle:
 
-Delete DocMaker artifacts
+Delete generated artifacts
 
 ## Syntax
 
-`docdelete(d)` deletes DocMaker artifacts in the folder `d`.
+`docdelete(d)` deletes generated artifacts in the folder `d`.
 
 `[files,folders] = docdelete(...)` returns the names of the files and folders deleted.
 

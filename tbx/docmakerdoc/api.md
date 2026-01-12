@@ -3,7 +3,7 @@
 * [docconvert](docconvert.md) :arrow_right: - convert Markdown documents to HTML
 * [docrun](docrun.md) :runner: - run MATLAB scripts and save generated figures to image files
 * [docindex](docindex.md) :scroll: - create documentation index files
-* [docdelete](docdelete.md) :recycle: - delete DocMaker artifacts
+* [docdelete](docdelete.md) :recycle: - delete generated artifacts
 * [docmaker.Workspace](workspace.md) :construction_worker: - assign variables and evaluate expressions
 
 ___

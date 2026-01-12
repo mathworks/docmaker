@@ -1,7 +1,7 @@
 function varargout = docdelete( pRoot )
-%docdelete  Delete DocMaker artifacts
+%docdelete  Delete generated artifacts
 %
-%   docdelete(d) deletes the DocMaker artifacts in the folder d:
+%   docdelete(d) deletes the generated artifacts in the folder d:
 %   * HTML documents corresponding to Markdown documents
 %   * the resources subfolder, "resources"
 %   * the index files, "info.xml" and "helptoc.xml"
