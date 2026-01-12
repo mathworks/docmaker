@@ -188,7 +188,7 @@ mydoc = fullfile("tbx", "mydoc"); % Specify doc target folder under tbx
 plan("doc").Outputs = [fullfile(mydoc,"**","*.html"), ... % output HTML
     fullfile(mydoc,"*.xml"), ... % helptoc.xml and info.xml
     fullfile(mydoc,"resources"), ... % stylesheets and scripts
-    fullfile(mydoc,"helpsearch-v4*")]; % search database
+    fullfile(mydoc,"helpsearch-v4*")]; % search database 
 ```
 
 Should I generate responsive documentation?
