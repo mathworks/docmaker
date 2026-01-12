@@ -168,7 +168,7 @@ docrun(html) % run code and insert output
 % Move the HTML files
 destinationFolder = c.Plan.Task.Outputs.paths;
 for fileIdx = 1:numel(html)
-    movefile(filePaths(fileIdx), destinationFolder)
+    movefile(html(fileIdx), destinationFolder)
 end
 
 % Move the index files
