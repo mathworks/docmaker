@@ -5,26 +5,34 @@ function plan = buildfile()
 
 % Create a plan from task functions
 plan = buildplan( localfunctions() );
-prj = plan.RootFolder;
 
-% Add standard tasks
+% Folders of interest
+prj = plan.RootFolder;
+tbx = fullfile( prj, "tbx" );
+api = fullfile( tbx, "docmaker" );
+doc = fullfile( tbx, "docmakerdoc" );
+test = fullfile( prj, "tests" );
+
+% Clean task
 plan( "clean" ) = matlab.buildtool.tasks.CleanTask;
 
+% Check task
+plan( "check" ).Inputs = api;
+
 % Test task
-tbx = fullfile( prj, "tbx" );
-test = fullfile( prj, "tests" );
 plan( "test" ) = matlab.buildtool.tasks.TestTask( test, ...
     "SourceFiles", tbx, "Strict", true );
+plan( "test" ).Inputs = [api test];
 plan( "test" ).Dependencies = "check";
 
 % Documentation task
-doc = fullfile( prj, "tbx", "docmakerdoc" );
 plan( "doc" ).Inputs = doc;
 plan( "doc" ).Outputs = [ ...
     fullfile( doc, "**", "*.html" ), fullfile( doc, "*.xml" ), ...
     fullfile( doc, "resources" ), fullfile( doc, "helpsearch-v4*" )];
 
 % Package task
+plan( "package" ).Inputs = tbx;
 plan( "package" ).Dependencies = ["test", "doc"];
 
 % Default task
