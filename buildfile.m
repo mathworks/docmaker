@@ -9,8 +9,8 @@ plan = buildplan( localfunctions() );
 % Folders of interest
 prj = plan.RootFolder;
 tbx = fullfile( prj, "tbx" );
-api = fullfile( tbx, "docmaker" );
-doc = fullfile( tbx, "docmakerdoc" );
+api = fullfile( tbx, tbxname() );
+doc = fullfile( tbx, tbxname() + "doc" );
 test = fullfile( prj, "tests" );
 
 % Clean task
@@ -40,6 +40,13 @@ plan.DefaultTasks = "package";
 
 end % buildfile
 
+function n = tbxname()
+%tbxname  Toolbox name
+
+n = "docmaker";
+
+end % tbxname
+
 function checkTask( c )
 % Identify code and project issues
 
@@ -58,7 +65,7 @@ t = table( p.runChecks() );
 ok = t.Passed;
 if any( ~ok )
     disp( t(~ok,:) )
-    error( "build:Project", "Project check(s) failed." )
+    error( "build:check", "Project check(s) failed." )
 else
     fprintf( 1, "** Project checks passed\n" )
 end
@@ -86,24 +93,17 @@ fprintf( 1, "** Indexed doc\n" )
 
 end % docTask
 
-function packageTask( c )
+function packageTask( ~ )
 % Package toolbox
 
-% Toolbox short name
-n = "docmaker";
-
-% Root folder
-d = c.Plan.RootFolder;
-
 % Load and tweak metadata
-s = jsondecode( fileread( fullfile( d, n + ".json" ) ) );
-s.ToolboxMatlabPath = fullfile( d, s.ToolboxMatlabPath );
-s.ToolboxFolder = fullfile( d, s.ToolboxFolder );
-s.ToolboxImageFile = fullfile( d, s.ToolboxImageFile );
-v = feval( @(s)s(1), ver( n ) ); %#ok<FVAL>
+s = jsondecode( fileread( tbxname() + ".json" ) );
+v = ver( tbxname() ); % from Contents.m
+assert( isscalar( v ), "build:package", ...
+    "Found %d instances of %s on the MATLAB path.", numel( v ), tbxname() )
 s.ToolboxName = v.Name;
 s.ToolboxVersion = v.Version;
-s.OutputFile = fullfile( d, "releases", v.Name + " " + v.Version + ".mltbx" );
+s.OutputFile = fullfile( "releases", v.Name + " " + v.Version + ".mltbx" );
 
 % Create options object
 f = s.ToolboxFolder; % mandatory
@@ -118,7 +118,7 @@ matlab.addons.toolbox.packageToolbox( o )
 fprintf( 1, "[+] %s\n", o.OutputFile );
 
 % Add license
-lic = fileread( fullfile( d, "LICENSE" ) );
+lic = fileread( "LICENSE" );
 mlAddonSetLicense( char( o.OutputFile ), struct( "type", 'BSD', "text", lic ) );
 
 end % packageTask
