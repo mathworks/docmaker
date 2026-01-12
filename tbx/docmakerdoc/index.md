@@ -73,6 +73,10 @@ docindex tbx/docmakerdoc
 
 Before you start, you may wish to delete previous DocMaker artifacts using [`docdelete`](docdelete.md).
 
+### Automating the process
+
+You can incorporate documentation into your software delivery pipeline by integrating DocMaker with MATLAB [build automation](automation.md) technologies.
+
 ___
 
 [home](index.md) :house: | [convert](docconvert.md) :arrow_right: | [run](docrun.md) :runner: | [index](docindex.md) :scroll: | [delete](docdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hatching_chick: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2026
