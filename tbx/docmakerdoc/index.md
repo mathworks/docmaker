@@ -131,7 +131,49 @@ How do I ensure that MATLAB&#174; DocMaker is available in my developer and buil
 
 Where in my project should I put my documentation source?
 * You could put your Markdown files under the toolbox root.  This is useful when you are including examples that need to be on the path.  You may then wish to exclude the Markdown files from packaging.
+```matlab
+function packageTask( c )
+% Package toolbox
+
+...
+
+% Create toolbox packaging options
+opts = matlab.addons.toolbox.ToolboxOptions( .. );
+
+% Identify Markdown files under the toolbox root
+[folder, ~, ext] = fileparts( opts.ToolboxFiles );
+prjRoot = c.Plan.RootFolder;
+
+% Replace the following with your toolbox doc folder
+docRoot = fullfile( prjRoot, "tbx", "docmakerdoc" ); 
+
+% Exclude Markdown files from packaging
+mdIdx = (folder == docRoot) & (ext == ".md");
+opts.ToolboxFiles(mdIdx) = [];
+
+...
+
+end % packageTask 
+```
 * You can put your Markdown files outside the toolbox root.  You will need to move the generated HTML and other artifacts to under the toolbox root for packaging.  You should adapt the build task outputs accordingly.
+```matlab
+function moveTask(c)
+%Move generated artifacts before packaging
+
+filePaths = c.Plan.Task.Inputs.paths;
+destinationFolder = c.Plan.Task.Outputs.paths;
+for fileIdx = 1:numel(filePaths)
+    movefile(filePaths(fileIdx), destinationFolder)
+end
+
+end % moveTask 
+```
+Specify the task inputs, outputs, and dependencies:
+```matlab
+plan("move").Inputs = plan("doc").Outputs;
+plan("move").Outputs = fullfile("tbx", "destinationFolder");
+plan("move").Dependencies = "doc"; 
+```
 
 Should I generate responsive documentation?
 * For viewing as part of the MATLAB documentation, especially prior to R2025a, light mode works best.  :point_right: `docconvert ... Theme light`, `docrun ... Theme light`
