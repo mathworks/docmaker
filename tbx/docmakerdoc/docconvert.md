@@ -8,7 +8,7 @@ Convert Markdown documents to HTML
 
 Multiple documents may also be specified using `docconvert(md1,md2,...)`.
 
-`docconvert(...,"Theme",t)` sets the theme `t`.  Available themes are `light`, `dark`, and `auto` (responsive, default).
+`docconvert(...,"Theme",t)` sets the theme `t`.  Available themes are `light`, `dark`, and `auto` (responsive, default).  For viewing as part of the MATLAB documentation, especially prior to R2025a, light mode works best.  For viewing standalone, responsive mode works well.
 
 `docconvert(...,"Stylesheets",css)` includes the stylesheet(s) `css`.
 

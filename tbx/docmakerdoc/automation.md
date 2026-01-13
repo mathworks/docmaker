@@ -130,7 +130,3 @@ plan("doc").Outputs = [fullfile(mydoc,"**","*.html"), ... % output HTML
     fullfile(mydoc,"resources"), ... % stylesheets and scripts
     fullfile(mydoc,"helpsearch-v4*")]; % search database 
 ```
-
-Should I generate responsive documentation?
-* For viewing as part of the MATLAB documentation, especially prior to R2025a, light mode works best.  :point_right: `docconvert ... Theme light`, `docrun ... Theme light`
-* For viewing standalone, responsive mode works well.  :point_right: `docconvert ... Theme auto`, `docrun ... Theme auto`

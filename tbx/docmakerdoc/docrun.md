@@ -12,7 +12,7 @@ Multiple documents may also be specified using `docrun(html1,html2,...)`.
 
 `docrun(...,"FigureSize",s)` sets the default figure size `s`.  Size is `[width height]` in default figure `Units`.
 
-`docrun(...,"Theme",t)` sets the theme `t`.  Available themes are `none` (as is, default), `light`, `dark`, and `auto` (responsive).
+`docrun(...,"Theme",t)` sets the theme `t`.  Available themes are `none` (as is, default), `light`, `dark`, and `auto` (responsive).  For viewing as part of the MATLAB documentation, especially prior to R2025a, light mode works best.  For viewing standalone, responsive mode works well.
 
 `files = docrun(...)` returns the names of the files modified.
 
