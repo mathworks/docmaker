@@ -25,7 +25,8 @@ Multiple documents may also be specified using `docconvert(md1,md2,...)`.
 | `css`:arrow_right: | CSS stylesheet(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | |
 | `js`:arrow_right: | JavaScript script(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | :test_tube: |
 | `r`:arrow_right: | root folder, as an absolute or relative path; default is the lowest common ancestor of `md` | string | |
-| :arrow_right:`files` | HTML document(s) created, as an absolute path | string(s) | |
+| :arrow_right:`html` | HTML document(s) created, as an absolute path | string(s) | |
+| :arrow_right:`res` | resources folder created, as an absolute path | string | |
 
 ## Examples
 
@@ -74,7 +75,7 @@ sets the root folder to `mickey`, rather than the lowest common ancestor `mickey
 ### Steps
 
 The conversion consists of 7 steps:
-1. Read the Markdown file
+1. Read the Markdown document
 2. Convert Markdown to an HTML fragment using the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) service
 3. Tidy up the HTML fragment in preparation for XML postprocessing
 4. Replace `.md` links in the fragment to `.html` -- Markdown links to Markdown, HTML links to HTML
@@ -82,7 +83,7 @@ The conversion consists of 7 steps:
    * including default stylesheets, specified stylesheets, and specified scripts
    * using the first level-1 heading `# Heading` as the `<html>` `<title>`
 6. Copy the specified stylesheets and scripts to the `resources` folder in the root folder
-7. Write the document to an HTML file next to the original Markdown file
+7. Write the document to an HTML document next to the original Markdown document
 
 ### Styling
 

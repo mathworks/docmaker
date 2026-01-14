@@ -22,7 +22,7 @@ end
 oFiles = strings( 0, 1 );
 oFolders = strings( 0, 1 );
 
-% Delete HTML files corresponding to Markdown files
+% Delete HTML documents corresponding to Markdown documents
 sMd = dir( fullfile( pRoot, '**', '*.md' ) ); % Markdown
 for ii = 1:numel( sMd ) % loop
     fMd = fullfile( sMd(ii).folder, sMd(ii).name ); % this Markdown

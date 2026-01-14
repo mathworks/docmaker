@@ -12,7 +12,7 @@ classdef tdocconvert < tDocMaker
 
             [~, ~, ext] = fileparts( output );
             testCase.verifyEqual( ext, ".html", ...
-                "docconvert failed to produce an HTML file." )
+                "docconvert failed to produce an HTML document." )
 
         end % tConversionProducesHTMLFile
         

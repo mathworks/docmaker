@@ -27,7 +27,7 @@ function varargout = docrun( sHtml, options )
 %   "none" (as is, default), "light", "dark", "auto" (responsive), or a
 %   GraphicsTheme.
 %
-%   files = docrun(...) returns the names of the files modified.
+%   html = docrun(...) returns the HTML documents modified html.
 
 %   Copyright 2024-2026 The MathWorks, Inc.
 
@@ -62,7 +62,7 @@ oFiles = strings( 0, 1 );
 sHtml = docmaker.dir( sHtml{:} );
 assert( all( docmaker.extensions( sHtml ) == ".html" ), ...
     "docmaker:InvalidArgument", ...
-    "HTML files must all have extension .html." )
+    "HTML documents must all have extension .html." )
 if isempty( sHtml ), return, end
 
 % Run

@@ -15,7 +15,7 @@ classdef tdocrun < tDocMaker
             originalContents = fileread( copiedOutputFile );
             newContents = fileread( outputFile );
             testCase.verifyNotEqual( originalContents, newContents, ...
-                "docrun did not modify the example HTML file." )
+                "docrun did not modify the example HTML document." )
             
         end % tRunningModifiesHTMLFile
 
