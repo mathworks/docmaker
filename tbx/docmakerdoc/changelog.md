@@ -6,6 +6,7 @@
 * Changed function names from `docer...` to `doc...`
 * Added theme support to `docrun`
 * Specify default figure size for `docrun`
+* Return resources folder from `docconvert`
 * Changed token secret to `DocMaker GitHub token`
 
 ## Version 0.5.1
