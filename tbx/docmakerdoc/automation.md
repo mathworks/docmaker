@@ -6,27 +6,46 @@ Here we set out an example using DocMaker itself.  You can adapt this example to
 
 ## Provisioning DocMaker
 
-You should provision DocMaker in both the developer and automation environments.  You can check that DocMaker is available using `ver`.
+You should provision DocMaker in both the developer and automation environments.
 
-```matlab
-ver("docmaker") 
-```
-
-You can script installation from a known location in the project setup or the `buildfile`.
+A crude option is to script installation from a known location in the project setup.
 
 ```matlab
 matlab.addons.install("path/to/DocMaker.mltbx") 
 ```
 
-Alternatively, you can use a package manager such as [Package Jockey](https://insidelabs-git.mathworks.com/dsampson/pj) from [MathWorks Consulting](https://www.mathworks.com/consulting/).
+A better option is to use a package manager such as [Package Jockey](https://insidelabs-git.mathworks.com/dsampson/pj) from [MathWorks Consulting](https://www.mathworks.com/consulting/).
 
 ```matlab
 pjadd docmaker 
 ```
 
-## Tracking files
+Check that DocMaker is available using `ver`.
 
-Add only source artifacts (`*.md`, `*.m`) -- not generated artifacts (`*.html`, `*.xml`) -- to Git via `.gitignore`:
+```matlab
+ver("docmaker") 
+```
+
+## Organizing files
+
+You should organize your toolbox project files, separating code, documentation, tests, releases, etc. into folders.  For DocMaker, this looks like:
+
+```
+docmaker
+|- tbx
+  |- docmaker
+  |- docmakerdoc
+|- tests
+|- releases
+.gitignore
+buildfile
+docmaker.prj
+README.md
+```
+
+`docmaker.prj` is the MATLAB project file.  `tbx` is the toolbox root folder -- the folder containing the shipping files -- with code in `docmaker`, and documentation in `docmakerdoc`.
+
+Track your files with Git.  Only DocMaker *source* artifacts (`*.md`, `*.m`) should be tracked.  You can exclude *generated* artifacts via `.gitignore` entries:
 
 ```
 tbx/docmakerdoc/**/*.html
@@ -36,6 +55,21 @@ tbx/docmakerdoc/custom_toolbox.json
 tbx/docmakerdoc/resources
 tbx/docmakerdoc/helpsearch-v*
 ```
+
+Some authors prefer to separate documentation input from output.  This looks like:
+
+```
+docmaker
+|- doc
+|- tbx
+  |- docmaker
+  |- docmakerdoc
+```
+
+with Markdown files in `doc` and generated HTML files, XML files and other resources in `tbx/docmakerdoc`.  This approach has advantages and disadvantages:
+* :+1: separates shipping from non-shipping files
+* :-1: need to move generated artifacts from source to shipping folder
+* :-1: examples (`*.m`), which are *both* source *and* shipping, are not on the MATLAB path at development time
 
 ## Generating documentation
 
@@ -53,7 +87,7 @@ docindex(doc) % index
 end 
 ```
 
-Specify the task inputs and outputs:
+Specify the task inputs and outputs to enable incremental build:
 
 ```matlab
 plan("doc").Inputs = doc; % source folder
@@ -63,9 +97,47 @@ plan("doc").Outputs = [fullfile(doc,"**","*.html"), ... % output HTML
     fullfile(doc,"helpsearch-v4*")]; % search database 
 ```
 
-Specifying the outputs in this way enables:
-1. incremental build: the task will be skipped if the input and output have not changed since the task last ran successfully
-2. output clean: `buildtool clean` will remove generated artifacts, without the need to call `docdelete` explicitly
+The task will be skipped if the input and output have not changes since the last successful run.  Furthermore `buildtool clean` will remove generated artifacts, without the need to call `docerdelete` explicitly.
+
+If you separate documentation input from output, then you need to move the generated files at the end of `docTask`:
+
+```matlab
+function docTask(c)
+
+docin = c.Task.Inputs.Path; % source folder
+docout = fullfile(docin,"..","")
+md = fullfile(doc,"**","*.md"); % Markdown files
+[html,res] = docconvert(md); % convert to HTML
+docrun(html) % run code and insert output
+[xml,db] = docindex(doc) % index
+movefile(html,docout)
+movefile(res,docout)
+movefile(xml,docout)
+movefile(db,docout)
+
+end 
+```
+
+You should also adjust the task outputs accordingly:
+
+```matlab
+plan("doc").Inputs = docin; % source folder
+plan("doc").Outputs = [fullfile(docout,"**","*.html"), ... % output HTML
+    fullfile(docout,"*.xml"), ... % helptoc.xml and info.xml
+    fullfile(docout,"resources"), ... % stylesheets and scripts
+    fullfile(docout,"helpsearch-v4*")]; % search database 
+```
+
+## Packaging the toolbox
+
+Use [`packageToolbox`](https://www.mathworks.com/help/matlab/ref/matlab.addons.toolbox.packagetoolbox.html) with [`ToolboxOptions`](https://www.mathworks.com/help/matlab/ref/matlab.addons.toolbox.toolboxoptions.html) to package the toolbox.  If your documentation source is located under the toolbox root then you may wish to remove the source from the list of packaged files.
+
+```matlab
+o = matlab.addons.toolbox.ToolboxOptions("tbx",id,...);
+o.ToolboxFiles(o.ToobloxFiles.endsWith(".md")) = []; % remove Markdown files
+```
+
+
 
 ## FAQs
 
@@ -130,3 +202,7 @@ plan("doc").Outputs = [fullfile(mydoc,"**","*.html"), ... % output HTML
     fullfile(mydoc,"resources"), ... % stylesheets and scripts
     fullfile(mydoc,"helpsearch-v4*")]; % search database 
 ```
+
+___
+
+[home](index.md) :house: | [convert](docconvert.md) :arrow_right: | [run](docrun.md) :runner: | [index](docindex.md) :scroll: | [delete](docdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hatching_chick: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2026
