@@ -27,7 +27,7 @@ function varargout = docrun( sHtml, options )
 %   "none" (as is, default), "light", "dark", "auto" (responsive), or a
 %   GraphicsTheme.
 %
-%   html = docrun(...) returns the HTML documents modified html.
+%   html = docrun(...) returns the HTML document(s) modified html.
 
 %   Copyright 2024-2026 The MathWorks, Inc.
 

@@ -4,8 +4,8 @@ function varargout = docindex( pRoot )
 %   docindex(d) creates documentation index files "info.xml" and
 %   "helptoc.xml" and search database "helpsearch-v4" in the folder d.
 %
-%   [files,folders] = docindex(...) returns the names of the files and
-%   folders created.
+%   [xml,db] = docindex(...) returns the names of the index files xml and
+%   the search database folder db created.
 %
 %   See also: docconvert, docrun, docdelete, builddocsearchdb
 

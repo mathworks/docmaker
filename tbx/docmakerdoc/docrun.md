@@ -14,7 +14,7 @@ Multiple documents may also be specified using `docrun(html1,html2,...)`.
 
 `docrun(...,"Theme",t)` sets the theme `t`.  Available themes are `none` (as is, default), `light`, `dark`, and `auto` (responsive).  For viewing as part of the MATLAB documentation, especially prior to R2025a, light mode works best.  For viewing standalone, responsive mode works well.
 
-`files = docrun(...)` returns the names of the files modified.
+`html = docrun(...)` returns the names of the HTML document(s) modified.
 
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
@@ -22,7 +22,7 @@ Multiple documents may also be specified using `docrun(html1,html2,...)`.
 | `n`:arrow_right: | batching level, from 0 to 7; default is 0 | double | :test_tube: |
 | `s`:arrow_right: | default figure size, in default figure `Units` | double | |
 | `t`:arrow_right: | theme: `none`, `light`, `dark`, or `auto`; default is `none` | string(s) | |
-| :arrow_right:`files` | HTML document(s) modified, as an absolute path | string(s) | |
+| :arrow_right:`html` | HTML document(s) modified, as an absolute path | string(s) | |
 
 ## Examples
 

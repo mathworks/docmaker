@@ -21,8 +21,8 @@ function varargout = docconvert( sMd, options )
 %   must be a common ancestor of the Markdown documents.  If not specified,
 %   the root folder is the lowest common ancestor.
 %
-%   [html, res] = docconvert(...) returns the HTML documents created html
-%   and the resources folder res.
+%   [html, res] = docconvert(...) returns the names of the HTML document(s)
+%   html and the resources folder res created.
 %
 %   See also: docindex, docrun, docdelete
 

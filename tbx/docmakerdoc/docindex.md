@@ -6,13 +6,13 @@ Create documentation index files
 
 `docindex(d)` creates documentation index files `info.xml` and `helptoc.xml` and search database `helpsearch_v4` in the folder `d`.
 
-`[files,folders] = docindex(...)` returns the names of the files and folders created.
+`[xml,db] = docindex(...)` returns the names of the index files `xml` and search database folder `db` created.
 
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
 | `d`:arrow_right: | documentation folder, as an absolute or relative path | string | yes |
-| :arrow_right:`files` | XML files created, as an absolute path | strings | |
-| :arrow_right:`folders` | search database folder created, as an absolute path | string | |
+| :arrow_right:`xml` | index files created, as an absolute path | strings | |
+| :arrow_right:`db` | search database folder created, as an absolute path | string | |
 
 ## Examples
 

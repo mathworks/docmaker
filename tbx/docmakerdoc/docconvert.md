@@ -16,7 +16,7 @@ Multiple documents may also be specified using `docconvert(md1,md2,...)`.
 
 `docconvert(...,"Root",r)` publishes to the root folder `r`, placing stylesheets and scripts in the subfolder `resources`.  The root folder must be a common ancestor of the Markdown documents.  If not specified, the root folder is the lowest common ancestor.
 
-`files = docconvert(...)` returns the names of the files created.
+`[html,res] = docconvert(...)` returns the names of the HTML document(s) `html` and the resources folder `res` created.
 
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
