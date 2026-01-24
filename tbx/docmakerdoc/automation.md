@@ -76,7 +76,7 @@ with Markdown files in `doc` and generated HTML files, XML files and other resou
 Create a build task `docTask` to generate the documentation.  The input is the documentation root folder.  The outputs are the HTML documents, resources folder, XML files, and search database folder generated.
 
 ```matlab
-plan("doc").Inputs = doc; % source folder
+plan("doc").Inputs = doc; % source folder, /tbx/docmakerdoc
 plan("doc").Outputs = [fullfile(doc,"**","*.html"), ... % output HTML
     fullfile(doc,"resources"), ... % stylesheets and scripts
     fullfile(doc,"*.xml"), ... % helptoc.xml and info.xml
@@ -101,33 +101,29 @@ The task will be skipped if the input and output have not changed since the last
 
 ### Alternative layout
 
-If you separate documentation input from output, then you need to move the generated files at the end of the documentation task:
+If you separate documentation input from output the the build task input is the source folder and output is the destination folder.
+
+```matlab
+plan("doc").Inputs = docin; % source folder, /doc
+plan("doc").Outputs = docout; % output folder, /tbx/docmakerdoc 
+```
 
 ```matlab
 function docTask(c)
 
 docin = c.Task.Inputs.Path; % source folder
-docout = fullfile(docin,"..","")
-md = fullfile(doc,"**","*.md"); % Markdown files
+docout = c.Task.Outputs.Path; % destination folder
+md = fullfile(docin,"**","*.md"); % Markdown files
 [html,res] = docconvert(md); % convert to HTML
 docrun(html) % run code and insert output
-[xml,db] = docindex(doc) % index
-movefile(html,docout)
-movefile(res,docout)
-movefile(xml,docout)
-movefile(db,docout)
+[xml,db] = docindex(doc); % index
+mkdir(docout) % make destination folder
+arrayfun(@movefile,html,fullfile(docout,extractAfter(html,docin))) % move HTML files
+movefile(res,fullfile(docout,extractAfter(res,docin))) % move resources
+arrayfun(@movefile,xml,fullfile(docout,extractAfter(xml,docin))) % move XML files
+movefile(db,fullfile(docout,extractAfter(db,docin))) % move search database
 
 end 
-```
-
-You should also adjust the task outputs accordingly:
-
-```matlab
-plan("doc").Inputs = docin; % source folder
-plan("doc").Outputs = [fullfile(docout,"**","*.html"), ... % output HTML
-    fullfile(docout,"*.xml"), ... % helptoc.xml and info.xml
-    fullfile(docout,"resources"), ... % stylesheets and scripts
-    fullfile(docout,"helpsearch-v4*")]; % search database 
 ```
 
 ## Packaging the toolbox
