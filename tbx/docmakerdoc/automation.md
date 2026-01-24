@@ -1,17 +1,17 @@
 # Build automation
 
-In this age of DevOps, you will want to automate the generation of documentation as part of toolbox publishing.  This is achieved best by using projects, source control integration, and (from R2022b) the [MATLAB Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html).
+In this age of DevOps, you will want to automate documentation generation as part of toolbox publishing.  This is achieved best by using projects, source control integration, and (from R2022b) the [MATLAB Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html).
 
 Here we set out an example using DocMaker itself.  You can adapt this example to your needs.
 
 ## Provisioning DocMaker
 
-You should provision DocMaker in both the developer and automation environments.
+You should install DocMaker in both the developer and automation environments.
 
 A crude option is to script installation from a known location in the project setup.
 
 ```matlab
-matlab.addons.install("path/to/DocMaker.mltbx") 
+matlab.addons.install("path/to/docmaker.mltbx") 
 ```
 
 A better option is to use a package manager such as [Package Jockey](https://insidelabs-git.mathworks.com/dsampson/pj) from [MathWorks Consulting](https://www.mathworks.com/consulting/).
@@ -23,8 +23,9 @@ pjadd docmaker
 Check that DocMaker is available using `ver`.
 
 ```matlab
-ver("docmaker") 
+s = ver("docmaker")
 ```
+
 
 ## Organizing files
 
@@ -38,7 +39,7 @@ docmaker
 |- tests
 |- releases
 .gitignore
-buildfile
+buildfile.m
 docmaker.prj
 README.md
 ```
@@ -66,10 +67,7 @@ docmaker
   |- docmakerdoc
 ```
 
-with Markdown files in `doc` and generated HTML files, XML files and other resources in `tbx/docmakerdoc`.  This approach has advantages and disadvantages:
-* :+1: separates shipping from non-shipping files
-* :-1: need to move generated artifacts from source to shipping folder
-* :-1: examples (`*.m`), which are *both* source *and* shipping, are not on the MATLAB path at development time
+with Markdown files in `doc` and generated HTML files, XML files and other resources in `tbx/docmakerdoc`.  This approach has the advantage of separating the shipping and non-shipping files, but the disadvantage that the generated artifacts need to be moved from the (non-shipping) source to the shipping folder.
 
 ## Generating documentation
 
@@ -99,7 +97,7 @@ plan("doc").Outputs = [fullfile(doc,"**","*.html"), ... % output HTML
 
 The task will be skipped if the input and output have not changes since the last successful run.  Furthermore `buildtool clean` will remove generated artifacts, without the need to call `docerdelete` explicitly.
 
-If you separate documentation input from output, then you need to move the generated files at the end of `docTask`:
+If you separate documentation input from output, then you need to move the generated files at the end of the documentation task:
 
 ```matlab
 function docTask(c)
@@ -134,12 +132,10 @@ Use [`packageToolbox`](https://www.mathworks.com/help/matlab/ref/matlab.addons.t
 
 ```matlab
 o = matlab.addons.toolbox.ToolboxOptions("tbx",id,...);
-o.ToolboxFiles(o.ToobloxFiles.endsWith(".md")) = []; % remove Markdown files
+o.ToolboxFiles(o.ToobloxFiles.endsWith(".md")) = []; % remove Markdown files 
 ```
 
-
-
-## FAQs
+## FAQs -- to be deleted
 
 Where in my project should I put my documentation source?
 * You could put your Markdown files under the toolbox root.  This is useful when you are including examples that need to be on the path.  You may then wish to exclude the Markdown files from packaging.
