@@ -329,10 +329,10 @@ s = strtrim( s ); % tidy
 end % rmlinks
 
 function s = rmstrong( s )
-%rmlinks  Remove links from output text
+%rmstrong  Remove strong elements from output text
 %
-%   s = rmlinks(s) removes links from the text s, replacing <a ...>c</a>
-%   with c.
+%   s = rmstrong(s) removes strong elements from the text s, replacing
+%   <strong>c</strong> with c.
 
 to = "<strong>"; % opening
 tc = "</strong>"; % closing
