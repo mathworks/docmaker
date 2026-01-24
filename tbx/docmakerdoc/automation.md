@@ -26,7 +26,6 @@ Check that DocMaker is available using `ver`.
 s = ver("docmaker")
 ```
 
-
 ## Organizing files
 
 You should organize your toolbox project files, separating code, documentation, tests, releases, etc. into folders.  For DocMaker, this looks like:
@@ -69,18 +68,18 @@ docmaker
   |- docmakerdoc
 ```
 
-with Markdown files in `doc` and generated HTML files, XML files and other resources in `tbx/docmakerdoc`.  This approach has the advantage of separating the shipping and non-shipping files, but the disadvantage that the generated artifacts need to be moved from the (non-shipping) source to the shipping folder.
+with Markdown documents in `doc` and generated HTML documents, index files and other resources in `tbx/docmakerdoc`.  This approach has the advantage of separating the shipping and non-shipping files, but the disadvantage that the generated artifacts need to be moved from the (non-shipping) source to the shipping folder.
 
 ## Generating documentation
 
-Create a build task `docTask` to generate the documentation.  The input is the documentation root folder.  The outputs are the HTML documents, resources folder, XML files, and search database folder generated.
+Create a build task `docTask` to generate the documentation.  The input is the documentation root folder.  The outputs are the HTML documents, resources folder, index files, and search database folder generated.
 
 ```matlab
 plan("doc").Inputs = doc; % source folder, /tbx/docmakerdoc
 plan("doc").Outputs = [fullfile(doc,"**","*.html"), ... % output HTML
     fullfile(doc,"resources"), ... % stylesheets and scripts
-    fullfile(doc,"*.xml"), ... % helptoc.xml and info.xml
-    fullfile(doc,"helpsearch-v4*")]; % search database 
+    fullfile(doc,"*.xml"), ... % index files
+    fullfile(doc,"helpsearch-v4*")]; % search database folder 
 ```
 
 The task calls `docconvert`, `docrun` and `docindex` in turn:
@@ -89,7 +88,7 @@ The task calls `docconvert`, `docrun` and `docindex` in turn:
 function docTask(c)
 
 doc = c.Task.Inputs.Path; % source folder
-md = fullfile(doc,"**","*.md"); % Markdown files
+md = fullfile(doc,"**","*.md"); % Markdown documents
 html = docconvert(md); % convert to HTML
 docrun(html) % run code and insert output
 docindex(doc) % index
@@ -113,15 +112,15 @@ function docTask(c)
 
 docin = c.Task.Inputs.Path; % source folder
 docout = c.Task.Outputs.Path; % destination folder
-md = fullfile(docin,"**","*.md"); % Markdown files
+md = fullfile(docin,"**","*.md"); % Markdown documents
 [html,res] = docconvert(md); % convert to HTML
 docrun(html) % run code and insert output
 [xml,db] = docindex(doc); % index
 mkdir(docout) % make destination folder
-arrayfun(@movefile,html,fullfile(docout,extractAfter(html,docin))) % move HTML files
+arrayfun(@movefile,html,fullfile(docout,extractAfter(html,docin))) % move HTML documents
 movefile(res,fullfile(docout,extractAfter(res,docin))) % move resources
-arrayfun(@movefile,xml,fullfile(docout,extractAfter(xml,docin))) % move XML files
-movefile(db,fullfile(docout,extractAfter(db,docin))) % move search database
+arrayfun(@movefile,xml,fullfile(docout,extractAfter(xml,docin))) % move index files
+movefile(db,fullfile(docout,extractAfter(db,docin))) % move search database folder
 
 end 
 ```
@@ -132,7 +131,7 @@ Use [`packageToolbox`](https://www.mathworks.com/help/matlab/ref/matlab.addons.t
 
 ```matlab
 o = matlab.addons.toolbox.ToolboxOptions("tbx",id,...);
-o.ToolboxFiles(o.ToobloxFiles.endsWith(".md")) = []; % remove Markdown files 
+o.ToolboxFiles(o.ToobloxFiles.endsWith(".md")) = []; % remove Markdown documents 
 ```
 
 ___
