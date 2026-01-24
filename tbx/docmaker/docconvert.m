@@ -21,7 +21,8 @@ function varargout = docconvert( sMd, options )
 %   must be a common ancestor of the Markdown documents.  If not specified,
 %   the root folder is the lowest common ancestor.
 %
-%   files = docconvert(...) returns the names of the files created.
+%   [html, res] = docconvert(...) returns the names of the HTML document(s)
+%   html and the resources folder res created.
 %
 %   See also: docindex, docrun, docdelete
 
@@ -45,7 +46,7 @@ oFiles = strings( 0, 1 );
 sMd = docmaker.dir( sMd{:} );
 assert( all( docmaker.extensions( sMd ) == ".md" ), ...
     "docmaker:InvalidArgument", ...
-    "Markdown files must all have extension .md." )
+    "Markdown documents must all have extension .md." )
 if isempty( sMd ), return, end
 
 % Check root
@@ -55,7 +56,7 @@ if isfield( options, "Root" )
     pRoot = sRoot(1).folder; % absolute path
     assert( isequal( superfolder( pRoot, pMd{:} ), pRoot ), ...
         "docmaker:InvalidArgument", ...
-        "Markdown files must be under folder %s.", pRoot )
+        "Markdown documents must be under folder %s.", pRoot )
 else
     pRoot = superfolder( pMd{:} );
 end
@@ -117,7 +118,7 @@ end
 
 % Return output
 if nargout > 0
-    varargout{1} = oFiles;
+    varargout = {oFiles, pRez};
 end
 
 end % docconvert
@@ -125,8 +126,8 @@ end % docconvert
 function doc = convert( fMd, fCss, fJs )
 %convert  Convert Markdown document to HTML with stylesheets and scripts
 %
-%  convert(md,css,js) converts the Markdown file md to HTML and includes
-%  references to the stylesheets css and scripts js.
+%  convert(md,css,js) converts the Markdown document md to HTML and
+%  includes references to the stylesheets css and scripts js.
 
 % Read Markdown from file
 pMd = fileparts( fMd );

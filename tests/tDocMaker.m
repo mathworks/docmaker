@@ -4,7 +4,7 @@ classdef tDocMaker < matlab.unittest.TestCase
     properties ( Access = protected )
         % Temporary folder.
         Folder(:, 1) string {mustBeFolder}
-        % Example Markdown file.
+        % Example Markdown document.
         ExampleFile(:, 1) string {mustBeFile}
         % Example help table of contents file.
         HelpTOCFile(:, 1) string {mustBeFile}
