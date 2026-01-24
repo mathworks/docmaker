@@ -57,6 +57,8 @@ tbx/docmakerdoc/resources
 tbx/docmakerdoc/helpsearch-v*
 ```
 
+### Alternative layout
+
 Some authors prefer to separate documentation input from output.  This looks like:
 
 ```
@@ -71,7 +73,17 @@ with Markdown files in `doc` and generated HTML files, XML files and other resou
 
 ## Generating documentation
 
-Create a build task to generate the documentation:
+Create a build task `docTask` to generate the documentation.  The input is the documentation root folder.  The outputs are the HTML documents, resources folder, XML files, and search database folder generated.
+
+```matlab
+plan("doc").Inputs = doc; % source folder
+plan("doc").Outputs = [fullfile(doc,"**","*.html"), ... % output HTML
+    fullfile(doc,"resources"), ... % stylesheets and scripts
+    fullfile(doc,"*.xml"), ... % helptoc.xml and info.xml
+    fullfile(doc,"helpsearch-v4*")]; % search database 
+```
+
+The task calls `docconvert`, `docrun` and `docindex` in turn:
 
 ```matlab
 function docTask(c)
@@ -85,17 +97,9 @@ docindex(doc) % index
 end 
 ```
 
-Specify the task inputs and outputs to enable incremental build:
+The task will be skipped if the input and output have not changed since the last successful run.  Furthermore `buildtool clean` will remove generated artifacts, without the need to call `docerdelete` explicitly.
 
-```matlab
-plan("doc").Inputs = doc; % source folder
-plan("doc").Outputs = [fullfile(doc,"**","*.html"), ... % output HTML
-    fullfile(doc,"*.xml"), ... % helptoc.xml and info.xml
-    fullfile(doc,"resources"), ... % stylesheets and scripts
-    fullfile(doc,"helpsearch-v4*")]; % search database 
-```
-
-The task will be skipped if the input and output have not changes since the last successful run.  Furthermore `buildtool clean` will remove generated artifacts, without the need to call `docerdelete` explicitly.
+### Alternative layout
 
 If you separate documentation input from output, then you need to move the generated files at the end of the documentation task:
 
