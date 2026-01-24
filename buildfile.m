@@ -30,6 +30,8 @@ plan( "doc" ).Inputs = doc;
 plan( "doc" ).Outputs = [ ...
     fullfile( doc, "**", "*.html" ), fullfile( doc, "*.xml" ), ...
     fullfile( doc, "resources" ), fullfile( doc, "helpsearch-v4*" )];
+plan( "doc2" ).Inputs = doc;
+plan( "doc2" ).Outputs = fullfile( prj, "docout" );
 
 % Package task
 plan( "package" ).Inputs = tbx;
@@ -92,6 +94,37 @@ docindex( doc )
 fprintf( 1, "** Indexed doc\n" )
 
 end % docTask
+
+function doc2Task( c )
+% Generate and move documentation
+
+% Documentation folder
+docin = c.Task.Inputs.Path;
+docout = c.Task.Outputs.Path;
+
+% Convert Markdown to HTML
+md = fullfile( docin, "**", "*.md" );
+[html, res] = docconvert( md, "Theme", "light" );
+fprintf( 1, "** Converted Markdown doc to HTML\n" )
+
+% Run code and insert output
+docrun( html, "Theme", "light", "FigureSize", [600 400] )
+fprintf( 1, "** Inserted MATLAB output into doc\n" )
+
+% Index documentation
+[xml, db] = docindex( docin );
+fprintf( 1, "** Indexed doc\n" )
+
+% Move output
+mkdir( docout )
+arrayfun( @movefile, html, fullfile( docout, extractAfter( html, docin ) ) )
+movefile( res, fullfile( docout, extractAfter( res, docin ) ) )
+fprintf( 1, "** Moved HTML doc\n" )
+arrayfun( @movefile, xml, fullfile( docout, extractAfter( xml, docin ) ) )
+movefile( db, fullfile( docout, extractAfter( db, docin ) ) )
+fprintf( 1, "** Moved doc index\n" )
+
+end % doc2Task
 
 function packageTask( ~ )
 % Package toolbox
