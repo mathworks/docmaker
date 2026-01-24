@@ -206,6 +206,7 @@ if strlength( outString ) > 0
     backspacePattern = wildcardPattern(1) + characterListPattern(char(8));
     outString = erase( outString, backspacePattern );
     outString = rmlinks( outString );
+    outString = rmstrong( outString );
 
     % Create HTML elements div, pre, text
     outDiv = doc.createElement( "div" );
@@ -326,6 +327,29 @@ end
 s = strtrim( s ); % tidy
 
 end % rmlinks
+
+function s = rmstrong( s )
+%rmlinks  Remove links from output text
+%
+%   s = rmlinks(s) removes links from the text s, replacing <a ...>c</a>
+%   with c.
+
+to = "<strong>"; % opening
+tc = "</strong>"; % closing
+while true
+    li = extractBetween( s, to, tc, "Boundaries", "inclusive" ); % find
+    if isempty( li )
+        break % no links, break
+    end
+    li = li(1); % first
+    po = strfind( s, li ); % find
+    po = po(1); % first
+    t = extractBetween( li, to, tc ); % text
+    s = replaceBetween( s, po, po + strlength( li ) - 1, t ); % strip
+end
+s = strtrim( s ); % tidy
+
+end % rmstrong
 
 function img = createSimpleImage( doc, fig )
 %createSimpleImage  Create as is image from figure
