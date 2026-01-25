@@ -1,6 +1,6 @@
 # Build automation
 
-In this age of DevOps, you will want to automate documentation generation as part of toolbox publishing.  This is achieved best by using projects, source control integration, and (from R2022b) the [MATLAB Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html).
+You can automate documentation generation as part of toolbox publishing using projects, source control integration, and (from R2022b) the [MATLAB Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html).
 
 Here we set out an example using DocMaker itself.  You can adapt this example to your needs.
 
@@ -8,7 +8,7 @@ Here we set out an example using DocMaker itself.  You can adapt this example to
 
 You should install DocMaker in both the developer and automation environments.
 
-A crude option is to script installation from a known location in the project setup.
+A crude option is to script installation from a known location at project startup.
 
 ```matlab
 matlab.addons.install("path/to/docmaker.mltbx") 
@@ -68,7 +68,7 @@ docmaker
   |- docmakerdoc
 ```
 
-with Markdown documents in `doc` and generated HTML documents, index files and other resources in `tbx/docmakerdoc`.  This approach has the advantage of separating the shipping and non-shipping files, but the disadvantage that the generated artifacts need to be moved from the (non-shipping) source to the shipping folder.
+with Markdown documents in `doc` and generated HTML documents, index files and other resources in `tbx/docmakerdoc`.  Since DocMaker generates output in place, the output needs to be moved to the shipping folder as a second step.
 
 ## Generating documentation
 
@@ -100,12 +100,14 @@ The task will be skipped if the input and output have not changed since the last
 
 ### Alternative layout
 
-If you separate documentation input from output the the build task input is the source folder and output is the destination folder.
+If you separate documentation input from output, you need a build task whose input is the source folder and output is the destination folder.
 
 ```matlab
 plan("doc").Inputs = docin; % source folder, /doc
-plan("doc").Outputs = docout; % output folder, /tbx/docmakerdoc 
+plan("doc").Outputs = docout; % destination folder, /tbx/docmakerdoc 
 ```
+
+The build task begins as before, and then moves the generated artifacts.
 
 ```matlab
 function docTask(c)
@@ -118,12 +120,14 @@ docrun(html) % run code and insert output
 [xml,db] = docindex(doc); % index
 mkdir(docout) % make destination folder
 arrayfun(@movefile,html,fullfile(docout,extractAfter(html,docin))) % move HTML documents
-movefile(res,fullfile(docout,extractAfter(res,docin))) % move resources
+movefile(res,fullfile(docout,extractAfter(res,docin))) % move resources folder
 arrayfun(@movefile,xml,fullfile(docout,extractAfter(xml,docin))) % move index files
 movefile(db,fullfile(docout,extractAfter(db,docin))) % move search database folder
 
 end 
 ```
+
+Since [`movefile`](https://www.mathworks.com/help/matlab/ref/movefile.html) is not vectorized, we need to use [`arrayfun`](https://www.mathworks.com/help/matlab/ref/arrayfun.html) :point_up:.
 
 ## Packaging the toolbox
 
