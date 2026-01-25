@@ -55,7 +55,7 @@ fprintf( 1, "[+] %s\n", fHelp ); % echo
 % Build search database
 search = ['builddocsearchdb(''', strrep( pRoot, '''', '''''' ), ''')']; % command
 evalc( search ); % build without echo
-sDatabase = dir( fullfile( pRoot, "helpsearch-v4*" ) ); % find database
+sDatabase = dir( fullfile( pRoot, "helpsearch-v*" ) ); % find database
 sDatabase = sDatabase([sDatabase.isdir]); % only folders
 fDatabase = string( fullfile( sDatabase(1).folder, sDatabase(1).name ) );
 fprintf( 1, "[+] %s\n", fDatabase ); % echo

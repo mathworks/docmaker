@@ -79,7 +79,7 @@ plan("doc").Inputs = doc; % source folder, /tbx/docmakerdoc
 plan("doc").Outputs = [fullfile(doc,"**","*.html"), ... % output HTML
     fullfile(doc,"resources"), ... % stylesheets and scripts
     fullfile(doc,"*.xml"), ... % index files
-    fullfile(doc,"helpsearch-v4*")]; % search database folder 
+    fullfile(doc,"helpsearch-v*")]; % search database folder 
 ```
 
 The task calls `docconvert`, `docrun` and `docindex` in turn:

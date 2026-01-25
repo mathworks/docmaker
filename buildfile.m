@@ -29,7 +29,7 @@ plan( "test" ).Dependencies = "check";
 plan( "doc" ).Inputs = doc;
 plan( "doc" ).Outputs = [ ...
     fullfile( doc, "**", "*.html" ), fullfile( doc, "*.xml" ), ...
-    fullfile( doc, "resources" ), fullfile( doc, "helpsearch-v4*" )];
+    fullfile( doc, "resources" ), fullfile( doc, "helpsearch-v*" )];
 
 % Package task
 plan( "package" ).Inputs = tbx;

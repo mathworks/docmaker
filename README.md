@@ -115,7 +115,7 @@ plan("doc").Inputs = doc; % source folder
 plan("doc").Outputs = [fullfile(doc,"**","*.html"), ... % output HTML
     fullfile(doc,"*.xml"), ... % helptoc.xml and info.xml
     fullfile(doc,"resources"), ... % stylesheets and scripts
-    fullfile(doc,"helpsearch-v4*")]; % search database 
+    fullfile(doc,"helpsearch-v*")]; % search database 
 ```
 
 Specifying the outputs in this way enables:
