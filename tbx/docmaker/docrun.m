@@ -311,7 +311,11 @@ function s = removePattern( s, o, c )
 %removePattern  Remove opening and closing patterns
 %
 %   s = removePattern(s,o,c) removes the opening pattern o and the closing
-%   pattern from the string s, leaving the content between behind.
+%   pattern from the string s, leaving the content between intact.
+%
+%   This function can be used to strip tags from strings.  For example,
+%   removePattern("This is <em>not</em> a drill!","<em>","</em>") returns
+%   "This is not a drill!".
 
 while true
     li = extractBetween( s, o, c, "Boundaries", "inclusive" ); % find
