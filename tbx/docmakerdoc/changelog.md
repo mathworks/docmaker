@@ -1,9 +1,5 @@
 # Release notes
 
-## Version 1.0
-
-* Public release on [GitHub](https://www.github.com/mathworks/docmaker)
-
 ## Version 0.6
 
 * Changed name from "Doc_er" to "MATLAB&#174; DocMaker"
