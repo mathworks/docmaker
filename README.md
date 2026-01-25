@@ -12,3 +12,7 @@ DocMaker ships with [documentation](./tbx/docmakerdoc/index.md), including [rele
 ## Project status
 
 DocMaker is developed by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) from [MathWorks](https://www.mathworks.com/services/consulting.html) on [GitHub](https://www.github.com/mathworks/docmaker).
+
+___
+
+:copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2026
