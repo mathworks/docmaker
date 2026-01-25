@@ -124,6 +124,4 @@ Specifying the outputs in this way enables:
 
 ## Project status
 
-DocMaker is developed by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) at [MathWorks](https://www.mathworks.com/services/consulting.html).
-
-DocMaker is in use at MathWorks for internal and consulting projects.  A public release is proposed for 2026.
+DocMaker is developed by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) from [MathWorks](https://www.mathworks.com/services/consulting.html) on [GitHub](https://www.github.com/mathworks/docmaker).
