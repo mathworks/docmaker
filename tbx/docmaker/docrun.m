@@ -206,7 +206,7 @@ if strlength( outString ) > 0
     backspacePattern = wildcardPattern(1) + characterListPattern(char(8));
     outString = erase( outString, backspacePattern );
     outString = rmlinks( outString );
-    outString = rmelement( outString, "strong" ); % <strong> in tables
+    outString = removeElement( outString, "strong" ); % <strong> in tables
 
     % Create HTML elements div, pre, text
     outDiv = doc.createElement( "div" );
@@ -328,13 +328,15 @@ s = strtrim( s ); % tidy
 
 end % rmlinks
 
-function s = rmelement( s, el )
-%rmelement  Remove literal elements from output text
+function s = removeElement( s, el )
+%removeElement  Remove element from output text
 %
-%   s = rmelement(s,el) removes elements el from the text s, replacing
-%   <el>c</el> with c.
+%   s = removeElement(s,el) removes elements el from the text s.
+%
+%   For example, removeElement(s,"strong") removes <strong> elements from
+%   s, transforming "<strong>words</strong>" to "words".
 
-to = "<" + el + ">"; % opening
+to = "<" + el + optionalPattern( whitespacePattern + wildcardPattern ) + ">"; % opening
 tc = "</" + el + ">"; % closing
 while true
     li = extractBetween( s, to, tc, "Boundaries", "inclusive" ); % find
@@ -349,7 +351,7 @@ while true
 end
 s = strtrim( s ); % tidy
 
-end % rmelement
+end % removeElement
 
 function img = createSimpleImage( doc, fig )
 %createSimpleImage  Create as is image from figure
