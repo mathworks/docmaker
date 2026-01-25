@@ -202,11 +202,13 @@ outFigures = outFigures(:); % return column vector
 % Add text output
 if strlength( outString ) > 0
 
-    % Strip out markup
-    backspacePattern = wildcardPattern(1) + characterListPattern(char(8));
-    outString = erase( outString, backspacePattern );
-    outString = rmlinks( outString );
-    outString = rmelement( outString, "strong" ); % <strong> in tables
+    % Strip out markup commonly found in MATLAB output
+    outString = erase( outString, ...
+        wildcardPattern(1) + characterListPattern(char(8)) ); % backspaces
+    outString = removePattern( outString, ...
+        "<a href=""" + wildcardPattern + """>", "</a>" ); % links
+    outString = removePattern( outString, ...
+        "<strong>", "</strong>" ); % strongs
 
     % Create HTML elements div, pre, text
     outDiv = doc.createElement( "div" );
@@ -305,51 +307,30 @@ end
 
 end % isAfter
 
-function s = rmlinks( s )
-%rmlinks  Remove links from output text
+function s = removePattern( s, o, c )
+%removePattern  Remove opening and closing patterns
 %
-%   s = rmlinks(s) removes links from the text s, replacing <a ...>c</a>
-%   with c.
+%   s = removePattern(s,o,c) removes the opening pattern o and the closing
+%   pattern from the string s, leaving the content between intact.
+%
+%   This function can be used to strip tags from strings.  For example,
+%   removePattern("This is <em>not</em> a drill!","<em>","</em>") returns
+%   "This is not a drill!".
 
-to = "<a " + wildcardPattern + ">"; % opening
-tc = "</a>"; % closing
 while true
-    li = extractBetween( s, to, tc, "Boundaries", "inclusive" ); % find
+    li = extractBetween( s, o, c, "Boundaries", "inclusive" ); % find
     if isempty( li )
-        break % no links, break
+        break % no matches, break
     end
     li = li(1); % first
     po = strfind( s, li ); % find
     po = po(1); % first
-    t = extractBetween( li, to, tc ); % text
+    t = extractBetween( li, o, c, "Boundaries", "exclusive" ); % text
     s = replaceBetween( s, po, po + strlength( li ) - 1, t ); % strip
 end
 s = strtrim( s ); % tidy
 
-end % rmlinks
-
-function s = rmelement( s, el )
-%rmelement  Remove literal elements from output text
-%
-%   s = rmelement(s,el) removes elements el from the text s, replacing
-%   <el>c</el> with c.
-
-to = "<" + el + ">"; % opening
-tc = "</" + el + ">"; % closing
-while true
-    li = extractBetween( s, to, tc, "Boundaries", "inclusive" ); % find
-    if isempty( li )
-        break % no links, break
-    end
-    li = li(1); % first
-    po = strfind( s, li ); % find
-    po = po(1); % first
-    t = extractBetween( li, to, tc ); % text
-    s = replaceBetween( s, po, po + strlength( li ) - 1, t ); % strip
-end
-s = strtrim( s ); % tidy
-
-end % rmelement
+end % removePattern
 
 function img = createSimpleImage( doc, fig )
 %createSimpleImage  Create as is image from figure
