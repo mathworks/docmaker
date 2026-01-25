@@ -25,7 +25,7 @@ DocMaker ships with [documentation](./tbx/docmakerdoc/index.md) that you can bro
 
 ## About the project
 
-DocMaker is developed by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) from [MathWorks](https://www.mathworks.com/services/consulting.html).
+DocMaker is developed by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) at [MathWorks](https://www.mathworks.com/services/consulting.html).
 
 ___
 
