@@ -42,7 +42,9 @@ setpref("docmaker","token",token)
 
 ### Writing documentation
 
-Write documentation in Markdown using your favorite editor.  Include code, images, and links.  To designate a MATLAB code block ` ```matlab ` as for *display only*, not evaluation, add trailing whitespace to the last line.  You can use the DocMaker documentation as inspiration for your own documentation!
+Write documentation in Markdown using your favorite editor.  Include code, images, and links.  You can use the DocMaker documentation as inspiration for your own documentation!
+
+Include MATLAB code blocks using ` ```matlab ` fenced code blocks.  Typically, you want to evaluate MATLAB code blocks and insert the output into the documentation.  To designate a MATLAB code block as for *display only*, not evaluation, add trailing whitespace to the last line.
 
 Write a table of contents called `helptoc.md`, also in Markdown.  This document should contain:
 * a level-1 heading `# Heading` with the name of the toolbox
