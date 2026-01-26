@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, windows-latest]
-        matlab-version: [R2021a, R2021b, R2022a, R2022b, R2023a, R2023b, R2024a, R2024b, R2025a, R2025b]
+        matlab-version: [R2022a, R2022b, R2023a, R2023b, R2024a, R2024b, R2025a, R2025b]
     runs-on: ${{ matrix.platform }}
     env:
       DOCMAKER_GITHUB_TOKEN: ${{ secrets.DOCMAKER_GITHUB_TOKEN }}
