@@ -21,7 +21,7 @@ DocMaker ships with documentation that you can [browse online](./tbx/docmakerdoc
 
 The repository contains a top-level [MATLAB project](https://www.mathworks.com/help/matlab/projects.html).  Developers should follow the [user setup instructions](./tbx/docmakerdoc/index.md) by generating a GitHub access token and registering the token with MATLAB.
 
-Development requires the [MATLAB Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html) which was introduced in MATLAB R2022b.  Tasks are provided for:
+Development requires the [MATLAB Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html) which was introduced in MATLAB R2022b.  Tasks are provided to:
 
 * `check`: identify code issues
 * `test`: run unit tests
