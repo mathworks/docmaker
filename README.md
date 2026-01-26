@@ -9,12 +9,6 @@ With DocMaker, you can:
 
 DocMaker requires MATLAB R2021a or later to *generate* documentation.
 
-## Developer documentation
-
-The repository contains a top-level [MATLAB project](https://www.mathworks.com/help/matlab/projects.html).  Developers should follow the [user setup instructions](tbx/docmakerdoc/index.md) by generating a GitHub access token and registering the token with MATLAB.
-
-Development requires the [MATLAB Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html) which was introduced in MATLAB R2022b.
-
 ## User documentation
 
 DocMaker ships with [documentation](./tbx/docmakerdoc/index.md) that you can browse online, including:
@@ -23,9 +17,25 @@ DocMaker ships with [documentation](./tbx/docmakerdoc/index.md) that you can bro
 * a function reference for [`docconvert`](./tbx/docmakerdoc/docconvert.md), [`docrun`](./tbx/docmakerdoc/docrun.md), [`docindex`](./tbx/docmakerdoc/docindex.md), and [`docdelete`](./tbx/docmakerdoc/docdelete.md)
 * [release notes](./tbx/docmakerdoc/changelog.md) detailing new features, bug fixes, and compatibility considerations for each version
 
-## About the project
+## Developer documentation
+
+The repository contains a top-level [MATLAB project](https://www.mathworks.com/help/matlab/projects.html).  Developers should follow the [user setup instructions](./tbx/docmakerdoc/index.md) by generating a GitHub access token and registering the token with MATLAB.
+
+Development requires the [MATLAB Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html) which was introduced in MATLAB R2022b.  Tasks are provided for:
+
+* `check`: identify code issues
+* `test`: run unit tests
+* `doc`: generate documentation
+* `package`: package as `.mltbx` file
+* `clean`: delete derived artifacts
+
+## About
 
 DocMaker is developed by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) at [MathWorks](https://www.mathworks.com/services/consulting.html).
+
+DocMaker uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) at [github.com](https://docs.github.com/), and the [GitHub Markdown CSS](https://github.com/sindresorhus/github-markdown-css) by [Sindre Sorhus](https://github.com/sindresorhus).
+
+The author thanks [Ken Deeley](https://www.mathworks.com/matlabcentral/profile/authors/2987674) from MathWorks for his support during the development of DocMaker.
 
 ___
 
