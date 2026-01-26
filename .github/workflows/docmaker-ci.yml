@@ -14,6 +14,8 @@ jobs:
         platform: [ubuntu-latest, windows-latest]
         matlab-version: [R2024b, R2025a, R2025b]
     runs-on: ${{ matrix.platform }}
+    env:
+      DOCMAKER_GITHUB_TOKEN: ${{ secrets.DOCMAKER_GITHUB_TOKEN }}
     continue-on-error: false
     steps:
       - name: Check out the repository
@@ -24,7 +26,7 @@ jobs:
         run: |
           sudo apt-get install -y xvfb
           Xvfb :99 &
-          echo "DISPLAY=:99" >> $GITHUB_ENV
+          echo "DISPLAY=:99" >> $GITHUB_ENV      
 
       - name: Set up MATLAB on the runner
         uses: matlab-actions/setup-matlab@v2
