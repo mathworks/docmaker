@@ -6,7 +6,7 @@ DocMaker is developed by [David Sampson](https://www.mathworks.com/matlabcentral
 
 DocMaker uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) at [github.com](https://docs.github.com/), and the [GitHub Markdown CSS](https://github.com/sindresorhus/github-markdown-css) by [Sindre Sorhus](https://github.com/sindresorhus).
 
-The author thanks [Ken Deeley](https://www.mathworks.com/matlabcentral/profile/authors/2987674) from MathWorks for his encouragement during the development of DocMaker.
+The author thanks [Ken Deeley](https://www.mathworks.com/matlabcentral/profile/authors/2987674) from MathWorks for his support during the development of DocMaker.
 
 ## History
 
