@@ -1,0 +1,38 @@
+name: MATLAB DocMaker Toolbox Continuous Integration
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  run-tests:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, windows-latest]
+        matlab-version: [R2022b, R2023a, R2023b, R2024a, R2024b, R2025a, R2025b]
+    runs-on: ${{ matrix.platform }}
+    env:
+      DOCMAKER_GITHUB_TOKEN: ${{ secrets.DOCMAKER_GITHUB_TOKEN }}
+    continue-on-error: false
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Start a display server for jobs running on Linux
+        if: ${{ matrix.platform == 'ubuntu-latest' }}
+        run: |
+          sudo apt-get install -y xvfb
+          Xvfb :99 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV      
+
+      - name: Set up MATLAB on the runner
+        uses: matlab-actions/setup-matlab@v2
+        with:
+          products: MATLAB
+          release: ${{ matrix.matlab-version }}
+
+      - name: Run the toolbox tests
+        uses: matlab-actions/run-tests@v2
