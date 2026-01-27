@@ -31,7 +31,7 @@ Development requires the [MATLAB Build Tool](https://www.mathworks.com/help/matl
 
 ## About
 
-DocMaker is developed by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) at [MathWorks](https://www.mathworks.com/services/consulting.html).
+DocMaker is developed by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) from [MathWorks](https://www.mathworks.com/services/consulting.html) on [GitHub](https://github.com/mathworks/docmaker).
 
 DocMaker uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) at [github.com](https://docs.github.com/), and the [GitHub Markdown CSS](https://github.com/sindresorhus/github-markdown-css) by [Sindre Sorhus](https://github.com/sindresorhus).
 
