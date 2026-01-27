@@ -8,5 +8,5 @@
     "ToolboxFolder":"./tbx",
     "ToolboxMatlabPath": ["./tbx/docmaker", "./tbx/docmakerdoc"],
     "ToolboxImageFile":"./hatching_chick.png",
-    "MinimumMatlabRelease":"R2021b"
+    "MinimumMatlabRelease":"R2021a"
 }
