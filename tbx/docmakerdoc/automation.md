@@ -8,11 +8,13 @@ Here we set out an example using DocMaker itself.  You can adapt this example to
 
 You should install DocMaker in both the developer and automation environments.
 
-A crude option is to script installation from a known location at project startup.
+A basic option is to script installation from a known location at project startup.  The latest installer is available at:
 
-```matlab
-matlab.addons.install("path/to/docmaker.mltbx") 
 ```
+https://github.com/mathworks/docmaker/releases/latest/download/MATLAB_DocMaker.mltbx
+```
+
+For specific versions, replace `latest` with the version tag, e.g. `v1.0` for version 1.0.  You can download the installer using [`websave`](https://www.mathworks.com/help/matlab/ref/websave.html), and then install the toolbox using [`matlab.addons.install`](https://www.mathworks.com/help/matlab/ref/matlab.addons.install.html).
 
 A better option is to use a package manager such as [Package Jockey](https://insidelabs-git.mathworks.com/dsampson/pj) from [MathWorks Consulting](https://www.mathworks.com/consulting/).
 
