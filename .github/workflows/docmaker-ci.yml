@@ -70,6 +70,6 @@ jobs:
         name: MATLAB DocMaker ${{ env.TAG_NAME }}
         tag_name: v${{ env.TAG_NAME }}
         make_latest: true
-        files: releases/MATLAB DocMaker ${{ env.TAG_NAME }}.mltbx
+        files: releases/MATLAB_DocMaker.mltbx
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
