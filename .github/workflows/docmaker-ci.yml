@@ -3,11 +3,14 @@ name: MATLAB DocMaker Toolbox Continuous Integration
 on:
   push:
     branches: [master]
+    tags:
+      - 'v*'
   pull_request:
     branches: [master]
   workflow_dispatch:
 
 jobs:
+  
   run-tests:
     strategy:
       matrix:
@@ -36,3 +39,37 @@ jobs:
 
       - name: Run the toolbox tests
         uses: matlab-actions/run-tests@v2
+
+  package-and-release-toolbox:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: windows-latest
+
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v4
+
+    - name: Retrieve tag
+      id: vars
+      run: echo "TAG_NAME=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+    - name: Set up MATLAB on the runner
+      uses: matlab-actions/setup-matlab@v2
+      with:
+        products: MATLAB
+        release: R2025b
+
+    - name: Package toolbox
+      uses: matlab-actions/run-build@v2
+      with:
+        tasks: package
+        build-options: -skip test -skip check
+
+    - name: Release toolbox
+      uses: softprops/action-gh-release@v2
+      with:
+        name: MATLAB DocMaker ${{ env.TAG_NAME }}
+        tag_name: v${{ env.TAG_NAME }}
+        make_latest: true
+        files: releases/MATLAB DocMaker ${{ env.TAG_NAME }}.mltbx
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
