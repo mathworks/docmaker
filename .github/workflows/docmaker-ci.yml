@@ -50,6 +50,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Extract version from tag
+      shell: bash
       run: |
         VERSION="${GITHUB_REF#refs/tags/v}"
         echo "VERSION=$VERSION" >> $GITHUB_ENV
