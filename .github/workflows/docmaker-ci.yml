@@ -49,8 +49,11 @@ jobs:
     - name: Check out the repository
       uses: actions/checkout@v4
 
-    - name: Retrieve version from tag
-      run: echo "VERSION=${{ github.ref }}#refs/tag/v" >> $GITHUB_ENV
+    - name: Retrieve Git tag
+      run: echo "TAG_NAME=${{ github.ref }}" >> $GITHUB_ENV
+
+    - name: Extract version from tag
+      run: echo "VERSION=${TAG_NAME#refs/tags/v}" >> $GITHUB_ENV
 
     - name: Set up MATLAB on the runner
       uses: matlab-actions/setup-matlab@v2
