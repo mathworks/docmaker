@@ -13,33 +13,39 @@ env:
       DOCMAKER_GITHUB_TOKEN: ${{ secrets.DOCMAKER_GITHUB_TOKEN }}
 
 jobs:
-  
-  run-tests:
-    strategy:
-      matrix:
-        platform: [ubuntu-latest, windows-latest]
-        matlab-version: [R2025b]
-    runs-on: ${{ matrix.platform }}    
-    continue-on-error: false
+
+  show-tag:
+    runs-on: windows-latest
     steps:
-      - name: Check out the repository
-        uses: actions/checkout@v4
+      - name: Show GITHUB_REF
+        run: echo "GITHUB_REF is $GITHUB_REF"
+  
+  # run-tests:
+  #   strategy:
+  #     matrix:
+  #       platform: [ubuntu-latest, windows-latest]
+  #       matlab-version: [R2025b]
+  #   runs-on: ${{ matrix.platform }}    
+  #   continue-on-error: false
+  #   steps:
+  #     - name: Check out the repository
+  #       uses: actions/checkout@v4
 
-      - name: Start a display server for jobs running on Linux
-        if: ${{ matrix.platform == 'ubuntu-latest' }}
-        run: |
-          sudo apt-get install -y xvfb
-          Xvfb :99 &
-          echo "DISPLAY=:99" >> $GITHUB_ENV      
+  #     - name: Start a display server for jobs running on Linux
+  #       if: ${{ matrix.platform == 'ubuntu-latest' }}
+  #       run: |
+  #         sudo apt-get install -y xvfb
+  #         Xvfb :99 &
+  #         echo "DISPLAY=:99" >> $GITHUB_ENV      
 
-      - name: Set up MATLAB on the runner
-        uses: matlab-actions/setup-matlab@v2
-        with:
-          products: MATLAB
-          release: ${{ matrix.matlab-version }}
+  #     - name: Set up MATLAB on the runner
+  #       uses: matlab-actions/setup-matlab@v2
+  #       with:
+  #         products: MATLAB
+  #         release: ${{ matrix.matlab-version }}
 
-      - name: Run the toolbox tests
-        uses: matlab-actions/run-tests@v2
+  #     - name: Run the toolbox tests
+  #       uses: matlab-actions/run-tests@v2
 
   package-and-release-toolbox:
     if: startsWith(github.ref, 'refs/tags/v')
