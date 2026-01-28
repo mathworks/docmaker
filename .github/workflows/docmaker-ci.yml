@@ -13,12 +13,6 @@ env:
       DOCMAKER_GITHUB_TOKEN: ${{ secrets.DOCMAKER_GITHUB_TOKEN }}
 
 jobs:
-
-  show-tag:
-    runs-on: windows-latest
-    steps:
-      - name: Show GITHUB_REF
-        run: echo "GITHUB_REF is ${{ github.ref }}
   
   # run-tests:
   #   strategy:
