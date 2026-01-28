@@ -105,8 +105,8 @@ s.ToolboxName = v.Name;
 s.ToolboxVersion = v.Version;
 s.OutputFile = fullfile( "releases", v.Name + " " + v.Version + ".mltbx" );
 
-% Check version and tag compatibility for release
 if getenv( "GITHUB_ACTIONS" ) == "true"
+    % Check version and tag compatibility for release
     ref = string( getenv( "GITHUB_REF" ) );
     gitTagNumber = extractAfter( ref, "refs/tags/v" );
     assert( v.Version == gitTagNumber, ...
@@ -114,6 +114,9 @@ if getenv( "GITHUB_ACTIONS" ) == "true"
         "%s Toolbox version %s (from Contents.m) does not " + ...
         "match the current Git tag number (%s).", ...
         v.Name, v.Version, gitTagNumber )
+    % Define stable name for GitHub
+    stableName = replace( v.Name, " ", "_" ) + ".mltbx";
+    s.OutputFile = fullfile( "releases", stableName );
 end % if
 
 % Create options object
