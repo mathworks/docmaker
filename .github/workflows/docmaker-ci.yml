@@ -49,9 +49,9 @@ jobs:
     - name: Check out the repository
       uses: actions/checkout@v4
 
-    - name: Retrieve tag
+    - name: Retrieve version from Git tag
       id: vars
-      run: echo "TAG_NAME=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
 
     - name: Set up MATLAB on the runner
       uses: matlab-actions/setup-matlab@v2
@@ -68,8 +68,8 @@ jobs:
     - name: Release toolbox
       uses: softprops/action-gh-release@v2
       with:
-        name: MATLAB DocMaker ${{ env.TAG_NAME }}
-        tag_name: v${{ env.TAG_NAME }}
+        name: MATLAB DocMaker ${{ env.VERSION }}
+        tag_name: v${{ env.VERSION }}
         make_latest: true
         files: releases/MATLAB_DocMaker.mltbx
       env:
