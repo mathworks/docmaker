@@ -51,7 +51,7 @@ jobs:
 
     - name: Retrieve version from Git tag
       id: vars
-      run: echo "VERSION=${{ github.ref }}#refs/tags/v" >> $GITHUB_ENV
+      run: echo "VERSION=${{ github.ref | replace('refs/tags/v', '') }}" >> $GITHUB_ENV
 
     - name: Set up MATLAB on the runner
       uses: matlab-actions/setup-matlab@v2
@@ -71,7 +71,7 @@ jobs:
         name: MATLAB DocMaker ${{ env.VERSION }}
         tag_name: v${{ env.VERSION }}
         draft: true
-        make_latest: true
+        make_latest: false
         files: releases/MATLAB_DocMaker.mltbx
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
