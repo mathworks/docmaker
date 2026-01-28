@@ -18,7 +18,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Show GITHUB_REF
-        run: echo "GITHUB_REF is $GITHUB_REF"
+        run: echo "GITHUB_REF is ${{ github.ref }}
   
   # run-tests:
   #   strategy:
