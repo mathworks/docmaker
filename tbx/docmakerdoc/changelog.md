@@ -41,9 +41,8 @@
 
 ## Version 0.2
 
-Initial limited release within MathWorks :tada:.
-
-Core functionality is in place: `docerconvert`, `docerrun`, `docerindex`, and `docerdelete`.  This version of Doc_er uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) to convert Markdown to HTML.
+* Initial limited release within MathWorks :tada:.
+* Core functionality is in place: `docerconvert`, `docerrun`, `docerindex`, and `docerdelete`.  This version of Doc_er uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) to convert Markdown to HTML.
 
 ___
 
