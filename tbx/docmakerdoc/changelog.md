@@ -2,8 +2,8 @@
 
 ## Version 0.6.1
 
-* Minor updates to documentation :page_with_curl:
 * Automated release process on GitHub :infinity:
+* Updated build automation documentation :page_with_curl:
 
 ## Version 0.6
 
