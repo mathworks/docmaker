@@ -103,7 +103,6 @@ assert( isscalar( v ), "build:package", ...
     "Found %d instances of %s on the MATLAB path.", numel( v ), tbxname() )
 s.ToolboxName = v.Name;
 s.ToolboxVersion = v.Version;
-s.OutputFile = fullfile( "releases", v.Name + " " + v.Version + ".mltbx" );
 
 if getenv( "GITHUB_ACTIONS" ) == "true"
     % Check version and tag compatibility for release
@@ -117,6 +116,10 @@ if getenv( "GITHUB_ACTIONS" ) == "true"
     % Define stable name for GitHub
     stableName = replace( v.Name, " ", "_" ) + ".mltbx";
     s.OutputFile = fullfile( "releases", stableName );
+else
+    % Include version in toolbox file name
+    s.OutputFile = fullfile( ...
+        "releases", v.Name + " " + v.Version + ".mltbx" );
 end % if
 
 % Create options object
