@@ -61,4 +61,4 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ___
 
-[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2026
+:copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2026
