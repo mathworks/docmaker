@@ -81,6 +81,25 @@ classdef GitHub < docmaker.Converter
 
         end % md2xml
 
+        function ok = ping( obj )
+            %ping  Ping GitLab
+            %
+            %   ok = ping(g) pings the GitLab g and returns true if OK and
+            %   false otherwise.
+
+            % Submit request
+            method = matlab.net.http.RequestMethod.GET;
+            request = matlab.net.http.RequestMessage( method, [], [] );
+            request = addFields( request, "Authorization", "Bearer " + obj.Token_ );
+            uri = matlab.net.URI( "https://" + obj.Hostname + "/user" );
+            response = request.send( uri );
+
+            % Handle response
+            ok = response.StatusCode == matlab.net.http.StatusCode.OK && ...
+                isstruct( response.Body.Data );
+
+        end % ping
+
     end % methods
 
 end % classdef
