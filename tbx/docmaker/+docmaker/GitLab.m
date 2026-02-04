@@ -1,4 +1,13 @@
 classdef GitLab < docmaker.Converter
+    %docmaker.GitLab  GitLab Markdown converter
+    %
+    %   docmaker.GitLab is an adapter to GitLab to facilitate conversion
+    %   from Markdown to XML.
+    %
+    %   g = docmaker.GitLab(h,t) creates a GitLab adapter with the hostname
+    %   h and the access token t.
+
+    %   Copyright 2024-2026 The MathWorks, Inc.
 
     properties ( SetAccess = immutable )
         Hostname (1,1) string
@@ -15,6 +24,7 @@ classdef GitLab < docmaker.Converter
     methods
 
         function obj = GitLab( hostname, token )
+            %GitLab  GitLab Markdown converter
 
             obj.Hostname = hostname;
             obj.Token_ = token;
@@ -23,20 +33,18 @@ classdef GitLab < docmaker.Converter
 
         function value = get.Token( obj )
 
-            value = string( repmat( '*', [1 strlength( obj.Token_ )] ) );
+            value = string( repmat( '*', [1 strlength( obj.Token_ )] ) ); % mask
 
         end % get.Token
 
         function doc = md2xml( obj, md )
             %md2xml  Convert Markdown to XML
             %
-            %   x = docmaker.md2xml(md) converts the Markdown md to the XML document x
-            %   using the GitHub API at: https://docs.github.com/en/rest/markdown
+            %   x = md2xml(g,md) converts the Markdown md to the XML
+            %   document x using the adapter g.
             %
-            %   Authenticated requests get a higher API rate limit.  To authenticate,
-            %   set the secret or preference using:
-            %   * setSecret("DocMaker GitHub token"), or
-            %   * setpref("docmaker","token",t)
+            %   For more details of the GitLab Markdown API, see:
+            %   https://docs.gitlab.com/api/markdown/
 
             arguments
                 obj (1,1) docmaker.GitLab

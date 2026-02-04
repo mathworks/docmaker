@@ -1,4 +1,10 @@
 classdef ( Abstract ) Converter < handle
+    %docmaker.Converter  Markdown converter
+    %
+    %   docmaker.Converter is an adapter API to facilitate conversion from
+    %   Markdown to XML.
+
+    %   Copyright 2024-2026 The MathWorks, Inc.
 
     methods
         xml = md2xml( md )
@@ -9,12 +15,14 @@ classdef ( Abstract ) Converter < handle
         function xml = closetag( xml, t )
             %closetag  Close self-closing tag
             %
-            %  x = closetag(x,t) closes the self-closing tags t in the xml string x.
+            %  x = closetag(x,t) closes the self-closing tags t in the xml
+            %  string x.
             %
-            %  Self-closing tags are HTML tags that cannot contain content, e.g. "img",
-            %  "hr", "br".  Unclosed self-closing tags -- e.g., <br> rather than <br/>
-            %  -- are valid HTML but invalid XML.  GitHub returns valid HTML that may
-            %  be invalid XML, so closetag closes unclosed self-closing tags.
+            %  Self-closing tags are HTML tags that cannot contain content,
+            %  e.g. "img", "hr", "br".  Unclosed self-closing tags -- e.g.,
+            %  <br> rather than <br/> -- are valid HTML but invalid XML.
+            %  GitHub returns valid HTML that may be invalid XML, so
+            %  closetag closes unclosed self-closing tags.
 
             lt = sort( [strfind( xml, "<" + t + " " ), ...
                 strfind( xml, "<" + t + ">" )], "descend" ); % all *matching* tag opens
@@ -27,6 +35,6 @@ classdef ( Abstract ) Converter < handle
 
         end % closetag
 
-    end
+    end % static methods
 
-end
+end % classdef
