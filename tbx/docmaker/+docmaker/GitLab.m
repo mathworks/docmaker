@@ -80,6 +80,29 @@ classdef GitLab < docmaker.Converter
             doc = parser.parseString( "<div>" + xml + "</div>" );
             doc.XMLStandalone = true;
 
+            % Remove anchors
+            anchors = docmaker.list2array( doc.getElementsByTagName( "a" ) );
+            for ii = 1:numel( anchors )
+                anchor = anchors(ii);
+                if anchor.hasChildNodes == false
+                    anchor.getParentNode().removeChild( anchor );
+                end
+            end
+
+            % Fix MATLAB code blocks
+            pres = docmaker.list2array( doc.getElementsByTagName( "pre" ) );
+            for ii = 1:numel( pres )
+                pre = pres(ii);
+                if docmaker.hasclass( pre, "highlight" ) && ...
+                        docmaker.hasclass( pre, "language-matlab" )
+                    div = getCodeBlock( pre );
+                    if ~isequal( div, [] )
+                        docmaker.addclass( div, "highlight" )
+                        docmaker.addclass( div, "highlight-source-matlab" )
+                    end
+                end
+            end
+
         end % md2xml
 
         function ok = ping( obj )
@@ -104,3 +127,20 @@ classdef GitLab < docmaker.Converter
     end % methods
 
 end % classdef
+
+function div = getCodeBlock( element )
+%getCodeBlock  Get code block of element
+%
+%   d = getCodeBlock(e) gets the code block of the element e, that is, the
+%   closest div ancestor with class "markdown-code-block".
+
+if ~isa( element, "matlab.io.xml.dom.Element" )
+    div = []; % give up
+elseif element.TagName == "div" && ...
+        docmaker.hasclass( element, "markdown-code-block" )
+    div = element; % found it
+else
+    div = getCodeBlock( element.getParentNode() ); % keep looking
+end
+
+end % getCodeBlock
