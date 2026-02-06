@@ -1,7 +1,7 @@
-function xml = closetag( xml, t )
-%closetag  Close self-closing tag
+function xml = closetags( xml, t )
+%closetags  Close self-closing tag
 %
-%   x = docmaker.closetag(x,t) closes the self-closing tags t in the xml
+%   x = docmaker.closetags(x,t) closes the self-closing tags t in the xml
 %   string x.
 %
 %   Self-closing tags are HTML tags that cannot contain content, e.g.
@@ -21,4 +21,4 @@ for ii = 1:numel( lt ) % backwards
     xml = extractBefore( xml, i ) + "/>" + extractAfter( xml, i ); % replace > with />
 end
 
-end % closetag
+end % closetags

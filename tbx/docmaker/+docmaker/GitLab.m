@@ -83,9 +83,9 @@ classdef GitLab < docmaker.MarkdownConverter
             end
 
             % Close self-closing to ensure valid XML
-            xml = docmaker.closetag( xml, "img" );
-            xml = docmaker.closetag( xml, "hr" );
-            xml = docmaker.closetag( xml, "br" );
+            xml = docmaker.closetags( xml, "img" );
+            xml = docmaker.closetags( xml, "hr" );
+            xml = docmaker.closetags( xml, "br" );
 
             % Wrap in div
             parser = matlab.io.xml.dom.Parser();
