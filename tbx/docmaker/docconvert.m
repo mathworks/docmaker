@@ -134,7 +134,8 @@ pMd = fileparts( fMd );
 md = fileread( fMd );
 
 % Convert Markdown to XML
-xml = docmaker.md2xml( md );
+converter = docmaker.getConverter();
+xml = converter.md2xml( md );
 
 % Replace Markdown links
 docmaker.linkrep( xml, ".md", ".html" )

@@ -20,9 +20,10 @@ sRoot = docmaker.dir( pRoot );
 pRoot = sRoot(1).folder; % absolute
 
 % Read helptoc.md
+converter = docmaker.getConverter();
 fToc = fullfile( pRoot, "helptoc.md" ); % source
 mToc = fileread( fToc ); % Markdown
-xToc = docmaker.md2xml( mToc ); % parse
+xToc = converter.md2xml( mToc ); % parse
 docmaker.linkrep( xToc, ".md", ".html" ) % replace links
 
 % Extract name
