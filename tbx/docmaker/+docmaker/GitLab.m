@@ -10,7 +10,7 @@ classdef GitLab < docmaker.Converter
     %   Copyright 2024-2026 The MathWorks, Inc.
 
     properties ( SetAccess = immutable )
-        Hostname (1,1) string
+        Hostname
     end
 
     properties ( SetAccess = immutable, Dependent )
@@ -18,13 +18,18 @@ classdef GitLab < docmaker.Converter
     end
 
     properties ( Access = private )
-        Token_ (1,1) string
+        Token_
     end
 
     methods
 
         function obj = GitLab( hostname, token )
             %GitLab  GitLab Markdown converter
+
+            arguments
+                hostname (1,1) string = "gitlab.com"
+                token (1,1) string = missing
+            end
 
             obj.Hostname = hostname;
             obj.Token_ = token;
@@ -33,7 +38,10 @@ classdef GitLab < docmaker.Converter
 
         function value = get.Token( obj )
 
-            value = string( repmat( '*', [1 strlength( obj.Token_ )] ) ); % mask
+            value = obj.Token_;
+            if ~ismissing( value )
+                value = string( repmat( '*', size( char( value ) ) ) ); % mask
+            end
 
         end % get.Token
 
@@ -52,12 +60,16 @@ classdef GitLab < docmaker.Converter
             end
 
             % Submit request
+            hostname = obj.Hostname;
+            token = obj.Token_;
             method = matlab.net.http.RequestMethod.POST;
             body = struct( "text", md, "gfm", true );
             request = matlab.net.http.RequestMessage( method, [], body );
             request = addFields( request, "Content-Type", "application/json" );
-            request = addFields( request, "PRIVATE-TOKEN", obj.Token_ );
-            uri = matlab.net.URI( "https://" + obj.Hostname + "/api/v4/markdown" );
+            if ~ismissing( token )
+                request = addFields( request, "PRIVATE-TOKEN", token );
+            end
+            uri = matlab.net.URI( "https://" + hostname + "/api/v4/markdown" );
             response = request.send( uri );
 
             % Handle response
@@ -105,42 +117,23 @@ classdef GitLab < docmaker.Converter
 
         end % md2xml
 
-        function ok = ping( obj )
-            %ping  Ping GitLab
-            %
-            %   ok = ping(g) pings the GitLab g and returns true if OK and
-            %   false otherwise.
-
-            % Submit request
-            method = matlab.net.http.RequestMethod.GET;
-            request = matlab.net.http.RequestMessage( method, [], [] );
-            request = addFields( request, "PRIVATE-TOKEN", obj.Token_ );
-            uri = matlab.net.URI( "https://" + obj.Hostname + "/api/v4/user" );
-            response = request.send( uri );
-
-            % Handle response
-            ok = response.StatusCode == matlab.net.http.StatusCode.OK && ...
-                isstruct( response.Body.Data );
-
-        end % ping
-
     end % methods
 
 end % classdef
 
-function div = getCodeBlock( element )
+function div = getCodeBlock( e )
 %getCodeBlock  Get code block of element
 %
 %   d = getCodeBlock(e) gets the code block of the element e, that is, the
 %   closest div ancestor with class "markdown-code-block".
 
-if ~isa( element, "matlab.io.xml.dom.Element" )
+if ~isa( e, "matlab.io.xml.dom.Element" )
     div = []; % give up
-elseif element.TagName == "div" && ...
-        docmaker.hasclass( element, "markdown-code-block" )
-    div = element; % found it
+elseif e.TagName == "div" && ...
+        docmaker.hasclass( e, "markdown-code-block" )
+    div = e; % found it
 else
-    div = getCodeBlock( element.getParentNode() ); % keep looking
+    div = getCodeBlock( e.getParentNode() ); % keep looking
 end
 
 end % getCodeBlock

@@ -10,7 +10,7 @@ classdef GitHub < docmaker.Converter
     %   Copyright 2024-2026 The MathWorks, Inc.
 
     properties ( SetAccess = immutable )
-        Hostname (1,1) string
+        Hostname
     end
 
     properties ( SetAccess = immutable, Dependent )
@@ -18,13 +18,18 @@ classdef GitHub < docmaker.Converter
     end
 
     properties ( Access = private )
-        Token_ (1,1) string
+        Token_
     end
 
     methods
 
         function obj = GitHub( hostname, token )
             %GitHub  GitHub Markdown converter
+
+            arguments
+                hostname (1,1) string = "api.github.com"
+                token (1,1) string = missing
+            end
 
             obj.Hostname = hostname;
             obj.Token_ = token;
@@ -33,7 +38,10 @@ classdef GitHub < docmaker.Converter
 
         function value = get.Token( obj )
 
-            value = string( repmat( '*', [1 strlength( obj.Token_ )] ) ); % mask
+            value = obj.Token_;
+            if ~ismissing( value )
+                value = string( repmat( '*', size( char( value ) ) ) ); % mask
+            end
 
         end % get.Token
 
@@ -52,11 +60,15 @@ classdef GitHub < docmaker.Converter
             end
 
             % Submit request
+            hostname = obj.Hostname;
+            token = obj.Token_;
             method = matlab.net.http.RequestMethod.POST;
             request = matlab.net.http.RequestMessage( method, [], md );
             request = addFields( request, "Content-Type", "text/plain" );
-            request = addFields( request, "Authorization", "Bearer " + obj.Token_ );
-            uri = matlab.net.URI( "https://" + obj.Hostname + "/markdown/raw" );
+            if ~ismissing( token )
+                request = addFields( request, "Authorization", "Bearer " + token );
+            end
+            uri = matlab.net.URI( "https://" + hostname + "/markdown/raw" );
             response = request.send( uri );
 
             % Handle response
@@ -80,25 +92,6 @@ classdef GitHub < docmaker.Converter
             doc.XMLStandalone = true;
 
         end % md2xml
-
-        function ok = ping( obj )
-            %ping  Ping GitLab
-            %
-            %   ok = ping(g) pings the GitLab g and returns true if OK and
-            %   false otherwise.
-
-            % Submit request
-            method = matlab.net.http.RequestMethod.GET;
-            request = matlab.net.http.RequestMessage( method, [], [] );
-            request = addFields( request, "Authorization", "Bearer " + obj.Token_ );
-            uri = matlab.net.URI( "https://" + obj.Hostname + "/user" );
-            response = request.send( uri );
-
-            % Handle response
-            ok = response.StatusCode == matlab.net.http.StatusCode.OK && ...
-                isstruct( response.Body.Data );
-
-        end % ping
 
     end % methods
 
