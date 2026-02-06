@@ -1,7 +1,7 @@
-function s = rmemoji( s )
-%rmemoji Remove emojis from string
+function s = removeemojis( s )
+%removeemojis  Remove emojis from string
 %
-%   s = docmaker.rmemoji(s) removes emojis from the string s.
+%   s = docmaker.removeemojis(s) removes emojis from the string s.
 %
 %   Emojis are strings that begin and end with ":" with letters, numbers
 %   and underscores in between, and Unicode characters from U+2130.
@@ -29,4 +29,4 @@ e = extract( s, p );
 s = erase( s, e );
 s = strtrim( s );
 
-end % rmemoji
+end % removeemojis
