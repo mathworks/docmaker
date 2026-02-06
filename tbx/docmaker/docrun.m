@@ -172,7 +172,12 @@ next = div.getNextSibling(); % for result insertion
 
 % Extract code
 inDiv = div;
-inString = div.TextContent;
+pres = docmaker.list2array( div.getElementsByTag( "pre" ) );
+inString = strings( size( pres ) );
+for ii = 1:numel( inString )
+    inString(ii) = pres(ii).TextContent;
+end
+inString = strjoin( inString, newline() );
 
 % Capture initial figures and their 'prints
 oldFigures = docmaker.figures();
