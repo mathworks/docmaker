@@ -1,4 +1,4 @@
-classdef GitLab < docmaker.Converter
+classdef GitLab < docmaker.MarkdownConverter
     %docmaker.GitLab  GitLab Markdown converter
     %
     %   docmaker.GitLab is an adapter to GitLab to facilitate conversion

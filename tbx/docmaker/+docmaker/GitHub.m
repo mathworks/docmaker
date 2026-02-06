@@ -1,4 +1,4 @@
-classdef GitHub < docmaker.Converter
+classdef GitHub < docmaker.MarkdownConverter
     %docmaker.GitHub  GitHub Markdown converter
     %
     %   docmaker.GitHub is an adapter to GitHub to facilitate conversion
