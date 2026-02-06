@@ -1,12 +1,14 @@
 function xml = closetag( xml, t )
 %closetag  Close self-closing tag
 %
-%   x = closetag(x,t) closes the self-closing tags t in the xml string x.
+%   x = docmaker.closetag(x,t) closes the self-closing tags t in the xml
+%   string x.
 %
 %   Self-closing tags are HTML tags that cannot contain content, e.g.
 %   "img", "hr", "br".  Unclosed self-closing tags -- e.g., <br> rather
-%   than <br/> -- are valid HTML but invalid XML. GitHub returns valid HTML
-%   that may be invalid XML, so closetag closes unclosed self-closing tags.
+%   than <br/> -- are valid HTML but invalid XML. GitHub and GitLab return
+%   valid HTML that may be invalid XML, so closetag closes unclosed
+%   self-closing tags.
 
 %   Copyright 2024-2026 The MathWorks, Inc.
 

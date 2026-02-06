@@ -1,5 +1,5 @@
 function addclass( e, n )
-%docmaker.addclass  Add class to XML element
+%addclass  Add class to XML element
 %
 %   docmaker.addclass(e,c) adds the class c to the element e.
 

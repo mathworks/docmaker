@@ -1,5 +1,5 @@
 function tf = hasclass( e, n )
-%docmaker.hasclass  Add class to XML element
+%hasclass  Test whether XML element has class
 %
 %   docmaker.hasclass(e,c) returns true if the element e has the class c,
 %   and false otherwise.
