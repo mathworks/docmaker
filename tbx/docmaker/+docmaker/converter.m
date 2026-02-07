@@ -42,7 +42,7 @@ secretName = "DocMaker " + shortName;
 prefName = lower( strrep( shortName, " ", "_" ) );
 if isenv( envName )
     value = getenv( envName );
-elseif isSecret( secretName )
+elseif ~isMATLABReleaseOlderThan( "R2024a" ) && isSecret( secretName )
     value = getSecret( secretName );
 elseif ispref( "docmaker", prefName )
     value = getpref( "docmaker", prefName );
