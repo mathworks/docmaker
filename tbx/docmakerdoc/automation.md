@@ -18,15 +18,13 @@ For specific versions, replace `latest` with the version tag, e.g. `v1.0` for ve
 
 A better option is to use a package manager such as [Package Jockey](https://insidelabs-git.mathworks.com/dsampson/pj) from [MathWorks Consulting](https://www.mathworks.com/consulting/).
 
-```matlab
-pjadd docmaker 
-```
-
 Check that DocMaker is available using `ver`.
 
 ```matlab
 s = ver("docmaker")
 ```
+
+By default, DocMaker uses the GitHub Markdown API at `api.github.com` to convert Markdown to HTML.  You can [configure Markdown conversion](conversion.md) to use another converter technology or service instance or to authenticate with an access token.
 
 ## Organizing files
 
@@ -142,4 +140,4 @@ o.ToolboxFiles(o.ToobloxFiles.endsWith(".md")) = []; % remove Markdown documents
 
 ___
 
-[home](index.md) :house: | [convert](docconvert.md) :arrow_right: | [run](docrun.md) :runner: | [index](docindex.md) :scroll: | [delete](docdelete.md) :recycle: | [workspace](workspace.md) :construction_worker: | [about](about.md) :hatching_chick: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2026
+[home](index.md) :house: | :copyright: [MathWorks](https://www.mathworks.com/services/consulting.html) 2024-2026

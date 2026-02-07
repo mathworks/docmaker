@@ -1,9 +1,12 @@
 # Release notes
 
-## Version 0.6.1
+## Version 0.7
 
-* Automated release process on GitHub :infinity:
+* Added support for [GitLab Markdown API](https://docs.gitlab.com/api/markdown/)
+* Added support for private GitHub and GitLab instances
 * Updated build automation documentation :page_with_curl:
+* Added Markdown conversion documentation :page_with_curl:
+* Automated release process on GitHub :infinity:
 
 ## Version 0.6
 

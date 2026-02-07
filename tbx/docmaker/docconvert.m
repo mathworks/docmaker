@@ -134,10 +134,11 @@ pMd = fileparts( fMd );
 md = fileread( fMd );
 
 % Convert Markdown to XML
-xml = docmaker.md2xml( md );
+converter = docmaker.converter();
+xml = converter.md2xml( md );
 
 % Replace Markdown links
-docmaker.linkrep( xml, ".md", ".html" )
+docmaker.replacelinks( xml, ".md", ".html" )
 
 % Create document
 doc = matlab.io.xml.dom.Document( "html", "html", "", "" );
@@ -165,7 +166,7 @@ h1 = docmaker.list2array( getElementsByTagName( xml, "h1" ) );
 if ~isempty( h1 )
     title = doc.createElement( "title" );
     head.appendChild( title );
-    titleText = doc.createTextNode( docmaker.rmemoji( h1(1).TextContent ) );
+    titleText = doc.createTextNode( docmaker.removeemojis( h1(1).TextContent ) );
     title.appendChild( titleText );
 end
 

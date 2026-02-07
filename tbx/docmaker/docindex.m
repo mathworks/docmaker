@@ -20,17 +20,18 @@ sRoot = docmaker.dir( pRoot );
 pRoot = sRoot(1).folder; % absolute
 
 % Read helptoc.md
+converter = docmaker.converter();
 fToc = fullfile( pRoot, "helptoc.md" ); % source
 mToc = fileread( fToc ); % Markdown
-xToc = docmaker.md2xml( mToc ); % parse
-docmaker.linkrep( xToc, ".md", ".html" ) % replace links
+xToc = converter.md2xml( mToc ); % parse
+docmaker.replacelinks( xToc, ".md", ".html" ) % replace links
 
 % Extract name
 h1 = docmaker.list2array( xToc.getElementsByTagName( "h1" ) ); % headings
 if isempty( h1 )
     name = "Unknown Toolbox"; % unknown
 else
-    name = docmaker.rmemoji( h1(1).TextContent ); % first heading
+    name = docmaker.removeemojis( h1(1).TextContent ); % first heading
 end
 
 % Write info.xml

@@ -131,8 +131,7 @@ while true
     for ii = 1:numel( divs )
         div = divs( ii );
         if div.hasAttribute( "class" ) && contains( ... % MATLAB input
-                div.getAttribute( "class" ), "highlight-source-matlab" ) && ...
-                ~endsWith( div.TextContent, whitespacePattern() )
+                div.getAttribute( "class" ), "highlight-source-matlab" )
             runDiv( div, w, theme ) % zap
         elseif div.hasAttribute( "class" ) && contains( ... % MATLAB output
                 div.getAttribute( "class" ), "highlight-output-matlab" )
@@ -172,7 +171,15 @@ next = div.getNextSibling(); % for result insertion
 
 % Extract code
 inDiv = div;
-inString = div.TextContent;
+pres = docmaker.list2array( div.getElementsByTagName( "pre" ) );
+inString = strings( size( pres ) );
+for ii = 1:numel( inString )
+    inString(ii) = pres(ii).TextContent;
+end
+inString = strjoin( inString, newline() );
+
+% Ignore code blocks ending with whitespace
+if endsWith( inString, whitespacePattern() ), return, end
 
 % Capture initial figures and their 'prints
 oldFigures = docmaker.figures();
