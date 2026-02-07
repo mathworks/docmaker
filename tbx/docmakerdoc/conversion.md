@@ -6,7 +6,7 @@ MATLAB DocMaker supports conversion from Markdown to HTML using services from Gi
 
 By default, DocMaker converts Markdown to HTML using the [GitHub Markdown API](https://docs.github.com/en/rest/markdown).
 
-You can use `api.github.com` or your own private instance.  To set the GitHub hostname:
+You can use `api.github.com` or your own private instance.  To override the default GitHub hostname:
 
 1. set the environment variable `DOCMAKER_GITHUB_HOSTNAME` (recommended for build runners :infinity:), or
 2. set the preference `github_hostname` in the group `docmaker` (recommended for local machines :computer:)
@@ -23,12 +23,12 @@ See the [GitHub API terms of service](https://docs.github.com/en/site-policy/git
 
 As an alternative, DocMaker can convert Markdown to HTML using the [GitLab Markdown API](https://docs.gitlab.com/api/markdown/).
 
-To use GitLab for conversion:
+To use GitLab for Markdown conversion:
 
 1. set the environment variable `DOCMAKER_CONVERTER` (recommended for build runners :infinity:), or
 2. set the preference `converter` in the group `docmaker` (recommended for local machines :computer:)
 
-You can use `gitlab.com` or your own private instance.  To set the GitLab hostname:
+You can use `gitlab.com` or your own private instance.  To override the default GitLab hostname:
 
 1. set the environment variable `DOCMAKER_GITLAB_HOSTNAME` (recommended for build runners :infinity:), or
 2. set the preference `gitlab_hostname` in the group `docmaker` (recommended for local machines :computer:)

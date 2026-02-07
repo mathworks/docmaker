@@ -24,7 +24,7 @@ Check that DocMaker is available using `ver`.
 s = ver("docmaker")
 ```
 
-By default, DocMaker uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) at `api.github.com` to convert Markdown to HTML.  You can [configure DocMaker](conversion.md) to use another converter technology or service instance or to authenticate with an access token.
+By default, DocMaker uses the GitHub Markdown API at `api.github.com` to convert Markdown to HTML.  You can [configure Markdown conversion](conversion.md) to use another converter technology or service instance or to authenticate with an access token.
 
 ## Organizing files
 
