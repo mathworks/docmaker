@@ -1,6 +1,6 @@
 # Markdown conversion
 
-MATLAB DocMaker supports conversion from Markdown to HTML using services from GitHub and GitLab.
+DocMaker supports conversion from Markdown to HTML using services from GitHub and GitLab.
 
 ## GitHub
 
@@ -46,9 +46,9 @@ See the [GitLab API terms of use](https://handbook.gitlab.com/handbook/legal/api
 You can configure your local machine to use your own private GitLab instance to convert Markdown to HTML with:
 
 ```matlab
->> setpref("docmaker","converter","GitLab") % use GitLab
->> setpref("docmaker","gitlab_hostname","gitlab.acme.com") % your GitLab
->> setSecret("DocMaker GitLab token") % and enter your token 
+setpref("docmaker","converter","GitLab") % use GitLab
+setpref("docmaker","gitlab_hostname","gitlab.acme.com") % your GitLab
+setSecret("DocMaker GitLab token") % and enter your token 
 ```
 
 You can debug your DocMaker converter settings using `docmaker.converter` :test_tube::
