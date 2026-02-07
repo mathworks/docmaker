@@ -19,7 +19,7 @@ DocMaker ships with documentation that you can [browse online](./tbx/docmakerdoc
 
 ## Developer documentation
 
-The repository contains a top-level [MATLAB project](https://www.mathworks.com/help/matlab/projects.html).  Developers should follow the [user setup instructions](./tbx/docmakerdoc/index.md) by generating a GitHub access token and registering the token with MATLAB.
+The repository contains a top-level [MATLAB project](https://www.mathworks.com/help/matlab/projects.html).
 
 Development requires the [MATLAB Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html) which was introduced in MATLAB R2022b.  Tasks are provided to:
 
@@ -29,11 +29,13 @@ Development requires the [MATLAB Build Tool](https://www.mathworks.com/help/matl
 * `package`: package as a MATLAB Toolbox file (`.mltbx`)
 * `clean`: delete derived artifacts
 
+Finally, configure [Markdown conversion](./tbx/docmakerdoc/conversion.md) by generating an access token on `github.com` and registering the token with MATLAB.
+
 ## About
 
 DocMaker is developed by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) from [MathWorks](https://www.mathworks.com/services/consulting.html) on [GitHub](https://github.com/mathworks/docmaker).
 
-DocMaker uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) at [github.com](https://docs.github.com/), and the [GitHub Markdown CSS](https://github.com/sindresorhus/github-markdown-css) by [Sindre Sorhus](https://github.com/sindresorhus).
+DocMaker uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) or the [GitLab Markdown API](https://docs.gitlab.com/api/markdown/) for converting Markdown to HTML, and the [GitHub Markdown CSS](https://github.com/sindresorhus/github-markdown-css) by [Sindre Sorhus](https://github.com/sindresorhus) for HTML styling.
 
 The author thanks [Ken Deeley](https://www.mathworks.com/matlabcentral/profile/authors/2987674) from MathWorks for his support during the development of DocMaker.
 
