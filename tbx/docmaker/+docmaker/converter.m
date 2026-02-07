@@ -42,7 +42,7 @@ secretName = "DocMaker " + shortName;
 prefName = lower( strrep( shortName, " ", "_" ) );
 if isenv( envName )
     value = getenv( envName );
-elseif ~isMATLABReleaseOlderThan( "R2024a" ) && isSecret( secretName )
+elseif hasSecrets() && isSecret( secretName )
     value = getSecret( secretName );
 elseif ispref( "docmaker", prefName )
     value = getpref( "docmaker", prefName );
@@ -51,3 +51,24 @@ else
 end
 
 end % getValue
+
+function tf = hasSecrets()
+%hasSecrets  Test whether MATLAB has secrets
+%
+%   tf = hasSecrets() returns true if MATLAB has secrets, and false
+%   otherwise.
+%
+%   MATLAB Vault is not available prior to R2024a and in some environments.
+
+if isMATLABReleaseOlderThan( "R2024a" )
+    tf = false;
+else
+    try
+        [~] = listSecrets();
+        tf = true;
+    catch
+        tf = false;
+    end
+end
+
+end % hasSecrets
