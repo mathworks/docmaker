@@ -60,15 +60,18 @@ function tf = hasSecrets()
 %
 %   MATLAB Vault is not available prior to R2024a and in some environments.
 
-if isMATLABReleaseOlderThan( "R2024a" )
-    tf = false;
-else
+persistent HAS_SECRETS
+
+if isempty( HAS_SECRETS ) % first time
     try
-        [~] = listSecrets();
+        [~] = listSecrets;
         tf = true;
     catch
         tf = false;
     end
+    HAS_SECRETS = tf; % store
+else % not first time
+    tf = HAS_SECRETS; % retrieve
 end
 
 end % hasSecrets
