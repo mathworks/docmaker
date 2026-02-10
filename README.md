@@ -1,5 +1,7 @@
 # MATLAB&#174; DocMaker :hatching_chick:
 
+[![MATLAB DocMaker Actions](https://github.com/mathworks/docmaker/actions/workflows/docmaker-ci.yml/badge.svg)](https://github.com/mathworks/docmaker/actions/workflows/docmaker-ci.yml)
+
 DocMaker is a tool for generating MATLAB toolbox documentation.
 
 With DocMaker, you can:
