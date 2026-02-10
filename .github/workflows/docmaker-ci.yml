@@ -1,4 +1,4 @@
-name: MATLAB DocMaker Toolbox Continuous Integration
+name: MATLAB DocMaker Actions
 
 on:
   push:
@@ -88,4 +88,5 @@ jobs:
         make_latest: true
         files: releases/MATLAB_DocMaker.mltbx
       env:
+
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
