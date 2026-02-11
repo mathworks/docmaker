@@ -28,6 +28,8 @@ function varargout = docrun( sHtml, options )
 %   GraphicsTheme.
 %
 %   html = docrun(...) returns the HTML document(s) modified html.
+%
+%   See also: docconvert, docindex, docdelete
 
 %   Copyright 2024-2026 The MathWorks, Inc.
 
