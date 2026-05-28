@@ -37,6 +37,7 @@ arguments
     options.Stylesheets (1,:) string {mustBeFile}
     options.Scripts (1,:) string {mustBeFile}
     options.Root (1,1) string {mustBeFolder}
+    options.RenderMath(1, 1) logical = false
 end
 
 % Initialize output
@@ -112,6 +113,9 @@ for ii = 1:numel( sMd ) % loop over files
     fHtml = fullfile( pMd, nMd + ".html" );
     doc = convert( fMd, fCss, fJs );
     writer.writeToFile( doc, fHtml, "utf-8" )
+    if options.RenderMath
+        cleanLaTeXExpressions( fHtml )
+    end % if
     fprintf( 1, "[+] %s\n", fHtml );
     oFiles(end+1,:) = fHtml; %#ok<AGROW>
 end
@@ -293,3 +297,71 @@ end
 if iscellstr( varargin ), s = char( s ); end %#ok<ISCLSTR>
 
 end % superfolder
+
+function cleanLaTeXExpressions( fHTML )
+%CLEANLATEXEXPRESSIONS Remove spurious HTML tags from LaTeX expressions.
+%
+% Currently, we replace <em>...</em> with _..._ inside $...$ or $$...$$.
+%
+% Markdown italics and LaTeX subscripts both use an underscore, causing a
+% conflict when Markdown is parsed with priority over LaTeX inside a LaTeX
+% expression. For example, the underscores in the expression:
+%
+% $$
+% \Phi = \frac{\dot{m}_{th} + \dot{m}}{2} ht_{in} - ...
+%       \frac{\dot{m}_{th} - \dot{m}}{2} ht_{out}
+% $$
+%
+% are converted to <em>...</em> tags in HTML.
+%
+% Any future conflicting syntax will be added to this function on a
+% case-by-case basis.
+
+% Read the file contents.
+rawHTML = fileread( fHTML );
+
+% Handle display LaTeX ($$...$$) first, to avoid breaking into inline
+% matches ($...$).
+LaTeXPatterns = ["\$\$(.*?)\$\$", "\$(.*?)\$\$"];
+
+for patternIdx = 1 : numel( LaTeXPatterns )
+
+    % Find matches and their positions.
+    [matches, startIdx, endIdx] = regexp( ...
+        rawHTML, LaTeXPatterns(patternIdx), "match", "start", "end" );
+
+    % Process the string from the end to the start, so that the earlier
+    % indices are preserved.
+    for matchIdx = numel( matches ) : -1 : 1
+
+        % Extract the LaTeX from inside the block.
+        currentBlock = matches{matchIdx};
+        if startsWith( currentBlock, "$$" )
+            currentDelimiter = "$$";
+            innerLaTeX = currentBlock(3:end-2);
+        elseif startsWith( currentBlock, "$" )
+            currentDelimiter = "$";
+            innerLaTeX = currentBlock(2:end-1);
+        end % if
+
+        % Replace the tags.
+        cleanLaTeX = replace( innerLaTeX, ["<em>", "</em>"], "_" );
+
+        % Reassemble the block.
+        cleanBlock = currentDelimiter + cleanLaTeX + currentDelimiter;
+
+        % Replace the block in the original text.
+        rawHTML = [rawHTML(1:startIdx(matchIdx)-1), ...
+            cleanBlock{:}, ...
+            rawHTML(endIdx(matchIdx)+1:end)];
+
+    end % for matches
+
+end % for patterns
+
+% Write the file contents.
+fileID = fopen( fHTML, "w" );
+fprintf( fileID, "%s", rawHTML );
+fclose( fileID );
+
+end % cleanLaTeXExpressions

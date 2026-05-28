@@ -6,6 +6,8 @@ classdef tDocMaker < matlab.unittest.TestCase
         Folder(:, 1) string {mustBeFolder}
         % Example Markdown document.
         ExampleFile(:, 1) string {mustBeFile}
+        % Example Markdown document with LaTeX.
+        ExampleLaTeXFile(:, 1) string {mustBeFile}
         % Example help table of contents file.
         HelpTOCFile(:, 1) string {mustBeFile}
     end % properties ( Access = protected )
@@ -24,11 +26,15 @@ classdef tDocMaker < matlab.unittest.TestCase
 
             testsFolder = fileparts( mfilename( "fullpath" ) );
             exampleMD = fullfile( testsFolder, "Example.md" );
+            latexMD = fullfile( testsFolder, "LaTeXExample.md" );
             helptocMD = fullfile( testsFolder, "helptoc.md" );
             copyfile( exampleMD, testCase.Folder )
+            copyfile( latexMD, testCase.Folder )
             copyfile( helptocMD, testCase.Folder )
             testCase.ExampleFile = ...
                 fullfile( testCase.Folder, "Example.md" );
+            testCase.ExampleLaTeXFile = ...
+                fullfile( testCase.Folder, "LaTeXExample.md" );
             testCase.HelpTOCFile = ...
                 fullfile( testCase.Folder, "helptoc.md" );
 

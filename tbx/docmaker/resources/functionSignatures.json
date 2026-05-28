@@ -55,6 +55,12 @@
                 "kind": "namevalue",
                 "type": "folder",
                 "purpose": "root folder"
+            },
+            {
+                "name": "RenderMath",
+                "kind": "namevalue",
+                "type": ["logical", "scalar"],
+                "purpose": "render LaTeX math expressions"
             }
         ]
     },
