@@ -112,10 +112,10 @@ This feature is experimental :test_tube: and may be removed in a future version.
 ### Including LaTeX
 
 DocMaker uses [MathJax](https://www.mathjax.org/) to display LaTeX expressions. To use this feature, include the postprocessing scripts 
-`mathjax-config.js` and `mathjax.js` bundled with DocMaker via the `Scripts` option:
+`mathjax-config.js` and `tex-mml-chtml.js` bundled with DocMaker via the `Scripts` option:
 
 ```matlab
-mathScripts = fullfile(docmakerroot(), "resources", ["mathjax-config.js", "mathjax.js"];
+mathScripts = fullfile(docmakerroot(), "resources", ["mathjax-config.js", "tex-mml-chtml.js"];
 docconvert("MyMarkdownWithLaTeX.md", "Scripts", mathScripts) 
 ```
 
@@ -123,7 +123,7 @@ To avoid conflicts between Markdown and LaTeX formatting, e.g., if you are using
 specify the `MathRenderer` option:
 
 ```matlab
-mathScripts = fullfile(docmakerroot(), "resources", ["mathjax-config.js", "mathjax.js"];
+mathScripts = fullfile(docmakerroot(), "resources", ["mathjax-config.js", "tex-mml-chtml.js"];
 docconvert("MyMarkdownWithLaTeX.md", "Scripts", mathScripts, "MathRenderer", "auto") 
 ```
 
