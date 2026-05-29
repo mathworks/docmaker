@@ -39,8 +39,8 @@ end
 
 arguments
     options.Level (1,1) double {mustBeInteger,mustBeInRange(options.Level,0,7)} = 0
-    options.Theme {mustBeTheme(options.Theme)} = "none"
-    options.FigureSize (1,2) double {mustBePositive,mustBeReal} = getDefaultFigureSize()
+    options.Theme {docmaker.mustBeTheme(options.Theme)} = "none"
+    options.FigureSize (1,2) double {mustBePositive,mustBeReal} = docmaker.getDefaultFigureSize()
 end
 
 % Validate inputs
@@ -405,22 +405,3 @@ img.setAttribute( "style", "width: " + position(3) + ...
 picture.appendChild( img );
 
 end % createResponsiveImage
-
-function mustBeTheme( theme )
-%mustBeTheme  Validation function for optional named argument Theme
-
-themes = ["none","light","dark","auto"];
-assert( ( ischar( theme ) && ismember( theme, themes ) ) || ...
-    ( isstring( theme ) && isscalar( theme ) && ismember( theme, themes ) ) || ...
-    ( isa( theme, "matlab.graphics.theme.GraphicsTheme" ) && isscalar( theme ) ), ...
-    "Theme must be ""none"", ""light"", ""dark"", ""auto"", or a GraphicsTheme." )
-
-end % mustBeTheme
-
-function s = getDefaultFigureSize()
-%getDefaultFigureSize  Default figure size
-
-p = get( 0, "DefaultFigurePosition" ); % [x y w h]
-s = p(3:4); % [w h]
-
-end % getDefaultFigureSize
