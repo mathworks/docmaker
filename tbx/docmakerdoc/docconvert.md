@@ -16,7 +16,7 @@ Multiple documents may also be specified using `docconvert(md1,md2,...)`.
 
 `docconvert(...,"Root",r)` publishes to the root folder `r`, placing stylesheets and scripts in the subfolder `resources`.  The root folder must be a common ancestor of the Markdown documents.  If not specified, the root folder is the lowest common ancestor.
 
-`docconvert(..., "RenderMath", tf)` if `tf` is true, renders mathematical expressions enclosed within inline or display LaTeX without Markdown formatting. If `tf` is `false` (the default) no action is performed. Use this option in conjunction with the `Scripts` input. See [Including LaTeX](#including-latex) for an example. 
+`docconvert(..., "MathRenderer", mr)` postprocesses the HTML output to ensure LaTeX expressions are well-formed for display with MathJax. Use this option in conjunction with the `Scripts` input. See [Including LaTeX](#including-latex) for an example. Available math renderers are `GitHub`, `GitLab`, `auto` (uses `docmaker.converter` to select `GitHub` or `GitLab` automatically), or `none` (default). If `MathRenderer` is `none`, no postprocessing is performed.
 
 `[html,res] = docconvert(...)` returns the names of the HTML document(s) `html` and the resources folder `res` created.
 
@@ -27,7 +27,7 @@ Multiple documents may also be specified using `docconvert(md1,md2,...)`.
 | `css`:arrow_right: | CSS stylesheet(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | |
 | `js`:arrow_right: | JavaScript script(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | :test_tube: |
 | `r`:arrow_right: | root folder, as an absolute or relative path; default is the lowest common ancestor of `md` | string | |
-| `tf`:arrow_right: | whether to render mathematical expressions in LaTeX without Markdown formatting | logical | |
+| `mr`:arrow_right: | math renderer: `GitHub`, `GitLab`, `auto`, or `none`; default is `none` | string | |
 | :arrow_right:`html` | HTML document(s) created, as an absolute path | string(s) | |
 | :arrow_right:`res` | resources folder created, as an absolute path | string | |
 

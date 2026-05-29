@@ -21,6 +21,11 @@ function varargout = docconvert( sMd, options )
 %   must be a common ancestor of the Markdown documents.  If not specified,
 %   the root folder is the lowest common ancestor.
 %
+%   docconvert(...,"MathRenderer",mr) postprocesses the HTML output to
+%   ensure LaTeX expressions are well-formed for display with MathJax. Use 
+%   this option in conjunction with the "Scripts" input. Available math 
+%   renderers are "GitHub", "GitLab", "auto", and "none" (default).
+%
 %   [html, res] = docconvert(...) returns the names of the HTML document(s)
 %   html and the resources folder res created.
 %
@@ -37,7 +42,7 @@ arguments
     options.Stylesheets (1,:) string {mustBeFile}
     options.Scripts (1,:) string {mustBeFile}
     options.Root (1,1) string {mustBeFolder}
-    options.RenderMath(1, 1) logical = false
+    options.MathRenderer(1, 1) string {mustBeMember(options.MathRenderer,["auto", "none", "GitHub", "GitLab"])} = "none"
 end
 
 % Initialize output
@@ -113,9 +118,7 @@ for ii = 1:numel( sMd ) % loop over files
     fHtml = fullfile( pMd, nMd + ".html" );
     doc = convert( fMd, fCss, fJs );
     writer.writeToFile( doc, fHtml, "utf-8" )
-    if options.RenderMath
-        cleanLaTeXExpressions( fHtml )
-    end % if
+    cleanLaTeXExpressions( fHtml, options.MathRenderer )
     fprintf( 1, "[+] %s\n", fHtml );
     oFiles(end+1,:) = fHtml; %#ok<AGROW>
 end
@@ -298,10 +301,13 @@ if iscellstr( varargin ), s = char( s ); end %#ok<ISCLSTR>
 
 end % superfolder
 
-function cleanLaTeXExpressions( fHTML )
-%CLEANLATEXEXPRESSIONS Remove spurious HTML tags from LaTeX expressions.
+function cleanLaTeXExpressions( fHTML, renderer )
+%CLEANLATEXEXPRESSIONS Postprocess LaTeX expressions after conversion to
+%HTML via the GitHub or GitLab APIs. We remove spurious HTML tags and add 
+%delimiters to the expressions as needed.
 %
-% Currently, we replace <em>...</em> with _..._ inside $...$ or $$...$$.
+% For the GitHub API, we replace <em>...</em> with _..._ inside $...$ or 
+% $$...$$.
 %
 % Markdown italics and LaTeX subscripts both use an underscore, causing a
 % conflict when Markdown is parsed with priority over LaTeX inside a LaTeX
@@ -314,8 +320,38 @@ function cleanLaTeXExpressions( fHTML )
 %
 % are converted to <em>...</em> tags in HTML.
 %
+% For the GitLab API, we enclose span contents with class="js-render-math"
+% and data-math-style="display" or "inline" with $$ and $, respectively.
+%
 % Any future conflicting syntax will be added to this function on a
 % case-by-case basis.
+
+arguments ( Input )
+    fHTML(1, 1) string {mustBeFile}
+    renderer(1, 1) string {mustBeMember(renderer, ["GitHub", "GitLab", "auto", "none"])}
+end % arguments ( Input )
+
+converterType = class( docmaker.converter() );
+
+if renderer == "none"
+    return
+elseif (renderer == "auto" && converterType == "docmaker.GitHub") || ...
+        renderer == "GitHub"
+    cleanGitHubLaTeXExpressions( fHTML )
+elseif (renderer == "auto" && converterType == "docmaker.GitLab") || ...
+        renderer == "GitLab"
+    cleanGitLabLaTeXExpressions( fHTML )
+end % if
+
+end % cleanLaTeXExpressions
+
+function cleanGitHubLaTeXExpressions( fHTML )
+%CLEANGITHUBLATEXEXPRESSIONS Postprocess the generated HTML to remove 
+%spurious HTML tags from the LaTeX expressions.
+
+arguments ( Input )
+    fHTML(1, 1) string {mustBeFile}
+end % arguments ( Input )
 
 % Read the file contents.
 rawHTML = fileread( fHTML );
@@ -364,4 +400,29 @@ fileID = fopen( fHTML, "w" );
 fprintf( fileID, "%s", rawHTML );
 fclose( fileID );
 
-end % cleanLaTeXExpressions
+end % cleanGitHubLaTeXExpressions
+
+function cleanGitLabLaTeXExpressions( fHTML )
+%CLEANGITLABLATEXEXPRESSIONS Enclose LaTeX span contents within $$ or $.
+
+arguments ( Input )
+    fHTML(1, 1) string {mustBeFile}
+end % arguments ( Input )
+
+% Read the file contents.
+rawHTML = fileread( fHTML );
+
+% Display LaTeX → wrap inner content with $$...$$.
+displayPattern = '<span[^>]*data-math-style="display"[^>]*>(.*?)</span>';
+cleanHTML = regexprep( rawHTML, displayPattern, "$$$1$$" );
+
+% Inline LaTeX → wrap inner content with $...$.
+inlinePattern = '<span[^>]*data-math-style="inline"[^>]*>(.*?)</span>';
+cleanHTML = regexprep( cleanHTML, inlinePattern, "$$1$" );
+
+% Write the file contents.
+fileID = fopen( fHTMLOut, "w" );
+fprintf( fileID, "%s", cleanHTML );
+fclose( fileID );
+
+end % cleanGitLabLaTeXExpressions
