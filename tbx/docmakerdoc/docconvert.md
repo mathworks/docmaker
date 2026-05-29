@@ -120,11 +120,11 @@ docconvert("MyMarkdownWithLaTeX.md", "Scripts", mathScripts)
 ```
 
 To avoid conflicts between Markdown and LaTeX formatting, e.g., if you are using underscores in LaTeX to display subscripts, 
-specify the `RenderMath` option:
+specify the `MathRenderer` option:
 
 ```matlab
 mathScripts = fullfile(docmakerroot(), "resources", ["mathjax-config.js", "mathjax.js"];
-docconvert("MyMarkdownWithLaTeX.md", "Scripts", mathScripts, "RenderMath", true) 
+docconvert("MyMarkdownWithLaTeX.md", "Scripts", mathScripts, "MathRenderer", "auto") 
 ```
 
 ___
