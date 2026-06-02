@@ -57,10 +57,22 @@
                 "purpose": "root folder"
             },
             {
-                "name": "RenderMath",
+                "name": "Interpreter",
                 "kind": "namevalue",
-                "type": ["logical", "scalar"],
-                "purpose": "render LaTeX math expressions"
+                "type": [
+                    "char",
+                    "choices={'latex','none'}"
+                    ],
+                "purpose": "math interpreter"
+            },
+            {
+                "name": "MathRenderer",
+                "kind": "namevalue",
+                "type": [
+                    "char",
+                    "choices={'GitHub','GitLab','auto','none'}"
+                    ],
+                "purpose": "LaTeX renderer"
             }
         ]
     },

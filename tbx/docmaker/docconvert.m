@@ -21,10 +21,20 @@ function varargout = docconvert( sMd, options )
 %   must be a common ancestor of the Markdown documents.  If not specified,
 %   the root folder is the lowest common ancestor.
 %
+%   docconvert(...,"Interpreter",in) uses the interpreter in to postprocess
+%   inline or display LaTeX expressions. Available interpreters are "latex"
+%   and "none" (default). Specify inline LaTeX expressions between single
+%   dollar symbols ($...$), and display LaTeX expressions between double 
+%   dollar symbols ($$...$$).
+%
 %   docconvert(...,"MathRenderer",mr) postprocesses the HTML output to
-%   ensure LaTeX expressions are well-formed for display with MathJax. Use 
-%   this option in conjunction with the "Scripts" input. Available math 
-%   renderers are "GitHub", "GitLab", "auto", and "none" (default).
+%   ensure LaTeX expressions are well-formed for display with MathJax. This
+%   option has no effect unless "Interpreter" is "latex". Available math
+%   renderers are "GitHub", "GitLab", "auto" (uses docmaker.converter to
+%   select "GitHub" or "GitLab" automatically), or "none". If "Interpreter"
+%   is "latex" and "MathRenderer" is not specified, then the default value
+%   is "auto". If "Interpreter" is "none" or unspecified, then
+%   "MathRenderer" is "none" and no postprocessing is performed.
 %
 %   [html, res] = docconvert(...) returns the names of the HTML document(s)
 %   html and the resources folder res created.
@@ -42,6 +52,7 @@ arguments
     options.Stylesheets (1,:) string {mustBeFile}
     options.Scripts (1,:) string {mustBeFile}
     options.Root (1,1) string {mustBeFolder}
+    options.Interpreter(1, 1) string {mustBeMember(options.Interpreter, ["latex", "none"])} = "none"
     options.MathRenderer(1, 1) string {mustBeMember(options.MathRenderer,["auto", "none", "GitHub", "GitLab"])} = "none"
 end
 
@@ -66,6 +77,20 @@ if isfield( options, "Root" )
 else
     pRoot = superfolder( pMd{:} );
 end
+
+% Include math scripts if LaTeX interpreter is requested
+if options.Interpreter == "latex"
+    mathScripts = fullfile( docmakerroot(), "resources", ...
+        ["tex-mml-chtml.js", "mathjax-config.js"] );
+    if ~isfield( options, "Scripts" )
+        options.Scripts = mathScripts;        
+    else
+        options.Scripts = [options.Scripts, mathScripts];        
+    end % if
+    options.MathRenderer = "auto";
+else
+    options.MathRenderer = "none";        
+end % if
 
 % Folders
 pTem = fullfile( fileparts( mfilename( 'fullpath' ) ), 'resources' );
@@ -328,7 +353,8 @@ function cleanLaTeXExpressions( fHTML, renderer )
 
 arguments ( Input )
     fHTML(1, 1) string {mustBeFile}
-    renderer(1, 1) string {mustBeMember(renderer, ["GitHub", "GitLab", "auto", "none"])}
+    renderer(1, 1) string {mustBeMember(renderer, ...
+        ["GitHub", "GitLab", "auto", "none"])}
 end % arguments ( Input )
 
 converterType = class( docmaker.converter() );
