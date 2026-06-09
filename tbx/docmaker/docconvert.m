@@ -71,7 +71,7 @@ end
 % Include math scripts if LaTeX interpreter is requested
 if options.Interpreter == "latex"
     mathScripts = fullfile( docmakerroot(), "resources", ...
-        ["tex-mml-chtml.js", "mathjax-config.js"] );
+        ["mathjax-config.js", "tex-mml-chtml.js"] );
     if ~isfield( options, "Scripts" )
         options.Scripts = mathScripts;        
     else

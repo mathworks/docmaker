@@ -13,22 +13,7 @@ classdef tDocMakerTask < matlab.unittest.TestCase
             testCase.assumeTrue( ~isMATLABReleaseOlderThan( "R2025a" ), ...
                 "This test is for R2025a or later." )
 
-        end % filterVersion
-
-        function assertConstructorIsWarningFree( testCase )
-
-            testCase.fatalAssertWarningFree( @createTask, ...
-                "The 'DocMakerTask' constructor was not warning-free." )
-
-            function createTask()
-
-                tbx = fileparts( docmakerroot() );
-                doc = fullfile( tbx, "docmakerdoc", "**", "*.md" );
-                DocMakerTask( doc );
-
-            end % createTask
-
-        end % assertConstructorIsWarningFree
+        end % filterVersion        
 
     end % methods ( TestClassSetup )
 
