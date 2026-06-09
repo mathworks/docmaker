@@ -5,7 +5,7 @@ classdef DocMakerTask < matlab.buildtool.Task
 
     properties
         % Documentation theme.
-        DocTheme(1, 1) string {mustBeMember( DocTheme, ...
+        Theme(1, 1) string {mustBeMember( Theme, ...
             ["light", "dark", "auto"] )} = "auto"
         % Stylesheets to include.
         Stylesheets(1, :) string {mustBeFile}
@@ -15,10 +15,7 @@ classdef DocMakerTask < matlab.buildtool.Task
         Root(1, :) string {mustBeFolder, mustBeScalarOrEmpty}
         % LaTeX interpreter.
         Interpreter(1, 1) string {mustBeMember( Interpreter, ...
-            ["latex", "none"] )} = "none"
-        % Renderer for LaTeX expressions.
-        MathRenderer(1, 1) string {mustBeMember( MathRenderer, ...
-            ["GitHub", "GitLab", "auto", "none"] )} = "none"
+            ["latex", "none"] )} = "none"        
         % Batching level.
         Level(1, 1) double {mustBeInteger, ...
             mustBeInRange( Level, 0, 7 )} = 0
@@ -30,38 +27,25 @@ classdef DocMakerTask < matlab.buildtool.Task
     end % properties
 
     properties ( TaskInput )
-        % Folder containing documentation files in Markdown format.
-        MarkdownFolder(1, :) matlab.buildtool.io.FileCollection
+        % Documentation files in Markdown format.
+        MarkdownFiles(1, :) cell
     end % properties ( TaskInput )
-
-    properties ( TaskOutput, SetAccess = private )
-        % Documentation files, in HTML format.
-        HTMLFiles(1, :) matlab.buildtool.io.FileCollection
-        % Table of contents and doc metadata: helptoc.xml and info.xml.
-        XMLFiles(1, :) matlab.buildtool.io.FileCollection
-        % Documentation resources folder.
-        Resources(1, :) matlab.buildtool.io.FileCollection
-        % Documentation search index.
-        HelpSearchIndex(1, :) matlab.buildtool.io.FileCollection
-    end % properties ( TaskOutput, SetAccess = private )
 
     methods
 
-        function task = DocMakerTask( markdownFolder, namedArgs )
+        function task = DocMakerTask( markdownFiles, namedArgs )
             %DOCMAKERTASK Construct the DocMaker build task.
 
+            arguments ( Input, Repeating )
+                markdownFiles
+            end % arguments ( Input, Repeating )
+
             arguments ( Input )
-                markdownFolder
                 namedArgs.?DocMakerTask
             end % arguments ( Input )
 
-            % Assign the markdown folder and task outputs.
-            task.MarkdownFolder = markdownFolder;
-            task.HTMLFiles = fullfile( markdownFolder, "**", "*.html" );
-            task.XMLFiles = fullfile( markdownFolder, "*.xml" );
-            task.Resources = fullfile( markdownFolder, "resources" );
-            task.HelpSearchIndex = ...
-                fullfile( markdownFolder, "helpsearch-v*" );
+            % Assign the markdown files.
+            task.MarkdownFiles = markdownFiles;
 
             % Add the task metadata.
             task.Description = ...
@@ -86,24 +70,43 @@ classdef DocMakerTask < matlab.buildtool.Task
             % * Run MATLAB code in HTML documents and insert output
             % * Create info.xml and helptoc.xml from helptoc.md
 
-            markdownFolder = task.MarkdownFolder.paths();
-            markdownFiles = fullfile( markdownFolder, "**", "*.md" );
-            html = docconvert( markdownFiles, ...
-                "Theme", task.DocTheme, ...
-                "Stylesheets", task.Stylesheets, ...
-                "Scripts", task.Scripts, ...
-                "Root", task.Root, ...
+            % Prepare docconvert argument list.
+            convertArgs = {};
+            if ~isempty( task.Stylesheets )
+                convertArgs = {"Stylesheets", task.Stylesheets};
+            end % if
+            
+            if ~isempty( task.Scripts )
+                convertArgs = [convertArgs, {"Scripts", task.Scripts}];
+            end % if
+
+            if ~isempty( task.Root )
+                convertArgs = [convertArgs, {"Root", task.Root}];
+            end % if
+
+            % Convert Markdown to HTML.
+            html = docconvert( task.MarkdownFiles{:}, ...
+                "Theme", task.Theme, ...
                 "Interpreter", task.Interpreter, ...
-                "MathRenderer", task.MathRenderer );
+                convertArgs{:} );
             fprintf( 1, "** Converted Markdown doc to HTML\n" )
 
+            % Execute MATLAB code and insert output into the HTML.
             docrun( html, ...
                 "Level", task.Level, ...
                 "Theme", task.FigureTheme, ...
                 "FigureSize", task.FigureSize )
             fprintf( 1, "** Inserted MATLAB output into doc\n" )
 
-            docindex( markdownFolder )
+            % Build the documentation search index.
+            if ~isempty( task.Root )            
+                docindex( task.Root )
+            else
+                sMd = docmaker.dir( task.MarkdownFiles{:} );
+                pMd = reshape( {sMd.folder}, size( sMd ) );
+                pRoot = docmaker.superfolder( pMd{:} );
+                docindex( pRoot )
+            end % if
             fprintf( 1, "** Indexed doc\n" )
 
         end % buildDoc

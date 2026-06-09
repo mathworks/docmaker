@@ -61,11 +61,11 @@ pMd = reshape( {sMd.folder}, size( sMd ) );
 if isfield( options, "Root" )
     sRoot = dir( options.Root );
     pRoot = sRoot(1).folder; % absolute path
-    assert( isequal( superfolder( pRoot, pMd{:} ), pRoot ), ...
+    assert( isequal( docmaker.superfolder( pRoot, pMd{:} ), pRoot ), ...
         "docmaker:InvalidArgument", ...
         "Markdown documents must be under folder %s.", pRoot )
 else
-    pRoot = superfolder( pMd{:} );
+    pRoot = docmaker.superfolder( pMd{:} );
 end
 
 % Include math scripts if LaTeX interpreter is requested
@@ -253,7 +253,7 @@ pf = string( sf(1).folder ); % single matching entry
 nf = string( sf(1).name ); % single matching entry
 
 % Find common ancestor folder
-ps = superfolder( pd, pf );
+ps = docmaker.superfolder( pd, pf );
 if isequal( ps, [] )
     r = fullfile( pf, nf ); % absolute
 else
@@ -269,49 +269,6 @@ end
 if ischar( d ) && ischar( f ), r = char( r ); end
 
 end % relpath
-
-function s = superfolder( varargin )
-%superfolder  Common ancestor folder
-%
-%   s = superfolder(p1,p2,...) returns the common ancestor of the folders
-%   p1, p2, ...  The folders must exist.  If there is no common ancestor
-%   then superfolder returns [].
-
-% Check inputs
-narginchk( 1, Inf )
-dd = string( varargin );
-
-% Canonicalize using dir
-for ii = 1:numel( dd )
-    d = dd(ii);
-    assert( isfolder( d ), "docmaker:NotFound", "Folder ""%s"" not found.", d )
-    sd = dir( d );
-    dd(ii) = sd(1).folder; % first entry is "."
-end
-
-% Loop, split, compare
-s = dd(1); % initialize
-for ii = 2:numel( dd )
-    d = dd(ii);
-    ts = split( s, filesep ); % split
-    td = split( d, filesep ); % split
-    n = min( numel( ts ), numel( td ) ); % comparable length
-    tf = ts(1:n) == td(1:n); % compare
-    i = find( tf == false, 1, "first" ); % first non-match
-    if i == 1 % immediate non-match
-        s = [];
-        return
-    elseif isempty( i ) % full match
-        s = join( ts(1:n), filesep );
-    else % partial match
-        s = join( ts(1:i-1), filesep );
-    end
-end
-
-% Return matching datatype
-if iscellstr( varargin ), s = char( s ); end %#ok<ISCLSTR>
-
-end % superfolder
 
 function cleanLaTeXExpressions( fHTML )
 %CLEANLATEXEXPRESSIONS Postprocess LaTeX expressions after conversion to
