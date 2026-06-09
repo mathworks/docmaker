@@ -47,6 +47,8 @@ classdef tDocMakerTask < matlab.unittest.TestCase
             xml = fullfile( tests, "*.xml" );            
             resources = fullfile( tests, "resources" );
             helpsearch = fullfile( tests, "helpsearch-v*" );
+            disp( resources )
+            disp( helpsearch )
 
             testCase.addTeardown( @() delete( html ) )
             testCase.addTeardown( @() delete( xml ) )
