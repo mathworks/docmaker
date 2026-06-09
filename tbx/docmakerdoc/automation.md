@@ -98,6 +98,26 @@ end
 
 The task will be skipped if the input and output have not changed since the last successful run.  Furthermore `buildtool clean` will remove generated artifacts, without the need to call `docerdelete` explicitly.
 
+In MATLAB R2025a or later, you can use the provided [`DocMakerTask`](DocMakerTask.md) to simplify this process, without the need to write a task function. This task works 
+in the same way as the steps above.
+
+```matlab
+md = fullfile( doc, "**", "*.md" ); % Markdown documents
+plan("doc") = DocMakerTask( md );
+plan("doc").Outputs = [fullfile(doc,"**","*.html"), ... % output HTML
+    fullfile(doc,"resources"), ... % stylesheets and scripts
+    fullfile(doc,"*.xml"), ... % index files
+    fullfile(doc,"helpsearch-v*")]; % search database folder 
+```
+
+The `DocMakerTask` accepts the same input arguments as [`docconvert`](docconvert.md) and [`docrun`](docrun.md), e.g.,
+
+```matlab
+plan("doc") = DocMakerTask( md, "Theme", "light", ...
+    "FigureTheme", "light", ...
+    "FigureSize", [600, 400] ); 
+```
+
 ### Alternative layout
 
 If you separate documentation input from output, you need a build task whose input is the source folder and output is the destination folder.

@@ -3,6 +3,7 @@
 ## Version 0.8
 
 * Added support for LaTeX expressions using [MathJax](https://www.mathjax.org/)
+* Added custom build task `DocMakerTask`
 
 ## Version 0.7
 

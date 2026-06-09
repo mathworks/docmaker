@@ -130,7 +130,9 @@ for ii = 1:numel( sMd ) % loop over files
     fHtml = fullfile( pMd, nMd + ".html" );
     doc = convert( fMd, fCss, fJs );
     writer.writeToFile( doc, fHtml, "utf-8" )
-    cleanLaTeXExpressions( fHtml )
+    if options.Interpreter == "latex"
+        cleanLaTeXExpressions( fHtml )
+    end % if
     fprintf( 1, "[+] %s\n", fHtml );
     oFiles(end+1,:) = fHtml; %#ok<AGROW>
 end
@@ -299,8 +301,17 @@ arguments ( Input )
     fHTML(1, 1) string {mustBeFile}    
 end % arguments ( Input )
 
-removeItalicTags( fHTML )
-wrapMathSpans( fHTML )
+converterType = erase( class( docmaker.converter() ), "docmaker." );
+
+switch converterType
+    case "GitHub"
+        removeItalicTags( fHTML )
+    case "GitLab"
+        wrapMathSpans( fHTML )
+    otherwise
+        error( "docconvert:cleanLaTeXExpressions", ...
+            "Unsupported converter type %s.", converterType )
+end % switch/case
 
 end % cleanLaTeXExpressions
 

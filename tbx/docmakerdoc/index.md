@@ -68,7 +68,7 @@ Before you start, you may wish to delete previous DocMaker artifacts using [`doc
 
 ### Automating the process
 
-You can incorporate documentation into your software delivery pipeline by integrating DocMaker with MATLAB [build automation](automation.md) technologies.
+You can incorporate documentation into your software delivery pipeline by integrating DocMaker with MATLAB [build automation](automation.md) technologies. DocMaker provides a custom build task [`DocMakerTask`](DocMakerTask.md) that you can add to your build file to automate the steps above.
 
 ___
 
