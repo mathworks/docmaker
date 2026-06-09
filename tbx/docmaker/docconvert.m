@@ -27,15 +27,6 @@ function varargout = docconvert( sMd, options )
 %   dollar symbols ($...$), and display LaTeX expressions between double 
 %   dollar symbols ($$...$$).
 %
-%   docconvert(...,"MathRenderer",mr) postprocesses the HTML output to
-%   ensure LaTeX expressions are well-formed for display with MathJax. This
-%   option has no effect unless "Interpreter" is "latex". Available math
-%   renderers are "GitHub", "GitLab", "auto" (uses docmaker.converter to
-%   select "GitHub" or "GitLab" automatically), or "none". If "Interpreter"
-%   is "latex" and "MathRenderer" is not specified, then the default value
-%   is "auto". If "Interpreter" is "none" or unspecified, then
-%   "MathRenderer" is "none" and no postprocessing is performed.
-%
 %   [html, res] = docconvert(...) returns the names of the HTML document(s)
 %   html and the resources folder res created.
 %
@@ -52,8 +43,7 @@ arguments
     options.Stylesheets (1,:) string {mustBeFile}
     options.Scripts (1,:) string {mustBeFile}
     options.Root (1,1) string {mustBeFolder}
-    options.Interpreter(1, 1) string {mustBeMember(options.Interpreter, ["latex", "none"])} = "none"
-    options.MathRenderer(1, 1) string {mustBeMember(options.MathRenderer,["auto", "none", "GitHub", "GitLab"])} = "none"
+    options.Interpreter(1, 1) string {mustBeMember(options.Interpreter, ["latex", "none"])} = "none"    
 end
 
 % Initialize output
@@ -86,10 +76,7 @@ if options.Interpreter == "latex"
         options.Scripts = mathScripts;        
     else
         options.Scripts = [options.Scripts, mathScripts];        
-    end % if
-    options.MathRenderer = "auto";
-else
-    options.MathRenderer = "none";        
+    end % if    
 end % if
 
 % Folders
@@ -143,7 +130,7 @@ for ii = 1:numel( sMd ) % loop over files
     fHtml = fullfile( pMd, nMd + ".html" );
     doc = convert( fMd, fCss, fJs );
     writer.writeToFile( doc, fHtml, "utf-8" )
-    cleanLaTeXExpressions( fHtml, options.MathRenderer )
+    cleanLaTeXExpressions( fHtml )
     fprintf( 1, "[+] %s\n", fHtml );
     oFiles(end+1,:) = fHtml; %#ok<AGROW>
 end
@@ -326,7 +313,7 @@ if iscellstr( varargin ), s = char( s ); end %#ok<ISCLSTR>
 
 end % superfolder
 
-function cleanLaTeXExpressions( fHTML, renderer )
+function cleanLaTeXExpressions( fHTML )
 %CLEANLATEXEXPRESSIONS Postprocess LaTeX expressions after conversion to
 %HTML via the GitHub or GitLab APIs. We remove spurious HTML tags and add 
 %delimiters to the expressions as needed.
@@ -352,28 +339,17 @@ function cleanLaTeXExpressions( fHTML, renderer )
 % case-by-case basis.
 
 arguments ( Input )
-    fHTML(1, 1) string {mustBeFile}
-    renderer(1, 1) string {mustBeMember(renderer, ...
-        ["GitHub", "GitLab", "auto", "none"])}
+    fHTML(1, 1) string {mustBeFile}    
 end % arguments ( Input )
 
-converterType = class( docmaker.converter() );
-
-if renderer == "none"
-    return
-elseif (renderer == "auto" && converterType == "docmaker.GitHub") || ...
-        renderer == "GitHub"
-    cleanGitHubLaTeXExpressions( fHTML )
-elseif (renderer == "auto" && converterType == "docmaker.GitLab") || ...
-        renderer == "GitLab"
-    cleanGitLabLaTeXExpressions( fHTML )
-end % if
+removeItalicTags( fHTML )
+wrapMathSpans( fHTML )
 
 end % cleanLaTeXExpressions
 
-function cleanGitHubLaTeXExpressions( fHTML )
-%CLEANGITHUBLATEXEXPRESSIONS Postprocess the generated HTML to remove 
-%spurious HTML tags from the LaTeX expressions.
+function removeItalicTags( fHTML )
+%REMOVEITALICTAGS Postprocess the generated HTML to remove spurious HTML 
+%tags from the LaTeX expressions.
 
 arguments ( Input )
     fHTML(1, 1) string {mustBeFile}
@@ -426,10 +402,10 @@ fileID = fopen( fHTML, "w" );
 fprintf( fileID, "%s", rawHTML );
 fclose( fileID );
 
-end % cleanGitHubLaTeXExpressions
+end % removeItalicTags
 
-function cleanGitLabLaTeXExpressions( fHTML )
-%CLEANGITLABLATEXEXPRESSIONS Enclose LaTeX span contents within $$ or $.
+function wrapMathSpans( fHTML )
+%WRAPMATHSPANS Enclose GitLab-style LaTeX span contents within $$ or $.
 
 arguments ( Input )
     fHTML(1, 1) string {mustBeFile}
@@ -447,8 +423,8 @@ inlinePattern = '<span[^>]*data-math-style="inline"[^>]*>(.*?)</span>';
 cleanHTML = regexprep( cleanHTML, inlinePattern, "$$1$" );
 
 % Write the file contents.
-fileID = fopen( fHTMLOut, "w" );
+fileID = fopen( fHTML, "w" );
 fprintf( fileID, "%s", cleanHTML );
 fclose( fileID );
 
-end % cleanGitLabLaTeXExpressions
+end % wrapMathSpans

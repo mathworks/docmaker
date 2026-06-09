@@ -22,13 +22,6 @@ are `latex` or `none` (default). Specify inline LaTeX expressions between
 single dollar symbols (`$`), and display LaTeX expressions between 
 double dollar symbols (`$$`).
 
-`docconvert(..., "MathRenderer", mr)` postprocesses the HTML output to ensure LaTeX expressions 
-are well-formed for display with MathJax. This option has no effect unless `Interpreter` is `latex`. 
-Available math renderers are `GitHub`, `GitLab`, `auto` (uses `docmaker.converter` to 
-select `GitHub` or `GitLab` automatically), or `none`. If `Interpreter` is `latex` and 
-`MathRenderer` is not specified, then the default value is `auto`. If `Interpreter` is `none` or unspecified, 
-then `MathRenderer` is `none` and no postprocessing is performed.
-
 `[html,res] = docconvert(...)` returns the names of the HTML document(s) `html` and the resources folder `res` created.
 
 | Name | Description | Type | Required |
@@ -38,7 +31,7 @@ then `MathRenderer` is `none` and no postprocessing is performed.
 | `css`:arrow_right: | CSS stylesheet(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | |
 | `js`:arrow_right: | JavaScript script(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | :test_tube: |
 | `r`:arrow_right: | root folder, as an absolute or relative path; default is the lowest common ancestor of `md` | string | |
-| `mr`:arrow_right: | math renderer: `GitHub`, `GitLab`, `auto`, or `none`; default is `none` | string | |
+| `in`:arrow_right: | LaTeX interpreter: `latex` or `none`; default is `none` | string | |
 | :arrow_right:`html` | HTML document(s) created, as an absolute path | string(s) | |
 | :arrow_right:`res` | resources folder created, as an absolute path | string | |
 
