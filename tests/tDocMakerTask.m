@@ -8,6 +8,13 @@ classdef tDocMakerTask < matlab.unittest.TestCase
 
     methods ( TestClassSetup )
 
+        function filterVersion( testCase )
+            
+            testCase.assumeTrue( ~isMATLABReleaseOlderThan( "R2025a" ), ...
+                "This test is for R2025a or later." )
+
+        end % filterVersion
+
         function assertConstructorIsWarningFree( testCase )
 
             testCase.fatalAssertWarningFree( @createTask, ...
