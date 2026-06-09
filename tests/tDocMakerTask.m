@@ -42,7 +42,7 @@ classdef tDocMakerTask < matlab.unittest.TestCase
         function tExecutingTaskIsWarningFree( testCase )
 
             taskRunner = @() testCase.Task.buildDoc();
-            tests = fileparts( mfilename( "fullpath" ) ); 
+            tests = string( fileparts( mfilename( "fullpath" ) ) ); 
             html = fullfile( tests, "Example.html" );
             xml = fullfile( tests, "*.xml" );            
             resources = fullfile( tests, "resources" );
