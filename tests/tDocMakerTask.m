@@ -48,7 +48,7 @@ classdef tDocMakerTask < matlab.unittest.TestCase
             resources = fullfile( tests, "resources" );
             helpsearch = fullfile( tests, "helpsearch-v*" );
 
-            ci = strcmp( getenv( "GITHUB_CI" ), "true" );
+            ci = strcmp( getenv( "GITHUB_ACTIONS" ), "true" );
             if ~ci
                 testCase.addTeardown( @() delete( html ) )
                 testCase.addTeardown( @() delete( xml ) )
@@ -57,7 +57,7 @@ classdef tDocMakerTask < matlab.unittest.TestCase
                 testCase.addTeardown( @() rmdir( helpsearch, ...
                     "Recursive", true ) )
             end % if
-            
+
             testCase.verifyWarningFree( taskRunner, ...
                 "Running the DocMakerTask was not warning-free." )
 
