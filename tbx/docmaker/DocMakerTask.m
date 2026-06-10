@@ -28,8 +28,19 @@ classdef DocMakerTask < matlab.buildtool.Task
 
     properties ( TaskInput )
         % Documentation files in Markdown format.
-        MarkdownFiles(1, :) cell
+        MarkdownFiles(1, :) matlab.buildtool.io.FileCollection
     end % properties ( TaskInput )
+
+    properties ( TaskOutput )
+        % Documentation files in HTML format.
+        HTMLFiles(1, :) matlab.buildtool.io.FileCollection
+        % Index files (info.xml and helptoc.xml).
+        XMLFiles(1, :) matlab.buildtool.io.FileCollection
+        % Documentation resources folder.
+        Resources(1, :) matlab.buildtool.io.FileCollection
+        % Documentation search index.
+        SearchIndex(1, :) matlab.buildtool.io.FileCollection
+    end % properties ( TaskOutput )
 
     methods
 
@@ -44,8 +55,34 @@ classdef DocMakerTask < matlab.buildtool.Task
                 namedArgs.?DocMakerTask
             end % arguments ( Input )
 
-            % Assign the markdown files.
-            task.MarkdownFiles = markdownFiles;
+            % Assign the markdown files (the task input).            
+            task.MarkdownFiles = [markdownFiles{:}];
+
+            % Derive the task outputs.
+
+            % HTML files.
+            md = docmaker.dir( markdownFiles{:} );
+            [~, name] = fileparts( string( {md.name} ) );
+            mdFolders = string( {md.folder} );
+            html = fullfile( mdFolders, name + ".html" );
+            task.HTMLFiles = html;
+
+            % Root folder.            
+            if ~isempty( task.Root )
+                rootInfo = dir( task.Root );
+                root = rootInfo(1).folder;
+            else
+                root = docmaker.superfolder( md.folder );
+            end % if
+
+            % XML files.
+            task.XMLFiles = fullfile( root, ["info.xml", "helptoc.xml"] );
+
+            % Resources folder.
+            task.Resources = fullfile( root, "resources" );
+
+            % Search index.
+            task.SearchIndex = fullfile( root, "helpsearch-v*" );
 
             % Add the task metadata.
             task.Description = ...
@@ -85,7 +122,7 @@ classdef DocMakerTask < matlab.buildtool.Task
             end % if
 
             % Convert Markdown to HTML.
-            html = docconvert( task.MarkdownFiles{:}, ...
+            html = docconvert( task.MarkdownFiles.paths(), ...
                 "Theme", task.Theme, ...
                 "Interpreter", task.Interpreter, ...
                 convertArgs{:} );
@@ -102,7 +139,7 @@ classdef DocMakerTask < matlab.buildtool.Task
             if ~isempty( task.Root )            
                 docindex( task.Root )
             else
-                sMd = docmaker.dir( task.MarkdownFiles{:} );
+                sMd = docmaker.dir( task.MarkdownFiles.paths() );
                 pMd = reshape( {sMd.folder}, size( sMd ) );
                 pRoot = docmaker.superfolder( pMd{:} );
                 docindex( pRoot )

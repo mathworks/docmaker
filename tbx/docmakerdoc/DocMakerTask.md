@@ -43,17 +43,19 @@ double dollar symbols (`$$`).
 
 ## Examples
 Add a documentation generation task to the build plan for all Markdown documents in the folder `doc`. Use light theme for the 
-documentation files and figure snapshots, and specify a figure size of 600-by-400 pixels. Specify the task outputs to enable incremental builds.
+documentation files and figure snapshots, and specify a figure size of 600-by-400 pixels.
 ```matlab
 md = fullfile(doc, "**", "*.md"); % Markdown documents
 plan("doc") = DocMakerTask(md, "Theme", "light", ...
     "FigureSize", [600, 400], ...
-    "FigureTheme", "light");
-plan("doc").Outputs = [fullfile(doc,"**","*.html"), ... % output HTML
-    fullfile(doc,"resources"), ... % stylesheets and scripts
-    fullfile(doc,"*.xml"), ... % index files
-    fullfile(doc,"helpsearch-v*")]; % search database folder 
+    "FigureTheme", "light"); 
 ```
+The `DocMakerTask` automatically assigns the task outputs to enable incremental builds. The task outputs are:
+
+* The HTML files: `fullfile(doc, "**", "*.html")`
+* The index files: `fullfile(doc, ["info.xml", "helptoc.xml"])`
+* The resources folder: `fullfile(doc, "resources")`
+* The search database folder: `fullfile(doc, "helpsearch-v*")`
 
 For further examples of using the task inputs, see [`docconvert`](docconvert.md), [`docrun`](docrun.md), and [`docindex`](docindex.md).
 

@@ -103,20 +103,18 @@ in the same way as the steps above.
 
 ```matlab
 md = fullfile( doc, "**", "*.md" ); % Markdown documents
-plan("doc") = DocMakerTask( md );
-plan("doc").Outputs = [fullfile(doc,"**","*.html"), ... % output HTML
-    fullfile(doc,"resources"), ... % stylesheets and scripts
-    fullfile(doc,"*.xml"), ... % index files
-    fullfile(doc,"helpsearch-v*")]; % search database folder 
+plan("doc") = DocMakerTask( md ); 
 ```
 
 The `DocMakerTask` accepts the same input arguments as [`docconvert`](docconvert.md) and [`docrun`](docrun.md), e.g.,
 
 ```matlab
-plan("doc") = DocMakerTask( md, "Theme", "light", ...
+plan("doc") = DocMakerTask( md, ...
+    "Theme", "light", ...
     "FigureTheme", "light", ...
     "FigureSize", [600, 400] ); 
 ```
+The task outputs (HTML and XML files, resources, and search index) are assigned automatically to enable incremental builds.
 
 ### Alternative layout
 
