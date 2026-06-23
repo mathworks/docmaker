@@ -14,16 +14,16 @@ doc = fullfile( tbx, tbxname() + "doc" );
 test = fullfile( prj, "tests" );
 
 % Clean task
-plan( "clean" ) = matlab.buildtool.tasks.CleanTask;
+plan("clean") = matlab.buildtool.tasks.CleanTask;
 
 % Check task
-plan( "check" ).Inputs = api;
+plan("check").Inputs = api;
 
 % Test task
-plan( "test" ) = matlab.buildtool.tasks.TestTask( test, ...
+plan("test") = matlab.buildtool.tasks.TestTask( test, ...
     "SourceFiles", tbx, "Strict", true );
-plan( "test" ).Inputs = [api test];
-plan( "test" ).Dependencies = "check";
+plan("test").Inputs = [api test];
+plan("test").Dependencies = "check";
 
 % Documentation task
 plan("doc") = DocMakerTask( fullfile( doc, "**", "*.md" ), ...
@@ -32,8 +32,8 @@ plan("doc") = DocMakerTask( fullfile( doc, "**", "*.md" ), ...
     "FigureTheme", "light" );
 
 % Package task
-plan( "package" ).Inputs = tbx;
-plan( "package" ).Dependencies = ["test", "doc"];
+plan("package").Inputs = tbx;
+plan("package").Dependencies = ["test", "doc"];
 
 % Default task
 plan.DefaultTasks = "package";
