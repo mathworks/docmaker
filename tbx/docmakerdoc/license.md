@@ -59,7 +59,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
-[tex-mml-chtml.js](https://github.com/mathjax/MathJax) is licensed under the **Apache License**:
+[MathJax](https://github.com/mathjax/MathJax) is licensed under the **Apache License**:
 
 ```
                                  Apache License
