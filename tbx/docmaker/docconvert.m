@@ -102,9 +102,16 @@ for ii = 1:numel( sCss )
     copyfile( fullfile( sCss(ii).folder, sCss(ii).name ), pRez )
     fprintf( 1, "[+] %s\n", fullfile( pRez, sCss(ii).name ) );
 end
+fCss = reshape( fullfile( pRez, {sCss.name} ), size( sCss ) );
+
+% Copy the required rights files
 copyfile( fullfile( pTem, "github-markdown-css.rights" ), pRez )
 fprintf( 1, "[+] %s\n", fullfile( pRez, "github-markdown-css.rights" ) );
-fCss = reshape( fullfile( pRez, {sCss.name} ), size( sCss ) );
+
+if options.Interpreter == "latex"
+    copyfile( fullfile( pTem, "tex-mml-chtml.rights" ), pRez )
+    fprintf( 1, "[+] %s\n", fullfile( pRez, "tex-mml-chtml.rights" ) );
+end % if
 
 % Check and copy scripts
 sJs = docmaker.dir( fullfile( pTem, "copycode.js" ) );
