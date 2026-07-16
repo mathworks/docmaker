@@ -16,6 +16,8 @@ Multiple documents may also be specified using `docconvert(md1,md2,...)`.
 
 `docconvert(...,"Root",r)` publishes to the root folder `r`, placing stylesheets and scripts in the subfolder `resources`.  The root folder must be a common ancestor of the Markdown documents.  If not specified, the root folder is the lowest common ancestor.
 
+`docconvert(...,"Interpreter",in)` uses the text interpreter in.  Available interpreters are "latex" (LaTeX markup) and "none" (literal text, default).  Use single dollar signs `$...$` to display equations inline, and double dollar signs `$$...$$` to display equations on their own line, centered.
+
 `[html,res] = docconvert(...)` returns the names of the HTML document(s) `html` and the resources folder `res` created.
 
 | Name | Description | Type | Required |
@@ -25,6 +27,7 @@ Multiple documents may also be specified using `docconvert(md1,md2,...)`.
 | `css`:arrow_right: | CSS stylesheet(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | |
 | `js`:arrow_right: | JavaScript script(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | :test_tube: |
 | `r`:arrow_right: | root folder, as an absolute or relative path; default is the lowest common ancestor of `md` | string | |
+| `in`:arrow_right: | text interpreter: `latex` or `none`; default is `none` | string | |
 | :arrow_right:`html` | HTML document(s) created, as an absolute path | string(s) | |
 | :arrow_right:`res` | resources folder created, as an absolute path | string | |
 

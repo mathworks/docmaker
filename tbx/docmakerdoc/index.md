@@ -7,7 +7,7 @@ With DocMaker, you can:
 * run MATLAB code blocks in documents and include textual and graphical output
 * create MATLAB documentation index files from a Markdown table of contents
 
-This is DocMaker version 0.7.  The [release notes](changelog.md) detail new features, bug fixes, and compatibility considerations for each version.
+This is DocMaker version 0.8.  The [release notes](changelog.md) detail new features, bug fixes, and compatibility considerations for each version.
 
 ## Getting started
 
@@ -68,7 +68,7 @@ Before you start, you may wish to delete previous DocMaker artifacts using [`doc
 
 ### Automating the process
 
-You can incorporate documentation into your software delivery pipeline by integrating DocMaker with MATLAB [build automation](automation.md) technologies.
+You can incorporate documentation into your software delivery pipeline by integrating DocMaker with MATLAB [build automation](automation.md) technologies. DocMaker provides a custom build task [`DocMakerTask`](DocMakerTask.md) that you can add to your build file to automate the steps above.
 
 ___
 

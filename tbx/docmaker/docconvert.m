@@ -21,6 +21,12 @@ function varargout = docconvert( sMd, options )
 %   must be a common ancestor of the Markdown documents.  If not specified,
 %   the root folder is the lowest common ancestor.
 %
+%   docconvert(...,"Interpreter",in) uses the text interpreter in.
+%   Available interpreters are "latex" (LaTeX markup) and "none" (literal
+%   text, default).  Use single dollar signs $...$ to display equations
+%   inline, and double dollar signs $$...$$ to display equations on their
+%   own line, centered.
+%
 %   [html, res] = docconvert(...) returns the names of the HTML document(s)
 %   html and the resources folder res created.
 %
@@ -37,6 +43,7 @@ arguments
     options.Stylesheets (1,:) string {mustBeFile}
     options.Scripts (1,:) string {mustBeFile}
     options.Root (1,1) string {mustBeFolder}
+    options.Interpreter(1, 1) string {mustBeMember(options.Interpreter, ["latex", "none"])} = "none"    
 end
 
 % Initialize output
@@ -54,12 +61,23 @@ pMd = reshape( {sMd.folder}, size( sMd ) );
 if isfield( options, "Root" )
     sRoot = dir( options.Root );
     pRoot = sRoot(1).folder; % absolute path
-    assert( isequal( superfolder( pRoot, pMd{:} ), pRoot ), ...
+    assert( isequal( docmaker.superfolder( pRoot, pMd{:} ), pRoot ), ...
         "docmaker:InvalidArgument", ...
         "Markdown documents must be under folder %s.", pRoot )
 else
-    pRoot = superfolder( pMd{:} );
+    pRoot = docmaker.superfolder( pMd{:} );
 end
+
+% Include math scripts if LaTeX interpreter is requested
+if options.Interpreter == "latex"
+    mathScripts = fullfile( docmakerroot(), "resources", ...
+        ["mathjax-config.js", "tex-mml-chtml.js"] );
+    if ~isfield( options, "Scripts" )
+        options.Scripts = mathScripts;        
+    else
+        options.Scripts = [options.Scripts, mathScripts];        
+    end % if    
+end % if
 
 % Folders
 pTem = fullfile( fileparts( mfilename( 'fullpath' ) ), 'resources' );
@@ -84,9 +102,16 @@ for ii = 1:numel( sCss )
     copyfile( fullfile( sCss(ii).folder, sCss(ii).name ), pRez )
     fprintf( 1, "[+] %s\n", fullfile( pRez, sCss(ii).name ) );
 end
+fCss = reshape( fullfile( pRez, {sCss.name} ), size( sCss ) );
+
+% Copy the required rights files
 copyfile( fullfile( pTem, "github-markdown-css.rights" ), pRez )
 fprintf( 1, "[+] %s\n", fullfile( pRez, "github-markdown-css.rights" ) );
-fCss = reshape( fullfile( pRez, {sCss.name} ), size( sCss ) );
+
+if options.Interpreter == "latex"
+    copyfile( fullfile( pTem, "tex-mml-chtml.rights" ), pRez )
+    fprintf( 1, "[+] %s\n", fullfile( pRez, "tex-mml-chtml.rights" ) );
+end % if
 
 % Check and copy scripts
 sJs = docmaker.dir( fullfile( pTem, "copycode.js" ) );
@@ -112,6 +137,9 @@ for ii = 1:numel( sMd ) % loop over files
     fHtml = fullfile( pMd, nMd + ".html" );
     doc = convert( fMd, fCss, fJs );
     writer.writeToFile( doc, fHtml, "utf-8" )
+    if options.Interpreter == "latex"
+        cleanLaTeXExpressions( fHtml )
+    end % if
     fprintf( 1, "[+] %s\n", fHtml );
     oFiles(end+1,:) = fHtml; %#ok<AGROW>
 end
@@ -234,7 +262,7 @@ pf = string( sf(1).folder ); % single matching entry
 nf = string( sf(1).name ); % single matching entry
 
 % Find common ancestor folder
-ps = superfolder( pd, pf );
+ps = docmaker.superfolder( pd, pf );
 if isequal( ps, [] )
     r = fullfile( pf, nf ); % absolute
 else
@@ -251,45 +279,127 @@ if ischar( d ) && ischar( f ), r = char( r ); end
 
 end % relpath
 
-function s = superfolder( varargin )
-%superfolder  Common ancestor folder
+function cleanLaTeXExpressions( fHTML )
+%CLEANLATEXEXPRESSIONS Postprocess LaTeX expressions after conversion to
+%HTML via the GitHub or GitLab APIs. We remove spurious HTML tags and add 
+%delimiters to the expressions as needed.
 %
-%   s = superfolder(p1,p2,...) returns the common ancestor of the folders
-%   p1, p2, ...  The folders must exist.  If there is no common ancestor
-%   then superfolder returns [].
+% For the GitHub API, we replace <em>...</em> with _..._ inside $...$ or 
+% $$...$$.
+%
+% Markdown italics and LaTeX subscripts both use an underscore, causing a
+% conflict when Markdown is parsed with priority over LaTeX inside a LaTeX
+% expression. For example, the underscores in the expression:
+%
+% $$
+% \Phi = \frac{\dot{m}_{th} + \dot{m}}{2} ht_{in} - ...
+%       \frac{\dot{m}_{th} - \dot{m}}{2} ht_{out}
+% $$
+%
+% are converted to <em>...</em> tags in HTML.
+%
+% For the GitLab API, we enclose span contents with class="js-render-math"
+% and data-math-style="display" or "inline" with $$ and $, respectively.
+%
+% Any future conflicting syntax will be added to this function on a
+% case-by-case basis.
 
-% Check inputs
-narginchk( 1, Inf )
-dd = string( varargin );
+arguments ( Input )
+    fHTML(1, 1) string {mustBeFile}    
+end % arguments ( Input )
 
-% Canonicalize using dir
-for ii = 1:numel( dd )
-    d = dd(ii);
-    assert( isfolder( d ), "docmaker:NotFound", "Folder ""%s"" not found.", d )
-    sd = dir( d );
-    dd(ii) = sd(1).folder; % first entry is "."
-end
+converterType = erase( class( docmaker.converter() ), "docmaker." );
 
-% Loop, split, compare
-s = dd(1); % initialize
-for ii = 2:numel( dd )
-    d = dd(ii);
-    ts = split( s, filesep ); % split
-    td = split( d, filesep ); % split
-    n = min( numel( ts ), numel( td ) ); % comparable length
-    tf = ts(1:n) == td(1:n); % compare
-    i = find( tf == false, 1, "first" ); % first non-match
-    if i == 1 % immediate non-match
-        s = [];
-        return
-    elseif isempty( i ) % full match
-        s = join( ts(1:n), filesep );
-    else % partial match
-        s = join( ts(1:i-1), filesep );
-    end
-end
+switch converterType
+    case "GitHub"
+        removeItalicTags( fHTML )
+    case "GitLab"
+        wrapMathSpans( fHTML )
+    otherwise
+        error( "docconvert:cleanLaTeXExpressions", ...
+            "Unsupported converter type %s.", converterType )
+end % switch/case
 
-% Return matching datatype
-if iscellstr( varargin ), s = char( s ); end %#ok<ISCLSTR>
+end % cleanLaTeXExpressions
 
-end % superfolder
+function removeItalicTags( fHTML )
+%REMOVEITALICTAGS Postprocess the generated HTML to remove spurious HTML 
+%tags from the LaTeX expressions.
+
+arguments ( Input )
+    fHTML(1, 1) string {mustBeFile}
+end % arguments ( Input )
+
+% Read the file contents.
+rawHTML = fileread( fHTML );
+
+% Handle display LaTeX ($$...$$) first, to avoid breaking into inline
+% matches ($...$).
+LaTeXPatterns = ["\$\$(.*?)\$\$", "\$(.*?)\$\$"];
+
+for patternIdx = 1 : numel( LaTeXPatterns )
+
+    % Find matches and their positions.
+    [matches, startIdx, endIdx] = regexp( ...
+        rawHTML, LaTeXPatterns(patternIdx), "match", "start", "end" );
+
+    % Process the string from the end to the start, so that the earlier
+    % indices are preserved.
+    for matchIdx = numel( matches ) : -1 : 1
+
+        % Extract the LaTeX from inside the block.
+        currentBlock = matches{matchIdx};
+        if startsWith( currentBlock, "$$" )
+            currentDelimiter = "$$";
+            innerLaTeX = currentBlock(3:end-2);
+        elseif startsWith( currentBlock, "$" )
+            currentDelimiter = "$";
+            innerLaTeX = currentBlock(2:end-1);
+        end % if
+
+        % Replace the tags.
+        cleanLaTeX = replace( innerLaTeX, ["<em>", "</em>"], "_" );
+
+        % Reassemble the block.
+        cleanBlock = currentDelimiter + cleanLaTeX + currentDelimiter;
+
+        % Replace the block in the original text.
+        rawHTML = [rawHTML(1:startIdx(matchIdx)-1), ...
+            cleanBlock{:}, ...
+            rawHTML(endIdx(matchIdx)+1:end)];
+
+    end % for matches
+
+end % for patterns
+
+% Write the file contents.
+fileID = fopen( fHTML, "w" );
+fprintf( fileID, "%s", rawHTML );
+fclose( fileID );
+
+end % removeItalicTags
+
+function wrapMathSpans( fHTML )
+%WRAPMATHSPANS Enclose GitLab-style LaTeX span contents within $$ or $.
+
+arguments ( Input )
+    fHTML(1, 1) string {mustBeFile}
+end % arguments ( Input )
+
+% Read the file contents.
+rawHTML = fileread( fHTML );
+
+% Display LaTeX → wrap inner content with $$...$$.
+displayPattern = '<span[^>]*data-math-style="display"[^>]*>(.*?)</span>';
+cleanHTML = regexprep( rawHTML, displayPattern, "$$$1$$" );
+
+% Inline LaTeX → wrap inner content with $...$.
+inlinePattern = '<span[^>]*data-math-style="inline"[^>]*>(.*?)</span>';
+cleanHTML = regexprep( cleanHTML, inlinePattern, "$$1$" );
+
+% Write the file contents.
+fileID = fopen( fHTML, "w" );
+fprintf( fileID, "%s", cleanHTML );
+fclose( fileID );
+
+end % wrapMathSpans
