@@ -92,6 +92,9 @@ classdef GitLab < docmaker.MarkdownConverter
             doc = parser.parseString( "<div>" + xml + "</div>" );
             doc.XMLStandalone = true;
 
+            % Remove GitLab web UI lazy-loading from images
+            docmaker.cleanGitLabImages( doc )
+
             % Remove anchors
             anchors = docmaker.list2array( doc.getElementsByTagName( "a" ) );
             for ii = 1:numel( anchors )
