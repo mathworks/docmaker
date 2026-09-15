@@ -127,6 +127,14 @@ for ii = 1:numel( sJs )
 end
 fJs = reshape( fullfile( pRez, {sJs.name} ), size( sJs ) );
 
+% Remove the read-only attribute from the copied resources folder (required
+% from R2026b).
+if isunix()
+    fileattrib( pRez, "+w", "a", "s" ); %#ok<*FILEATTRIB>
+else
+    fileattrib( pRez, "+w", "", "s" );
+end % if
+
 % Publish
 writer = matlab.io.xml.dom.DOMWriter();
 writer.Configuration.XMLDeclaration = false;
