@@ -55,6 +55,15 @@
                 "kind": "namevalue",
                 "type": "folder",
                 "purpose": "root folder"
+            },
+            {
+                "name": "Interpreter",
+                "kind": "namevalue",
+                "type": [
+                    "char",
+                    "choices={'latex','none'}"
+                    ],
+                "purpose": "math interpreter"
             }
         ]
     },
@@ -98,6 +107,97 @@
             },
             {
                 "name": "Theme",
+                "kind": "namevalue",
+                "type": [
+                    "char",
+                    "choices={'none','light','dark','auto'}"
+                ],
+                "purpose": "theme"
+            },
+            {
+                "name": "FigureSize",
+                "kind": "namevalue",
+                "type": ["double","positive","size=1,2"],
+                "purpose": "figure size"
+            }
+        ]
+    },
+    "DocMakerTask.DocMakerTask": {
+        "inputs": [
+            {
+                "mutuallyExclusiveGroup": [
+                    {
+                        "name": "md",
+                        "kind": "required",
+                        "type": "file=*.md",
+                        "purpose": "Markdown document",
+                        "repeating": true
+                    },
+                    {
+                        "name": "md",
+                        "kind": "required",
+                        "type": [
+                            "char",
+                            "choices={'*.md','**/*.md'}"
+                        ],
+                        "purpose": "Markdown document common wildcard",
+                        "repeating": false
+                    },
+                    {
+                        "name": "md",
+                        "kind": "required",
+                        "purpose": "Markdown document other wildcard",
+                        "repeating": false
+                    }
+                ]
+            },
+            {
+                "name": "Theme",
+                "kind": "namevalue",
+                "type": [
+                    "char",
+                    "choices={'light','dark','auto'}"
+                ],
+                "purpose": "Theme"
+            },
+            {
+                "name": "Stylesheets",
+                "kind": "namevalue",
+                "type": "file=*.css",
+                "purpose": "CSS stylesheet"
+            },
+            {
+                "name": "Scripts",
+                "kind": "namevalue",
+                "type": "file=*.css",
+                "purpose": "JavaScript script"
+            },
+            {
+                "name": "Root",
+                "kind": "namevalue",
+                "type": "folder",
+                "purpose": "root folder"
+            },
+            {
+                "name": "Interpreter",
+                "kind": "namevalue",
+                "type": [
+                    "char",
+                    "choices={'latex','none'}"
+                ],
+                "purpose": "math interpreter"
+            },
+            {
+                "name": "Level",
+                "kind": "namevalue",
+                "type": [
+                    "double",
+                    "choices={0,1,2,3,4,5,6}"
+                ],
+                "purpose": "batching level"
+            },
+            {
+                "name": "FigureTheme",
                 "kind": "namevalue",
                 "type": [
                     "char",

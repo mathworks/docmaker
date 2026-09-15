@@ -96,7 +96,25 @@ docindex(doc) % index
 end 
 ```
 
-The task will be skipped if the input and output have not changed since the last successful run.  Furthermore `buildtool clean` will remove generated artifacts, without the need to call `docerdelete` explicitly.
+The task will be skipped if the input and output have not changed since the last successful run.  Furthermore `buildtool clean` will remove generated artifacts, without the need to call `docdelete` explicitly.
+
+In MATLAB R2025a or later, you can use the provided [`DocMakerTask`](DocMakerTask.md) to simplify this process, without the need to write a task function. This task works 
+in the same way as the steps above.
+
+```matlab
+md = fullfile( doc, "**", "*.md" ); % Markdown documents
+plan("doc") = DocMakerTask( md ); 
+```
+
+The `DocMakerTask` accepts the same input arguments as [`docconvert`](docconvert.md) and [`docrun`](docrun.md), e.g.,
+
+```matlab
+plan("doc") = DocMakerTask( md, ...
+    "Theme", "light", ...
+    "FigureTheme", "light", ...
+    "FigureSize", [600, 400] ); 
+```
+The task outputs (HTML and XML files, resources, and search index) are assigned automatically to enable incremental builds.
 
 ### Alternative layout
 

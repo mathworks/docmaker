@@ -14,26 +14,26 @@ doc = fullfile( tbx, tbxname() + "doc" );
 test = fullfile( prj, "tests" );
 
 % Clean task
-plan( "clean" ) = matlab.buildtool.tasks.CleanTask;
+plan("clean") = matlab.buildtool.tasks.CleanTask;
 
 % Check task
-plan( "check" ).Inputs = api;
+plan("check").Inputs = api;
 
 % Test task
-plan( "test" ) = matlab.buildtool.tasks.TestTask( test, ...
+plan("test") = matlab.buildtool.tasks.TestTask( test, ...
     "SourceFiles", tbx, "Strict", true );
-plan( "test" ).Inputs = [api test];
-plan( "test" ).Dependencies = "check";
+plan("test").Inputs = [api test];
+plan("test").Dependencies = "check";
 
 % Documentation task
-plan( "doc" ).Inputs = doc;
-plan( "doc" ).Outputs = [ ...
-    fullfile( doc, "**", "*.html" ), fullfile( doc, "*.xml" ), ...
-    fullfile( doc, "resources" ), fullfile( doc, "helpsearch-v*" )];
+plan("doc") = DocMakerTask( fullfile( doc, "**", "*.md" ), ...
+    "Theme", "light", ...
+    "FigureSize", [600, 400], ...
+    "FigureTheme", "light" );
 
 % Package task
-plan( "package" ).Inputs = tbx;
-plan( "package" ).Dependencies = ["test", "doc"];
+plan("package").Inputs = tbx;
+plan("package").Dependencies = ["test", "doc"];
 
 % Default task
 plan.DefaultTasks = "package";
@@ -71,27 +71,6 @@ else
 end
 
 end % checkTask
-
-function docTask( c )
-% Generate documentation
-
-% Documentation folder
-doc = c.Task.Inputs.Path;
-
-% Convert Markdown to HTML
-md = fullfile( doc, "**", "*.md" );
-html = docconvert( md, "Theme", "light" );
-fprintf( 1, "** Converted Markdown doc to HTML\n" )
-
-% Run code and insert output
-docrun( html, "Theme", "light", "FigureSize", [600 400] )
-fprintf( 1, "** Inserted MATLAB output into doc\n" )
-
-% Index documentation
-docindex( doc )
-fprintf( 1, "** Indexed doc\n" )
-
-end % docTask
 
 function packageTask( ~ )
 % Package toolbox

@@ -1,5 +1,10 @@
 # Release notes
 
+## Version 0.8
+
+* Added support for LaTeX expressions using [MathJax](https://www.mathjax.org/)
+* Added custom build task `DocMakerTask`
+
 ## Version 0.7
 
 * Added support for [GitLab Markdown API](https://docs.gitlab.com/api/markdown/)
