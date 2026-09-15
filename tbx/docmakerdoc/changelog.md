@@ -2,8 +2,8 @@
 
 ## Version 0.8
 
-* Added support for LaTeX expressions using [MathJax](https://www.mathjax.org/)
-* Added custom build task `DocMakerTask`
+* Added support for LaTeX expressions using [MathJax](https://www.mathjax.org/) via the `Interpreter="latex"` option in `docconvert`
+* Added custom build task `DocMakerTask` to encapsulate the standard `docconvert` &rarr; `docrun` &rarr; `docindex` workflow; available from R2025a
 
 ## Version 0.7
 
