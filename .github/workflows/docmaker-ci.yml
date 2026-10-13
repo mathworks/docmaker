@@ -18,12 +18,12 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, windows-latest]
-        matlab-version: [R2022b, R2023b, R2024b, R2025b, R2026a]
+        matlab-version: [R2022b, R2023b, R2024b, R2025b, R2026a, latest-including-prerelease]
     runs-on: ${{ matrix.platform }}    
     continue-on-error: false
     steps:
       - name: Check out the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Start a display server for jobs running on Linux
         if: ${{ matrix.platform == 'ubuntu-latest' }}
@@ -33,13 +33,13 @@ jobs:
           echo "DISPLAY=:99" >> $GITHUB_ENV      
 
       - name: Set up MATLAB on the runner
-        uses: matlab-actions/setup-matlab@v2
+        uses: matlab-actions/setup-matlab@v3
         with:
           products: MATLAB
           release: ${{ matrix.matlab-version }}
 
       - name: Run the toolbox tests
-        uses: matlab-actions/run-tests@v2
+        uses: matlab-actions/run-tests@v3
 
   package-and-release-toolbox:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -47,43 +47,49 @@ jobs:
     
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Extract version from tag
       shell: bash
       run: |
-        VERSION="${GITHUB_REF#refs/tags/v}"
-        echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-    - name: Extract release notes
-      shell: bash
-      id: extract_notes
-      run: |
-        TAG_NAME="${GITHUB_REF#refs/tags/v}"        
-        awk "/^## Version $TAG_NAME\$/ {flag=1; next} /^## Version / {flag=0} flag" tbx/docmakerdoc/changelog.md > RELEASE_NOTES.md        
-        sed -i ':a;/^\n*$/{$d;N;ba}' RELEASE_NOTES.md        
-        echo "notes<<EOF" >> $GITHUB_OUTPUT
-        cat RELEASE_NOTES.md >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
+        TOOLBOX_VERSION="${GITHUB_REF_NAME#v}"
+        echo "TOOLBOX_VERSION=$TOOLBOX_VERSION" >> $GITHUB_ENV  
 
     - name: Set up MATLAB on the runner
-      uses: matlab-actions/setup-matlab@v2
+      uses: matlab-actions/setup-matlab@v3
       with:
         products: MATLAB
-        release: R2025b
 
     - name: Package toolbox
-      uses: matlab-actions/run-build@v2
+      uses: matlab-actions/run-command@v3
       with:
+        command: |
+            logLines = readlines( "tbx/docmakerdoc/changelog.md" );
+            startIdx = find( logLines == "## Version " + getenv( "TOOLBOX_VERSION" ) );
+            allVersionLines = find( startsWith( logLines, "##" ) );
+            endIdx = allVersionLines(find( allVersionLines > startIdx, 1 )) - 1;
+            releaseNotes = join( logLines(startIdx:endIdx), newline() );
+            tempFile = "ReleaseNotes.txt";
+            writelines( releaseNotes, tempFile )
+            delimiter = "EOF_" + matlab.lang.internal.uuid();
+            systemCommand = sprintf( [ ...
+                'echo "RELEASE_NOTES<<%s" >> $GITHUB_ENV && ', ...
+                'cat "%s" >> $GITHUB_ENV && ', ...
+                'echo "%s" >> $GITHUB_ENV' ], ...
+                delimiter, tempFile, delimiter );
+            system( systemCommand );
+            delete( tempFile )
+            buildtool package -skip test -skip check
+
         tasks: package
         build-options: -skip test -skip check
 
     - name: Release toolbox
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         name: MATLAB DocMaker ${{ env.VERSION }}
         tag_name: v${{ env.VERSION }}
-        body: ${{ steps.extract_notes.outputs.notes }}
+        body: ${{ env.RELEASE_NOTES }}
         draft: false
         make_latest: true
         files: releases/MATLAB_DocMaker.mltbx
