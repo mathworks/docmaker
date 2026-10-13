@@ -87,8 +87,8 @@ jobs:
     - name: Release toolbox
       uses: softprops/action-gh-release@v3
       with:
-        name: MATLAB DocMaker ${{ env.VERSION }}
-        tag_name: v${{ env.VERSION }}
+        name: MATLAB DocMaker ${{ env.TOOLBOX_VERSION }}
+        tag_name: v${{ env.TOOLBOX_VERSION }}
         body: ${{ env.RELEASE_NOTES }}
         draft: false
         make_latest: true
