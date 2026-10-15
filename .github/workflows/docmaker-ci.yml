@@ -65,7 +65,7 @@ jobs:
       with:
         command: |
             logLines = readlines( "tbx/docmakerdoc/changelog.md" );
-            startIdx = find( logLines == "## Version " + getenv( "TOOLBOX_VERSION" ) );
+            startIdx = find( logLines == "## Version " + getenv( "TOOLBOX_VERSION" ) ) + 1;
             allVersionLines = find( startsWith( logLines, "##" ) );
             endIdx = allVersionLines(find( allVersionLines > startIdx, 1 )) - 1;
             releaseNotes = join( logLines(startIdx:endIdx), newline() );
