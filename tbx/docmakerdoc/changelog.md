@@ -1,11 +1,11 @@
 # Release notes
 
-## Version 0.8
+## Version 0.8.0
 
 * Added support for LaTeX expressions using [MathJax](https://www.mathjax.org/) via the `Interpreter="latex"` option in `docconvert`
 * Added custom build task `DocMakerTask` to encapsulate the standard `docconvert` &rarr; `docrun` &rarr; `docindex` workflow; available from R2025a
 
-## Version 0.7
+## Version 0.7.0
 
 * Added support for [GitLab Markdown API](https://docs.gitlab.com/api/markdown/)
 * Added support for private GitHub and GitLab instances
@@ -13,11 +13,11 @@
 * Added Markdown conversion documentation :page_with_curl:
 * Automated release process on GitHub :infinity:
 
-## Version 0.6
+## Version 0.6.0
 
 * Initial public release on [GitHub](https://github.com/mathworks/docmaker) :tada: :unlock:
 
-## Version 0.2
+## Version 0.2.0
 
 * Initial private release within MathWorks :tada: :lock:
 
