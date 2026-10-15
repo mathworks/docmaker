@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, windows-latest]
-        matlab-version: [R2022b, R2023b, R2024b, R2025b, R2026a, latest-including-prerelease]
+        matlab-version: [R2022b, R2023b, R2024b, R2025b, R2026a, R2026b, latest-including-prerelease]
     runs-on: ${{ matrix.platform }}    
     continue-on-error: false
     steps:
@@ -87,8 +87,8 @@ jobs:
     - name: Release toolbox
       uses: softprops/action-gh-release@v3
       with:
-        name: MATLAB DocMaker ${{ env.VERSION }}
-        tag_name: v${{ env.VERSION }}
+        name: MATLAB DocMaker ${{ env.TOOLBOX_VERSION }}
+        tag_name: v${{ env.TOOLBOX_VERSION }}
         body: ${{ env.RELEASE_NOTES }}
         draft: false
         make_latest: true
