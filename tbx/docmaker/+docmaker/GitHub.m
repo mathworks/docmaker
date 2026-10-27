@@ -32,7 +32,7 @@ classdef GitHub < docmaker.MarkdownConverter
             end
 
             obj.Hostname = hostname;
-            obj.Token_ = token;
+            obj.Token_ = docmaker.MarkdownConverter.normalizeToken( token );
 
         end % constructor
 

@@ -18,11 +18,11 @@ n = getValue( "converter", "GitHub" );
 switch lower( n )
     case "github"
         h = getValue( "GitHub hostname", "api.github.com" );
-        t = getValue( "GitHub token", "" );
+        t = getValue( "GitHub token", missing );
         c = docmaker.GitHub( h, t );
     case "gitlab"
         h = getValue( "GitLab hostname", "www.gitlab.com" );
-        t = getValue( "GitLab token", "" );
+        t = getValue( "GitLab token", missing );
         c = docmaker.GitLab( h, t );
     otherwise
         error( "docmaker:Unhandled", "Unknown converter ""%s"".", n )
