@@ -83,6 +83,11 @@ assert( isscalar( v ), "build:package", ...
 s.ToolboxName = v.Name;
 s.ToolboxVersion = v.Version;
 
+% Specify the package name from R2026b
+if ~isMATLABReleaseOlderThan( "R2026b" )
+    s.PackageName = s.Name;
+end % if
+
 if getenv( "GITHUB_ACTIONS" ) == "true"
     % Check version and tag compatibility for release
     ref = string( getenv( "GITHUB_REF" ) );
