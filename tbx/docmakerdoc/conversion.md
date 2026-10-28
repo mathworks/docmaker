@@ -1,6 +1,7 @@
 # Markdown conversion
 
-DocMaker supports conversion from Markdown to HTML using services from GitHub and GitLab.
+DocMaker supports conversion from Markdown to HTML using GitHub, GitLab, or
+a local cmark-gfm installation.
 
 ## GitHub
 
@@ -41,6 +42,30 @@ Requests to this service require [authentication](https://docs.gitlab.com/api/re
 
 See the [GitLab API terms of use](https://handbook.gitlab.com/handbook/legal/api-terms/) and [privacy statement](https://about.gitlab.com/privacy/) for further information.
 
+## Local cmark-gfm
+
+To convert Markdown without making network calls, install
+[cmark-gfm](https://github.com/github/cmark-gfm) and select `LocalCmark`:
+
+```matlab
+setpref("docmaker","converter","LocalCmark") 
+```
+
+The default binary name is `cmark-gfm`. To use another binary or an explicit
+path, set `DOCMAKER_LOCALCMARK_BINARY` or the `localcmark_binary` preference.
+
+Install cmark-gfm using your platform's supported package manager or release:
+
+* Debian/Ubuntu: `apt install cmark-gfm`
+* macOS: `brew install cmark-gfm`
+* Windows: download a cmark-gfm Windows release, then add its folder to
+  `PATH` or set `DOCMAKER_LOCALCMARK_BINARY` to its full path.
+
+LocalCmark uses the cmark-gfm table, strikethrough, autolink, task-list, and
+tag-filter extensions. It fails with an error if the configured binary is
+unavailable or does not support these options; it does not fall back to a
+remote converter.
+
 ## Example
 
 You can configure your local machine to use your own private GitLab instance to convert Markdown to HTML with:
@@ -68,6 +93,7 @@ You can use various settings mechanisms to control the converter technology, ser
 | GitHub access token | `DOCMAKER_GITHUB_TOKEN` | `DocMaker GitHub token` | `github_token` | |
 | GitLab hostname | `DOCMAKER_GITLAB_HOSTNAME` | `DocMaker GitLab hostname` | `gitlab_hostname` | `gitlab.com` |
 | GitLab access token | `DOCMAKER_GITLAB_TOKEN` | `DocMaker GitLab token` | `gitlab_token` | |
+| LocalCmark binary | `DOCMAKER_LOCALCMARK_BINARY` | `DocMaker LocalCmark binary` | `localcmark_binary` | `cmark-gfm` |
 
 Use environment variables for build runners, secrets for tokens on local computers, and preferences for non-sensitive data on local computers.  In case of conflict, environment variables trump secrets, which trump preferences.
 
