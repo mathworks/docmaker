@@ -21,10 +21,13 @@ classdef tLocalCmark < matlab.unittest.TestCase
 
         function tConverterUsesConfiguredBinary( testCase )
 
+            converterWasSet = isenv( "DOCMAKER_CONVERTER" );
+            binaryWasSet = isenv( "DOCMAKER_LOCALCMARK_BINARY" );
             originalConverter = getenv( "DOCMAKER_CONVERTER" );
             originalBinary = getenv( "DOCMAKER_LOCALCMARK_BINARY" );
             cleanup = onCleanup( @() restoreEnvironment( ...
-                originalConverter, originalBinary ) );
+                converterWasSet, originalConverter, ...
+                binaryWasSet, originalBinary ) );
             setenv( "DOCMAKER_CONVERTER", "LocalCmark" )
             setenv( "DOCMAKER_LOCALCMARK_BINARY", "test-cmark" )
 
@@ -68,10 +71,13 @@ classdef tLocalCmark < matlab.unittest.TestCase
         function tDocconvertCleansLaTeXExpressions( testCase )
 
             assumeCmarkAvailable( testCase )
+            converterWasSet = isenv( "DOCMAKER_CONVERTER" );
+            binaryWasSet = isenv( "DOCMAKER_LOCALCMARK_BINARY" );
             originalConverter = getenv( "DOCMAKER_CONVERTER" );
             originalBinary = getenv( "DOCMAKER_LOCALCMARK_BINARY" );
             cleanup = onCleanup( @() restoreEnvironment( ...
-                originalConverter, originalBinary ) );
+                converterWasSet, originalConverter, ...
+                binaryWasSet, originalBinary ) );
             setenv( "DOCMAKER_CONVERTER", "LocalCmark" )
             setenv( "DOCMAKER_LOCALCMARK_BINARY", "cmark-gfm" )
             fixture = testCase.applyFixture( ...
@@ -109,10 +115,19 @@ tf = document.getElementsByTagName( name ).getLength() > 0;
 
 end % hasElement
 
-function restoreEnvironment( converter, binary )
+function restoreEnvironment( converterWasSet, converter, binaryWasSet, binary )
 %restoreEnvironment  Restore LocalCmark converter environment variables.
 
-setenv( "DOCMAKER_CONVERTER", converter )
-setenv( "DOCMAKER_LOCALCMARK_BINARY", binary )
+if converterWasSet
+    setenv( "DOCMAKER_CONVERTER", converter )
+else
+    unsetenv( "DOCMAKER_CONVERTER" )
+end
+
+if binaryWasSet
+    setenv( "DOCMAKER_LOCALCMARK_BINARY", binary )
+else
+    unsetenv( "DOCMAKER_LOCALCMARK_BINARY" )
+end
 
 end % restoreEnvironment
