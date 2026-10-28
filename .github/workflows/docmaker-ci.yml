@@ -32,6 +32,29 @@ jobs:
           Xvfb :99 &
           echo "DISPLAY=:99" >> $GITHUB_ENV      
 
+      - name: Install cmark-gfm on Linux
+        if: ${{ matrix.platform == 'ubuntu-latest' }}
+        run: sudo apt-get update && sudo apt-get install -y cmark-gfm
+
+      - name: Install cmark-gfm on Windows
+        if: ${{ matrix.platform == 'windows-latest' }}
+        shell: pwsh
+        run: |
+          $version = "0.29.0.gfm.13"
+          $archive = Join-Path $env:RUNNER_TEMP "cmark-gfm.zip"
+          $folder = Join-Path $env:RUNNER_TEMP "cmark-gfm"
+          $uri = "https://github.com/github/cmark-gfm/releases/download/" +
+            "$version/cmark-gfm-$version-win64.zip"
+          Invoke-WebRequest -Uri $uri -OutFile $archive
+          Expand-Archive -Path $archive -DestinationPath $folder
+          $binary = Get-ChildItem -Path $folder -Filter "cmark-gfm.exe" `
+            -Recurse | Select-Object -First 1
+          if ($null -eq $binary) {
+            throw "The cmark-gfm archive did not contain cmark-gfm.exe."
+          }
+          $binary.DirectoryName | Out-File -FilePath $env:GITHUB_PATH `
+            -Encoding utf8 -Append
+
       - name: Set up MATLAB on the runner
         uses: matlab-actions/setup-matlab@v3
         with:

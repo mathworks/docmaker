@@ -288,12 +288,12 @@ if ischar( d ) && ischar( f ), r = char( r ); end
 end % relpath
 
 function cleanLaTeXExpressions( fHTML )
-%CLEANLATEXEXPRESSIONS Postprocess LaTeX expressions after conversion to
-%HTML via the GitHub or GitLab APIs. We remove spurious HTML tags and add 
-%delimiters to the expressions as needed.
+%CLEANLATEXEXPRESSIONS Postprocess LaTeX expressions after Markdown
+%conversion. We remove spurious HTML tags and add delimiters to the
+%expressions as needed.
 %
-% For the GitHub API, we replace <em>...</em> with _..._ inside $...$ or 
-% $$...$$.
+% For GitHub and LocalCmark, we replace <em>...</em> with _..._ inside
+% $...$ or $$...$$.
 %
 % Markdown italics and LaTeX subscripts both use an underscore, causing a
 % conflict when Markdown is parsed with priority over LaTeX inside a LaTeX
@@ -320,6 +320,8 @@ converterType = erase( class( docmaker.converter() ), "docmaker." );
 
 switch converterType
     case "GitHub"
+        removeItalicTags( fHTML )
+    case "LocalCmark"
         removeItalicTags( fHTML )
     case "GitLab"
         wrapMathSpans( fHTML )

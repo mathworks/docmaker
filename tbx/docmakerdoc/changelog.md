@@ -1,5 +1,10 @@
 # Release notes
 
+## Version 0.8.1
+
+* Added optional offline Markdown conversion with local [cmark-gfm](https://github.com/github/cmark-gfm)
+* Fixed empty GitHub and GitLab access token settings to send unauthenticated requests
+
 ## Version 0.8.0
 
 * Added support for LaTeX expressions using [MathJax](https://www.mathjax.org/) via the `Interpreter="latex"` option in `docconvert`

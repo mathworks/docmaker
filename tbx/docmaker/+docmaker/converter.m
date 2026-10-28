@@ -3,14 +3,16 @@ function c = converter()
 %
 %   c = docmaker.converter() returns the current Markdown converter.
 %
-%   The converter can be "GitHub" (default) or "GitLab" and is controlled
-%   by the environment variable DOCMAKER_CONVERTER, the secret "DocMaker
-%   converter" or the preference "converter".
+%   The converter can be "GitHub" (default), "GitLab", or "LocalCmark" and
+%   is controlled by the environment variable DOCMAKER_CONVERTER, the
+%   secret "DocMaker converter" or the preference "converter".
 %
 %   The GitHub hostname and token are stored in DOCMAKER_GITHUB_HOSTNAME
 %   and DOCMAKER_GITHUB_TOKEN, "DocMaker GitHub hostname" and "DocMaker
 %   GitHub token", or "github_hostname" and "github_token". The same naming
-%   convention applies to GitLab.
+%   convention applies to GitLab. The LocalCmark binary is configured by
+%   DOCMAKER_LOCALCMARK_BINARY, "DocMaker LocalCmark binary", or
+%   "localcmark_binary".
 
 %   Copyright 2024-2026 The MathWorks, Inc.
 
@@ -24,6 +26,9 @@ switch lower( n )
         h = getValue( "GitLab hostname", "www.gitlab.com" );
         t = getValue( "GitLab token", missing );
         c = docmaker.GitLab( h, t );
+    case "localcmark"
+        b = getValue( "LocalCmark binary", "cmark-gfm" );
+        c = docmaker.LocalCmark( b );
     otherwise
         error( "docmaker:Unhandled", "Unknown converter ""%s"".", n )
 end

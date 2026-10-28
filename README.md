@@ -37,7 +37,11 @@ Finally, configure [Markdown conversion](./tbx/docmakerdoc/conversion.md) by gen
 
 DocMaker is developed by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) from [MathWorks](https://www.mathworks.com/services/consulting.html) on [GitHub](https://github.com/mathworks/docmaker).
 
-DocMaker uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) or the [GitLab Markdown API](https://docs.gitlab.com/api/markdown/) for converting Markdown to HTML, and the [GitHub Markdown CSS](https://github.com/sindresorhus/github-markdown-css) by [Sindre Sorhus](https://github.com/sindresorhus) for HTML styling.
+DocMaker uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown),
+the [GitLab Markdown API](https://docs.gitlab.com/api/markdown/), or local
+[cmark-gfm](https://github.com/github/cmark-gfm) for converting Markdown to
+HTML. It uses the [GitHub Markdown CSS](https://github.com/sindresorhus/github-markdown-css)
+by [Sindre Sorhus](https://github.com/sindresorhus) for HTML styling.
 
 The author thanks [Ken Deeley](https://www.mathworks.com/matlabcentral/profile/authors/2987674) from MathWorks for his support during the development of DocMaker.
 
