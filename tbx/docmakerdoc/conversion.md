@@ -48,7 +48,7 @@ To convert Markdown without making network calls, install
 [cmark-gfm](https://github.com/github/cmark-gfm) and select `LocalCmark`:
 
 ```matlab
-setpref("docmaker","converter","LocalCmark")  
+setpref("docmaker","converter","LocalCmark") 
 ```
 
 The default binary name is `cmark-gfm`. To use another binary or an explicit
