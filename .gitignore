@@ -7,3 +7,5 @@ tbx/docmakerdoc/custom_toolbox.json
 tbx/docmakerdoc/resources
 tbx/docmakerdoc/helpsearch-v*
 releases/*.mltbx
+build/
+*.mex*

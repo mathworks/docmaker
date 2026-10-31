@@ -4,7 +4,8 @@ function doc = md2xml( md )
 %   x = docmaker.md2xml(md) converts the Markdown md to XML using the
 %   local cmark-gfm MEX. Conversion runs offline.
 %
-%   The cmark-gfm MEX is currently supplied for Windows x64 only.
+%   Build the cmark-gfm MEX for your MATLAB platform by running
+%   `buildtool mex` from the repository root.
 
 %   Copyright 2026 The MathWorks, Inc.
 
@@ -17,8 +18,9 @@ mexFile = fullfile( fileparts( mfilename( "fullpath" ) ), ...
     "cmarkgfm2html." + mexext() );
 if ~isfile( mexFile )
     error( "docmaker:md2xml:MissingMEX", ...
-        "The cmark-gfm converter requires cmarkgfm2html.%s, " + ...
-        "currently supplied for Windows x64 only.", mexext() )
+        "The cmark-gfm MEX was not found: %s. " + ...
+        "Run `buildtool mex` from the repository root to build it " + ...
+        "for this MATLAB platform.", mexFile )
 end
 
 % Convert Markdown to HTML.

@@ -13,23 +13,55 @@ api = fullfile( tbx, tbxname() );
 doc = fullfile( tbx, tbxname() + "doc" );
 test = fullfile( prj, "tests" );
 
+% cmark-gfm MEX build inputs and outputs
+sourceDir = fullfile( prj, "src" );
+vendorDir = fullfile( prj, "vendor" );
+cmarkDir = fullfile( vendorDir, "cmark-gfm" );
+gemojiDir = fullfile( vendorDir, "gemoji" );
+generatedDir = fullfile( prj, "build", "cmark-gfm" );
+mexDir = fullfile( api, "+docmaker" );
+mexFile = fullfile( mexDir, "cmarkgfm2html." + mexext() );
+generatedFiles = [ ...
+    fullfile( generatedDir, "cmark-gfm_version.h" )
+    fullfile( generatedDir, "emoji_map.c" ) ];
+
+mexInputs = cmarkSourceFiles( cmarkDir, sourceDir, generatedDir );
+mexInputs(mexInputs == fullfile( generatedDir, "emoji_map.c" )) = [];
+mexInputs = [ ...
+    mexInputs
+    folderFiles( fullfile( cmarkDir, "src" ), "*.h" )
+    folderFiles( fullfile( cmarkDir, "extensions" ), "*.h" )
+    folderFiles( sourceDir, "*.h" )
+    fullfile( prj, "buildfile.m" )
+    fullfile( cmarkDir, "CMakeLists.txt" )
+    fullfile( cmarkDir, "src", "cmark-gfm_version.h.in" )
+    fullfile( gemojiDir, "db", "emoji.json" ) ];
+mexInputs = mexInputs(isfile(mexInputs));
+
 % Clean task
 plan("clean") = matlab.buildtool.tasks.CleanTask;
 
 % Check task
 plan("check").Inputs = api;
 
+% MEX task: generate its sources, then compile for this MATLAB platform
+plan("mex").Description = ...
+    "Generate and build the cmark-gfm MEX";
+plan("mex").Inputs = mexInputs;
+plan("mex").Outputs = [generatedFiles; mexFile];
+
 % Test task
 plan("test") = matlab.buildtool.tasks.TestTask( test, ...
     "SourceFiles", tbx, "Strict", true );
 plan("test").Inputs = [api test];
-plan("test").Dependencies = "check";
+plan("test").Dependencies = ["check", "mex"];
 
 % Documentation task
 plan("doc") = DocMakerTask( fullfile( doc, "**", "*.md" ), ...
     "Theme", "light", ...
     "FigureSize", [600, 400], ...
     "FigureTheme", "light" );
+plan("doc").Dependencies = "mex";
 
 % Package task
 plan("package").Inputs = tbx;
@@ -71,6 +103,34 @@ else
 end
 
 end % checkTask
+
+function mexTask( ~ )
+% Build cmark-gfm and its generated emoji lookup table
+
+root = fileparts( mfilename( "fullpath" ) );
+sourceDir = fullfile( root, "src" );
+vendorDir = fullfile( root, "vendor" );
+cmarkDir = fullfile( vendorDir, "cmark-gfm" );
+generatedDir = fullfile( root, "build", "cmark-gfm" );
+mexDir = fullfile( root, "tbx", "docmaker", "+docmaker" );
+
+generateSources( root );
+
+sourceFiles = cmarkSourceFiles( cmarkDir, sourceDir, generatedDir );
+options = [ ...
+    "-R2018a"
+    "-I" + sourceDir
+    "-I" + generatedDir
+    "-I" + fullfile( cmarkDir, "src" )
+    "-I" + fullfile( cmarkDir, "extensions" ) ];
+
+mexArgs = [ ...
+    cellstr(options)
+    cellstr(sourceFiles)
+    { "-outdir"; char(mexDir); "-output"; "cmarkgfm2html" } ];
+mex( mexArgs{:} );
+
+end % mexTask
 
 function packageTask( ~ )
 % Package toolbox
@@ -118,3 +178,184 @@ lic = fileread( "LICENSE" );
 mlAddonSetLicense( char( o.OutputFile ), struct( "type", 'BSD', "text", lic ) );
 
 end % packageTask
+
+function files = cmarkSourceFiles( cmarkDir, sourceDir, generatedDir )
+
+srcNames = [ ...
+    "cmark.c"; "node.c"; "iterator.c"; "blocks.c"; "inlines.c"; ...
+    "scanners.c"; "utf8.c"; "buffer.c"; "references.c"; "footnotes.c"; ...
+    "map.c"; "render.c"; "man.c"; "xml.c"; "html.c"; "commonmark.c"; ...
+    "plaintext.c"; "latex.c"; "houdini_href_e.c"; "houdini_html_e.c"; ...
+    "houdini_html_u.c"; "cmark_ctype.c"; "arena.c"; "linked_list.c"; ...
+    "syntax_extension.c"; "registry.c"; "plugin.c" ];
+extensionNames = [ ...
+    "core-extensions.c"; "table.c"; "strikethrough.c"; "autolink.c"; ...
+    "tagfilter.c"; "ext_scanners.c"; "tasklist.c" ];
+
+files = [ ...
+    fullfile( cmarkDir, "src", srcNames )
+    fullfile( cmarkDir, "extensions", extensionNames )
+    fullfile( sourceDir, "emoji.c" )
+    fullfile( sourceDir, "cmark-gfm_mex.c" )
+    fullfile( generatedDir, "emoji_map.c" ) ];
+
+end % cmarkSourceFiles
+
+function generateSources( root )
+
+cmarkDir = fullfile( root, "vendor", "cmark-gfm" );
+gemojiDir = fullfile( root, "vendor", "gemoji" );
+cmarkCMakeFile = fullfile( cmarkDir, "CMakeLists.txt" );
+cmarkVersionTemplate = fullfile( cmarkDir, "src", "cmark-gfm_version.h.in" );
+emojiJsonFile = fullfile( gemojiDir, "db", "emoji.json" );
+generatedDir = fullfile( root, "build", "cmark-gfm" );
+
+missingSubmodules = strings( 0, 1 );
+if ~isfile( cmarkCMakeFile ) || ~isfile( cmarkVersionTemplate )
+    missingSubmodules(end + 1, 1) = "vendor/cmark-gfm";
+end
+if ~isfile( emojiJsonFile )
+    missingSubmodules(end + 1, 1) = "vendor/gemoji";
+end
+if ~isempty( missingSubmodules )
+    error( "cmark_gfm:MissingSubmodule", ...
+        "Missing or uninitialized submodule content: %s. Run " + ...
+        "git submodule update --init --recursive before building.", ...
+        strjoin( missingSubmodules, ", " ) )
+end
+if ~isfolder( generatedDir )
+    mkdir( generatedDir );
+end
+
+version = read_cmark_version( cmarkCMakeFile );
+write_cmark_version( ...
+    fullfile( generatedDir, "cmark-gfm_version.h" ), version );
+write_emoji_map( emojiJsonFile, generatedDir );
+
+end % generateSources
+
+function version = read_cmark_version( file )
+
+text = fileread( file );
+names = ["major", "minor", "patch", "gfm"];
+version = struct;
+for name = names
+    expression = sprintf( "set\\(PROJECT_VERSION_%s\\s+(\\d+)\\)", ...
+        upper( name ) );
+    token = regexp( text, expression, "tokens", "once" );
+    if isempty( token )
+        error( "cmark_gfm:VersionMetadata", ...
+            "Unable to find PROJECT_VERSION_%s in %s.", upper( name ), file );
+    end
+    version.(name) = str2double( token{1} );
+end
+
+end % read_cmark_version
+
+function write_cmark_version( file, version )
+
+root = fileparts( mfilename( "fullpath" ) );
+template = fullfile( root, "vendor", "cmark-gfm", ...
+    "src", "cmark-gfm_version.h.in" );
+headerText = fileread( template );
+names = ["major", "minor", "patch", "gfm"];
+for name = names
+    token = "@PROJECT_VERSION_" + upper( name ) + "@";
+    value = sprintf( "%d", version.(name) );
+    headerText = strrep( headerText, char( token ), value );
+end
+write_text( file, headerText );
+
+end % write_cmark_version
+
+function files = folderFiles( folder, pattern )
+
+listing = dir( fullfile( folder, pattern ) );
+files = fullfile( string( {listing.folder} ), string( {listing.name} ) )';
+
+end % folderFiles
+
+function write_text( file, text )
+
+fileId = fopen( file, "w" );
+if fileId < 0
+    error( "cmark_gfm:GeneratedHeader", "Unable to create %s.", file );
+end
+cleanup = onCleanup( @() fclose( fileId ) );
+fprintf( fileId, "%s", text );
+
+end % write_text
+
+function write_emoji_map( jsonFile, outputDir )
+
+entries = jsondecode( read_utf8_text( jsonFile ) );
+aliases = strings( 0, 1 );
+emojis = strings( 0, 1 );
+
+for entry = entries'
+    for alias = entry{1}.aliases
+        aliases(end + 1, 1) = string( alias{1} ); %#ok<AGROW>
+        emojis(end + 1, 1) = string( entry{1}.emoji ); %#ok<AGROW>
+    end
+end
+
+[aliases, order] = sort( aliases );
+emojis = emojis(order);
+[aliases, uniqueIndices] = unique( aliases, "stable" );
+emojis = emojis(uniqueIndices);
+
+sourceFile = fullfile( outputDir, "emoji_map.c" );
+fileId = fopen( sourceFile, "w", "n", "UTF-8" );
+if fileId == -1
+    error( "cmark_gfm:GeneratedEmojiMap", ...
+        "Unable to create the generated emoji map." );
+end
+cleanup = onCleanup( @() fclose( fileId ) );
+fprintf( fileId, "#include ""emoji_map.h""\n" );
+fprintf( fileId, "#include <string.h>\n\n" );
+fprintf( fileId, "typedef struct { const char *alias; const char *emoji; } emoji_entry;\n" );
+fprintf( fileId, "static const emoji_entry entries[] = {\n" );
+for index = 1:numel( aliases )
+    fprintf( fileId, "  {""%s"", ""%s""},\n", ...
+        c_string( aliases(index) ), c_utf8_string( emojis(index) ) );
+end
+fprintf( fileId, "};\n\n" );
+fprintf( fileId, "const char *cmark_gfm_emoji_lookup(const char *alias, size_t length)\n" );
+fprintf( fileId, "{\n" );
+fprintf( fileId, "  size_t index;\n" );
+fprintf( fileId, "  for (index = 0; index < sizeof(entries) / sizeof(entries[0]); ++index) {\n" );
+fprintf( fileId, "    if (strlen(entries[index].alias) == length &&\n" );
+fprintf( fileId, "        memcmp(entries[index].alias, alias, length) == 0)\n" );
+fprintf( fileId, "      return entries[index].emoji;\n" );
+fprintf( fileId, "  }\n" );
+fprintf( fileId, "  return NULL;\n" );
+fprintf( fileId, "}\n" );
+
+end % write_emoji_map
+
+function text = read_utf8_text( file )
+
+fileId = fopen( file, "r", "n", "ISO-8859-1" );
+if fileId == -1
+    error( "cmark_gfm:EmojiData", "Unable to read emoji data: %s", file );
+end
+cleanup = onCleanup( @() fclose( fileId ) );
+bytes = fread( fileId, "*uint8" )';
+text = native2unicode( bytes, "UTF-8" );
+
+end % read_utf8_text
+
+function text = c_string( value )
+
+text = char( value );
+text = strrep( text, '\', '\\' );
+text = strrep( text, '"', '\"' );
+
+end % c_string
+
+function text = c_utf8_string( value )
+
+bytes = unicode2native( char( value ), "UTF-8" );
+text = char( strjoin( compose( "\\x%02X", bytes ), "" ) );
+
+end % c_utf8_string
