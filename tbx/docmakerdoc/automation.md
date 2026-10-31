@@ -14,7 +14,7 @@ A basic option is to script installation from a known location at project startu
 https://github.com/mathworks/docmaker/releases/latest/download/MATLAB_DocMaker.mltbx
 ```
 
-For specific versions, replace `latest` with the version tag, e.g. `v1.0` for version 1.0.  You can download the installer using [`websave`](https://www.mathworks.com/help/matlab/ref/websave.html), and then install the toolbox using [`matlab.addons.install`](https://www.mathworks.com/help/matlab/ref/matlab.addons.install.html).
+For specific versions, replace `latest` with the version tag, e.g. `v1.0.0` for version 1.0.0.  You can download the installer using [`websave`](https://www.mathworks.com/help/matlab/ref/websave.html), and then install the toolbox using [`matlab.addons.install`](https://www.mathworks.com/help/matlab/ref/matlab.addons.install.html).
 
 A better option is to use a package manager such as [Package Jockey](https://insidelabs-git.mathworks.com/dsampson/pj) from [MathWorks Consulting](https://www.mathworks.com/consulting/).
 
@@ -24,7 +24,9 @@ Check that DocMaker is available using `ver`.
 s = ver("docmaker")
 ```
 
-DocMaker converts Markdown locally with cmark-gfm. The bundled MEX currently supports Windows x64, so run documentation generation on a Windows x64 build runner. Conversion does not require network access or an API token; see [Markdown conversion](conversion.md).
+From version 0.9.0, DocMaker converts Markdown to HTML using [`cmark-gfm`](https://github.com/github/cmark-gfm).  Network access is not required.
+
+DocMaker requires Windows x64, so run documentation generation on a Windows x64 build runner.  Support for other platforms will follow soon.
 
 ## Organizing files
 

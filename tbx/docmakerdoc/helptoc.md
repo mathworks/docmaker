@@ -2,7 +2,6 @@
 
 * [DocMaker](index.md)
   * [Release notes](changelog.md)
-  * [Markdown conversion](conversion.md)
   * [Build automation](automation.md)
     * [DocMakerTask](DocMakerTask.md)
   * [Function reference](api.md)
