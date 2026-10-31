@@ -2,7 +2,7 @@
 
 ## Version 0.9.0
 
-* Added local Markdown conversion using cmark-gfm
+* Added local Markdown conversion using [`cmark-gfm`](https://github.com/github/cmark-gfm)
 * Removed GitHub and GitLab Markdown conversion support
 
 ## Version 0.8.0

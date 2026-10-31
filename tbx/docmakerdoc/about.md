@@ -4,7 +4,7 @@
 
 DocMaker is developed by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) from [MathWorks](https://www.mathworks.com/services/consulting.html) on [GitHub](https://github.com/mathworks/docmaker).
 
-DocMaker converts Markdown to HTML locally using [cmark-gfm](https://github.com/github/cmark-gfm). Conversion works offline. The generated HTML uses [GitHub Markdown CSS](https://github.com/sindresorhus/github-markdown-css) by [Sindre Sorhus](https://github.com/sindresorhus) for styling.
+DocMaker converts Markdown to HTML using [`cmark-gfm`](https://github.com/github/cmark-gfm), and styles the HTML using [GitHub Markdown CSS](https://github.com/sindresorhus/github-markdown-css) by [Sindre Sorhus](https://github.com/sindresorhus).
 
 The author thanks [Ken Deeley](https://www.mathworks.com/matlabcentral/profile/authors/2987674) from MathWorks for his support during the development of DocMaker.
 

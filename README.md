@@ -31,8 +31,6 @@ Development requires the [MATLAB Build Tool](https://www.mathworks.com/help/matl
 * `package`: package as a MATLAB Toolbox file (`.mltbx`)
 * `clean`: delete derived artifacts
 
-See [Markdown conversion](./tbx/docmakerdoc/conversion.md) for converter platform support details.
-
 ## About
 
 DocMaker is developed by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) from [MathWorks](https://www.mathworks.com/services/consulting.html) on [GitHub](https://github.com/mathworks/docmaker).
