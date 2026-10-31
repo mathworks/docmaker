@@ -24,7 +24,7 @@ Check that DocMaker is available using `ver`.
 s = ver("docmaker")
 ```
 
-From version 0.9.0, DocMaker converts Markdown to HTML using [`cmark-gfm`](https://github.com/github/cmark-gfm).  Network access is not required.
+From version 0.9.0, DocMaker converts Markdown to HTML using [cmark-gfm](https://github.com/github/cmark-gfm) and [gemoji](https://github.com/github/gemoji).  Network access is not required.
 
 DocMaker requires Windows x64, so run documentation generation on a Windows x64 build runner.  Support for other platforms will follow soon.
 
