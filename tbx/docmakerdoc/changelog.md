@@ -1,5 +1,10 @@
 # Release notes
 
+## Version 0.9.0
+
+* Added local Markdown conversion using cmark-gfm
+* Removed GitHub and GitLab Markdown conversion support
+
 ## Version 0.8.0
 
 * Added support for LaTeX expressions using [MathJax](https://www.mathjax.org/) via the `Interpreter="latex"` option in `docconvert`

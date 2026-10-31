@@ -1,6 +1,6 @@
-# Image Rendering Test
+# Image Conversion Test
 
-This page tests whether DocMaker correctly renders images in the MATLAB Help Browser.
+This fixture checks that DocMaker preserves standard Markdown image URLs and alternative text.
 
 ## Inline Image
 
@@ -10,5 +10,4 @@ Here is an image referenced with standard markdown syntax:
 
 ## Text After Image
 
-If you can see the image above, rendering is working correctly.
-If the image is invisible or broken, it confirms the lazy-loading bug.
+The generated HTML should keep the image URL and alternative text.

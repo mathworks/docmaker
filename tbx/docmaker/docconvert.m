@@ -170,8 +170,7 @@ pMd = fileparts( fMd );
 md = fileread( fMd );
 
 % Convert Markdown to XML
-converter = docmaker.converter();
-xml = converter.md2xml( md );
+xml = docmaker.md2xml( md );
 
 % Replace Markdown links
 docmaker.replacelinks( xml, ".md", ".html" )
@@ -289,44 +288,22 @@ end % relpath
 
 function cleanLaTeXExpressions( fHTML )
 %CLEANLATEXEXPRESSIONS Postprocess LaTeX expressions after conversion to
-%HTML via the GitHub or GitLab APIs. We remove spurious HTML tags and add 
-%delimiters to the expressions as needed.
-%
-% For the GitHub API, we replace <em>...</em> with _..._ inside $...$ or 
-% $$...$$.
-%
-% Markdown italics and LaTeX subscripts both use an underscore, causing a
-% conflict when Markdown is parsed with priority over LaTeX inside a LaTeX
-% expression. For example, the underscores in the expression:
+%HTML via cmark-gfm. Markdown emphasis and LaTeX subscripts both use an
+%underscore, so emphasis tags inside LaTeX expressions must be converted
+%back to underscores. For example, the underscores in:
 %
 % $$
 % \Phi = \frac{\dot{m}_{th} + \dot{m}}{2} ht_{in} - ...
 %       \frac{\dot{m}_{th} - \dot{m}}{2} ht_{out}
 % $$
 %
-% are converted to <em>...</em> tags in HTML.
-%
-% For the GitLab API, we enclose span contents with class="js-render-math"
-% and data-math-style="display" or "inline" with $$ and $, respectively.
-%
-% Any future conflicting syntax will be added to this function on a
-% case-by-case basis.
+%may be converted to <em>...</em> tags in HTML.
 
 arguments ( Input )
     fHTML(1, 1) string {mustBeFile}    
 end % arguments ( Input )
 
-converterType = erase( class( docmaker.converter() ), "docmaker." );
-
-switch converterType
-    case "GitHub"
-        removeItalicTags( fHTML )
-    case "GitLab"
-        wrapMathSpans( fHTML )
-    otherwise
-        error( "docconvert:cleanLaTeXExpressions", ...
-            "Unsupported converter type %s.", converterType )
-end % switch/case
+removeItalicTags( fHTML )
 
 end % cleanLaTeXExpressions
 
@@ -386,28 +363,3 @@ fprintf( fileID, "%s", rawHTML );
 fclose( fileID );
 
 end % removeItalicTags
-
-function wrapMathSpans( fHTML )
-%WRAPMATHSPANS Enclose GitLab-style LaTeX span contents within $$ or $.
-
-arguments ( Input )
-    fHTML(1, 1) string {mustBeFile}
-end % arguments ( Input )
-
-% Read the file contents.
-rawHTML = fileread( fHTML );
-
-% Display LaTeX → wrap inner content with $$...$$.
-displayPattern = '<span[^>]*data-math-style="display"[^>]*>(.*?)</span>';
-cleanHTML = regexprep( rawHTML, displayPattern, "$$$1$$" );
-
-% Inline LaTeX → wrap inner content with $...$.
-inlinePattern = '<span[^>]*data-math-style="inline"[^>]*>(.*?)</span>';
-cleanHTML = regexprep( cleanHTML, inlinePattern, "$$1$" );
-
-% Write the file contents.
-fileID = fopen( fHTML, "w" );
-fprintf( fileID, "%s", cleanHTML );
-fclose( fileID );
-
-end % wrapMathSpans

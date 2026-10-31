@@ -9,28 +9,17 @@ on:
     branches: [master]
   workflow_dispatch:
 
-env:
-      DOCMAKER_GITHUB_TOKEN: ${{ secrets.DOCMAKER_GITHUB_TOKEN }}
-
 jobs:
-  
+
   run-tests:
     strategy:
       matrix:
-        platform: [ubuntu-latest, windows-latest]
         matlab-version: [R2022b, R2023b, R2024b, R2025b, R2026a, R2026b, latest-including-prerelease]
-    runs-on: ${{ matrix.platform }}    
+    runs-on: windows-latest
     continue-on-error: false
     steps:
       - name: Check out the repository
         uses: actions/checkout@v6
-
-      - name: Start a display server for jobs running on Linux
-        if: ${{ matrix.platform == 'ubuntu-latest' }}
-        run: |
-          sudo apt-get install -y xvfb
-          Xvfb :99 &
-          echo "DISPLAY=:99" >> $GITHUB_ENV      
 
       - name: Set up MATLAB on the runner
         uses: matlab-actions/setup-matlab@v3
@@ -43,17 +32,31 @@ jobs:
 
   package-and-release-toolbox:
     if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    
+    runs-on: windows-latest
+
     steps:
     - name: Check out the repository
       uses: actions/checkout@v6
 
     - name: Extract version from tag
-      shell: bash
+      shell: pwsh
       run: |
-        TOOLBOX_VERSION="${GITHUB_REF_NAME#v}"
-        echo "TOOLBOX_VERSION=$TOOLBOX_VERSION" >> $GITHUB_ENV  
+        $version = $env:GITHUB_REF_NAME.TrimStart('v')
+        [IO.File]::AppendAllText($env:GITHUB_ENV, "TOOLBOX_VERSION=$version`n", [Text.UTF8Encoding]::new($false))
+
+    - name: Extract release notes
+      shell: pwsh
+      run: |
+        $lines = Get-Content tbx/docmakerdoc/changelog.md
+        $heading = "## Version $env:TOOLBOX_VERSION"
+        $start = [Array]::IndexOf($lines, $heading)
+        if ($start -lt 0) { throw "Release notes for $env:TOOLBOX_VERSION were not found." }
+        $end = $start + 1
+        while ($end -lt $lines.Length -and -not $lines[$end].StartsWith('## ')) { $end++ }
+        $notes = $lines[($start + 1)..($end - 1)] -join "`n"
+        $delimiter = "EOF_$([guid]::NewGuid().ToString('N'))"
+        $content = "RELEASE_NOTES<<$delimiter`n$notes`n$delimiter`n"
+        [IO.File]::AppendAllText($env:GITHUB_ENV, $content, [Text.UTF8Encoding]::new($false))
 
     - name: Set up MATLAB on the runner
       uses: matlab-actions/setup-matlab@v3
@@ -63,23 +66,7 @@ jobs:
     - name: Package toolbox
       uses: matlab-actions/run-command@v3
       with:
-        command: |
-            logLines = readlines( "tbx/docmakerdoc/changelog.md" );
-            startIdx = find( logLines == "## Version " + getenv( "TOOLBOX_VERSION" ) ) + 1;
-            allVersionLines = find( startsWith( logLines, "##" ) );
-            endIdx = allVersionLines(find( allVersionLines > startIdx, 1 )) - 1;
-            releaseNotes = join( logLines(startIdx:endIdx), newline() );
-            tempFile = "ReleaseNotes.txt";
-            writelines( releaseNotes, tempFile )
-            delimiter = "EOF_" + matlab.lang.internal.uuid();
-            systemCommand = sprintf( [ ...
-                'echo "RELEASE_NOTES<<%s" >> $GITHUB_ENV && ', ...
-                'cat "%s" >> $GITHUB_ENV && ', ...
-                'echo "%s" >> $GITHUB_ENV' ], ...
-                delimiter, tempFile, delimiter );
-            system( systemCommand );
-            delete( tempFile )
-            buildtool package -skip test -skip check
+        command: buildtool package -skip test -skip check
 
         tasks: package
         build-options: -skip test -skip check

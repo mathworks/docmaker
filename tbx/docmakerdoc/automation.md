@@ -24,7 +24,7 @@ Check that DocMaker is available using `ver`.
 s = ver("docmaker")
 ```
 
-By default, DocMaker uses the GitHub Markdown API at `api.github.com` to convert Markdown to HTML.  You can [configure Markdown conversion](conversion.md) to use another converter technology or service instance or to authenticate with an access token.
+DocMaker converts Markdown locally with cmark-gfm. The bundled MEX currently supports Windows x64, so run documentation generation on a Windows x64 build runner. Conversion does not require network access or an API token; see [Markdown conversion](conversion.md).
 
 ## Organizing files
 
