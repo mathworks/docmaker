@@ -35,7 +35,8 @@ mexInputs = [ ...
     fullfile( prj, "buildfile.m" )
     fullfile( cmarkDir, "CMakeLists.txt" )
     fullfile( cmarkDir, "src", "cmark-gfm_version.h.in" )
-    fullfile( gemojiDir, "db", "emoji.json" ) ];
+    fullfile( gemojiDir, "db", "emoji.json" )
+    fullfile( sourceDir, "emoji_map.c.in" ) ];
 mexInputs = mexInputs(isfile(mexInputs));
 
 % Clean task
@@ -230,7 +231,8 @@ end
 version = read_cmark_version( cmarkCMakeFile );
 write_cmark_version( ...
     fullfile( generatedDir, "cmark-gfm_version.h" ), version );
-write_emoji_map( emojiJsonFile, generatedDir );
+write_emoji_map( emojiJsonFile, generatedDir, ...
+    fullfile( root, "src", "emoji_map.c.in" ) );
 
 end % generateSources
 
@@ -286,7 +288,7 @@ fprintf( fileId, "%s", text );
 
 end % write_text
 
-function write_emoji_map( jsonFile, outputDir )
+function write_emoji_map( jsonFile, outputDir, templateFile )
 
 entries = jsondecode( read_utf8_text( jsonFile ) );
 aliases = strings( 0, 1 );
@@ -304,32 +306,24 @@ emojis = emojis(order);
 [aliases, uniqueIndices] = unique( aliases, "stable" );
 emojis = emojis(uniqueIndices);
 
-sourceFile = fullfile( outputDir, "emoji_map.c" );
-fileId = fopen( sourceFile, "w", "n", "UTF-8" );
-if fileId == -1
-    error( "cmark_gfm:GeneratedEmojiMap", ...
-        "Unable to create the generated emoji map." );
-end
-cleanup = onCleanup( @() fclose( fileId ) );
-fprintf( fileId, "#include ""emoji_map.h""\n" );
-fprintf( fileId, "#include <string.h>\n\n" );
-fprintf( fileId, "typedef struct { const char *alias; const char *emoji; } emoji_entry;\n" );
-fprintf( fileId, "static const emoji_entry entries[] = {\n" );
+entryLines = cell( numel( aliases ), 1 );
 for index = 1:numel( aliases )
-    fprintf( fileId, "  {""%s"", ""%s""},\n", ...
+    entryLines{index} = sprintf( '  {"%s", "%s"},', ...
         c_string( aliases(index) ), c_utf8_string( emojis(index) ) );
 end
-fprintf( fileId, "};\n\n" );
-fprintf( fileId, "const char *cmark_gfm_emoji_lookup(const char *alias, size_t length)\n" );
-fprintf( fileId, "{\n" );
-fprintf( fileId, "  size_t index;\n" );
-fprintf( fileId, "  for (index = 0; index < sizeof(entries) / sizeof(entries[0]); ++index) {\n" );
-fprintf( fileId, "    if (strlen(entries[index].alias) == length &&\n" );
-fprintf( fileId, "        memcmp(entries[index].alias, alias, length) == 0)\n" );
-fprintf( fileId, "      return entries[index].emoji;\n" );
-fprintf( fileId, "  }\n" );
-fprintf( fileId, "  return NULL;\n" );
-fprintf( fileId, "}\n" );
+
+templateText = fileread( templateFile );
+placeholder = "@EMOJI_ENTRIES@";
+if numel( strfind( templateText, placeholder ) ) ~= 1
+    error( "cmark_gfm:EmojiTemplate", ...
+        "Expected exactly one %s placeholder in %s.", ...
+        placeholder, templateFile );
+end
+sourceText = strrep( templateText, placeholder, ...
+    strjoin( entryLines, newline() ) );
+
+sourceFile = fullfile( outputDir, "emoji_map.c" );
+write_text( sourceFile, sourceText );
 
 end % write_emoji_map
 

@@ -1,0 +1,18 @@
+#include "emoji_map.h"
+#include <string.h>
+
+typedef struct { const char *alias; const char *emoji; } emoji_entry;
+static const emoji_entry entries[] = {
+@EMOJI_ENTRIES@
+};
+
+const char *cmark_gfm_emoji_lookup(const char *alias, size_t length)
+{
+  size_t index;
+  for (index = 0; index < sizeof(entries) / sizeof(entries[0]); ++index) {
+    if (strlen(entries[index].alias) == length &&
+        memcmp(entries[index].alias, alias, length) == 0)
+      return entries[index].emoji;
+  }
+  return NULL;
+}
