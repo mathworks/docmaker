@@ -2,7 +2,7 @@
  * Thin MATLAB MEX gateway for cmark-gfm.
  *
  * cmark-gfm remains an unmodified BSD-2-Clause licensed submodule in
- * vendor/cmark-gfm. This file contains only project-owned integration code.
+ * ext/cmark-gfm. This file contains only project-owned integration code.
  */
 
 #include "mex.h"

@@ -15,9 +15,9 @@ test = fullfile( prj, "tests" );
 
 % cmark-gfm MEX build inputs and outputs
 sourceDir = fullfile( prj, "src" );
-vendorDir = fullfile( prj, "vendor" );
-cmarkDir = fullfile( vendorDir, "cmark-gfm" );
-gemojiDir = fullfile( vendorDir, "gemoji" );
+extDir = fullfile( prj, "ext" );
+cmarkDir = fullfile( extDir, "cmark-gfm" );
+gemojiDir = fullfile( extDir, "gemoji" );
 generatedDir = fullfile( prj, "build", "cmark-gfm" );
 mexDir = fullfile( api, "+docmaker" );
 mexFile = fullfile( mexDir, "cmarkgfm2html." + mexext() );
@@ -110,8 +110,8 @@ function mexTask( ~ )
 
 root = fileparts( mfilename( "fullpath" ) );
 sourceDir = fullfile( root, "src" );
-vendorDir = fullfile( root, "vendor" );
-cmarkDir = fullfile( vendorDir, "cmark-gfm" );
+extDir = fullfile( root, "ext" );
+cmarkDir = fullfile( extDir, "cmark-gfm" );
 generatedDir = fullfile( root, "build", "cmark-gfm" );
 mexDir = fullfile( root, "tbx", "docmaker", "+docmaker" );
 
@@ -204,8 +204,8 @@ end % cmarkSourceFiles
 
 function generateSources( root )
 
-cmarkDir = fullfile( root, "vendor", "cmark-gfm" );
-gemojiDir = fullfile( root, "vendor", "gemoji" );
+cmarkDir = fullfile( root, "ext", "cmark-gfm" );
+gemojiDir = fullfile( root, "ext", "gemoji" );
 cmarkCMakeFile = fullfile( cmarkDir, "CMakeLists.txt" );
 cmarkVersionTemplate = fullfile( cmarkDir, "src", "cmark-gfm_version.h.in" );
 emojiJsonFile = fullfile( gemojiDir, "db", "emoji.json" );
@@ -213,10 +213,10 @@ generatedDir = fullfile( root, "build", "cmark-gfm" );
 
 missingSubmodules = strings( 0, 1 );
 if ~isfile( cmarkCMakeFile ) || ~isfile( cmarkVersionTemplate )
-    missingSubmodules(end + 1, 1) = "vendor/cmark-gfm";
+    missingSubmodules(end + 1, 1) = "ext/cmark-gfm";
 end
 if ~isfile( emojiJsonFile )
-    missingSubmodules(end + 1, 1) = "vendor/gemoji";
+    missingSubmodules(end + 1, 1) = "ext/gemoji";
 end
 if ~isempty( missingSubmodules )
     error( "cmark_gfm:MissingSubmodule", ...
@@ -257,7 +257,7 @@ end % read_cmark_version
 function write_cmark_version( file, version )
 
 root = fileparts( mfilename( "fullpath" ) );
-template = fullfile( root, "vendor", "cmark-gfm", ...
+template = fullfile( root, "ext", "cmark-gfm", ...
     "src", "cmark-gfm_version.h.in" );
 headerText = fileread( template );
 names = ["major", "minor", "patch", "gfm"];

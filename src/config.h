@@ -1,7 +1,7 @@
 /*
  * Project-owned configuration shim for compiling cmark-gfm sources directly
  * with MATLAB mex. Upstream CMake normally generates this header from
- * vendor/cmark-gfm/src/config.h.in; these definitions encode the feature
+ * ext/cmark-gfm/src/config.h.in; these definitions encode the feature
  * assumptions and compiler conditionals used by this project.
  */
 #ifndef CMARK_CONFIG_H
