@@ -13,22 +13,29 @@ api = fullfile( tbx, tbxname() );
 doc = fullfile( tbx, tbxname() + "doc" );
 test = fullfile( prj, "tests" );
 
-% cmark-gfm MEX build inputs and outputs
+% Clean task
+plan("clean") = matlab.buildtool.tasks.CleanTask;
+plan("clean").Description = "Remove generated build artifacts";
+
+% Check task
+plan("check").Description = "Check code quality and project configuration";
+plan("check").Inputs = api;
+
+% MEX task
 sourceDir = fullfile( prj, "src" );
 extDir = fullfile( prj, "ext" );
 cmarkDir = fullfile( extDir, "cmark-gfm" );
 gemojiDir = fullfile( extDir, "gemoji" );
-generatedDir = fullfile( prj, "build", "cmark-gfm" );
+genDir = fullfile( prj, "build", "cmark-gfm" );
 mexDir = fullfile( api, "+docmaker" );
 mexFile = fullfile( mexDir, "cmarkgfm2html." + mexext() );
-generatedFiles = [ ...
-    fullfile( generatedDir, "cmark-gfm_version.h" )
-    fullfile( generatedDir, "emoji_map.c" ) ];
-
-mexInputs = cmarkSourceFiles( cmarkDir, sourceDir, generatedDir );
-mexInputs(mexInputs == fullfile( generatedDir, "emoji_map.c" )) = [];
+genFiles = [ ...
+    fullfile( genDir, "cmark-gfm_version.h" )
+    fullfile( genDir, "emoji_map.c" ) ];
+mexSourceFiles = cmarkSourceFiles( cmarkDir, sourceDir, genDir );
+genEmojiMap = fullfile( genDir, "emoji_map.c" );
 mexInputs = [ ...
-    mexInputs
+    mexSourceFiles(mexSourceFiles ~= genEmojiMap)
     folderFiles( fullfile( cmarkDir, "src" ), "*.h" )
     folderFiles( fullfile( cmarkDir, "extensions" ), "*.h" )
     folderFiles( sourceDir, "*.h" )
@@ -38,20 +45,10 @@ mexInputs = [ ...
     fullfile( gemojiDir, "db", "emoji.json" )
     fullfile( sourceDir, "emoji_map.c.in" ) ];
 mexInputs = mexInputs(isfile(mexInputs));
-
-% Clean task
-plan("clean") = matlab.buildtool.tasks.CleanTask;
-plan("clean").Description = "Remove generated build artifacts";
-
-% Check task
-plan("check").Description = "Check code quality and project configuration";
-plan("check").Inputs = api;
-
-% MEX task: generate its sources, then compile for this MATLAB platform
 plan("mex").Description = ...
     "Generate and build the cmark-gfm MEX";
 plan("mex").Inputs = mexInputs;
-plan("mex").Outputs = [generatedFiles; mexFile];
+plan("mex").Outputs = [genFiles; mexFile];
 
 % Test task
 plan("test") = matlab.buildtool.tasks.TestTask( test, ...
@@ -117,16 +114,16 @@ root = fileparts( mfilename( "fullpath" ) );
 sourceDir = fullfile( root, "src" );
 extDir = fullfile( root, "ext" );
 cmarkDir = fullfile( extDir, "cmark-gfm" );
-generatedDir = fullfile( root, "build", "cmark-gfm" );
+genDir = fullfile( root, "build", "cmark-gfm" );
 mexDir = fullfile( root, "tbx", "docmaker", "+docmaker" );
 
 generateSources( root );
 
-sourceFiles = cmarkSourceFiles( cmarkDir, sourceDir, generatedDir );
+sourceFiles = cmarkSourceFiles( cmarkDir, sourceDir, genDir );
 options = [ ...
     "-R2018a"
     "-I" + sourceDir
-    "-I" + generatedDir
+    "-I" + genDir
     "-I" + fullfile( cmarkDir, "src" )
     "-I" + fullfile( cmarkDir, "extensions" ) ];
 
@@ -185,7 +182,7 @@ mlAddonSetLicense( char( o.OutputFile ), struct( "type", 'BSD', "text", lic ) );
 
 end % packageTask
 
-function files = cmarkSourceFiles( cmarkDir, sourceDir, generatedDir )
+function files = cmarkSourceFiles( cmarkDir, sourceDir, genDir )
 
 srcNames = [ ...
     "cmark.c"; "node.c"; "iterator.c"; "blocks.c"; "inlines.c"; ...
@@ -203,7 +200,7 @@ files = [ ...
     fullfile( cmarkDir, "extensions", extensionNames )
     fullfile( sourceDir, "emoji.c" )
     fullfile( sourceDir, "cmark-gfm_mex.c" )
-    fullfile( generatedDir, "emoji_map.c" ) ];
+    fullfile( genDir, "emoji_map.c" ) ];
 
 end % cmarkSourceFiles
 
@@ -214,7 +211,7 @@ gemojiDir = fullfile( root, "ext", "gemoji" );
 cmarkCMakeFile = fullfile( cmarkDir, "CMakeLists.txt" );
 cmarkVersionTemplate = fullfile( cmarkDir, "src", "cmark-gfm_version.h.in" );
 emojiJsonFile = fullfile( gemojiDir, "db", "emoji.json" );
-generatedDir = fullfile( root, "build", "cmark-gfm" );
+genDir = fullfile( root, "build", "cmark-gfm" );
 
 missingSubmodules = strings( 0, 1 );
 if ~isfile( cmarkCMakeFile ) || ~isfile( cmarkVersionTemplate )
@@ -229,14 +226,14 @@ if ~isempty( missingSubmodules )
         "git submodule update --init --recursive before building.", ...
         strjoin( missingSubmodules, ", " ) )
 end
-if ~isfolder( generatedDir )
-    mkdir( generatedDir );
+if ~isfolder( genDir )
+    mkdir( genDir );
 end
 
 version = read_cmark_version( cmarkCMakeFile );
 write_cmark_version( ...
-    fullfile( generatedDir, "cmark-gfm_version.h" ), version );
-write_emoji_map( emojiJsonFile, generatedDir, ...
+    fullfile( genDir, "cmark-gfm_version.h" ), version );
+write_emoji_map( emojiJsonFile, genDir, ...
     fullfile( root, "src", "emoji_map.c.in" ) );
 
 end % generateSources
