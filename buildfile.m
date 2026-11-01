@@ -94,6 +94,7 @@ fprintf( 1, "** Code checks passed\n" )
 % Check project
 p = currentProject();
 p.updateDependencies()
+p.refreshSourceControl()
 t = table( p.runChecks() );
 ok = t.Passed;
 if any( ~ok )
