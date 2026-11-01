@@ -41,8 +41,10 @@ mexInputs = mexInputs(isfile(mexInputs));
 
 % Clean task
 plan("clean") = matlab.buildtool.tasks.CleanTask;
+plan("clean").Description = "Remove generated build artifacts";
 
 % Check task
+plan("check").Description = "Check code quality and project configuration";
 plan("check").Inputs = api;
 
 % MEX task: generate its sources, then compile for this MATLAB platform
@@ -54,6 +56,7 @@ plan("mex").Outputs = [generatedFiles; mexFile];
 % Test task
 plan("test") = matlab.buildtool.tasks.TestTask( test, ...
     "SourceFiles", tbx, "Strict", true );
+plan("test").Description = "Run the toolbox test suite";
 plan("test").Inputs = [api test];
 plan("test").Dependencies = ["check", "mex"];
 
@@ -62,9 +65,11 @@ plan("doc") = DocMakerTask( fullfile( doc, "**", "*.md" ), ...
     "Theme", "light", ...
     "FigureSize", [600, 400], ...
     "FigureTheme", "light" );
+plan("doc").Description = "Build toolbox documentation";
 plan("doc").Dependencies = "mex";
 
 % Package task
+plan("package").Description = "Package the toolbox as an MLTBX";
 plan("package").Inputs = tbx;
 plan("package").Dependencies = ["test", "doc"];
 
@@ -93,8 +98,7 @@ fprintf( 1, "** Code checks passed\n" )
 
 % Check project
 p = currentProject();
-p.updateDependencies()
-p.refreshSourceControl()
+p.refreshSourceControl() % refresh status for project checks
 t = table( p.runChecks() );
 ok = t.Passed;
 if any( ~ok )
