@@ -36,9 +36,9 @@ mexSourceFiles = cmarkSourceFiles( cmarkDir, sourceDir, genDir );
 genEmojiMap = fullfile( genDir, "emoji_map.c" );
 mexInputs = [ ...
     mexSourceFiles(mexSourceFiles ~= genEmojiMap)
-    folderFiles( fullfile( cmarkDir, "src" ), "*.h" )
-    folderFiles( fullfile( cmarkDir, "extensions" ), "*.h" )
-    folderFiles( sourceDir, "*.h" )
+    filesIn( fullfile( cmarkDir, "src" ), "*.h" )
+    filesIn( fullfile( cmarkDir, "extensions" ), "*.h" )
+    filesIn( sourceDir, "*.h" )
     fullfile( prj, "buildfile.m" )
     fullfile( cmarkDir, "CMakeLists.txt" )
     fullfile( cmarkDir, "src", "cmark-gfm_version.h.in" )
@@ -76,7 +76,11 @@ plan.DefaultTasks = "package";
 end % buildfile
 
 function n = tbxname()
-%tbxname  Toolbox name
+%tbxname  Return the toolbox name
+%
+%   n = tbxname() returns the toolbox name as a string.
+%
+%   See also: packageTask, ver
 
 n = "docmaker";
 
@@ -183,6 +187,13 @@ mlAddonSetLicense( char( o.OutputFile ), struct( "type", 'BSD', "text", lic ) );
 end % packageTask
 
 function files = cmarkSourceFiles( cmarkDir, sourceDir, genDir )
+%cmarkSourceFiles  List cmark-gfm files for MEX compilation
+%
+%   files = cmarkSourceFiles(cmarkDir,sourceDir,genDir) returns the C
+%   source files used to compile the cmark-gfm MEX, including the
+%   generated emoji map in genDir.
+%
+%   See also: mexTask, generateSources
 
 srcNames = [ ...
     "cmark.c"; "node.c"; "iterator.c"; "blocks.c"; "inlines.c"; ...
@@ -205,6 +216,14 @@ files = [ ...
 end % cmarkSourceFiles
 
 function generateSources( root )
+%generateSources  Generate cmark-gfm headers and emoji map
+%
+%   generateSources(root) creates the cmark-gfm version header and emoji
+%   map under root/build/cmark-gfm.
+%
+%   root must contain initialized cmark-gfm and gemoji submodules.
+%
+%   See also: read_cmark_version, write_cmark_version, write_emoji_map
 
 cmarkDir = fullfile( root, "ext", "cmark-gfm" );
 gemojiDir = fullfile( root, "ext", "gemoji" );
@@ -232,13 +251,21 @@ end
 
 version = read_cmark_version( cmarkCMakeFile );
 write_cmark_version( ...
-    fullfile( genDir, "cmark-gfm_version.h" ), version );
-write_emoji_map( emojiJsonFile, genDir, ...
-    fullfile( root, "src", "emoji_map.c.in" ) );
+    cmarkVersionTemplate, version, ...
+    fullfile( genDir, "cmark-gfm_version.h" ) );
+write_emoji_map( ...
+    fullfile( root, "src", "emoji_map.c.in" ), emojiJsonFile, ...
+    fullfile( genDir, "emoji_map.c" ) );
 
 end % generateSources
 
 function version = read_cmark_version( file )
+%read_cmark_version  Read cmark-gfm version metadata
+%
+%   version = read_cmark_version(file) reads the major, minor, patch,
+%   and GFM version values from the specified CMakeLists.txt file.
+%
+%   See also: generateSources, write_cmark_version
 
 text = fileread( file );
 names = ["major", "minor", "patch", "gfm"];
@@ -256,11 +283,16 @@ end
 
 end % read_cmark_version
 
-function write_cmark_version( file, version )
+function write_cmark_version( template, version, output )
+%write_cmark_version  Write the cmark-gfm version header
+%
+%   write_cmark_version(template,version,output) fills the version
+%   template and writes the generated header to output.
+%
+%   version is a struct containing fields major, minor, patch, and gfm.
+%
+%   See also: read_cmark_version, write_text
 
-root = fileparts( mfilename( "fullpath" ) );
-template = fullfile( root, "ext", "cmark-gfm", ...
-    "src", "cmark-gfm_version.h.in" );
 headerText = fileread( template );
 names = ["major", "minor", "patch", "gfm"];
 for name = names
@@ -268,18 +300,30 @@ for name = names
     value = sprintf( "%d", version.(name) );
     headerText = strrep( headerText, char( token ), value );
 end
-write_text( file, headerText );
+write_text( output, headerText );
 
 end % write_cmark_version
 
-function files = folderFiles( folder, pattern )
+function files = filesIn( folder, pattern )
+%filesIn  List folder entries matching a pattern
+%
+%   files = filesIn(folder,pattern) returns matching paths as a
+%   string array.
+%
+%   See also: dir, fullfile
 
 listing = dir( fullfile( folder, pattern ) );
 files = fullfile( string( {listing.folder} ), string( {listing.name} ) )';
 
-end % folderFiles
+end % filesIn
 
 function write_text( file, text )
+%write_text  Write text to a file
+%
+%   write_text(file,text) writes text to the specified file without
+%   adding a newline.
+%
+%   See also: fopen, fclose
 
 fileId = fopen( file, "w" );
 if fileId < 0
@@ -290,7 +334,14 @@ fprintf( fileId, "%s", text );
 
 end % write_text
 
-function write_emoji_map( jsonFile, outputDir, templateFile )
+function write_emoji_map( template, jsonFile, output )
+%write_emoji_map  Generate C source for the emoji lookup table
+%
+%   write_emoji_map(template,jsonFile,output) reads emoji aliases from
+%   jsonFile, inserts C-escaped entries into template, and writes the
+%   generated source to output.
+%
+%   See also: read_utf8_text, c_string, c_utf8_string, write_text
 
 entries = jsondecode( read_utf8_text( jsonFile ) );
 aliases = strings( 0, 1 );
@@ -314,22 +365,27 @@ for index = 1:numel( aliases )
         c_string( aliases(index) ), c_utf8_string( emojis(index) ) );
 end
 
-templateText = fileread( templateFile );
+templateText = fileread( template );
 placeholder = "@EMOJI_ENTRIES@";
 if numel( strfind( templateText, placeholder ) ) ~= 1
     error( "cmark_gfm:EmojiTemplate", ...
         "Expected exactly one %s placeholder in %s.", ...
-        placeholder, templateFile );
+        placeholder, template );
 end
 sourceText = strrep( templateText, placeholder, ...
     strjoin( entryLines, newline() ) );
 
-sourceFile = fullfile( outputDir, "emoji_map.c" );
-write_text( sourceFile, sourceText );
+write_text( output, sourceText );
 
 end % write_emoji_map
 
 function text = read_utf8_text( file )
+%read_utf8_text  Read and decode UTF-8 text from a file
+%
+%   text = read_utf8_text(file) reads file as bytes and decodes them as
+%   UTF-8.
+%
+%   See also: fread, native2unicode
 
 fileId = fopen( file, "r", "n", "ISO-8859-1" );
 if fileId == -1
@@ -342,6 +398,11 @@ text = native2unicode( bytes, "UTF-8" );
 end % read_utf8_text
 
 function text = c_string( value )
+%c_string  Escape text for a C string literal
+%
+%   text = c_string(value) escapes backslashes and double quotes.
+%
+%   See also: c_utf8_string, write_emoji_map
 
 text = char( value );
 text = strrep( text, '\', '\\' );
@@ -350,6 +411,11 @@ text = strrep( text, '"', '\"' );
 end % c_string
 
 function text = c_utf8_string( value )
+%c_utf8_string  Encode text as C UTF-8 escape sequences
+%
+%   text = c_utf8_string(value) returns UTF-8 bytes as \xNN escapes.
+%
+%   See also: c_string, write_emoji_map
 
 bytes = unicode2native( char( value ), "UTF-8" );
 text = char( strjoin( compose( "\\x%02X", bytes ), "" ) );
