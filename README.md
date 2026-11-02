@@ -68,7 +68,7 @@ The submodule commits are pinned by the parent repository. When updating a depen
 
 DocMaker is developed by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) from [MathWorks](https://www.mathworks.com/services/consulting.html) on [GitHub](https://github.com/mathworks/docmaker).
 
-DocMaker converts Markdown to HTML using [cmark-gfm](https://github.com/github/cmark-gfm) and [gemoji](https://github.com/github/gemoji), and styles the HTML using [GitHub Markdown CSS](https://github.com/sindresorhus/github-markdown-css).
+DocMaker converts Markdown to HTML using [cmark-gfm](https://github.com/github/cmark-gfm), [gemoji](https://github.com/github/gemoji), and [GitHub Markdown CSS](https://github.com/sindresorhus/github-markdown-css).
 
 The author thanks [Ken Deeley](https://www.mathworks.com/matlabcentral/profile/authors/2987674) from MathWorks for his support during the development of DocMaker.
 
