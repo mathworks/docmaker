@@ -29,6 +29,12 @@ gemojiDir = fullfile( extDir, "gemoji" );
 genDir = fullfile( prj, "build", "cmark-gfm" );
 mexDir = fullfile( api, "+docmaker" );
 mexFile = fullfile( mexDir, "cmarkgfm2html." + mexext() );
+rightsInputs = [ ...
+    fullfile( cmarkDir, "COPYING" )
+    fullfile( gemojiDir, "LICENSE" ) ];
+rightsFiles = [ ...
+    fullfile( mexDir, "cmark-gfm.rights" )
+    fullfile( mexDir, "gemoji.rights" ) ];
 genFiles = [ ...
     fullfile( genDir, "cmark-gfm_version.h" )
     fullfile( genDir, "emoji_map.c" ) ];
@@ -42,13 +48,14 @@ mexInputs = [ ...
     fullfile( prj, "buildfile.m" )
     fullfile( cmarkDir, "CMakeLists.txt" )
     fullfile( cmarkDir, "src", "cmark-gfm_version.h.in" )
+    rightsInputs
     fullfile( gemojiDir, "db", "emoji.json" )
     fullfile( sourceDir, "emoji_map.c.in" ) ];
 mexInputs = mexInputs(isfile(mexInputs));
 plan("mex").Description = ...
     "Generate and build the cmark-gfm MEX";
 plan("mex").Inputs = mexInputs;
-plan("mex").Outputs = [genFiles; mexFile];
+plan("mex").Outputs = [genFiles; mexFile; rightsFiles];
 
 % Test task
 plan("test") = matlab.buildtool.tasks.TestTask( test, ...
@@ -118,6 +125,7 @@ root = fileparts( mfilename( "fullpath" ) );
 sourceDir = fullfile( root, "src" );
 extDir = fullfile( root, "ext" );
 cmarkDir = fullfile( extDir, "cmark-gfm" );
+gemojiDir = fullfile( extDir, "gemoji" );
 genDir = fullfile( root, "build", "cmark-gfm" );
 mexDir = fullfile( root, "tbx", "docmaker", "+docmaker" );
 
@@ -136,6 +144,11 @@ mexArgs = [ ...
     cellstr(sourceFiles)
     { "-outdir"; char(mexDir); "-output"; "cmarkgfm2html" } ];
 mex( mexArgs{:} );
+
+copyfile( fullfile( cmarkDir, "COPYING" ), ...
+    fullfile( mexDir, "cmark-gfm.rights" ) );
+copyfile( fullfile( gemojiDir, "LICENSE" ), ...
+    fullfile( mexDir, "gemoji.rights" ) );
 
 end % mexTask
 
