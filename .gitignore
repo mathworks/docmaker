@@ -9,5 +9,4 @@ tbx/docmakerdoc/helpsearch-v*
 releases/*.mltbx
 build/
 *.mex*
-tbx/docmaker/+docmaker/cmark-gfm.rights
-tbx/docmaker/+docmaker/gemoji.rights
+tbx/docmaker/+docmaker/*.rights
