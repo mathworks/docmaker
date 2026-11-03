@@ -64,6 +64,11 @@ jobs:
         with:
           command: mex -setup cpp
 
+      - name: Check project
+        uses: matlab-actions/run-command@v3
+        with:
+          command: openProject(pwd); buildtool('check')
+
       - name: Build Windows MEX
         uses: matlab-actions/run-command@v3
         with:
@@ -95,10 +100,15 @@ jobs:
         with:
           command: mex -setup cpp
 
+      - name: Check project
+        uses: matlab-actions/run-command@v3
+        with:
+          command: openProject(pwd); buildtool('check')
+
       - name: Build and test Intel macOS MEX
         uses: matlab-actions/run-command@v3
         with:
-          command: openProject(pwd); buildtool('mex'); buildtool('test'); assert(isfile(fullfile(pwd,'tbx','docmaker','+docmaker','cmarkgfm2html.mexmaci64')))
+          command: openProject(pwd); buildtool('mex'); buildtool test -skip mex -skip check; assert(isfile(fullfile(pwd,'tbx','docmaker','+docmaker','cmarkgfm2html.mexmaci64')))
 
       - name: Upload macOS MEX
         uses: actions/upload-artifact@v4
@@ -130,6 +140,11 @@ jobs:
         with:
           command: mex -setup cpp
 
+      - name: Check project
+        uses: matlab-actions/run-command@v3
+        with:
+          command: openProject(pwd); buildtool('check')
+
       - name: Build and test Apple Silicon MEX
         uses: matlab-actions/run-command@v3
         with:
@@ -137,7 +152,7 @@ jobs:
             assert(strcmp(mexext(),'mexmaca64'));
             openProject(pwd);
             buildtool('mex');
-            buildtool('test');
+            buildtool test -skip mex -skip check;
             assert(isfile(fullfile(pwd,'tbx','docmaker','+docmaker','cmarkgfm2html.mexmaca64')));
             html = string(docmaker.cmarkgfm2html('# Apple Silicon'));
             assert(contains(html,'Apple Silicon'))
@@ -219,15 +234,30 @@ jobs:
         with:
           command: mex -setup cpp
 
+      - name: Check project
+        uses: matlab-actions/run-command@v3
+        with:
+          command: openProject(pwd); buildtool('check')
+
       - name: Build Linux MEX
         uses: matlab-actions/run-command@v3
         with:
           command: openProject(pwd); buildtool('mex'); assert(isfile(fullfile(pwd,'tbx','docmaker','+docmaker','cmarkgfm2html.mexa64')))
 
+      - name: Test toolbox
+        uses: matlab-actions/run-command@v3
+        with:
+          command: openProject(pwd); buildtool test -skip mex -skip check
+
+      - name: Build documentation
+        uses: matlab-actions/run-command@v3
+        with:
+          command: openProject(pwd); buildtool doc -skip mex
+
       - name: Build and package toolbox
         uses: matlab-actions/run-command@v3
         with:
-          command: openProject(pwd); buildtool('package')
+          command: openProject(pwd); buildtool package -skip check -skip mex -skip test -skip doc
 
       - name: Verify toolbox contains all platform MEX files
         shell: bash
