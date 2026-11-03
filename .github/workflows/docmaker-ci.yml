@@ -98,7 +98,7 @@ jobs:
       - name: Build and test Intel macOS MEX
         uses: matlab-actions/run-command@v3
         with:
-          command: openProject(pwd); buildtool('test'); assert(isfile(fullfile(pwd,'tbx','docmaker','+docmaker','cmarkgfm2html.mexmaci64')))
+          command: openProject(pwd); buildtool('mex'); buildtool('test'); assert(isfile(fullfile(pwd,'tbx','docmaker','+docmaker','cmarkgfm2html.mexmaci64')))
 
       - name: Upload macOS MEX
         uses: actions/upload-artifact@v4
@@ -136,6 +136,7 @@ jobs:
           command: >-
             assert(strcmp(mexext(),'mexmaca64'));
             openProject(pwd);
+            buildtool('mex');
             buildtool('test');
             assert(isfile(fullfile(pwd,'tbx','docmaker','+docmaker','cmarkgfm2html.mexmaca64')));
             html = string(docmaker.cmarkgfm2html('# Apple Silicon'));
@@ -217,6 +218,11 @@ jobs:
         uses: matlab-actions/run-command@v3
         with:
           command: mex -setup cpp
+
+      - name: Build Linux MEX
+        uses: matlab-actions/run-command@v3
+        with:
+          command: openProject(pwd); buildtool('mex'); assert(isfile(fullfile(pwd,'tbx','docmaker','+docmaker','cmarkgfm2html.mexa64')))
 
       - name: Build and package toolbox
         uses: matlab-actions/run-command@v3
