@@ -12,11 +12,11 @@ on:
 jobs:
 
   run-tests:
-    needs: build-windows-mex
+    needs: build-linux-mex
     strategy:
       matrix:
         matlab-version: [R2022b, R2023b, R2024b, R2025b, R2026a, R2026b]
-    runs-on: windows-latest
+    runs-on: ubuntu-22.04
     continue-on-error: false
     steps:
       - name: Check out the repository
@@ -24,15 +24,15 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Download Windows MEX
+      - name: Download Linux MEX
         uses: actions/download-artifact@v4
         with:
-          name: mexw64
-          path: artifacts/windows
+          name: mexa64
+          path: artifacts/linux
 
-      - name: Stage Windows MEX
-        shell: pwsh
-        run: Copy-Item -LiteralPath artifacts/windows/cmarkgfm2html.mexw64 -Destination tbx/docmaker/+docmaker/
+      - name: Stage Linux MEX
+        shell: bash
+        run: cp artifacts/linux/cmarkgfm2html.mexa64 tbx/docmaker/+docmaker/
 
       - name: Set up MATLAB on the runner
         uses: matlab-actions/setup-matlab@v3
@@ -50,12 +50,6 @@ jobs:
             addpath(fullfile(pwd,'tests'));
             results = runtests(fullfile(pwd,'tests'));
             assert(~any([results.Failed]))
-
-      - name: Build documentation on Windows
-        if: ${{ matrix.matlab-version == 'R2026b' }}
-        uses: matlab-actions/run-command@v3
-        with:
-          command: openProject(pwd); buildtool doc -skip mex
 
   build-windows-mex:
     runs-on: windows-latest
@@ -86,11 +80,58 @@ jobs:
         with:
           command: openProject(pwd); buildtool('mex'); assert(isfile(fullfile(pwd,'tbx','docmaker','+docmaker','cmarkgfm2html.mexw64')))
 
+      - name: Test Windows MEX
+        uses: matlab-actions/run-command@v3
+        with:
+          command: >-
+            openProject(pwd);
+            addpath(fullfile(pwd,'tbx','docmaker'));
+            addpath(fullfile(pwd,'tbx','docmakerdoc'));
+            addpath(fullfile(pwd,'tests'));
+            results = runtests(fullfile(pwd,'tests'));
+            assert(~any([results.Failed]))
+
       - name: Upload Windows MEX
         uses: actions/upload-artifact@v4
         with:
           name: mexw64
           path: tbx/docmaker/+docmaker/cmarkgfm2html.mexw64
+          if-no-files-found: error
+
+  build-linux-mex:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Set up MATLAB on the runner
+        uses: matlab-actions/setup-matlab@v3
+        with:
+          products: MATLAB
+          release: R2026b
+
+      - name: Show MEX compiler
+        uses: matlab-actions/run-command@v3
+        with:
+          command: mex -setup cpp
+
+      - name: Check project
+        uses: matlab-actions/run-command@v3
+        with:
+          command: openProject(pwd); buildtool('check')
+
+      - name: Build Linux MEX
+        uses: matlab-actions/run-command@v3
+        with:
+          command: openProject(pwd); buildtool('mex'); assert(isfile(fullfile(pwd,'tbx','docmaker','+docmaker','cmarkgfm2html.mexa64')))
+
+      - name: Upload Linux MEX
+        uses: actions/upload-artifact@v4
+        with:
+          name: mexa64
+          path: tbx/docmaker/+docmaker/cmarkgfm2html.mexa64
           if-no-files-found: error
 
   # Parked while macOS project checks are investigated.
@@ -178,10 +219,10 @@ jobs:
   #         if-no-files-found: error
 
   package-and-release-toolbox:
-    needs: [run-tests, build-windows-mex]
+    needs: [run-tests, build-windows-mex, build-linux-mex]
     # Parked dependencies:
     # needs: [run-tests, build-windows-mex, build-macos-mex, build-macos-arm64-mex]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       contents: write
 
@@ -196,6 +237,12 @@ jobs:
         with:
           name: mexw64
           path: artifacts/windows
+
+      - name: Download Linux MEX
+        uses: actions/download-artifact@v4
+        with:
+          name: mexa64
+          path: artifacts/linux
 
       # Parked while macOS builds are on hold:
       # - name: Download macOS MEX
@@ -214,6 +261,7 @@ jobs:
         shell: bash
         run: |
           cp artifacts/windows/cmarkgfm2html.mexw64 tbx/docmaker/+docmaker/
+          cp artifacts/linux/cmarkgfm2html.mexa64 tbx/docmaker/+docmaker/
           # Parked while macOS builds are on hold:
           # cp artifacts/macos/cmarkgfm2html.mexmaci64 tbx/docmaker/+docmaker/
           # cp artifacts/macos-arm64/cmarkgfm2html.mexmaca64 tbx/docmaker/+docmaker/
@@ -246,32 +294,10 @@ jobs:
           products: MATLAB
           release: R2026b
 
-      - name: Show MEX compiler
-        uses: matlab-actions/run-command@v3
-        with:
-          command: mex -setup cpp
-
       - name: Check project
         uses: matlab-actions/run-command@v3
         with:
           command: openProject(pwd); buildtool('check')
-
-      - name: Build Linux MEX
-        uses: matlab-actions/run-command@v3
-        with:
-          command: openProject(pwd); buildtool('mex'); assert(isfile(fullfile(pwd,'tbx','docmaker','+docmaker','cmarkgfm2html.mexa64')))
-
-      - name: Upload Linux MEX
-        uses: actions/upload-artifact@v4
-        with:
-          name: mexa64
-          path: tbx/docmaker/+docmaker/cmarkgfm2html.mexa64
-          if-no-files-found: error
-
-      - name: Test toolbox
-        uses: matlab-actions/run-command@v3
-        with:
-          command: openProject(pwd); buildtool test -skip mex -skip check
 
       - name: Build documentation
         uses: matlab-actions/run-command@v3
