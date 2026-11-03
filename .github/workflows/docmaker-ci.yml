@@ -15,7 +15,7 @@ jobs:
     needs: build-linux-mex
     strategy:
       matrix:
-        matlab-version: [R2022b, R2023b, R2024b, R2025b, R2026a, R2026b]
+        matlab-version: [R2022b, R2023b, R2024b, R2025b, R2026a, latest]
     runs-on: ubuntu-22.04
     continue-on-error: false
     steps:
@@ -63,7 +63,7 @@ jobs:
         uses: matlab-actions/setup-matlab@v3
         with:
           products: MATLAB
-          release: R2026b
+          release: latest
 
       - name: Show MEX compiler
         uses: matlab-actions/run-command@v3
@@ -110,7 +110,7 @@ jobs:
         uses: matlab-actions/setup-matlab@v3
         with:
           products: MATLAB
-          release: R2026b
+          release: latest
 
       - name: Show MEX compiler
         uses: matlab-actions/run-command@v3
@@ -292,7 +292,7 @@ jobs:
         uses: matlab-actions/setup-matlab@v3
         with:
           products: MATLAB
-          release: R2026b
+          release: latest
 
       - name: Check project
         uses: matlab-actions/run-command@v3
