@@ -128,43 +128,49 @@ jobs:
           path: tbx/docmaker/+docmaker/cmarkgfm2html.mexa64
           if-no-files-found: error
 
-  # Intel macOS remains parked.
-  # build-macos-mex:
-  #   runs-on: macos-15-intel
-  #   steps:
-  #     - name: Check out the repository
-  #       uses: actions/checkout@v6
-  #       with:
-  #         submodules: recursive
-  #
-  #     - name: Set up MATLAB on the runner
-  #       uses: matlab-actions/setup-matlab@v3
-  #       with:
-  #         products: MATLAB
-  #         release: R2024b
-  #
-  #     - name: Show MEX compiler
-  #       uses: matlab-actions/run-command@v3
-  #       with:
-  #         command: mex -setup cpp
-  #
-  #     - name: Check project
-  #       uses: matlab-actions/run-command@v3
-  #       with:
-  #         command: openProject(pwd); buildtool('check')
-  #
-  #     - name: Build and test Intel macOS MEX
-  #       uses: matlab-actions/run-command@v3
-  #       with:
-  #         command: openProject(pwd); buildtool('mex'); buildtool test -skip mex -skip check; assert(isfile(fullfile(pwd,'tbx','docmaker','+docmaker','cmarkgfm2html.mexmaci64')))
-  #
-  #     - name: Upload macOS MEX
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: mexmaci64
-  #         path: tbx/docmaker/+docmaker/cmarkgfm2html.mexmaci64
-  #         if-no-files-found: error
-  #
+  build-macos-intel-mex:
+    runs-on: macos-15-intel
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Verify Intel runner
+        shell: bash
+        run: test "$(uname -m)" = "x86_64"
+
+      - name: Set up MATLAB on the runner
+        uses: matlab-actions/setup-matlab@v3
+        with:
+          products: MATLAB
+          release: R2025b
+
+      - name: Show MEX compiler
+        uses: matlab-actions/run-command@v3
+        with:
+          command: mex -setup cpp
+
+      - name: Build and test Intel macOS MEX
+        uses: matlab-actions/run-command@v3
+        with:
+          command: >-
+            assert(strcmp(mexext(),'mexmaci64'));
+            openProject(pwd);
+            buildtool('mex');
+            assert(isfile(fullfile(pwd,'tbx','docmaker','+docmaker','cmarkgfm2html.mexmaci64')));
+            results = runtests('tests');
+            assert(~any([results.Failed]));
+            html = string(docmaker.cmarkgfm2html('# Intel macOS'));
+            assert(contains(html,'Intel macOS'))
+
+      - name: Upload Intel macOS MEX
+        uses: actions/upload-artifact@v4
+        with:
+          name: mexmaci64
+          path: tbx/docmaker/+docmaker/cmarkgfm2html.mexmaci64
+          if-no-files-found: error
+
   build-macos-arm64-mex:
     runs-on: macos-15
     steps:
@@ -209,9 +215,7 @@ jobs:
           if-no-files-found: error
 
   package-and-release-toolbox:
-    needs: [run-tests, build-windows-mex, build-linux-mex, build-macos-arm64-mex]
-    # Parked Intel macOS dependency:
-    # needs: [run-tests, build-windows-mex, build-linux-mex, build-macos-mex]
+    needs: [run-tests, build-windows-mex, build-linux-mex, build-macos-arm64-mex, build-macos-intel-mex]
     runs-on: ubuntu-22.04
     permissions:
       contents: write
@@ -240,21 +244,19 @@ jobs:
           name: mexmaca64
           path: artifacts/maca64
 
-      # Intel macOS remains parked:
-      # - name: Download macOS MEX
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: mexmaci64
-      #     path: artifacts/macos
-      #
+      - name: Download Intel macOS MEX
+        uses: actions/download-artifact@v4
+        with:
+          name: mexmaci64
+          path: artifacts/maci64
+
       - name: Stage platform MEX files
         shell: bash
         run: |
           cp artifacts/windows/cmarkgfm2html.mexw64 tbx/docmaker/+docmaker/
           cp artifacts/linux/cmarkgfm2html.mexa64 tbx/docmaker/+docmaker/
           cp artifacts/maca64/cmarkgfm2html.mexmaca64 tbx/docmaker/+docmaker/
-          # Intel macOS remains parked:
-          # cp artifacts/macos/cmarkgfm2html.mexmaci64 tbx/docmaker/+docmaker/
+          cp artifacts/maci64/cmarkgfm2html.mexmaci64 tbx/docmaker/+docmaker/
 
       - name: Extract version from tag
         if: startsWith(github.ref, 'refs/tags/v')
@@ -308,9 +310,7 @@ jobs:
             toolbox="$(find releases -maxdepth 1 -name 'MATLAB DocMaker *.mltbx' -print -quit)"
           fi
           test -n "$toolbox" && test -f "$toolbox"
-          for mex in cmarkgfm2html.mexw64 cmarkgfm2html.mexa64 cmarkgfm2html.mexmaca64; do
-            # Intel macOS remains parked:
-            # cmarkgfm2html.mexmaci64
+          for mex in cmarkgfm2html.mexw64 cmarkgfm2html.mexa64 cmarkgfm2html.mexmaca64 cmarkgfm2html.mexmaci64; do
             if ! unzip -Z1 "$toolbox" | awk -F/ -v file="$mex" '$NF == file { found = 1 } END { exit !found }'; then
               echo "Missing $mex in $toolbox"
               exit 1
