@@ -51,6 +51,12 @@ jobs:
             results = runtests(fullfile(pwd,'tests'));
             assert(~any([results.Failed]))
 
+      - name: Build documentation on Windows
+        if: ${{ matrix.matlab-version == 'R2026b' }}
+        uses: matlab-actions/run-command@v3
+        with:
+          command: openProject(pwd); buildtool doc -skip mex
+
   build-windows-mex:
     runs-on: windows-latest
     steps:
