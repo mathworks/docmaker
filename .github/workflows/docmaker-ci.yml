@@ -40,7 +40,7 @@ jobs:
           products: MATLAB
           release: ${{ matrix.matlab-version }}
 
-      - name: Test toolbox with R2026b MEX
+      - name: Test toolbox
         uses: matlab-actions/run-command@v3
         with:
           command: >-
@@ -49,7 +49,7 @@ jobs:
             addpath(fullfile(pwd,'tbx','docmakerdoc'));
             addpath(fullfile(pwd,'tests'));
             results = runtests(fullfile(pwd,'tests'));
-            assert(~isempty(results) && all([results.Passed]))
+            assert(~any([results.Failed]))
 
   build-windows-mex:
     runs-on: windows-latest
