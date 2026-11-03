@@ -45,10 +45,7 @@ jobs:
         with:
           command: >-
             openProject(pwd);
-            addpath(fullfile(pwd,'tbx','docmaker'));
-            addpath(fullfile(pwd,'tbx','docmakerdoc'));
-            addpath(fullfile(pwd,'tests'));
-            results = runtests(fullfile(pwd,'tests'));
+            results = runtests('tests');
             assert(~any([results.Failed]))
 
   build-windows-mex:
@@ -85,10 +82,7 @@ jobs:
         with:
           command: >-
             openProject(pwd);
-            addpath(fullfile(pwd,'tbx','docmaker'));
-            addpath(fullfile(pwd,'tbx','docmakerdoc'));
-            addpath(fullfile(pwd,'tests'));
-            results = runtests(fullfile(pwd,'tests'));
+            results = runtests('tests');
             assert(~any([results.Failed]))
 
       - name: Upload Windows MEX
