@@ -163,7 +163,8 @@ assert( isscalar( v ), "build:package", ...
 s.ToolboxName = v.Name;
 s.ToolboxVersion = v.Version;
 
-if getenv( "GITHUB_ACTIONS" ) == "true"
+if getenv( "GITHUB_ACTIONS" ) == "true" && ...
+        startsWith( getenv( "GITHUB_REF" ), "refs/tags/v" )
     % Check version and tag compatibility for release
     ref = string( getenv( "GITHUB_REF" ) );
     gitTagNumber = extractAfter( ref, "refs/tags/v" );
