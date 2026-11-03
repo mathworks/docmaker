@@ -43,7 +43,13 @@ jobs:
       - name: Test toolbox with R2026b MEX
         uses: matlab-actions/run-command@v3
         with:
-          command: openProject(pwd); buildtool test -skip mex -skip check
+          command: >-
+            openProject(pwd);
+            addpath(fullfile(pwd,'tbx','docmaker'));
+            addpath(fullfile(pwd,'tbx','docmakerdoc'));
+            addpath(fullfile(pwd,'tests'));
+            results = runtests(fullfile(pwd,'tests'));
+            assert(~isempty(results) && all([results.Passed]))
 
   build-windows-mex:
     runs-on: windows-latest
