@@ -87,91 +87,94 @@ jobs:
           path: tbx/docmaker/+docmaker/cmarkgfm2html.mexw64
           if-no-files-found: error
 
-  build-macos-mex:
-    runs-on: macos-15-intel
-    steps:
-      - name: Check out the repository
-        uses: actions/checkout@v6
-        with:
-          submodules: recursive
-
-      - name: Set up MATLAB on the runner
-        uses: matlab-actions/setup-matlab@v3
-        with:
-          products: MATLAB
-          release: R2024b
-
-      - name: Show MEX compiler
-        uses: matlab-actions/run-command@v3
-        with:
-          command: mex -setup cpp
-
-      - name: Check project
-        uses: matlab-actions/run-command@v3
-        with:
-          command: openProject(pwd); buildtool('check')
-
-      - name: Build and test Intel macOS MEX
-        uses: matlab-actions/run-command@v3
-        with:
-          command: openProject(pwd); buildtool('mex'); buildtool test -skip mex -skip check; assert(isfile(fullfile(pwd,'tbx','docmaker','+docmaker','cmarkgfm2html.mexmaci64')))
-
-      - name: Upload macOS MEX
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-mex
-          path: tbx/docmaker/+docmaker/cmarkgfm2html.mexmaci64
-          if-no-files-found: error
-
-  build-macos-arm64-mex:
-    runs-on: macos-15
-    steps:
-      - name: Check out the repository
-        uses: actions/checkout@v6
-        with:
-          submodules: recursive
-
-      - name: Verify ARM64 runner
-        shell: bash
-        run: test "$(uname -m)" = "arm64"
-
-      - name: Set up MATLAB on the runner
-        uses: matlab-actions/setup-matlab@v3
-        with:
-          products: MATLAB
-          release: R2026b
-
-      - name: Show MEX compiler
-        uses: matlab-actions/run-command@v3
-        with:
-          command: mex -setup cpp
-
-      - name: Check project
-        uses: matlab-actions/run-command@v3
-        with:
-          command: openProject(pwd); buildtool('check')
-
-      - name: Build and test Apple Silicon MEX
-        uses: matlab-actions/run-command@v3
-        with:
-          command: >-
-            assert(strcmp(mexext(),'mexmaca64'));
-            openProject(pwd);
-            buildtool('mex');
-            buildtool test -skip mex -skip check;
-            assert(isfile(fullfile(pwd,'tbx','docmaker','+docmaker','cmarkgfm2html.mexmaca64')));
-            html = string(docmaker.cmarkgfm2html('# Apple Silicon'));
-            assert(contains(html,'Apple Silicon'))
-
-      - name: Upload Apple Silicon MEX
-        uses: actions/upload-artifact@v4
-        with:
-          name: macos-arm64-mex
-          path: tbx/docmaker/+docmaker/cmarkgfm2html.mexmaca64
-          if-no-files-found: error
+  # Parked while macOS project checks are investigated.
+  # build-macos-mex:
+  #   runs-on: macos-15-intel
+  #   steps:
+  #     - name: Check out the repository
+  #       uses: actions/checkout@v6
+  #       with:
+  #         submodules: recursive
+  #
+  #     - name: Set up MATLAB on the runner
+  #       uses: matlab-actions/setup-matlab@v3
+  #       with:
+  #         products: MATLAB
+  #         release: R2024b
+  #
+  #     - name: Show MEX compiler
+  #       uses: matlab-actions/run-command@v3
+  #       with:
+  #         command: mex -setup cpp
+  #
+  #     - name: Check project
+  #       uses: matlab-actions/run-command@v3
+  #       with:
+  #         command: openProject(pwd); buildtool('check')
+  #
+  #     - name: Build and test Intel macOS MEX
+  #       uses: matlab-actions/run-command@v3
+  #       with:
+  #         command: openProject(pwd); buildtool('mex'); buildtool test -skip mex -skip check; assert(isfile(fullfile(pwd,'tbx','docmaker','+docmaker','cmarkgfm2html.mexmaci64')))
+  #
+  #     - name: Upload macOS MEX
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: macos-mex
+  #         path: tbx/docmaker/+docmaker/cmarkgfm2html.mexmaci64
+  #         if-no-files-found: error
+  #
+  # build-macos-arm64-mex:
+  #   runs-on: macos-15
+  #   steps:
+  #     - name: Check out the repository
+  #       uses: actions/checkout@v6
+  #       with:
+  #         submodules: recursive
+  #
+  #     - name: Verify ARM64 runner
+  #       shell: bash
+  #       run: test "$(uname -m)" = "arm64"
+  #
+  #     - name: Set up MATLAB on the runner
+  #       uses: matlab-actions/setup-matlab@v3
+  #       with:
+  #         products: MATLAB
+  #         release: R2026b
+  #
+  #     - name: Show MEX compiler
+  #       uses: matlab-actions/run-command@v3
+  #       with:
+  #         command: mex -setup cpp
+  #
+  #     - name: Check project
+  #       uses: matlab-actions/run-command@v3
+  #       with:
+  #         command: openProject(pwd); buildtool('check')
+  #
+  #     - name: Build and test Apple Silicon MEX
+  #       uses: matlab-actions/run-command@v3
+  #       with:
+  #         command: >-
+  #           assert(strcmp(mexext(),'mexmaca64'));
+  #           openProject(pwd);
+  #           buildtool('mex');
+  #           buildtool test -skip mex -skip check;
+  #           assert(isfile(fullfile(pwd,'tbx','docmaker','+docmaker','cmarkgfm2html.mexmaca64')));
+  #           html = string(docmaker.cmarkgfm2html('# Apple Silicon'));
+  #           assert(contains(html,'Apple Silicon'))
+  #
+  #     - name: Upload Apple Silicon MEX
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: macos-arm64-mex
+  #         path: tbx/docmaker/+docmaker/cmarkgfm2html.mexmaca64
+  #         if-no-files-found: error
 
   package-and-release-toolbox:
-    needs: [run-tests, build-windows-mex, build-macos-mex, build-macos-arm64-mex]
+    needs: [run-tests, build-windows-mex]
+    # Parked dependencies:
+    # needs: [run-tests, build-windows-mex, build-macos-mex, build-macos-arm64-mex]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -188,24 +191,26 @@ jobs:
           name: windows-mex
           path: artifacts/windows
 
-      - name: Download macOS MEX
-        uses: actions/download-artifact@v4
-        with:
-          name: macos-mex
-          path: artifacts/macos
-
-      - name: Download Apple Silicon MEX
-        uses: actions/download-artifact@v4
-        with:
-          name: macos-arm64-mex
-          path: artifacts/macos-arm64
+      # Parked while macOS builds are on hold:
+      # - name: Download macOS MEX
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: macos-mex
+      #     path: artifacts/macos
+      #
+      # - name: Download Apple Silicon MEX
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: macos-arm64-mex
+      #     path: artifacts/macos-arm64
 
       - name: Stage platform MEX files
         shell: bash
         run: |
           cp artifacts/windows/cmarkgfm2html.mexw64 tbx/docmaker/+docmaker/
-          cp artifacts/macos/cmarkgfm2html.mexmaci64 tbx/docmaker/+docmaker/
-          cp artifacts/macos-arm64/cmarkgfm2html.mexmaca64 tbx/docmaker/+docmaker/
+          # Parked while macOS builds are on hold:
+          # cp artifacts/macos/cmarkgfm2html.mexmaci64 tbx/docmaker/+docmaker/
+          # cp artifacts/macos-arm64/cmarkgfm2html.mexmaca64 tbx/docmaker/+docmaker/
 
       - name: Extract version from tag
         if: startsWith(github.ref, 'refs/tags/v')
@@ -274,7 +279,9 @@ jobs:
             toolbox="$(find releases -maxdepth 1 -name 'MATLAB DocMaker *.mltbx' -print -quit)"
           fi
           test -n "$toolbox" && test -f "$toolbox"
-          for mex in cmarkgfm2html.mexw64 cmarkgfm2html.mexa64 cmarkgfm2html.mexmaci64 cmarkgfm2html.mexmaca64; do
+          for mex in cmarkgfm2html.mexw64 cmarkgfm2html.mexa64; do
+            # Parked while macOS builds are on hold:
+            # cmarkgfm2html.mexmaci64 cmarkgfm2html.mexmaca64
             if ! unzip -Z1 "$toolbox" | awk -F/ -v file="$mex" '$NF == file { found = 1 } END { exit !found }'; then
               echo "Missing $mex in $toolbox"
               exit 1
