@@ -2,7 +2,7 @@ name: MATLAB DocMaker Actions
 
 on:
   push:
-    branches: [master]
+    branches: [master, cmark_multiplatform]
     tags:
       - 'v*'
   pull_request:
