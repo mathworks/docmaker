@@ -1,6 +1,6 @@
 # MATLAB&#174; DocMaker :hatching_chick:
 
-[![MATLAB DocMaker Actions](https://github.com/mathworks/docmaker/actions/workflows/docmaker-ci.yml/badge.svg)](https://github.com/mathworks/docmaker/actions/workflows/docmaker-ci.yml)
+[![MATLAB DocMaker CI](https://github.com/mathworks/docmaker/actions/workflows/docmaker-ci.yml/badge.svg)](https://github.com/mathworks/docmaker/actions/workflows/docmaker-ci.yml)
 
 DocMaker is a tool for generating MATLAB toolbox documentation.
 
@@ -47,7 +47,6 @@ git submodule update --init --recursive
 From the repository root in MATLAB, open the project and build the MEX with:
 
 ```matlab
-openProject(pwd)
 buildtool mex
 ```
 
@@ -60,7 +59,15 @@ buildtool clean
 buildtool test
 ```
 
-The `test` task runs `check` and `mex` first. The `clean` task removes the generated source files and compiled MEX; they are disposable build outputs. The current CI workflow builds and tests on Windows; other operating systems are not covered by CI.
+The `test` task runs `check` and `mex` first. The `clean` task removes the generated source files and compiled MEX; they are disposable build outputs.
+
+### Continuous integration
+
+The `docmaker-ci.yml` workflow runs `test-mini` on Ubuntu 24.04 for pull requests not targeting `master` and pushes to `master`. Pull requests targeting `master` run `test-full`: native MEX tests on Linux, Windows, and both Mac architectures, plus Linux compatibility tests on older MATLAB releases. Intel Mac uses R2025b; the other platforms use the latest MATLAB release. Compatibility jobs select the newest supported Ubuntu LTS per MATLAB release where GitHub-hosted runners are available; R2021a uses Ubuntu 22.04 best-effort because its officially supported Ubuntu 20.04 runner is no longer hosted by GitHub.
+
+Version tags matching `v*` must point to a commit reachable from `master`. CI builds and tests the Windows and Mac MEX files, stages them on Linux, builds the toolbox with `buildtool('package')`, verifies that all four platform MEX files are included, and publishes the MLTBX as a GitHub Release.
+
+The Actions UI can run `docmaker-ci.yml` manually in `test-mini`, `test-full`, or `package` mode on a selected ref. The workflow must first be merged to `master` to appear in the UI. A manually built toolbox is uploaded as a workflow artifact. See [.github/workflows/docmaker-ci.md](.github/workflows/docmaker-ci.md) for details.
 
 The submodule commits are pinned by the parent repository. When updating a dependency, select an explicit upstream release, rebuild and test, then review the submodule changes. Keep project integration code in `src`; do not edit files inside `ext/cmark-gfm` or `ext/gemoji`.
 
