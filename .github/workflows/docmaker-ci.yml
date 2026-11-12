@@ -27,8 +27,7 @@ jobs:
       ${{
         (github.event_name == 'workflow_dispatch' && inputs.mode == 'test-mini') ||
         (github.event_name == 'pull_request' && github.base_ref != 'master') ||
-        (github.event_name == 'push' &&
-        (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/cmark_multiplatform'))
+        (github.event_name == 'push' && github.ref == 'refs/heads/master')
       }}
     runs-on: ubuntu-24.04
     steps:
@@ -57,7 +56,8 @@ jobs:
     if: >-
       ${{
         (github.event_name == 'workflow_dispatch' && inputs.mode == 'test-full') ||
-        (github.event_name == 'pull_request' && github.base_ref == 'master')
+        (github.event_name == 'pull_request' && github.base_ref == 'master') ||
+        (github.event_name == 'push' && github.ref == 'refs/heads/cmark_multiplatform')
       }}
     strategy:
       fail-fast: false
