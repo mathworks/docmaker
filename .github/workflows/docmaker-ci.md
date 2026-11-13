@@ -14,7 +14,7 @@ Pushes to `cmark_multiplatform` run `test-linux-latest`, then build and test the
 
 For a master-targeted pull request, `test-full` runs instead of a separate `test-mini` job. Intel Mac uses MATLAB R2025b; Windows, Linux, and Apple Silicon use `latest`. Linux compatibility jobs use Ubuntu 22.04 for R2021a, R2022b, and R2023b, and Ubuntu 24.04 for R2024b and R2025b. R2021a is best-effort on Ubuntu 22.04 because its newest officially supported Ubuntu release, 20.04, is no longer available as a GitHub-hosted runner.
 
-In the Actions job list, `test-mini` runs as `test-linux-latest`. Manual `test-full` runs `test-platforms-releases` followed by `test-linux-releases`. Tag packaging uses `check-tag`, `mex`, `package`, and `publish` in sequence.
+In the Actions job list, `test-mini` runs as `test-linux-latest`. Manual `test-full` runs `test-platforms-latest` followed by `test-linux-releases`. Tag packaging uses `check-tag`, `mex`, `package`, and `publish` in sequence.
 
 Manual runs use the `mode` selector (`test-mini`, `test-full`, or `package`) and the ref selected in the Actions UI. The `docmaker-ci.yml` workflow must first be merged into the default branch (`master`) before GitHub exposes it there for manual dispatch.
 

@@ -53,7 +53,7 @@ jobs:
         with:
           command: openProject(pwd); buildtool('test')
 
-  test-platforms-releases:
+  test-platforms-latest:
     if: >-
       ${{
         (github.event_name == 'workflow_dispatch' && inputs.mode == 'test-full') ||
@@ -93,13 +93,13 @@ jobs:
       run_tests: true
 
   test-linux-releases:
-    needs: test-platforms-releases
+    needs: test-platforms-latest
     if: >-
       ${{
         always() &&
         ((github.event_name == 'workflow_dispatch' && inputs.mode == 'test-full') ||
         (github.event_name == 'pull_request' && github.base_ref == 'master')) &&
-        needs.test-platforms-releases.result == 'success'
+        needs.test-platforms-latest.result == 'success'
       }}
     strategy:
       fail-fast: false
