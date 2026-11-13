@@ -25,32 +25,17 @@ jobs:
   test-linux-latest:
     if: >-
       ${{
-        (github.event_name == 'workflow_dispatch' && inputs.mode == 'test-mini') ||
-        (github.event_name == 'pull_request' && github.base_ref != 'master') ||
+        (github.event_name == 'workflow_dispatch' &&
+        (inputs.mode == 'test-mini' || inputs.mode == 'test-full')) ||
+        github.event_name == 'pull_request' ||
         (github.event_name == 'push' && github.ref == 'refs/heads/master')
       }}
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Check out the repository
-        uses: actions/checkout@v6
-        with:
-          submodules: recursive
-
-      - name: Set up MATLAB
-        uses: matlab-actions/setup-matlab@v3
-        with:
-          products: MATLAB
-          release: latest
-
-      - name: Configure the C compiler
-        uses: matlab-actions/run-command@v3
-        with:
-          command: mex -setup C
-
-      - name: Run checks, build the Linux MEX, and test
-        uses: matlab-actions/run-command@v3
-        with:
-          command: openProject(pwd); buildtool('test')
+    uses: ./.github/workflows/build-mex.yml
+    with:
+      runner: ubuntu-24.04
+      release: latest
+      mex_extension: mexa64
+      run_tests: true
 
   test-platforms-latest:
     if: >-
@@ -62,11 +47,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: linux
-            runner: ubuntu-24.04
-            release: latest
-            extension: mexa64
-            architecture: skip
           - platform: windows
             runner: windows-latest
             release: latest
@@ -91,13 +71,13 @@ jobs:
       run_tests: true
 
   test-linux-releases:
-    needs: test-platforms-latest
+    needs: test-linux-latest
     if: >-
       ${{
         always() &&
         ((github.event_name == 'workflow_dispatch' && inputs.mode == 'test-full') ||
         (github.event_name == 'pull_request' && github.base_ref == 'master')) &&
-        needs.test-platforms-latest.result == 'success'
+        needs.test-linux-latest.result == 'success'
       }}
     strategy:
       fail-fast: false
