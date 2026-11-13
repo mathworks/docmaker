@@ -1,5 +1,7 @@
 classdef tDocMakerTask < matlab.unittest.TestCase
     %TDOCMAKERTASK Tests for DocMakerTask.
+    %
+    %   Copyright 2026 The MathWorks, Inc.
 
     properties ( Access = private )
         % Custom build task.

@@ -1,5 +1,7 @@
 classdef tdocindex < tDocMaker
     %TDOCINDEX Tests for docindex.
+    %
+    %   Copyright 2026 The MathWorks, Inc.
 
     methods ( Test )
 

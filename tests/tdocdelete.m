@@ -1,5 +1,7 @@
 classdef tdocdelete < tDocMaker
     %TDOCDELETE Tests for docdelete.
+    %
+    %   Copyright 2026 The MathWorks, Inc.
 
     methods ( Test )
 

@@ -2,6 +2,8 @@ classdef DocMakerTask < matlab.buildtool.Task
     %DOCMAKERTASK Generate toolbox documentation using DocMaker.
     %
     % See also docconvert, docrun, docindex
+    %
+    %   Copyright 2026 The MathWorks, Inc.
 
     properties
         % Documentation theme.
