@@ -2,7 +2,7 @@ name: MATLAB DocMaker CI
 
 on:
   push:
-    branches: [master, cmark_multiplatform]
+    branches: [master]
     tags:
       - 'v*'
   pull_request:
@@ -154,7 +154,6 @@ jobs:
       ${{
         always() &&
         ((github.event_name == 'workflow_dispatch' && inputs.mode == 'package') ||
-        (github.event_name == 'push' && github.ref == 'refs/heads/cmark_multiplatform') ||
         (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') &&
         needs.check-tag.result == 'success'))
       }}
@@ -191,8 +190,6 @@ jobs:
       ${{
         always() &&
         ((github.event_name == 'workflow_dispatch' && inputs.mode == 'package') ||
-        (github.event_name == 'push' && github.ref == 'refs/heads/cmark_multiplatform' &&
-        needs.mex.result == 'success') ||
         (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') &&
         needs.check-tag.result == 'success' &&
         needs.mex.result == 'success'))

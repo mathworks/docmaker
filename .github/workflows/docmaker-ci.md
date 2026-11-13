@@ -8,9 +8,7 @@
 | --- | --- | --- |
 | `test-mini` | Pull requests not targeting `master`; pushes to `master`; manual selection | Ubuntu 24.04 with the latest MATLAB builds and tests the Linux MEX. |
 | `test-full` | Pull requests targeting `master`; manual selection | Builds and tests the latest Linux MEX and Windows/Mac MEX files. Linux compatibility tests run on R2021a, R2022b, R2023b, R2024b, and R2025b using the latest Linux MEX. The compatibility matrix can run alongside the Windows/Mac tests. |
-| Package | Push of a `v*` tag reachable from `master`; `cmark_multiplatform` push; manual selection | Builds Windows and Mac MEX files, stages them on Linux, then runs `buildtool('package')`. A valid tag publishes the MLTBX as a GitHub Release; branch and manual runs upload it as a 14-day workflow artifact. |
-
-Pushes to `cmark_multiplatform` build and test the Windows and Mac MEX files before Linux packaging. The package task builds and tests the Linux MEX and generates documentation before uploading the toolbox artifact, so a separate `test-linux-latest` job is not run for this branch. The older-release compatibility matrix and GitHub Release publishing are not run for this branch.
+| Package | Push of a `v*` tag reachable from `master`; manual selection | Builds Windows and Mac MEX files, stages them on Linux, then runs `buildtool('package')`. A valid tag publishes the MLTBX as a GitHub Release; manual runs upload it as a 14-day workflow artifact. |
 
 For a master-targeted pull request, `test-linux-latest` and the Windows/Mac `test-platforms-latest` matrix run concurrently. `test-linux-releases` starts after the Linux latest MEX artifact is available, so it can overlap the Windows/Mac tests. Intel Mac uses MATLAB R2025b; Windows and Apple Silicon use `latest`. Linux compatibility jobs use Ubuntu 22.04 for R2021a, R2022b, and R2023b, and Ubuntu 24.04 for R2024b and R2025b. R2021a is best-effort on Ubuntu 22.04 because its newest officially supported Ubuntu release, 20.04, is no longer available as a GitHub-hosted runner.
 
