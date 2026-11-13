@@ -17,6 +17,7 @@ on:
           - test-mini
           - test-full
           - package
+          - draft
 
 permissions:
   contents: read
@@ -153,7 +154,8 @@ jobs:
     if: >-
       ${{
         always() &&
-        ((github.event_name == 'workflow_dispatch' && inputs.mode == 'package') ||
+        ((github.event_name == 'workflow_dispatch' &&
+        (inputs.mode == 'package' || inputs.mode == 'draft')) ||
         (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') &&
         needs.check-tag.result == 'success'))
       }}
@@ -189,7 +191,8 @@ jobs:
     if: >-
       ${{
         always() &&
-        ((github.event_name == 'workflow_dispatch' && inputs.mode == 'package') ||
+        ((github.event_name == 'workflow_dispatch' &&
+        (inputs.mode == 'package' || inputs.mode == 'draft')) ||
         (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') &&
         needs.check-tag.result == 'success' &&
         needs.mex.result == 'success'))
@@ -255,6 +258,69 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  draft:
+    needs: package
+    if: >-
+      ${{
+        github.event_name == 'workflow_dispatch' &&
+        inputs.mode == 'draft' &&
+        needs.package.result == 'success'
+      }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the selected source and release notes
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          submodules: false
+
+      - name: Download the toolbox package
+        uses: actions/download-artifact@v4
+        with:
+          name: mltbx
+          path: release-assets
+
+      - name: Extract the toolbox version
+        shell: pwsh
+        run: |
+          $contents = Get-Content tbx/docmaker/Contents.m -Raw
+          if ($contents -notmatch '(?m)^% Version (\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?)\b') {
+            throw "Unable to read the toolbox version from Contents.m."
+          }
+          $version = $Matches[1]
+          $releaseNotesVersion = $version -replace '[-+].*$', ''
+          $tag = "v$version"
+          [IO.File]::AppendAllText($env:GITHUB_ENV, "TOOLBOX_VERSION=$version`nRELEASE_NOTES_VERSION=$releaseNotesVersion`nRELEASE_TAG=$tag`n", [Text.UTF8Encoding]::new($false))
+
+      - name: Extract release notes
+        shell: pwsh
+        run: |
+          $lines = Get-Content tbx/docmakerdoc/changelog.md
+          $heading = "## Version $env:RELEASE_NOTES_VERSION"
+          $start = [Array]::IndexOf($lines, $heading)
+          if ($start -lt 0) { throw "Release notes for $env:RELEASE_NOTES_VERSION were not found." }
+          $end = $start + 1
+          while ($end -lt $lines.Length -and -not $lines[$end].StartsWith('## ')) { $end++ }
+          $notes = $lines[($start + 1)..($end - 1)] -join "`n"
+          $delimiter = "EOF_$([guid]::NewGuid().ToString('N'))"
+          $content = "RELEASE_NOTES<<$delimiter`n$notes`n$delimiter`n"
+          [IO.File]::AppendAllText($env:GITHUB_ENV, $content, [Text.UTF8Encoding]::new($false))
+
+      - name: Create a GitHub draft release
+        uses: softprops/action-gh-release@v3
+        with:
+          name: MATLAB DocMaker ${{ env.TOOLBOX_VERSION }}
+          tag_name: ${{ env.RELEASE_TAG }}
+          target_commitish: ${{ github.sha }}
+          body: ${{ env.RELEASE_NOTES }}
+          draft: true
+          make_latest: false
+          files: release-assets/*.mltbx
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   publish:
     needs: [check-tag, package]
     if: >-
@@ -283,15 +349,16 @@ jobs:
         shell: pwsh
         run: |
           $version = $env:GITHUB_REF_NAME.TrimStart('v')
-          [IO.File]::AppendAllText($env:GITHUB_ENV, "TOOLBOX_VERSION=$version`n", [Text.UTF8Encoding]::new($false))
+          $releaseNotesVersion = $version -replace '[-+].*$', ''
+          [IO.File]::AppendAllText($env:GITHUB_ENV, "TOOLBOX_VERSION=$version`nRELEASE_NOTES_VERSION=$releaseNotesVersion`n", [Text.UTF8Encoding]::new($false))
 
       - name: Extract release notes
         shell: pwsh
         run: |
           $lines = Get-Content tbx/docmakerdoc/changelog.md
-          $heading = "## Version $env:TOOLBOX_VERSION"
+          $heading = "## Version $env:RELEASE_NOTES_VERSION"
           $start = [Array]::IndexOf($lines, $heading)
-          if ($start -lt 0) { throw "Release notes for $env:TOOLBOX_VERSION were not found." }
+          if ($start -lt 0) { throw "Release notes for $env:RELEASE_NOTES_VERSION were not found." }
           $end = $start + 1
           while ($end -lt $lines.Length -and -not $lines[$end].StartsWith('## ')) { $end++ }
           $notes = $lines[($start + 1)..($end - 1)] -join "`n"
