@@ -3,6 +3,8 @@
  *
  * cmark-gfm remains an unmodified BSD-2-Clause licensed submodule in
  * ext/cmark-gfm. This file contains only project-owned integration code.
+ *
+ * Copyright 2026 The MathWorks, Inc.
  */
 
 #include "mex.h"

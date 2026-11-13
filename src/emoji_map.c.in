@@ -1,3 +1,10 @@
+/*
+ * Template for the emoji lookup table. buildfile.m replaces
+ * @EMOJI_ENTRIES@ with entries generated from ext/gemoji/db/emoji.json.
+ *
+ * Copyright 2026 The MathWorks, Inc.
+ */
+
 #include "emoji_map.h"
 #include <string.h>
 

@@ -1,3 +1,5 @@
+/* Copyright 2024-2026 The MathWorks, Inc. */
+
 document.querySelectorAll('pre').forEach(pre => {
     // Check if the <pre> element has an ancestor with the class 'highlight-output'
     if (pre.closest('.highlight-output')) {

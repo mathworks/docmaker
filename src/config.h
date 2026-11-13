@@ -3,6 +3,8 @@
  * with MATLAB mex. Upstream CMake normally generates this header from
  * ext/cmark-gfm/src/config.h.in; these definitions encode the feature
  * assumptions and compiler conditionals used by this project.
+ *
+ * Copyright 2026 The MathWorks, Inc.
  */
 #ifndef CMARK_CONFIG_H
 #define CMARK_CONFIG_H

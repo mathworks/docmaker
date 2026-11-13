@@ -2,6 +2,8 @@
  * Project-owned interface for the generated emoji lookup table.
  * buildfile.m generates its implementation in build/cmark-gfm/emoji_map.c
  * from ext/gemoji/db/emoji.json.
+ *
+ * Copyright 2026 The MathWorks, Inc.
  */
 #ifndef CMARK_GFM_EMOJI_MAP_H
 #define CMARK_GFM_EMOJI_MAP_H

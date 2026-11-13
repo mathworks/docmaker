@@ -1,4 +1,6 @@
 // MathJax configuration
+//
+// Copyright 2026 The MathWorks, Inc.
 window.MathJax = {
     tex: {
         inlineMath: [['$', '$']],
