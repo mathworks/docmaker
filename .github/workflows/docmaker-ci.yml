@@ -27,8 +27,7 @@ jobs:
       ${{
         (github.event_name == 'workflow_dispatch' && inputs.mode == 'test-mini') ||
         (github.event_name == 'pull_request' && github.base_ref != 'master') ||
-        (github.event_name == 'push' &&
-        (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/cmark_multiplatform'))
+        (github.event_name == 'push' && github.ref == 'refs/heads/master')
       }}
     runs-on: ubuntu-24.04
     steps:
@@ -88,7 +87,6 @@ jobs:
       runner: ${{ matrix.runner }}
       release: ${{ matrix.release }}
       mex_extension: ${{ matrix.extension }}
-      artifact_name: mex-${{ matrix.platform }}
       architecture: ${{ matrix.architecture }}
       run_tests: true
 
@@ -127,7 +125,7 @@ jobs:
       - name: Download the Linux MEX built with the latest MATLAB
         uses: actions/download-artifact@v4
         with:
-          name: mex-linux
+          name: mexa64
           path: artifacts/linux
 
       - name: Stage the Linux MEX
@@ -204,7 +202,6 @@ jobs:
       runner: ${{ matrix.runner }}
       release: ${{ matrix.release }}
       mex_extension: ${{ matrix.extension }}
-      artifact_name: mex-${{ matrix.platform }}
       architecture: ${{ matrix.architecture }}
       run_tests: true
 
@@ -230,7 +227,7 @@ jobs:
       - name: Download the Windows and Mac MEX files
         uses: actions/download-artifact@v4
         with:
-          pattern: mex-*
+          pattern: mex*
           path: artifacts/platforms
           merge-multiple: true
 
@@ -276,7 +273,7 @@ jobs:
       - name: Upload the toolbox artifact
         uses: actions/upload-artifact@v4
         with:
-          name: toolbox-package
+          name: mltbx
           path: releases/*.mltbx
           if-no-files-found: error
           retention-days: 14
@@ -302,7 +299,7 @@ jobs:
       - name: Download the toolbox package
         uses: actions/download-artifact@v4
         with:
-          name: toolbox-package
+          name: mltbx
           path: release-assets
 
       - name: Extract the version from the tag
