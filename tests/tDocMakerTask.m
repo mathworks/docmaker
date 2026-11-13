@@ -2,6 +2,7 @@ classdef tDocMakerTask < matlab.unittest.TestCase
     %TDOCMAKERTASK Tests for DocMakerTask.
 
     properties ( Access = private )
+        % Custom build task.
         Task {mustBeScalarOrEmpty} % matlab.buildtool.Task, but this fails before R2022b
         % Tests folder.
         TestsFolder(:, 1) string {mustBeFolder, mustBeScalarOrEmpty}
