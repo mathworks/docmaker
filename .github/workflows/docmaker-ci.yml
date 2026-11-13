@@ -53,14 +53,6 @@ jobs:
         with:
           command: openProject(pwd); buildtool('test')
 
-      - name: Upload the Linux MEX for compatibility tests
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/cmark_multiplatform' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: mex-linux
-          path: tbx/docmaker/+docmaker/cmarkgfm2html.mexa64
-          if-no-files-found: error
-
   test-platforms-releases:
     if: >-
       ${{
@@ -101,21 +93,13 @@ jobs:
       run_tests: true
 
   test-linux-releases:
-    needs: [test-platforms-releases, test-linux-latest]
+    needs: test-platforms-releases
     if: >-
       ${{
         always() &&
-        (
-          (
-            ((github.event_name == 'workflow_dispatch' && inputs.mode == 'test-full') ||
-            (github.event_name == 'pull_request' && github.base_ref == 'master')) &&
-            needs.test-platforms-releases.result == 'success'
-          ) ||
-          (
-            (github.event_name == 'push' && github.ref == 'refs/heads/cmark_multiplatform') &&
-            needs.test-linux-latest.result == 'success'
-          )
-        )
+        ((github.event_name == 'workflow_dispatch' && inputs.mode == 'test-full') ||
+        (github.event_name == 'pull_request' && github.base_ref == 'master')) &&
+        needs.test-platforms-releases.result == 'success'
       }}
     strategy:
       fail-fast: false
@@ -192,6 +176,7 @@ jobs:
       ${{
         always() &&
         ((github.event_name == 'workflow_dispatch' && inputs.mode == 'package') ||
+        (github.event_name == 'push' && github.ref == 'refs/heads/cmark_multiplatform') ||
         (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') &&
         needs.check-tag.result == 'success'))
       }}
@@ -229,6 +214,8 @@ jobs:
       ${{
         always() &&
         ((github.event_name == 'workflow_dispatch' && inputs.mode == 'package') ||
+        (github.event_name == 'push' && github.ref == 'refs/heads/cmark_multiplatform' &&
+        needs.mex.result == 'success') ||
         (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') &&
         needs.check-tag.result == 'success' &&
         needs.mex.result == 'success'))

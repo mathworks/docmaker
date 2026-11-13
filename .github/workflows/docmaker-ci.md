@@ -6,11 +6,11 @@
 
 | Mode | Trigger | Work performed |
 | --- | --- | --- |
-| `test-mini` | Pull requests not targeting `master`; pushes to `master` or `cmark_multiplatform`; manual selection | Ubuntu 24.04 with the latest MATLAB runs `buildtool('test')`, which checks the code, builds the Linux MEX, and runs the test suite. On `cmark_multiplatform`, it also uploads the Linux MEX for compatibility jobs. |
+| `test-mini` | Pull requests not targeting `master`; pushes to `master` or `cmark_multiplatform`; manual selection | Ubuntu 24.04 with the latest MATLAB runs `buildtool('test')`, which checks the code, builds the Linux MEX, and runs the test suite. |
 | `test-full` | Pull requests targeting `master`; manual selection | Builds and tests native MEX files on Ubuntu 24.04/Linux, Windows, Intel Mac, and Apple Silicon using the latest supported MATLAB release for each platform. Linux also runs compatibility tests on R2021a, R2022b, R2023b, R2024b, and R2025b with the latest Linux MEX. |
-| Package | Push of a `v*` tag reachable from `master`; manual selection | Builds and tests Windows and Mac MEX files, stages them on Linux, then runs `buildtool('package')`. A valid tag publishes the MLTBX as a GitHub Release; manual runs upload it as a 14-day workflow artifact. |
+| Package | Push of a `v*` tag reachable from `master`; `cmark_multiplatform` push; manual selection | Builds Windows and Mac MEX files, stages them on Linux, then runs `buildtool('package')`. A valid tag publishes the MLTBX as a GitHub Release; branch and manual runs upload it as a 14-day workflow artifact. |
 
-Pushes to `cmark_multiplatform` run `test-linux-latest`, then the older-release Linux compatibility matrix. The compatibility matrix runs its MATLAB release jobs in parallel. Windows and Mac platform tests are paused on this branch; they remain enabled for master-targeted pull requests and manual `test-full` runs.
+Pushes to `cmark_multiplatform` run `test-linux-latest`, then build and test the Windows and Mac MEX files before Linux packaging. The package task runs Linux checks, tests, and documentation before uploading the toolbox artifact. The older-release compatibility matrix and GitHub Release publishing are not run for this branch.
 
 For a master-targeted pull request, `test-full` runs instead of a separate `test-mini` job. Intel Mac uses MATLAB R2025b; Windows, Linux, and Apple Silicon use `latest`. Linux compatibility jobs use Ubuntu 22.04 for R2021a, R2022b, and R2023b, and Ubuntu 24.04 for R2024b and R2025b. R2021a is best-effort on Ubuntu 22.04 because its newest officially supported Ubuntu release, 20.04, is no longer available as a GitHub-hosted runner.
 
