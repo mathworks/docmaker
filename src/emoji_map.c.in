@@ -1,6 +1,6 @@
 /*
- * Template for the emoji lookup table. buildfile.m replaces
- * @EMOJI_ENTRIES@ with entries generated from ext/gemoji/db/emoji.json.
+ * Template for the emoji lookup table. buildfile.m replaces its entry marker
+ * with entries generated from ext/gemoji/db/emoji.json.
  *
  * Copyright 2026 The MathWorks, Inc.
  */
