@@ -74,7 +74,7 @@ classdef tDocMakerTask < matlab.unittest.TestCase
                 fc( ind ), ...
                 "The task output search index folder was not set " + ...
                 "correctly." )
-            testCase.verifyEqual( testCase.Task.Converter, "local" )
+            testCase.verifyEqual( testCase.Task.Converter, "cmark" )
 
         end % tTaskArgumentsAreSetCorrectly
 

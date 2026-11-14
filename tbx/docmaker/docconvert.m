@@ -28,7 +28,7 @@ function varargout = docconvert( sMd, options )
 %   own line, centered.
 %
 %   docconvert(...,"Converter",c) selects the Markdown converter. Available
-%   converters are "local" (default) and "github". GitHub conversion sends
+%   converters are "cmark" (default) and "github". GitHub conversion sends
 %   Markdown to GitHub's API and requires network access.
 %
 %   [html, res] = docconvert(...) returns the names of the HTML document(s)
@@ -49,7 +49,7 @@ arguments
     options.Root (1,1) string {mustBeFolder}
     options.Interpreter(1, 1) string {mustBeMember(options.Interpreter, ["latex", "none"])} = "none"    
     options.Converter(1, 1) string {mustBeMember(options.Converter, ...
-        ["local", "github"])} = "local"
+        ["cmark", "github"])} = "cmark"
 end
 
 % Initialize output

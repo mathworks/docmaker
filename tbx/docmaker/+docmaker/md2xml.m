@@ -1,11 +1,12 @@
 function doc = md2xml( md, options )
 %docmaker.md2xml  Convert Markdown to XML
 %
-%   DOC = docmaker.md2xml(MD) converts Markdown MD using the local
-%   cmark-gfm MEX. Conversion runs offline.
+%   DOC = docmaker.md2xml(MD) converts Markdown MD using the cmark-gfm MEX.
+%   This is the default and runs offline.
 %
 %   DOC = docmaker.md2xml(MD,Converter="github") uses GitHub's Markdown
-%   API. This requires network access; DOCMAKER_GITHUB_TOKEN is optional.
+%   API instead. This requires network access; DOCMAKER_GITHUB_TOKEN is
+%   optional.
 %
 %   See also docconvert, docmaker.githubgfm2html
 
@@ -14,11 +15,11 @@ function doc = md2xml( md, options )
 arguments
     md (1,1) string
     options.Converter (1,1) string {mustBeMember( ...
-        options.Converter, ["local", "github"])} = "local"
+        options.Converter, ["cmark", "github"])} = "cmark"
 end
 
 switch options.Converter
-    case "local"
+    case "cmark"
         % Check for a MEX binary built for this platform.
         mexFile = fullfile( fileparts( mfilename( "fullpath" ) ), ...
             "cmarkgfm2html." + mexext() );
