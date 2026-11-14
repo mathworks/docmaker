@@ -15,13 +15,9 @@ Multiple documents may also be specified using `DocMakerTask(md1,md2,...)`.
 
 `plan("doc") = DocMakerTask(...,"Root",r)` publishes to the root folder `r`, placing stylesheets and scripts in the subfolder `resources`.  The root folder must be a common ancestor of the Markdown documents.  If not specified, the root folder is the lowest common ancestor.
 
-`plan("doc") = DocMakerTask(...,"Interpreter",in)` uses the interpreter `in` to postprocess 
-inline or display LaTeX expressions. Available interpreters 
-are `latex` or `none` (default). Specify inline LaTeX expressions between 
-single dollar symbols (`$`), and display LaTeX expressions between 
-double dollar symbols (`$$`).
+`plan("doc") = DocMakerTask(...,"Interpreter",in)` uses the interpreter `in` to postprocess inline or display LaTeX expressions.  Available interpreters are `latex` or `none` (default). Specify inline LaTeX expressions between single dollar symbols (`$`), and display LaTeX expressions between double dollar symbols (`$$`).
 
-`plan("doc") = DocMakerTask(...,"Converter",converter)` selects the Markdown converter: `cmark` (default) uses the bundled cmark-gfm MEX, and `github` sends Markdown to GitHub's API. GitHub conversion requires network access. Authentication uses the MATLAB secret `DOCMAKER_GITHUB_TOKEN` first, then the environment variable of the same name; requests are anonymous if neither is configured.
+`plan("doc") = DocMakerTask(...,"Converter",c)` uses the converter `c` to convert Markdown to HTML.  Available converters are `cmark` (cmark-gfm, default) and `github` (GitHub Markdown API on GitHub.com).  See [Markdown conversion](conversion.md) for converter details, setup, platform support, and version details.
 
 `plan("doc") = DocMakerTask(...,"Level",n)` specifies the batching level `n`.  With level 0 (default), all blocks in a document are run in a single batch. With level `n`, each level-n heading is run as a separate batch, with the workspace cleared and figures closed between batches.  With level 7, each block is run as a separate batch.
 
@@ -38,7 +34,7 @@ double dollar symbols (`$$`).
 | `js`:arrow_right: | JavaScript script(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | :test_tube: |
 | `r`:arrow_right: | root folder, as an absolute or relative path; default is the lowest common ancestor of `md` | string | |
 | `in`:arrow_right: | LaTeX interpreter: `latex` or `none`; default is `none` | string | |
-| `converter`:arrow_right: | Markdown converter: `cmark` or `github`; default is `cmark` | string | |
+| `c`:arrow_right: | Markdown converter: `cmark` or `github`; default is `cmark` | string | |
 | `n`:arrow_right: | batching level, from 0 to 7; default is 0 | double | :test_tube: |
 | `s`:arrow_right: | default figure size, in default figure `Units` | double | |
 | `t`:arrow_right: | figure theme: `none`, `light`, `dark`, or `auto`; default is `none` | string(s) | |
