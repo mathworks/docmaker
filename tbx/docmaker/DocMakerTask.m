@@ -148,14 +148,14 @@ classdef DocMakerTask < matlab.buildtool.Task
             fprintf( 1, "** Inserted MATLAB output into doc\n" )
 
             % Build the documentation search index.
-            if ~isempty( task.Root )            
-                docindex( task.Root )
+            if ~isempty( task.Root )
+                pRoot = task.Root;
             else
                 sMd = docmaker.dir( task.MarkdownFiles.paths() );
                 pMd = reshape( {sMd.folder}, size( sMd ) );
                 pRoot = docmaker.superfolder( pMd{:} );
-                docindex( pRoot )
             end % if
+            docindex( pRoot, "Converter", task.Converter )
             fprintf( 1, "** Indexed doc\n" )
 
         end % buildDoc
