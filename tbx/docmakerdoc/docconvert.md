@@ -16,9 +16,9 @@ Multiple documents may also be specified using `docconvert(md1,md2,...)`.
 
 `docconvert(...,"Root",r)` publishes to the root folder `r`, placing stylesheets and scripts in the subfolder `resources`.  The root folder must be a common ancestor of the Markdown documents.  If not specified, the root folder is the lowest common ancestor.
 
-`docconvert(...,"Interpreter",in)` uses the text interpreter in.  Available interpreters are "latex" (LaTeX markup) and "none" (literal text, default).  Use single dollar signs `$...$` to display equations inline, and double dollar signs `$$...$$` to display equations on their own line, centered.
+`docconvert(...,"Interpreter",in)` uses the text interpreter `in`.  Available interpreters are `latex` (LaTeX) and `none` (literal text, default).  Use single dollar signs `$...$` to display equations inline, and double dollar signs `$$...$$` to display equations centered on their own line.
 
-`docconvert(...,"Converter",converter)` selects the Markdown converter: `cmark` (default) uses the bundled cmark-gfm MEX, and `github` sends Markdown to GitHub's API. GitHub conversion requires network access. Authentication uses the MATLAB secret `DOCMAKER_GITHUB_TOKEN` first, then the environment variable of the same name; requests are anonymous if neither is configured.
+`docconvert(...,"Converter",converter)` uses the Markdown converter `converter`.  Available converters are `cmark` (cmark-gfm, default) and `github` (GitHub Markdown API on github.com).  GitHub conversion requires network access.  Requests are anonymous unless a token is provided using a MATLAB secret or environment variable named `DOCMAKER_GITHUB_TOKEN`.
 
 `[html,res] = docconvert(...)` returns the names of the HTML document(s) `html` and the resources folder `res` created.
 
@@ -82,7 +82,7 @@ sets the root folder to `mickey`, rather than the lowest common ancestor `mickey
 
 The conversion consists of 7 steps:
 1. Read the Markdown document
-2. Convert Markdown to an HTML fragment using cmark-gfm and gemoji
+2. Convert Markdown to an HTML fragment
 3. Tidy up the HTML fragment in preparation for XML postprocessing
 4. Replace `.md` links in the fragment to `.html` -- Markdown links to Markdown, HTML links to HTML
 5. Build an HTML document around the HTML fragment
