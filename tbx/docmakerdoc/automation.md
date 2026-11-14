@@ -24,7 +24,7 @@ Check that DocMaker is available using `ver`.
 s = ver("docmaker")
 ```
 
-From version 0.9.0, DocMaker converts Markdown to HTML using [cmark-gfm](https://github.com/github/cmark-gfm) and [gemoji](https://github.com/github/gemoji).  Network access is not required.
+By default, DocMaker converts Markdown to HTML locally using [cmark-gfm](https://github.com/github/cmark-gfm) and [gemoji](https://github.com/github/gemoji), so network access is not required. Set `Renderer` to `github` in `docconvert` or `DocMakerTask` to render with GitHub's Markdown API instead. That option sends Markdown to GitHub and requires network access. Authentication uses the MATLAB secret `DOCMAKER_GITHUB_TOKEN` first, then the environment variable of the same name; otherwise, requests are anonymous.
 
 The published DocMaker toolbox includes the platform-specific MEX binaries for Windows x64, Linux x86-64, Intel macOS, and Apple Silicon macOS.
 

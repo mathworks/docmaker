@@ -64,6 +64,15 @@
                     "choices={'latex','none'}"
                     ],
                 "purpose": "math interpreter"
+            },
+            {
+                "name": "Renderer",
+                "kind": "namevalue",
+                "type": [
+                    "char",
+                    "choices={'local','github'}"
+                ],
+                "purpose": "Markdown renderer"
             }
         ]
     },

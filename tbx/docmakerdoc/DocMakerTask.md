@@ -21,6 +21,8 @@ are `latex` or `none` (default). Specify inline LaTeX expressions between
 single dollar symbols (`$`), and display LaTeX expressions between 
 double dollar symbols (`$$`).
 
+`plan("doc") = DocMakerTask(...,"Renderer",renderer)` selects the Markdown renderer: `local` (default) uses the bundled cmark-gfm MEX, and `github` sends Markdown to GitHub's API. GitHub rendering requires network access. Authentication uses the MATLAB secret `DOCMAKER_GITHUB_TOKEN` first, then the environment variable of the same name; requests are anonymous if neither is configured.
+
 `plan("doc") = DocMakerTask(...,"Level",n)` specifies the batching level `n`.  With level 0 (default), all blocks in a document are run in a single batch. With level `n`, each level-n heading is run as a separate batch, with the workspace cleared and figures closed between batches.  With level 7, each block is run as a separate batch.
 
 `plan("doc") = DocMakerTask(...,"FigureSize",s)` sets the default figure size `s`.  Size is `[width height]` in default figure `Units`.
@@ -36,6 +38,7 @@ double dollar symbols (`$$`).
 | `js`:arrow_right: | JavaScript script(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | :test_tube: |
 | `r`:arrow_right: | root folder, as an absolute or relative path; default is the lowest common ancestor of `md` | string | |
 | `in`:arrow_right: | LaTeX interpreter: `latex` or `none`; default is `none` | string | |
+| `renderer`:arrow_right: | Markdown renderer: `local` or `github`; default is `local` | string | |
 | `n`:arrow_right: | batching level, from 0 to 7; default is 0 | double | :test_tube: |
 | `s`:arrow_right: | default figure size, in default figure `Units` | double | |
 | `t`:arrow_right: | figure theme: `none`, `light`, `dark`, or `auto`; default is `none` | string(s) | |

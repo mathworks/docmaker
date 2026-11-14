@@ -74,8 +74,18 @@ classdef tDocMakerTask < matlab.unittest.TestCase
                 fc( ind ), ...
                 "The task output search index folder was not set " + ...
                 "correctly." )
+            testCase.verifyEqual( testCase.Task.Renderer, "local" )
 
         end % tTaskArgumentsAreSetCorrectly
+
+        function tTaskAcceptsGithubRenderer( testCase )
+
+            md = fullfile( testCase.TestsFolder, testCase.TestFile );
+            task = DocMakerTask( md, "Renderer", "github" );
+
+            testCase.verifyEqual( task.Renderer, "github" )
+
+        end % tTaskAcceptsGithubRenderer
 
         function tExecutingTaskIsWarningFree( testCase )
 

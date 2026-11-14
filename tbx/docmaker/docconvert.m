@@ -27,6 +27,10 @@ function varargout = docconvert( sMd, options )
 %   inline, and double dollar signs $$...$$ to display equations on their
 %   own line, centered.
 %
+%   DOCCONVERT(...,"Renderer",r) selects the Markdown renderer. Available
+%   renderers are "local" (default) and "github". GitHub rendering sends
+%   Markdown to GitHub's API and requires network access.
+%
 %   [html, res] = docconvert(...) returns the names of the HTML document(s)
 %   html and the resources folder res created.
 %
@@ -44,6 +48,8 @@ arguments
     options.Scripts (1,:) string {mustBeFile}
     options.Root (1,1) string {mustBeFolder}
     options.Interpreter(1, 1) string {mustBeMember(options.Interpreter, ["latex", "none"])} = "none"    
+    options.Renderer(1, 1) string {mustBeMember(options.Renderer, ...
+        ["local", "github"])} = "local"
 end
 
 % Initialize output
@@ -143,7 +149,7 @@ for ii = 1:numel( sMd ) % loop over files
     fMd = fullfile( sMd(ii).folder, sMd(ii).name );
     [pMd, nMd, ~] = fileparts( fMd );
     fHtml = fullfile( pMd, nMd + ".html" );
-    doc = convert( fMd, fCss, fJs );
+    doc = convert( fMd, fCss, fJs, options.Renderer );
     writer.writeToFile( doc, fHtml, "utf-8" )
     if options.Interpreter == "latex"
         cleanLaTeXExpressions( fHtml )
@@ -159,18 +165,18 @@ end
 
 end % docconvert
 
-function doc = convert( fMd, fCss, fJs )
+function doc = convert( fMd, fCss, fJs, renderer )
 %convert  Convert Markdown document to HTML with stylesheets and scripts
 %
-%  convert(md,css,js) converts the Markdown document md to HTML and
-%  includes references to the stylesheets css and scripts js.
+%  convert(md,css,js,renderer) converts the Markdown document md to HTML
+%  using renderer and includes the requested stylesheets and scripts.
 
 % Read Markdown from file
 pMd = fileparts( fMd );
 md = fileread( fMd );
 
 % Convert Markdown to XML
-xml = docmaker.md2xml( md );
+xml = docmaker.md2xml( md, "Renderer", renderer );
 
 % Replace Markdown links
 docmaker.replacelinks( xml, ".md", ".html" )
