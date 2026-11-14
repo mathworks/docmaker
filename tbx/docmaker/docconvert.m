@@ -27,7 +27,7 @@ function varargout = docconvert( sMd, options )
 %   inline, and double dollar signs $$...$$ to display equations on their
 %   own line, centered.
 %
-%   DOCCONVERT(...,"Renderer",r) selects the Markdown renderer. Available
+%   docconvert(...,"Renderer",r) selects the Markdown renderer. Available
 %   renderers are "local" (default) and "github". GitHub rendering sends
 %   Markdown to GitHub's API and requires network access.
 %
@@ -293,17 +293,19 @@ if ischar( d ) && ischar( f ), r = char( r ); end
 end % relpath
 
 function cleanLaTeXExpressions( fHTML )
-%CLEANLATEXEXPRESSIONS Postprocess LaTeX expressions after conversion to
-%HTML via cmark-gfm. Markdown emphasis and LaTeX subscripts both use an
-%underscore, so emphasis tags inside LaTeX expressions must be converted
-%back to underscores. For example, the underscores in:
+%cleanLaTeXExpressions  Restore LaTeX syntax after Markdown conversion
 %
-% $$
-% \Phi = \frac{\dot{m}_{th} + \dot{m}}{2} ht_{in} - ...
-%       \frac{\dot{m}_{th} - \dot{m}}{2} ht_{out}
-% $$
+%   cleanLaTeXExpressions(fHTML) restores underscores in LaTeX expressions
+%   after Markdown conversion. Markdown emphasis and LaTeX subscripts both
+%   use underscores, so emphasis tags inside expressions must be converted
+%   back. For example, the underscores in:
 %
-%may be converted to <em>...</em> tags in HTML.
+%      $$
+%      \Phi = \frac{\dot{m}_{th} + \dot{m}}{2} ht_{in} - ...
+%            \frac{\dot{m}_{th} - \dot{m}}{2} ht_{out}
+%      $$
+%
+%   may be converted to <em>...</em> tags in HTML.
 
 arguments ( Input )
     fHTML(1, 1) string {mustBeFile}    
@@ -314,8 +316,10 @@ removeItalicTags( fHTML )
 end % cleanLaTeXExpressions
 
 function removeItalicTags( fHTML )
-%REMOVEITALICTAGS Postprocess the generated HTML to remove spurious HTML 
-%tags from the LaTeX expressions.
+%removeItalicTags  Restore LaTeX underscores in generated HTML
+%
+%   removeItalicTags(fHTML) replaces emphasis tags around underscores in
+%   LaTeX expressions with literal underscores.
 
 arguments ( Input )
     fHTML(1, 1) string {mustBeFile}

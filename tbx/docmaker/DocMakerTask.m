@@ -1,5 +1,5 @@
 classdef DocMakerTask < matlab.buildtool.Task
-    %DOCMAKERTASK Generate toolbox documentation using DocMaker.
+    %DocMakerTask  Generate toolbox documentation using DocMaker
     %
     % See also docconvert, docrun, docindex
     %
@@ -50,7 +50,10 @@ classdef DocMakerTask < matlab.buildtool.Task
     methods
 
         function task = DocMakerTask( markdownFiles, namedArgs )
-            %DOCMAKERTASK Construct the DocMaker build task.
+            %DocMakerTask  Construct the DocMaker build task
+            %
+            %   task = DocMakerTask(markdownFiles,Name=Value) constructs a
+            %   task that generates documentation from Markdown files.
 
             arguments ( Input, Repeating )
                 markdownFiles
@@ -106,7 +109,10 @@ classdef DocMakerTask < matlab.buildtool.Task
     methods ( TaskAction )
 
         function buildDoc( task, ~ )
-            %BUILDDOC Build the toolbox documentation.
+            %buildDoc  Build the toolbox documentation
+            %
+            %   buildDoc(task,context) converts, runs, and indexes the
+            %   task's Markdown documentation.
             %
             % * Convert Markdown documents to HTML
             % * Run MATLAB code in HTML documents and insert output

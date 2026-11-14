@@ -1,5 +1,8 @@
 function folder = docmakerroot()
-%DOCMAKERROOT DocMaker root folder.
+%docmakerroot  Return the DocMaker root folder
+%
+%   folder = docmakerroot() returns the folder containing the DocMaker
+%   toolbox source.
 
 %   Copyright 2026 The MathWorks, Inc.
 

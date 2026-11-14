@@ -7,7 +7,7 @@ function doc = md2xml( md, options )
 %   DOC = docmaker.md2xml(MD,Renderer="github") uses GitHub's Markdown
 %   API. This requires network access; DOCMAKER_GITHUB_TOKEN is optional.
 %
-%   See also DOCCONVERT, docmaker.githubgfm2html
+%   See also docconvert, docmaker.githubgfm2html
 
 %   Copyright 2026 The MathWorks, Inc.
 
