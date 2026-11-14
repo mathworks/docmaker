@@ -1,5 +1,5 @@
 classdef tdocrun < tDocMaker
-    %TDOCRUN Tests for docrun.
+    %tdocrun Tests for docrun.
     %
     %   Copyright 2026 The MathWorks, Inc.
 

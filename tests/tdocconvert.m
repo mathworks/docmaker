@@ -1,5 +1,5 @@
 classdef tdocconvert < tDocMaker
-    %TDOCCONVERT Tests for docconvert.
+    %tdocconvert Tests for docconvert.
     %
     %   Copyright 2026 The MathWorks, Inc.
 

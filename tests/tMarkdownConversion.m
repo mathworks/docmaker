@@ -1,5 +1,5 @@
 classdef tMarkdownConversion < matlab.unittest.TestCase
-    %TMARKDOWNCONVERSION Tests for local Markdown conversion.
+    %tMarkdownConversion Tests for local Markdown conversion.
     %
     %   Copyright 2026 The MathWorks, Inc.
 
