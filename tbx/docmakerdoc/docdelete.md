@@ -19,7 +19,7 @@ Delete generated artifacts
 ```matlab
 docdelete("mickey/goofy") 
 ```
-deletes artifacts in the folder `mickey/goofy`.  Note that this path is *relative*.
+deletes artifacts in the folder `mickey/goofy`. Note that this path is *relative*.
 
 ```matlab
 docconvert("C:\daisy\mickey\goofy") 

@@ -36,7 +36,7 @@ Private workspace for assigning variables and evaluating expressions
 
 `evalin(w,s)` evaluates the statement(s) `s` in the workspace `w`.
 
-`[o1,o2,...] = evalin(w,s)` evaluates the statement `s` in the workspace `w`, and returns the outputs `o1`, `o2`, etc.  It is not possible to return outputs from multiple statements or assignments.
+`[o1,o2,...] = evalin(w,s)` evaluates the statement `s` in the workspace `w`, and returns the outputs `o1`, `o2`, etc. It is not possible to return outputs from multiple statements or assignments.
 
 `c = evalinc(w,s)` evaluates the statement(s) `s` in the workspace `w`, and returns the command window output `c`.
 
@@ -138,7 +138,7 @@ w2
 
 ## Details
 
-`docmaker.Workspace` extends [`assignin`](https://www.mathworks.com/help/matlab/ref/assignin.html) and [`evalin`](https://www.mathworks.com/help/matlab/ref/evalin.html) from `base` and `caller` to workspace *objects*.  `docmaker.Workspace` also adds `evalinc` -- "`evalin` with capture".  `evalin` is to `evalinc` as [`eval`](https://www.mathworks.com/help/matlab/ref/eval.html) is to [`evalc`](https://www.mathworks.com/help/matlab/ref/evalc.html).
+`docmaker.Workspace` extends [`assignin`](https://www.mathworks.com/help/matlab/ref/assignin.html) and [`evalin`](https://www.mathworks.com/help/matlab/ref/evalin.html) from `base` and `caller` to workspace *objects*. `docmaker.Workspace` also adds `evalinc` -- "`evalin` with capture". `evalin` is to `evalinc` as [`eval`](https://www.mathworks.com/help/matlab/ref/eval.html) is to [`evalc`](https://www.mathworks.com/help/matlab/ref/evalc.html).
 
 `docmaker.Workspace` was previously a standalone implementation, first implemented 20 years ago, but now uses `matlab.lang.internal.WorkspaceData` :heart:.
 

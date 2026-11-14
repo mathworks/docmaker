@@ -8,11 +8,11 @@ Run MATLAB code in HTML documents and insert output
 
 Multiple documents may also be specified using `docrun(html1,html2,...)`.
  
-`docrun(...,"Level",n)` specifies the batching level `n`.  With level 0 (default), all blocks in a document are run in a single batch. With level `n`, each level-n heading is run as a separate batch, with the workspace cleared and figures closed between batches.  With level 7, each block is run as a separate batch.
+`docrun(...,"Level",n)` specifies the batching level `n`. With level 0 (default), all blocks in a document are run in a single batch. With level `n`, each level-n heading is run as a separate batch, with the workspace cleared and figures closed between batches. With level 7, each block is run as a separate batch.
 
-`docrun(...,"FigureSize",s)` sets the default figure size `s`.  Size is `[width height]` in default figure `Units`.
+`docrun(...,"FigureSize",s)` sets the default figure size `s`. Size is `[width height]` in default figure `Units`.
 
-`docrun(...,"Theme",t)` sets the theme `t`.  Available themes are `none` (as is, default), `light`, `dark`, and `auto` (responsive).  For viewing as part of the MATLAB documentation, especially prior to R2025a, light mode works best.  For viewing standalone, responsive mode works well.
+`docrun(...,"Theme",t)` sets the theme `t`. Available themes are `none` (as is, default), `light`, `dark`, and `auto` (responsive). For viewing as part of the MATLAB documentation, especially prior to R2025a, light mode works best. For viewing standalone, responsive mode works well.
 
 `html = docrun(...)` returns the names of the HTML document(s) modified.
 
@@ -29,7 +29,7 @@ Multiple documents may also be specified using `docrun(html1,html2,...)`.
 ```matlab
 docrun("mickey/pluto.html") 
 ```
-processes a single HTML document `mickey/pluto.html`.  Note that this path is *relative*.
+processes a single HTML document `mickey/pluto.html`. Note that this path is *relative*.
 
 ```matlab
 docrun("C:\daisy\mickey\pluto.html") 
@@ -59,12 +59,12 @@ generates output in light mode.
 ```matlab
 docrun("mickey/pluto.html","Theme","auto") 
 ```
-generates responsive output -- light in light mode, dark in dark mode.  If `Theme` is not specified -- or is specified as `none` -- then output is generated in the current MATLAB mode.
+generates responsive output -- light in light mode, dark in dark mode. If `Theme` is not specified -- or is specified as `none` -- then output is generated in the current MATLAB mode.
 
 ```matlab
 docrun("mickey/pluto.html","FigureSize",[600 400]) 
 ```
-sets the default figure size to 600 wide by 400 high.  The previous default figure size is restored when `docrun` completes.
+sets the default figure size to 600 wide by 400 high. The previous default figure size is restored when `docrun` completes.
 
 ## Description
 
@@ -83,7 +83,7 @@ Each run consists of 6 steps:
 
 ### Including MATLAB code
 
-You can include MATLAB [code blocks](https://www.markdownguide.org/extended-syntax/#fenced-code-blocks) in Markdown documents using ` ```matlab `.  The raw Markdown looks like:
+You can include MATLAB [code blocks](https://www.markdownguide.org/extended-syntax/#fenced-code-blocks) in Markdown documents using ` ```matlab `. The raw Markdown looks like:
 
 ````
 ```matlab
@@ -103,11 +103,11 @@ plot(x,sin(x))
 
 ### Executing MATLAB code
 
-`docrun` runs arbitrary MATLAB code blocks in HTML documents.  This is a potential vector for malicious attacks.  **Only run code from people or organizations you trust.**
+`docrun` runs arbitrary MATLAB code blocks in HTML documents. This is a potential vector for malicious attacks. **Only run code from people or organizations you trust.**
 
-`docrun` evaluates each code block in turn in a MATLAB [workspace](workspace.md) that is *private* to the document.  Variables created in earlier blocks are available for use in later blocks.
+`docrun` evaluates each code block in turn in a MATLAB [workspace](workspace.md) that is *private* to the document. Variables created in earlier blocks are available for use in later blocks.
 
-If an error occurs in one block then `docrun` rethrows the error as a warning (identifier `docmaker:EvalError`) and moves on to the next block.  However, it is likely that an error in an earlier block will lead to further errors in later blocks.
+If an error occurs in one block then `docrun` rethrows the error as a warning (identifier `docmaker:EvalError`) and moves on to the next block. However, it is likely that an error in an earlier block will lead to further errors in later blocks.
 
 If you wish to display *but not evaluate* MATLAB code, add trailing whitespace to the last line of the code block, and `docrun` will leave it be.
 
@@ -136,13 +136,13 @@ Error messages are also inserted, with the offending statement indicated.
 m = magick(4)
 ```
 
-`docrun` inserts MATLAB outputs into HTML documents in `<div>`s with `class` `highlight-output-matlab`.  Previous outputs are removed.
+`docrun` inserts MATLAB outputs into HTML documents in `<div>`s with `class` `highlight-output-matlab`. Previous outputs are removed.
 
 ### Display scaling
 
 Display scaling is a feature that adjusts the size of elements on screen to ensure they are easily readable and usable, regardless of the resolution of your display. This is particularly useful for high-resolution displays, where elements can appear too small to see comfortably at the native resolution.
 
-`docrun` uses `getframe` to capture screenshots.  `getframe` captures screenshots using native resolution, to maximize quality.  In versions prior to 0.4.0, this led to inconsistencies in image sizes between applications and machines.  From version 0.4.0, `docrun` includes scaled image sizes in the generated HTML.
+`docrun` uses `getframe` to capture screenshots. `getframe` captures screenshots using native resolution, to maximize quality. In versions prior to 0.4.0, this led to inconsistencies in image sizes between applications and machines. From version 0.4.0, `docrun` includes scaled image sizes in the generated HTML.
 
 ___
 

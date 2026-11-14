@@ -6,23 +6,23 @@ Custom build task for generating documentation
 
 `plan("doc") = DocMakerTask(md)` creates a documentation generation task, named `"doc"`, for the Markdown documents `md`, in the build plan `plan`. Multiple documents may also be specified using `DocMakerTask(md1,md2,...)`.
 
-`plan("doc") = DocMakerTask(...,"Theme",t)` sets the theme `t`.  Available themes are `light`, `dark`, and `auto` (responsive, default).  For viewing as part of the MATLAB documentation, especially prior to R2025a, light mode works best.  For viewing standalone, responsive mode works well.
+`plan("doc") = DocMakerTask(...,"Theme",t)` sets the theme `t`. Available themes are `light`, `dark`, and `auto` (responsive, default). For viewing as part of the MATLAB documentation, especially prior to R2025a, light mode works best. For viewing standalone, responsive mode works well.
 
 `plan("doc") = DocMakerTask(...,"Stylesheets",css)` includes the stylesheet(s) `css`.
 
-`plan("doc") = DocMakerTask(...,"Scripts",js)` includes the script(s) `js`.  Scripts are included at the end of the body in the order specified to ensure that the HTML content is loaded and rendered before the scripts run.  :test_tube:
+`plan("doc") = DocMakerTask(...,"Scripts",js)` includes the script(s) `js`. Scripts are included at the end of the body in the order specified to ensure that the HTML content is loaded and rendered before the scripts run. :test_tube:
 
-`plan("doc") = DocMakerTask(...,"Root",r)` publishes to the root folder `r`, placing stylesheets and scripts in the subfolder `resources`.  The root folder must be a common ancestor of the Markdown documents.  If not specified, the root folder is the lowest common ancestor.
+`plan("doc") = DocMakerTask(...,"Root",r)` publishes to the root folder `r`, placing stylesheets and scripts in the subfolder `resources`. The root folder must be a common ancestor of the Markdown documents. If not specified, the root folder is the lowest common ancestor.
 
-`plan("doc") = DocMakerTask(...,"Interpreter",in)` uses the interpreter `in` to postprocess inline or display LaTeX expressions.  Available interpreters are `latex` or `none` (default). Specify inline LaTeX expressions between single dollar symbols (`$`), and display LaTeX expressions between double dollar symbols (`$$`).
+`plan("doc") = DocMakerTask(...,"Interpreter",in)` uses the interpreter `in` to postprocess inline or display LaTeX expressions. Available interpreters are `latex` or `none` (default). Specify inline LaTeX expressions between single dollar symbols (`$`), and display LaTeX expressions between double dollar symbols (`$$`).
 
-`plan("doc") = DocMakerTask(...,"Converter",c)` uses the Markdown converter `c` to convert Markdown documents and `helptoc.md`.  Available converters are `cmark` (bundled cmark-gfm, default) and `github` (GitHub Markdown API on GitHub.com).  See [Markdown conversion](conversion.md) for converter details, setup, platform support, and version details.
+`plan("doc") = DocMakerTask(...,"Converter",c)` uses the Markdown converter `c` to convert Markdown documents and `helptoc.md`. Available converters are `cmark` (bundled cmark-gfm, default) and `github` (GitHub Markdown API on GitHub.com). See [Markdown conversion](conversion.md) for converter details, setup, platform support, and version details.
 
-`plan("doc") = DocMakerTask(...,"Level",n)` specifies the batching level `n`.  With level 0 (default), all blocks in a document are run in a single batch. With level `n`, each level-n heading is run as a separate batch, with the workspace cleared and figures closed between batches.  With level 7, each block is run as a separate batch.
+`plan("doc") = DocMakerTask(...,"Level",n)` specifies the batching level `n`. With level 0 (default), all blocks in a document are run in a single batch. With level `n`, each level-n heading is run as a separate batch, with the workspace cleared and figures closed between batches. With level 7, each block is run as a separate batch.
 
-`plan("doc") = DocMakerTask(...,"FigureSize",s)` sets the default figure size `s`.  Size is `[width height]` in default figure `Units`.
+`plan("doc") = DocMakerTask(...,"FigureSize",s)` sets the default figure size `s`. Size is `[width height]` in default figure `Units`.
 
-`plan("doc") = DocMakerTask(...,"FigureTheme",t)` sets the figure theme `t`.  Available themes are `none` (as is, default), `light`, `dark`, and `auto` (responsive).  For viewing as part of the MATLAB documentation, especially prior to R2025a, light mode works best.  For viewing standalone, responsive mode works well.
+`plan("doc") = DocMakerTask(...,"FigureTheme",t)` sets the figure theme `t`. Available themes are `none` (as is, default), `light`, `dark`, and `auto` (responsive). For viewing as part of the MATLAB documentation, especially prior to R2025a, light mode works best. For viewing standalone, responsive mode works well.
 
 
 | Name | Description | Type | Required |

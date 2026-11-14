@@ -6,7 +6,7 @@ Create documentation index files
 
 `docindex(d)` creates documentation index files `info.xml` and `helptoc.xml` and search database `helpsearch_v4` in the folder `d`.
 
-`docindex(...,"Converter",c)` uses the Markdown converter `c` to convert `helptoc.md`.  Available converters are `cmark` (bundled cmark-gfm, default) and `github` (GitHub Markdown API on GitHub.com).  See [Markdown conversion](conversion.md) for converter details, setup, platform support, and version details.
+`docindex(...,"Converter",c)` uses the Markdown converter `c` to convert `helptoc.md`. Available converters are `cmark` (bundled cmark-gfm, default) and `github` (GitHub Markdown API on GitHub.com). See [Markdown conversion](conversion.md) for converter details, setup, platform support, and version details.
 
 `[xml,db] = docindex(...)` returns the names of the index files `xml` and search database folder `db` created.
 
@@ -22,7 +22,7 @@ Create documentation index files
 ```matlab
 docindex("mickey/goofy") 
 ```
-indexes documentation in the folder `mickey/goofy`.  Note that this path is *relative*.
+indexes documentation in the folder `mickey/goofy`. Note that this path is *relative*.
 
 ```matlab
 docindex("C:\daisy\mickey\goofy") 
@@ -33,7 +33,7 @@ also indexes documentation, this time specified using an *absolute* path.
 
 ### `info.xml` and `helptoc.xml`
 
-`info.xml` enables MATLAB to find and identify your HTML help files.  `helptoc.xml` contains the table of contents for your documentation that is displayed in the Contents sidebar of the Help browser.  The MATLAB documentation contains [further details](https://www.mathworks.com/help/matlab/matlab_prog/display-custom-documentation.html), that you do not need to know about anymore once you are generating rather than hand-writing these files.
+`info.xml` enables MATLAB to find and identify your HTML help files. `helptoc.xml` contains the table of contents for your documentation that is displayed in the Contents sidebar of the Help browser. The MATLAB documentation contains [further details](https://www.mathworks.com/help/matlab/matlab_prog/display-custom-documentation.html), that you do not need to know about anymore once you are generating rather than hand-writing these files.
 
 ### Table of contents requirements
 
@@ -52,7 +52,7 @@ For example:
   * [Dewey](dewey.md)
 ```
 
-If you need a list item to group child items, specify an empty link URL, e.g. `* [Function reference]()`.  Other content in `helptoc.md` -- including additional links and normal text in list items -- is ignored.
+If you need a list item to group child items, specify an empty link URL, e.g. `* [Function reference]()`. Other content in `helptoc.md` -- including additional links and normal text in list items -- is ignored.
 
 ### Steps
 
