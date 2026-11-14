@@ -7,8 +7,8 @@ classdef DocMakerTask < matlab.buildtool.Task
 
     properties
         % Documentation theme.
-        Theme(1, 1) string {mustBeMember( Theme, ...
-            ["light", "dark", "auto"] )} = "auto"
+        Theme(1, 1) string {mustBeMember( ...
+            Theme, ["light", "dark", "auto"] )} = "auto"
         % Stylesheets to include.
         Stylesheets(1, :) string {mustBeFile}
         % Scripts to include.
@@ -16,11 +16,11 @@ classdef DocMakerTask < matlab.buildtool.Task
         % Root folder for publishing.
         Root(1, :) string {mustBeFolder, mustBeScalarOrEmpty}
         % LaTeX interpreter.
-        Interpreter(1, 1) string {mustBeMember( Interpreter, ...
-            ["latex", "none"] )} = "none"
+        Interpreter(1, 1) string {mustBeMember( ...
+            Interpreter, ["latex", "none"] )} = "none"
         % Markdown converter.
-        Converter(1, 1) string {mustBeMember( Converter, ...
-            ["cmark", "github"] )} = "cmark"
+        Converter(1, 1) string {mustBeMember( ...
+            Converter, ["cmark", "github"] )} = "cmark"
         % Batching level.
         Level(1, 1) double {mustBeInteger, ...
             mustBeInRange( Level, 0, 7 )} = 0

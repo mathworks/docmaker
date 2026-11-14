@@ -43,14 +43,15 @@ arguments ( Repeating )
 end
 
 arguments
-    options.Theme (1,1) string {mustBeMember(options.Theme,["light","dark","auto"])} = "auto"
+    options.Theme (1,1) string {mustBeMember( ...
+        options.Theme, ["light","dark","auto"] )} = "auto"
     options.Stylesheets (1,:) string {mustBeFile}
     options.Scripts (1,:) string {mustBeFile}
     options.Root (1,1) string {mustBeFolder}
     options.Interpreter (1,1) string {mustBeMember( ...
-        options.Interpreter, ["latex", "none"])} = "none"
+        options.Interpreter, ["latex", "none"] )} = "none"
     options.Converter (1,1) string {mustBeMember( ...
-        options.Converter, ["cmark", "github"])} = "cmark"
+        options.Converter, ["cmark", "github"] )} = "cmark"
 end
 
 % Initialize output

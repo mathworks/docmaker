@@ -100,8 +100,7 @@ end
 
 The task will be skipped if the input and output have not changed since the last successful run.  Furthermore `buildtool clean` will remove generated artifacts, without the need to call `docdelete` explicitly.
 
-In MATLAB R2025a or later, you can use the provided [`DocMakerTask`](DocMakerTask.md) to simplify this process, without the need to write a task function. This task works 
-in the same way as the steps above.
+In MATLAB R2025a or later, you can use the provided [`DocMakerTask`](DocMakerTask.md) to simplify this process, without the need to write a task function. This task works in the same way as the steps above.
 
 ```matlab
 md = fullfile( doc, "**", "*.md" ); % Markdown documents

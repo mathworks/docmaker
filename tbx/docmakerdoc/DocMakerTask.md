@@ -4,8 +4,7 @@ Custom build task for generating documentation
 
 ## Syntax
 
-`plan("doc") = DocMakerTask(md)` creates a documentation generation task, named `"doc"`, for the Markdown documents `md`, in the build plan `plan`. 
-Multiple documents may also be specified using `DocMakerTask(md1,md2,...)`.
+`plan("doc") = DocMakerTask(md)` creates a documentation generation task, named `"doc"`, for the Markdown documents `md`, in the build plan `plan`. Multiple documents may also be specified using `DocMakerTask(md1,md2,...)`.
 
 `plan("doc") = DocMakerTask(...,"Theme",t)` sets the theme `t`.  Available themes are `light`, `dark`, and `auto` (responsive, default).  For viewing as part of the MATLAB documentation, especially prior to R2025a, light mode works best.  For viewing standalone, responsive mode works well.
 
@@ -41,8 +40,7 @@ Multiple documents may also be specified using `DocMakerTask(md1,md2,...)`.
 
 
 ## Examples
-Add a documentation generation task to the build plan for all Markdown documents in the folder `doc`. Use light theme for the 
-documentation files and figure snapshots, and specify a figure size of 600-by-400 pixels.
+Add a documentation generation task to the build plan for all Markdown documents in the folder `doc`. Use light theme for the documentation files and figure snapshots, and specify a figure size of 600-by-400 pixels.
 ```matlab
 md = fullfile(doc, "**", "*.md"); % Markdown documents
 plan("doc") = DocMakerTask(md, "Theme", "light", ...

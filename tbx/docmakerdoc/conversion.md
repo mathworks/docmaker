@@ -12,10 +12,7 @@ DocMaker also supports [GitHub Markdown API](https://docs.github.com/en/rest/mar
 
 GitHub rate-limits API requests, and authenticated requests have a higher limit.  A GitHub access token with no permissions is sufficient.  To authenticate, set the MATLAB secret `DOCMAKER_GITHUB_TOKEN` or the environment variable of the same name.  Use secrets for local development on R2024a and later, and environment variables for build runners and earlier MATLAB versions.  Without a token, requests are anonymous.
 
-GitHub Markdown API requires network access and sends document contents to GitHub. See the [GitHub API
-terms of service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service#h-api-terms)
-and [privacy statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement)
-for further information.
+GitHub Markdown API requires network access and sends document contents to GitHub. See the [GitHub API terms of service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service#h-api-terms) and [privacy statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement) for further information.
 
 *Use the GitHub Markdown API only if the cmark-gfm MEX cannot run in your environment.*  cmark-gfm is faster :rocket:, and your content stays local :lock:.
 
