@@ -17,7 +17,9 @@ terms of service](https://docs.github.com/en/site-policy/github-terms/github-ter
 and [privacy statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement)
 for further information.
 
-Use the GitHub Markdown API only when the cmark MEX cannot run in your environment.  It supports GitHub.com only; private GitHub instances are not supported.
+*Use the GitHub Markdown API only if the cmark-gfm MEX cannot run in your environment.*  cmark-gfm is faster :rocket:, and your content stays local :lock:.
+
+The GitHub Markdown API supports GitHub.com only; private GitHub instances are not supported.
 
 ## GitLab Markdown API
 
