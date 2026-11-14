@@ -17,7 +17,7 @@ classdef DocMakerTask < matlab.buildtool.Task
         Root(1, :) string {mustBeFolder, mustBeScalarOrEmpty}
         % LaTeX interpreter.
         Interpreter(1, 1) string {mustBeMember( Interpreter, ...
-            ["latex", "none"] )} = "none"        
+            ["latex", "none"] )} = "none"
         % Markdown converter.
         Converter(1, 1) string {mustBeMember( Converter, ...
             ["cmark", "github"] )} = "cmark"
@@ -55,15 +55,15 @@ classdef DocMakerTask < matlab.buildtool.Task
             %   task = DocMakerTask(markdownFiles,Name=Value) constructs a
             %   task that generates documentation from Markdown files.
 
-            arguments ( Input, Repeating )
+            arguments ( Repeating )
                 markdownFiles
-            end % arguments ( Input, Repeating )
+            end
 
-            arguments ( Input )
+            arguments
                 namedArgs.?DocMakerTask
-            end % arguments ( Input )
+            end
 
-            % Assign the markdown files (the task input).            
+            % Assign the markdown files (the task input).
             task.MarkdownFiles = [markdownFiles{:}];
 
             % Derive the task outputs.
@@ -75,7 +75,7 @@ classdef DocMakerTask < matlab.buildtool.Task
             html = fullfile( mdFolders, name + ".html" );
             task.HTMLFiles = html;
 
-            % Root folder.            
+            % Root folder.
             if ~isempty( task.Root )
                 rootInfo = dir( task.Root );
                 root = rootInfo(1).folder;
@@ -123,7 +123,7 @@ classdef DocMakerTask < matlab.buildtool.Task
             if ~isempty( task.Stylesheets )
                 convertArgs = {"Stylesheets", task.Stylesheets};
             end % if
-            
+
             if ~isempty( task.Scripts )
                 convertArgs = [convertArgs, {"Scripts", task.Scripts}];
             end % if

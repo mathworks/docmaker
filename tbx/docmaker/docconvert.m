@@ -309,9 +309,9 @@ function cleanLaTeXExpressions( fHTML )
 %
 %   may be converted to <em>...</em> tags in HTML.
 
-arguments ( Input )
-    fHTML(1, 1) string {mustBeFile}    
-end % arguments ( Input )
+arguments
+    fHTML(1, 1) string {mustBeFile}
+end % arguments
 
 removeItalicTags( fHTML )
 
@@ -323,9 +323,9 @@ function removeItalicTags( fHTML )
 %   removeItalicTags(fHTML) replaces emphasis tags around underscores in
 %   LaTeX expressions with literal underscores.
 
-arguments ( Input )
+arguments
     fHTML(1, 1) string {mustBeFile}
-end % arguments ( Input )
+end % arguments
 
 % Read the file contents.
 rawHTML = fileread( fHTML );
