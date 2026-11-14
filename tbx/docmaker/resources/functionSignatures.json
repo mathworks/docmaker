@@ -66,13 +66,13 @@
                 "purpose": "math interpreter"
             },
             {
-                "name": "Renderer",
+                "name": "Converter",
                 "kind": "namevalue",
                 "type": [
                     "char",
                     "choices={'local','github'}"
                 ],
-                "purpose": "Markdown renderer"
+                "purpose": "Markdown converter"
             }
         ]
     },

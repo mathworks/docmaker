@@ -27,8 +27,8 @@ function varargout = docconvert( sMd, options )
 %   inline, and double dollar signs $$...$$ to display equations on their
 %   own line, centered.
 %
-%   docconvert(...,"Renderer",r) selects the Markdown renderer. Available
-%   renderers are "local" (default) and "github". GitHub rendering sends
+%   docconvert(...,"Converter",c) selects the Markdown converter. Available
+%   converters are "local" (default) and "github". GitHub conversion sends
 %   Markdown to GitHub's API and requires network access.
 %
 %   [html, res] = docconvert(...) returns the names of the HTML document(s)
@@ -48,7 +48,7 @@ arguments
     options.Scripts (1,:) string {mustBeFile}
     options.Root (1,1) string {mustBeFolder}
     options.Interpreter(1, 1) string {mustBeMember(options.Interpreter, ["latex", "none"])} = "none"    
-    options.Renderer(1, 1) string {mustBeMember(options.Renderer, ...
+    options.Converter(1, 1) string {mustBeMember(options.Converter, ...
         ["local", "github"])} = "local"
 end
 
@@ -150,7 +150,7 @@ for ii = 1:numel( sMd ) % loop over files
     fMd = fullfile( sMd(ii).folder, sMd(ii).name );
     [pMd, nMd, ~] = fileparts( fMd );
     fHtml = fullfile( pMd, nMd + ".html" );
-    doc = convert( fMd, fCss, fJs, options.Renderer );
+    doc = convert( fMd, fCss, fJs, options.Converter );
     writer.writeToFile( doc, fHtml, "utf-8" )
     if options.Interpreter == "latex"
         cleanLaTeXExpressions( fHtml )
@@ -166,18 +166,18 @@ end
 
 end % docconvert
 
-function doc = convert( fMd, fCss, fJs, renderer )
+function doc = convert( fMd, fCss, fJs, converter )
 %convert  Convert Markdown document to HTML with stylesheets and scripts
 %
-%  convert(md,css,js,renderer) converts the Markdown document md to HTML
-%  using renderer and includes the requested stylesheets and scripts.
+%  convert(md,css,js,converter) converts the Markdown document md to HTML
+%  using converter and includes the requested stylesheets and scripts.
 
 % Read Markdown from file
 pMd = fileparts( fMd );
 md = fileread( fMd );
 
 % Convert Markdown to XML
-xml = docmaker.md2xml( md, "Renderer", renderer );
+xml = docmaker.md2xml( md, "Converter", converter );
 
 % Replace Markdown links
 docmaker.replacelinks( xml, ".md", ".html" )

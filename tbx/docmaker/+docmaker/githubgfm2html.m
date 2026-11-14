@@ -34,11 +34,11 @@ if strlength( token ) > 0
     request = addFields( request, "Authorization", "Bearer " + token );
 end
 
-% Request rendered Markdown from GitHub
+% Request HTML output from GitHub
 uri = matlab.net.URI( "https://api.github.com/markdown/raw" );
 response = request.send( uri );
 
-% Return the rendered HTML, or report the HTTP failure
+% Return the HTML response, or report the HTTP failure
 switch response.StatusCode
     case matlab.net.http.StatusCode.OK
         html = strtrim( string( response.Body.Data ) );

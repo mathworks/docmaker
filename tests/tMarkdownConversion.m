@@ -39,7 +39,7 @@ classdef tMarkdownConversion < matlab.unittest.TestCase
 
         end % tConvertsGitHubFlavoredMarkdown
 
-        function tNormalizesGitHubRenderedHtml( testCase )
+        function tNormalizesGitHubHtml( testCase )
 
             html = strjoin( [ ...
                 "<h1>GitHub</h1>"; ...
@@ -65,7 +65,7 @@ classdef tMarkdownConversion < matlab.unittest.TestCase
                 string( doc.getElementsByTagName( "code" ).item( 0 ).TextContent ), ...
                 "y = 2" )
 
-        end % tNormalizesGitHubRenderedHtml
+        end % tNormalizesGitHubHtml
 
         function tConvertsImageMarkdownFixture( testCase )
 

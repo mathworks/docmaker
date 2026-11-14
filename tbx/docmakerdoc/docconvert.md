@@ -18,7 +18,7 @@ Multiple documents may also be specified using `docconvert(md1,md2,...)`.
 
 `docconvert(...,"Interpreter",in)` uses the text interpreter in.  Available interpreters are "latex" (LaTeX markup) and "none" (literal text, default).  Use single dollar signs `$...$` to display equations inline, and double dollar signs `$$...$$` to display equations on their own line, centered.
 
-`docconvert(...,"Renderer",renderer)` selects the Markdown renderer: `local` (default) uses the bundled cmark-gfm MEX, and `github` sends Markdown to GitHub's API. GitHub rendering requires network access. Authentication uses the MATLAB secret `DOCMAKER_GITHUB_TOKEN` first, then the environment variable of the same name; requests are anonymous if neither is configured.
+`docconvert(...,"Converter",converter)` selects the Markdown converter: `local` (default) uses the bundled cmark-gfm MEX, and `github` sends Markdown to GitHub's API. GitHub conversion requires network access. Authentication uses the MATLAB secret `DOCMAKER_GITHUB_TOKEN` first, then the environment variable of the same name; requests are anonymous if neither is configured.
 
 `[html,res] = docconvert(...)` returns the names of the HTML document(s) `html` and the resources folder `res` created.
 
@@ -30,7 +30,7 @@ Multiple documents may also be specified using `docconvert(md1,md2,...)`.
 | `js`:arrow_right: | JavaScript script(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | :test_tube: |
 | `r`:arrow_right: | root folder, as an absolute or relative path; default is the lowest common ancestor of `md` | string | |
 | `in`:arrow_right: | text interpreter: `latex` or `none`; default is `none` | string | |
-| `renderer`:arrow_right: | Markdown renderer: `local` or `github`; default is `local` | string | |
+| `converter`:arrow_right: | Markdown converter: `local` or `github`; default is `local` | string | |
 | :arrow_right:`html` | HTML document(s) created, as an absolute path | string(s) | |
 | :arrow_right:`res` | resources folder created, as an absolute path | string | |
 

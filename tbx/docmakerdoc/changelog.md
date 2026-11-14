@@ -3,7 +3,9 @@
 ## Version 0.9.0
 
 * Added local Markdown conversion using [cmark-gfm](https://github.com/github/cmark-gfm) and [gemoji](https://github.com/github/gemoji)
-* Removed GitHub and GitLab Markdown conversion support
+* Made local Markdown conversion the default
+* Retained GitHub Markdown API conversion for github.com
+* Removed GitLab Markdown API conversion
 
 ## Version 0.8.0
 
