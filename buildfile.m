@@ -152,7 +152,7 @@ copyfile( fullfile( gemojiDir, "LICENSE" ), ...
 
 end % mexTask
 
-function packageTask( ~ )
+function packageTask( c )
 % Package toolbox
 
 % Load and tweak metadata
@@ -190,13 +190,19 @@ pv = [fieldnames( s ), struct2cell( s )]'; % optional
 o = matlab.addons.toolbox.ToolboxOptions( f, id, pv{:} );
 o.ToolboxVersion = string( o.ToolboxVersion ); % g3079185
 
+% Add license (modern versions)
+mpj = ~isMATLABReleaseOlderThan( "R2026b" ); % version uses mpackage.json
+if mpj, o.UseLicenseBSD = true; end
+
 % Package
 matlab.addons.toolbox.packageToolbox( o )
 fprintf( 1, "[+] %s\n", o.OutputFile );
 
-% Add license
-lic = fileread( "LICENSE" );
-mlAddonSetLicense( char( o.OutputFile ), struct( "type", 'BSD', "text", lic ) );
+% Add license (earlier versions)
+if ~mpj
+    lic = fileread( fullfile( c.Plan.RootFolder, "LICENSE" ) );
+    mlAddonSetLicense( char( o.OutputFile ), struct( "type", 'BSD', "text", lic ) );
+end
 
 end % packageTask
 
