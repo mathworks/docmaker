@@ -77,7 +77,8 @@ classdef tMarkdownConversion < matlab.unittest.TestCase
                 "<div class=""markdown-code-block"">" + ...
                 "<pre class=""highlight language-matlab""><code>" + ...
                 "x = 1</code></pre></div>" ], newline() );
-            doc = docmaker.gitlabhtml2xml( html );
+            doc = docmaker.html2xml( html );
+            docmaker.gitlabfixxml( doc )
 
             img = doc.getElementsByTagName( "img" ).item( 0 );
             testCase.verifyEqual( ...

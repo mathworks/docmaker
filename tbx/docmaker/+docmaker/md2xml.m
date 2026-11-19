@@ -20,6 +20,7 @@ arguments
         options.Converter, ["cmark", "github", "gitlab"])} = "cmark"
 end
 
+% Convert Markdown to HTML
 switch options.Converter
     case "cmark"
         % Check for a MEX binary built for this platform.
@@ -36,10 +37,15 @@ switch options.Converter
         html = docmaker.githubmd2html( md );
     case "gitlab"
         html = docmaker.gitlabmd2html( md );
-        doc = docmaker.gitlabhtml2xml( html );
-        return
 end
 
+% Convert HTML to XML
 doc = docmaker.html2xml( html );
+
+% Fix XML
+switch options.Converter
+    case "gitlab"
+        docmaker.gitlabfixxml( doc )
+end
 
 end % md2xml

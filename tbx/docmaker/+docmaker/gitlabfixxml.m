@@ -1,17 +1,16 @@
-function doc = gitlabhtml2xml( html )
-%gitlabhtml2xml  Normalize GitLab HTML as XML
-%   xml = gitlabhtml2xml(html) parses GitLab HTML and adjusts its lazy
-%   images, empty anchors, and MATLAB code blocks for DocMaker.
+function gitlabfixxml( doc )
+%docmaker.gitlabfixxml  Apply GitLab-specific cleanup to an XML DOM
 %
-%   See also html2xml, md2xml
+%   docmaker.gitlabfixxml(doc) modifies the XML DOM document doc to handle
+%   GitLab lazy images, empty anchors, and MATLAB code blocks.
+%
+%   See also: docmaker.html2xml, docmaker.md2xml
 
 %   Copyright 2026 The MathWorks, Inc.
 
 arguments
-    html (1,1) string
+    doc (1,1) matlab.io.xml.dom.Document
 end
-
-doc = docmaker.html2xml( html );
 
 % Promote image URLs out of GitLab's lazy-loading attributes.
 images = docmaker.list2array( doc.getElementsByTagName( "img" ) );
@@ -50,7 +49,7 @@ for ii = 1:numel( pres )
     end
 end
 
-end % gitlabhtml2xml
+end % gitlabfixxml
 
 function removeLazyClass( image )
 %removeLazyClass  Remove the GitLab lazy-load class from an image
