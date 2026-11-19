@@ -18,7 +18,7 @@ Multiple documents may also be specified using `docconvert(md1,md2,...)`.
 
 `docconvert(...,"Interpreter",in)` uses the text interpreter `in`. Available interpreters are `latex` (LaTeX) and `none` (literal text, default). Use single dollar signs `$...$` to display equations inline, and double dollar signs `$$...$$` to display equations centered on their own line.
 
-`docconvert(...,"Converter",c)` uses the Markdown converter `c`. Available converters are `cmark` (bundled cmark-gfm, default) and `github` (GitHub Markdown API on GitHub.com). See [Markdown conversion](conversion.md) for converter details, setup, platform support, and version details.
+`docconvert(...,"Converter",c)` uses the Markdown converter `c`. Available converters are `cmark` (bundled cmark-gfm, default), `github` (GitHub Markdown API on GitHub.com), and `gitlab` (GitLab Markdown API on GitLab.com). See [Markdown conversion](conversion.md) for converter details, setup, platform support, and version details.
 
 `[html,res] = docconvert(...)` returns the names of the HTML document(s) `html` and the resources folder `res` created.
 
@@ -30,7 +30,7 @@ Multiple documents may also be specified using `docconvert(md1,md2,...)`.
 | `js`:arrow_right: | JavaScript script(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | :test_tube: |
 | `r`:arrow_right: | root folder, as an absolute or relative path; default is the lowest common ancestor of `md` | string | |
 | `in`:arrow_right: | text interpreter: `latex` or `none`; default is `none` | string | |
-| `c`:arrow_right: | Markdown converter: `cmark` or `github`; default is `cmark` | string | |
+| `c`:arrow_right: | Markdown converter: `cmark`, `github`, or `gitlab`; default is `cmark` | string | |
 | :arrow_right:`html` | HTML document(s) created, as an absolute path | string(s) | |
 | :arrow_right:`res` | resources folder created, as an absolute path | string | |
 

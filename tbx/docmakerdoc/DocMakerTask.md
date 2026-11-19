@@ -16,7 +16,7 @@ Custom build task for generating documentation
 
 `plan("doc") = DocMakerTask(...,"Interpreter",in)` uses the interpreter `in` to postprocess inline or display LaTeX expressions. Available interpreters are `latex` or `none` (default). Specify inline LaTeX expressions between single dollar symbols (`$`), and display LaTeX expressions between double dollar symbols (`$$`).
 
-`plan("doc") = DocMakerTask(...,"Converter",c)` uses the Markdown converter `c` to convert Markdown documents and `helptoc.md`. Available converters are `cmark` (bundled cmark-gfm, default) and `github` (GitHub Markdown API on GitHub.com). See [Markdown conversion](conversion.md) for converter details, setup, platform support, and version details.
+`plan("doc") = DocMakerTask(...,"Converter",c)` uses the Markdown converter `c` to convert Markdown documents and `helptoc.md`. Available converters are `cmark` (bundled cmark-gfm, default), `github` (GitHub Markdown API on GitHub.com), and `gitlab` (GitLab Markdown API on GitLab.com). See [Markdown conversion](conversion.md) for converter details, setup, platform support, and version details.
 
 `plan("doc") = DocMakerTask(...,"Level",n)` specifies the batching level `n`. With level 0 (default), all blocks in a document are run in a single batch. With level `n`, each level-n heading is run as a separate batch, with the workspace cleared and figures closed between batches. With level 7, each block is run as a separate batch.
 
@@ -33,7 +33,7 @@ Custom build task for generating documentation
 | `js`:arrow_right: | JavaScript script(s), as an absolute or relative path; wildcards are [supported](https://www.mathworks.com/help/matlab/ref/dir.html#bsnswnx-1-name) | string(s) | :test_tube: |
 | `r`:arrow_right: | root folder, as an absolute or relative path; default is the lowest common ancestor of `md` | string | |
 | `in`:arrow_right: | LaTeX interpreter: `latex` or `none`; default is `none` | string | |
-| `c`:arrow_right: | Markdown converter: `cmark` or `github`; default is `cmark` | string | |
+| `c`:arrow_right: | Markdown converter: `cmark`, `github`, or `gitlab`; default is `cmark` | string | |
 | `n`:arrow_right: | batching level, from 0 to 7; default is 0 | double | :test_tube: |
 | `s`:arrow_right: | default figure size, in default figure `Units` | double | |
 | `t`:arrow_right: | figure theme: `none`, `light`, `dark`, or `auto`; default is `none` | string(s) | |

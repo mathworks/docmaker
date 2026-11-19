@@ -6,14 +6,14 @@ Create documentation index files
 
 `docindex(d)` creates documentation index files `info.xml` and `helptoc.xml` and search database `helpsearch_v4` in the folder `d`.
 
-`docindex(...,"Converter",c)` uses the Markdown converter `c` to convert `helptoc.md`. Available converters are `cmark` (bundled cmark-gfm, default) and `github` (GitHub Markdown API on GitHub.com). See [Markdown conversion](conversion.md) for converter details, setup, platform support, and version details.
+`docindex(...,"Converter",c)` uses the Markdown converter `c` to convert `helptoc.md`. Available converters are `cmark` (bundled cmark-gfm, default), `github` (GitHub Markdown API on GitHub.com), and `gitlab` (GitLab Markdown API on GitLab.com). See [Markdown conversion](conversion.md) for converter details, setup, platform support, and version details.
 
 `[xml,db] = docindex(...)` returns the names of the index files `xml` and search database folder `db` created.
 
 | Name | Description | Type | Required |
 | :-: | --- | :-: | :-: |
 | `d`:arrow_right: | documentation folder, as an absolute or relative path | string | yes |
-| `c`:arrow_right: | Markdown converter: `cmark` or `github`; default is `cmark` | string | |
+| `c`:arrow_right: | Markdown converter: `cmark`, `github`, or `gitlab`; default is `cmark` | string | |
 | :arrow_right:`xml` | index files created, as an absolute path | strings | |
 | :arrow_right:`db` | search database folder created, as an absolute path | string | |
 
