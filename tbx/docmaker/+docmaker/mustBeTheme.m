@@ -1,5 +1,5 @@
 function mustBeTheme( theme )
-%mustBeTheme  Validation function for optional named argument Theme
+%docmaker.mustBeTheme  Validation function for named argument Theme
 %
 %   Copyright 2026 The MathWorks, Inc.
 

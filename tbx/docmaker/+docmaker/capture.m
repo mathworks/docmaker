@@ -1,5 +1,5 @@
 function x = capture( fig )
-%capture  Capture figure
+%docmaker.capture  Capture figure
 %
 %   x = docmaker.capture(f) captures the figure f to image data x.
 %

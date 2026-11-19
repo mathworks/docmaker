@@ -1,5 +1,5 @@
 function elements = list2array( nodeList )
-%list2array  Convert node list to element array
+%docmaker.list2array  Convert node list to element array
 %
 %   e = docmaker.list2array(n) converts the node list n to an element array
 %   e.
