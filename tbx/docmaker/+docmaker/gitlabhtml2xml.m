@@ -1,6 +1,6 @@
 function doc = gitlabhtml2xml( html )
-%GITLABHTML2XML - Normalize GitLab HTML as XML
-%   DOC = gitlabhtml2xml(HTML) parses GitLab HTML and adjusts its lazy
+%gitlabhtml2xml  Normalize GitLab HTML as XML
+%   xml = gitlabhtml2xml(html) parses GitLab HTML and adjusts its lazy
 %   images, empty anchors, and MATLAB code blocks for DocMaker.
 %
 %   See also html2xml, md2xml

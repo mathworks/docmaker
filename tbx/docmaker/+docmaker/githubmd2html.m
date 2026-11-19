@@ -1,8 +1,8 @@
 function html = githubmd2html( markdown )
 %githubmd2html  Convert Markdown to HTML using GitHub's API
 %
-%   html = githubmd2html(md) converts Markdown md to HTML using the
-%   GitHub Markdown API at https://docs.github.com/en/rest/markdown.
+%   html = githubmd2html(md) converts Markdown md to HTML using GitHub's
+%   Markdown API.
 %
 %   Requests to this service are rate limited, and authenticated requests
 %   get a higher limit. A GitHub access token with no permissions is

@@ -1,15 +1,14 @@
 function doc = md2xml( md, options )
-%docmaker.md2xml  Convert Markdown to XML
+%md2xml  Convert Markdown to XML
 %
-%   DOC = docmaker.md2xml(MD) converts Markdown MD using the cmark-gfm MEX.
+%   xml = docmaker.md2xml(md) converts Markdown md using the cmark-gfm MEX.
 %   This is the default and runs offline.
 %
-%   DOC = docmaker.md2xml(MD,Converter="github") uses GitHub's Markdown
-%   API. DOCMAKER_GITHUB_TOKEN is optional.
+%   xml = docmaker.md2xml(md,"Converter","github") uses GitHub's Markdown
+%   API. The token DOCMAKER_GITHUB_TOKEN is optional.
 %
-%   DOC = docmaker.md2xml(MD,Converter="gitlab") uses GitLab's Markdown
-%   API. Set the MATLAB Secret or environment variable
-%   DOCMAKER_GITLAB_TOKEN before using this converter.
+%   xml = docmaker.md2xml(md,"Converter","gitlab") uses GitLab's Markdown
+%   API. The token DOCMAKER_GITLAB_TOKEN is required.
 %
 %   See also docconvert, docmaker.githubmd2html, docmaker.gitlabmd2html
 

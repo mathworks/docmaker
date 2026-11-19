@@ -1,6 +1,7 @@
 function html = gitlabmd2html( markdown )
-%GITLABMD2HTML - Convert Markdown to HTML using GitLab's API
-%   HTML = gitlabmd2html(MARKDOWN) converts Markdown MARKDOWN using the
+%gitlabmd2html  Convert Markdown to HTML using GitLab's API
+%
+%   html = gitlabmd2html(md) converts Markdown md using the
 %   GitLab.com Markdown API. The request requires a personal access token
 %   with the api scope, configured as the MATLAB Secret or environment
 %   variable DOCMAKER_GITLAB_TOKEN.
