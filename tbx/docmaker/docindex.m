@@ -5,8 +5,9 @@ function varargout = docindex( pRoot, options )
 %   "helptoc.xml" and search database "helpsearch-v4" in the folder d.
 %
 %   docindex(...,"Converter",c) selects the Markdown converter. Available
-%   converters are "cmark" (default) and "github". GitHub conversion sends
-%   Markdown to GitHub's API and requires network access.
+%   converters are "cmark" (default), "github", and "gitlab". GitHub and
+%   GitLab conversion send Markdown to their APIs and require network
+%   access.
 %
 %   [xml,db] = docindex(...) returns the names of the index files xml and
 %   the search database folder db created.
@@ -18,7 +19,7 @@ function varargout = docindex( pRoot, options )
 arguments
     pRoot (1,1) string {mustBeFolder}
     options.Converter (1,1) string {mustBeMember( ...
-        options.Converter, ["cmark", "github"])} = "cmark"
+        options.Converter, ["cmark", "github", "gitlab"])} = "cmark"
 end
 
 % Canonicalize

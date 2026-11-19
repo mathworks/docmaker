@@ -87,6 +87,15 @@ classdef tDocMakerTask < matlab.unittest.TestCase
 
         end % tTaskAcceptsGithubConverter
 
+        function tTaskAcceptsGitlabConverter( testCase )
+
+            md = fullfile( testCase.TestsFolder, testCase.TestFile );
+            task = DocMakerTask( md, "Converter", "gitlab" );
+
+            testCase.verifyEqual( task.Converter, "gitlab" )
+
+        end % tTaskAcceptsGitlabConverter
+
         function tExecutingTaskIsWarningFree( testCase )
 
             taskRunner = @() testCase.Task.buildDoc();

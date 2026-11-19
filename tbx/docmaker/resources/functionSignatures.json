@@ -70,7 +70,7 @@
                 "kind": "namevalue",
                 "type": [
                     "char",
-                    "choices={'cmark','github'}"
+                    "choices={'cmark','github','gitlab'}"
                 ],
                 "purpose": "Markdown converter"
             }
@@ -89,7 +89,7 @@
                 "kind": "namevalue",
                 "type": [
                     "char",
-                    "choices={'cmark','github'}"
+                    "choices={'cmark','github','gitlab'}"
                 ],
                 "purpose": "Markdown converter"
             }

@@ -20,7 +20,7 @@ classdef DocMakerTask < matlab.buildtool.Task
             Interpreter, ["latex", "none"] )} = "none"
         % Markdown converter.
         Converter(1, 1) string {mustBeMember( ...
-            Converter, ["cmark", "github"] )} = "cmark"
+            Converter, ["cmark", "github", "gitlab"] )} = "cmark"
         % Batching level.
         Level(1, 1) double {mustBeInteger, ...
             mustBeInRange( Level, 0, 7 )} = 0

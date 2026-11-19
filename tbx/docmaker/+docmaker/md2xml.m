@@ -5,17 +5,21 @@ function doc = md2xml( md, options )
 %   This is the default and runs offline.
 %
 %   DOC = docmaker.md2xml(MD,Converter="github") uses GitHub's Markdown
-%   API instead. This requires network access; DOCMAKER_GITHUB_TOKEN is
-%   optional.
+%   API. DOCMAKER_GITHUB_TOKEN is optional.
 %
-%   See also docconvert, docmaker.githubgfm2html
+%   DOC = docmaker.md2xml(MD,Converter="gitlab") uses GitLab's Markdown
+%   API. Set the MATLAB Secret or environment variable
+%   DOCMAKER_GITLAB_TOKEN before using this converter.
+%
+%   See also docconvert, docmaker.githubgfm2html,
+%   docmaker.gitlabgfm2html
 
 %   Copyright 2026 The MathWorks, Inc.
 
 arguments
     md (1,1) string
     options.Converter (1,1) string {mustBeMember( ...
-        options.Converter, ["cmark", "github"])} = "cmark"
+        options.Converter, ["cmark", "github", "gitlab"])} = "cmark"
 end
 
 switch options.Converter
@@ -32,6 +36,10 @@ switch options.Converter
         html = string( docmaker.cmarkgfm2html( md ) );
     case "github"
         html = docmaker.githubgfm2html( md );
+    case "gitlab"
+        html = docmaker.gitlabgfm2html( md );
+        doc = docmaker.gitlabhtml2xml( html );
+        return
 end
 
 doc = docmaker.html2xml( html );

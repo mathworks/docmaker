@@ -28,8 +28,9 @@ function varargout = docconvert( sMd, options )
 %   own line, centered.
 %
 %   docconvert(...,"Converter",c) selects the Markdown converter. Available
-%   converters are "cmark" (default) and "github". GitHub conversion sends
-%   Markdown to GitHub's API and requires network access.
+%   converters are "cmark" (default), "github", and "gitlab". GitHub and
+%   GitLab conversion send Markdown to their APIs and require network
+%   access.
 %
 %   [html, res] = docconvert(...) returns the names of the HTML document(s)
 %   html and the resources folder res created.
@@ -51,7 +52,7 @@ arguments
     options.Interpreter (1,1) string {mustBeMember( ...
         options.Interpreter, ["latex", "none"] )} = "none"
     options.Converter (1,1) string {mustBeMember( ...
-        options.Converter, ["cmark", "github"] )} = "cmark"
+        options.Converter, ["cmark", "github", "gitlab"] )} = "cmark"
 end
 
 % Initialize output
