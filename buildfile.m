@@ -28,7 +28,7 @@ cmarkDir = fullfile( extDir, "cmark-gfm" );
 gemojiDir = fullfile( extDir, "gemoji" );
 genDir = fullfile( prj, "build", "cmark-gfm" );
 mexDir = fullfile( api, "+docmaker" );
-mexFile = fullfile( mexDir, "cmarkgfm2html." + mexext() );
+mexFile = fullfile( mexDir, "cmarkmd2html." + mexext() );
 rightsInputs = [ ...
     fullfile( cmarkDir, "COPYING" )
     fullfile( gemojiDir, "LICENSE" ) ];
@@ -142,7 +142,7 @@ options = [ ...
 mexArgs = [ ...
     cellstr(options)
     cellstr(sourceFiles)
-    { "-outdir"; char(mexDir); "-output"; "cmarkgfm2html" } ];
+    { "-outdir"; char(mexDir); "-output"; "cmarkmd2html" } ];
 mex( mexArgs{:} );
 
 copyfile( fullfile( cmarkDir, "COPYING" ), ...

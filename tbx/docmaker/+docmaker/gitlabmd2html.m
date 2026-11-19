@@ -1,11 +1,11 @@
-function html = gitlabgfm2html( markdown )
-%GITLABGFM2HTML - Convert Markdown to HTML using GitLab's API
-%   HTML = gitlabgfm2html(MARKDOWN) converts Markdown MARKDOWN using the
+function html = gitlabmd2html( markdown )
+%GITLABMD2HTML - Convert Markdown to HTML using GitLab's API
+%   HTML = gitlabmd2html(MARKDOWN) converts Markdown MARKDOWN using the
 %   GitLab.com Markdown API. The request requires a personal access token
 %   with the api scope, configured as the MATLAB Secret or environment
 %   variable DOCMAKER_GITLAB_TOKEN.
 %
-%   See also githubgfm2html, cmarkgfm2html, md2xml
+%   See also githubmd2html, cmarkmd2html, md2xml
 
 %   Copyright 2026 The MathWorks, Inc.
 
@@ -21,7 +21,7 @@ else
     token = string( getenv( tokenName ) );
 end
 if strlength( token ) == 0
-    error( "docmaker:gitlabgfm2html:MissingToken", ...
+    error( "docmaker:gitlabmd2html:MissingToken", ...
         "GitLab Markdown conversion requires a personal access token." + ...
         newline() + "Set DOCMAKER_GITLAB_TOKEN as an environment " + ...
         "variable or MATLAB Secret." )
@@ -46,17 +46,17 @@ switch response.StatusCode
         if isstruct( data ) && isfield( data, "html" )
             html = strtrim( string( data.html ) );
         else
-            error( "docmaker:gitlabgfm2html:InvalidResponse", ...
+        error( "docmaker:gitlabmd2html:InvalidResponse", ...
                 "GitLab Markdown API response did not contain HTML." )
         end
     otherwise
         message = getResponseMessage( response );
-        error( "docmaker:gitlabgfm2html:RequestFailed", ...
+        error( "docmaker:gitlabmd2html:RequestFailed", ...
             "GitLab Markdown API returned %s: %s", ...
             string( response.StatusLine ), message )
 end
 
-end % gitlabgfm2html
+end % gitlabmd2html
 
 function message = getResponseMessage( response )
 %getResponseMessage  Get a readable message from an API response

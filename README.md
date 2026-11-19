@@ -50,7 +50,7 @@ From the repository root in MATLAB, open the project and build the MEX with:
 buildtool mex
 ```
 
-The `mex` task generates `build/cmark-gfm/cmark-gfm_version.h` and `build/cmark-gfm/emoji_map.c`, then compiles the cmark-gfm sources directly into `tbx/docmaker/+docmaker/cmarkgfm2html.<mexext>`. A separately installed cmark-gfm library is not required.
+The `mex` task generates `build/cmark-gfm/cmark-gfm_version.h` and `build/cmark-gfm/emoji_map.c`, then compiles the cmark-gfm sources directly into `tbx/docmaker/+docmaker/cmarkmd2html.<mexext>`. A separately installed cmark-gfm library is not required.
 
 Run the full check and test workflow with:
 

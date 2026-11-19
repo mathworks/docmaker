@@ -11,8 +11,7 @@ function doc = md2xml( md, options )
 %   API. Set the MATLAB Secret or environment variable
 %   DOCMAKER_GITLAB_TOKEN before using this converter.
 %
-%   See also docconvert, docmaker.githubgfm2html,
-%   docmaker.gitlabgfm2html
+%   See also docconvert, docmaker.githubmd2html, docmaker.gitlabmd2html
 
 %   Copyright 2026 The MathWorks, Inc.
 
@@ -26,18 +25,18 @@ switch options.Converter
     case "cmark"
         % Check for a MEX binary built for this platform.
         mex = fullfile( fileparts( mfilename( "fullpath" ) ), ...
-            "cmarkgfm2html." + mexext() );
+            "cmarkmd2html." + mexext() );
         if ~isfile( mex )
             error( "docmaker:md2xml:MissingMEX", ...
                 "cmark-gfm converter not found: %s " + newline + ...
                 "Run `buildtool mex` to build from source for this platform", ...
                 mex )
         end
-        html = string( docmaker.cmarkgfm2html( md ) );
+        html = string( docmaker.cmarkmd2html( md ) );
     case "github"
-        html = docmaker.githubgfm2html( md );
+        html = docmaker.githubmd2html( md );
     case "gitlab"
-        html = docmaker.gitlabgfm2html( md );
+        html = docmaker.gitlabmd2html( md );
         doc = docmaker.gitlabhtml2xml( html );
         return
 end

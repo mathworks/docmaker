@@ -1,7 +1,7 @@
-function html = githubgfm2html( markdown )
-%githubgfm2html  Convert Markdown to HTML using GitHub's API
+function html = githubmd2html( markdown )
+%githubmd2html  Convert Markdown to HTML using GitHub's API
 %
-%   html = githubgfm2html(md) converts Markdown md to HTML using the
+%   html = githubmd2html(md) converts Markdown md to HTML using the
 %   GitHub Markdown API at https://docs.github.com/en/rest/markdown.
 %
 %   Requests to this service are rate limited, and authenticated requests
@@ -53,12 +53,12 @@ switch response.StatusCode
         else
             body = strjoin( body(:), " " );
         end
-        error( "docmaker:githubgfm2html:RequestFailed", ...
+        error( "docmaker:githubmd2html:RequestFailed", ...
             "GitHub Markdown API returned %s: %s", ...
             string( response.StatusLine ), body )
 end
 
-end % githubgfm2html
+end % githubmd2html
 
 function tf = hasSecrets()
 %hasSecrets  Test whether MATLAB secrets are supported
