@@ -10,7 +10,7 @@ function doc = md2xml( md, options )
 %   doc = docmaker.md2xml(md,"Converter","gitlab") uses GitLab's Markdown
 %   API. The token DOCMAKER_GITLAB_TOKEN is required.
 %
-%   See also docconvert, docmaker.githubmd2html, docmaker.gitlabmd2html
+%   See also: docconvert, docmaker.githubmd2html, docmaker.gitlabmd2html
 
 %   Copyright 2026 The MathWorks, Inc.
 

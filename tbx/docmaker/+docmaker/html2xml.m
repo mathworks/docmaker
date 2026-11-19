@@ -4,7 +4,7 @@ function doc = html2xml( html )
 %   doc = docmaker.html2xml(html) converts HTML output to an XML DOM
 %   document and normalizes MATLAB code blocks for docrun.
 %
-%   See also docconvert, docmaker.md2xml
+%   See also: docconvert, docmaker.md2xml
 
 %   Copyright 2026 The MathWorks, Inc.
 

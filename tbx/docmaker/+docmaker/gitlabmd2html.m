@@ -9,7 +9,7 @@ function html = gitlabmd2html( markdown )
 %   as a MATLAB secret (recommended for local machines from R2024a) or as
 %   an environment variable (recommended for build runners).
 %
-%   See also docmaker.githubmd2html, docmaker.cmarkmd2html, docconvert
+%   See also: docmaker.githubmd2html, docmaker.cmarkmd2html, docconvert
 
 %   Copyright 2026 The MathWorks, Inc.
 
