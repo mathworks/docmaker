@@ -80,5 +80,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.artifact_name || inputs.mex_extension }}
-          path: tbx/docmaker/+docmaker/cmarkgfm2html.${{ inputs.mex_extension }}
+          path: tbx/docmaker/+docmaker/cmarkmd2html.${{ inputs.mex_extension }}
           if-no-files-found: error

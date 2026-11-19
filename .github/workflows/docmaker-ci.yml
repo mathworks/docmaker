@@ -111,7 +111,7 @@ jobs:
 
       - name: Stage the Linux MEX
         shell: bash
-        run: cp artifacts/linux/cmarkgfm2html.mexa64 tbx/docmaker/+docmaker/
+        run: cp artifacts/linux/cmarkmd2html.mexa64 tbx/docmaker/+docmaker/
 
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v3
@@ -220,9 +220,9 @@ jobs:
       - name: Stage the non-Linux MEX files
         shell: bash
         run: |
-          cp artifacts/platforms/cmarkgfm2html.mexw64 tbx/docmaker/+docmaker/
-          cp artifacts/platforms/cmarkgfm2html.mexmaci64 tbx/docmaker/+docmaker/
-          cp artifacts/platforms/cmarkgfm2html.mexmaca64 tbx/docmaker/+docmaker/
+          cp artifacts/platforms/cmarkmd2html.mexw64 tbx/docmaker/+docmaker/
+          cp artifacts/platforms/cmarkmd2html.mexmaci64 tbx/docmaker/+docmaker/
+          cp artifacts/platforms/cmarkmd2html.mexmaca64 tbx/docmaker/+docmaker/
 
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v3
@@ -249,7 +249,7 @@ jobs:
             toolbox="$(find releases -maxdepth 1 -name '*.mltbx' -print -quit)"
           fi
           test -n "$toolbox" && test -f "$toolbox"
-          for mex in cmarkgfm2html.mexw64 cmarkgfm2html.mexa64 cmarkgfm2html.mexmaca64 cmarkgfm2html.mexmaci64; do
+          for mex in cmarkmd2html.mexw64 cmarkmd2html.mexa64 cmarkmd2html.mexmaca64 cmarkmd2html.mexmaci64; do
             if ! unzip -Z1 "$toolbox" | awk -F/ -v file="$mex" '$NF == file { found = 1 } END { exit !found }'; then
               echo "Missing $mex in $toolbox"
               exit 1
