@@ -12,7 +12,7 @@ arguments
     doc (1,1) matlab.io.xml.dom.Document
 end
 
-% Promote image URLs out of GitLab's lazy-loading attributes.
+% Promote image URLs out of GitLab's lazy-loading attributes
 images = docmaker.list2array( doc.getElementsByTagName( "img" ) );
 for ii = 1:numel( images )
     image = images(ii);
@@ -27,7 +27,7 @@ for ii = 1:numel( images )
     removeLazyClass( image )
 end
 
-% Remove empty anchors and mark MATLAB blocks for docrun.
+% Remove empty anchors
 anchors = docmaker.list2array( doc.getElementsByTagName( "a" ) );
 for ii = 1:numel( anchors )
     anchor = anchors(ii);
@@ -36,6 +36,7 @@ for ii = 1:numel( anchors )
     end
 end
 
+% Adjust MATLAB code blocks
 pres = docmaker.list2array( doc.getElementsByTagName( "pre" ) );
 for ii = 1:numel( pres )
     pre = pres(ii);
