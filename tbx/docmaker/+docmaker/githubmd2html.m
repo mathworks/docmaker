@@ -1,8 +1,8 @@
 function html = githubmd2html( markdown )
-%githubmd2html  Convert Markdown to HTML using GitHub's API
+%docmaker.githubmd2html  Convert Markdown to HTML using GitHub
 %
-%   html = githubmd2html(md) converts Markdown md to HTML using GitHub's
-%   Markdown API.
+%   html = docmaker.githubmd2html(md) converts Markdown md to HTML using
+%   the GitHub Markdown API.
 %
 %   Requests to this service are rate limited, and authenticated requests
 %   get a higher limit. A GitHub access token with no permissions is
@@ -10,7 +10,7 @@ function html = githubmd2html( markdown )
 %   secret (recommended for local machines from R2024a) or as an
 %   environment variable (recommended for build runners).
 %
-%   See also: docmaker.md2xml, docconvert
+%   See also: docmaker.cmarkmd2html, docmaker.gitlabmd2html, docconvert
 
 %   Copyright 2026 The MathWorks, Inc.
 
