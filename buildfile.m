@@ -111,7 +111,7 @@ t = table( p.runChecks() );
 ok = t.Passed;
 if any( ~ok )
     disp( t(~ok,:) )
-    error( "build:check", "Project check(s) failed." )
+    error( "docmaker:OperationFailed", "Project check(s) failed." )
 else
     fprintf( 1, "** Project checks passed\n" )
 end
@@ -156,12 +156,20 @@ function packageTask( c )
 % Package toolbox
 
 % Load and tweak metadata
-s = jsondecode( fileread( tbxname() + ".json" ) );
-v = ver( tbxname() ); % from Contents.m
-assert( isscalar( v ), "build:package", ...
-    "Found %d instances of %s on the MATLAB path.", numel( v ), tbxname() )
+n = tbxname();
+s = jsondecode( fileread( n + ".json" ) );
+v = ver( n ); % from Contents.m
+if isempty( v )
+    error( "docmaker:NotFound", ...
+        "No installed toolbox named %s was found on the MATLAB path.", n )
+elseif ~isscalar( v )
+    error( "docmaker:AlreadyExists", ...
+        "Found %d instances of %s on the MATLAB path.", numel( v ), n )
+end
+s.PackageName = n;
 s.ToolboxName = v.Name;
 s.ToolboxVersion = v.Version;
+s.UseLicenseBSD = true;
 
 if getenv( "GITHUB_ACTIONS" ) == "true" && ...
         startsWith( getenv( "GITHUB_REF" ), "refs/tags/v" )
@@ -169,7 +177,7 @@ if getenv( "GITHUB_ACTIONS" ) == "true" && ...
     ref = string( getenv( "GITHUB_REF" ) );
     gitTagNumber = extractAfter( ref, "refs/tags/v" );
     assert( v.Version == gitTagNumber, ...
-        "build:package:VersionTagMismatch", ...
+        "docmaker:InvalidValue", ...
         "%s Toolbox version %s (from Contents.m) does not " + ...
         "match the current Git tag number (%s).", ...
         v.Name, v.Version, gitTagNumber )
@@ -185,21 +193,19 @@ end % if
 % Create options object
 f = s.ToolboxFolder; % mandatory
 id = s.Identifier; % mandatory
-s = rmfield( s, ["Identifier", "ToolboxFolder"] ); % mandatory
-pv = [fieldnames( s ), struct2cell( s )]'; % optional
-o = matlab.addons.toolbox.ToolboxOptions( f, id, pv{:} );
+o = matlab.addons.toolbox.ToolboxOptions( f, id );
+s = rmfield( s, ["ToolboxFolder" "Identifier"] );
+for f = reshape( string( fieldnames( s ) ), 1, [] )
+    if isprop( o, f ), o.( f ) = s.( f ); end
+end
 o.ToolboxVersion = string( o.ToolboxVersion ); % g3079185
-
-% Add license (modern versions)
-mpj = ~isMATLABReleaseOlderThan( "R2026b" ); % version uses mpackage.json
-if mpj, o.UseLicenseBSD = true; end
 
 % Package
 matlab.addons.toolbox.packageToolbox( o )
 fprintf( 1, "[+] %s\n", o.OutputFile );
 
 % Add license (earlier versions)
-if ~mpj
+if ~isprop( o, "UseLicenseBSD" )
     lic = fileread( fullfile( c.Plan.RootFolder, "LICENSE" ) );
     mlAddonSetLicense( char( o.OutputFile ), struct( "type", 'BSD', "text", lic ) );
 end
@@ -260,7 +266,7 @@ if ~isfile( emojiJsonFile )
     missingSubmodules(end + 1, 1) = "ext/gemoji";
 end
 if ~isempty( missingSubmodules )
-    error( "cmark_gfm:MissingSubmodule", ...
+    error( "docmaker:NotFound", ...
         "Missing or uninitialized submodule content: %s. Run " + ...
         "git submodule update --init --recursive before building.", ...
         strjoin( missingSubmodules, ", " ) )
@@ -295,7 +301,7 @@ for name = names
         upper( name ) );
     token = regexp( text, expression, "tokens", "once" );
     if isempty( token )
-        error( "cmark_gfm:VersionMetadata", ...
+        error( "docmaker:InvalidValue", ...
             "Unable to find PROJECT_VERSION_%s in %s.", upper( name ), file );
     end
     version.(name) = str2double( token{1} );
@@ -347,7 +353,7 @@ function write_text( file, text )
 
 fileId = fopen( file, "w" );
 if fileId < 0
-    error( "cmark_gfm:GeneratedHeader", "Unable to create %s.", file );
+    error( "docmaker:OperationFailed", "Unable to create %s.", file );
 end
 cleanup = onCleanup( @() fclose( fileId ) );
 fprintf( fileId, "%s", text );
@@ -388,7 +394,7 @@ end
 templateText = fileread( template );
 placeholder = "@EMOJI_ENTRIES@";
 if numel( strfind( templateText, placeholder ) ) ~= 1
-    error( "cmark_gfm:EmojiTemplate", ...
+    error( "docmaker:InvalidValue", ...
         "Expected exactly one %s placeholder in %s.", ...
         placeholder, template );
 end
@@ -409,7 +415,12 @@ function text = read_utf8_text( file )
 
 fileId = fopen( file, "r", "n", "ISO-8859-1" );
 if fileId == -1
-    error( "cmark_gfm:EmojiData", "Unable to read emoji data: %s", file );
+    if ~isfile( file )
+        error( "docmaker:NotFound", "Emoji data file not found: %s", file );
+    else
+        error( "docmaker:PermissionDenied", ...
+            "Unable to read emoji data: %s", file );
+    end
 end
 cleanup = onCleanup( @() fclose( fileId ) );
 bytes = fread( fileId, "*uint8" )';
