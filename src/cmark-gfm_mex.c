@@ -38,7 +38,7 @@ static char *input_as_utf8(const mxArray *input, mxArray **temporary_char)
     *temporary_char = NULL;
     if (mxIsClass(input, "string")) {
         if (mexCallMATLAB(1, temporary_char, 1, (mxArray **)&input, "char") != 0) {
-            mexErrMsgIdAndTxt("cmarkmd2html:ConversionFailed",
+            mexErrMsgIdAndTxt("docmaker:OperationFailed",
                 "Unable to convert the MATLAB string input to a character vector.");
         }
         char_input = *temporary_char;
@@ -64,16 +64,20 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     size_t i;
     int input_is_string;
 
-    if (nrhs != 1) {
-        mexErrMsgIdAndTxt("cmarkmd2html:InvalidNumInputs",
-            "cmarkmd2html requires exactly one input.");
+    if (nrhs < 1) {
+        mexErrMsgIdAndTxt("MATLAB:narginchk:notEnoughInputs",
+            "cmarkmd2html requires one input.");
+    }
+    if (nrhs > 1) {
+        mexErrMsgIdAndTxt("MATLAB:narginchk:tooManyInputs",
+            "cmarkmd2html requires one input.");
     }
     if (nlhs > 1) {
-        mexErrMsgIdAndTxt("cmarkmd2html:InvalidNumOutputs",
-            "cmarkmd2html returns exactly one output.");
+        mexErrMsgIdAndTxt("MATLAB:nargoutchk:tooManyOutputs",
+            "cmarkmd2html returns at most one output.");
     }
     if (!is_scalar_text(prhs[0])) {
-        mexErrMsgIdAndTxt("cmarkmd2html:InvalidInput",
+        mexErrMsgIdAndTxt("docmaker:InvalidValue",
             "Input must be a scalar MATLAB string or character vector.");
     }
     input_is_string = mxIsClass(prhs[0], "string");
@@ -83,7 +87,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
         if (temporary_char != NULL) {
             mxDestroyArray(temporary_char);
         }
-        mexErrMsgIdAndTxt("cmarkmd2html:ConversionFailed",
+        mexErrMsgIdAndTxt("docmaker:OperationFailed",
             "Unable to convert the Markdown input to UTF-8.");
     }
 
@@ -94,7 +98,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
         mxDestroyArray(temporary_char);
     }
     if (expanded_markdown == NULL) {
-        mexErrMsgIdAndTxt("cmarkmd2html:AllocationFailed",
+        mexErrMsgIdAndTxt("docmaker:OperationFailed",
             "Unable to expand Markdown emoji shortcodes.");
     }
 
@@ -102,7 +106,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     parser = cmark_parser_new(CMARK_OPT_DEFAULT);
     if (parser == NULL) {
         free(expanded_markdown);
-        mexErrMsgIdAndTxt("cmarkmd2html:AllocationFailed",
+        mexErrMsgIdAndTxt("docmaker:OperationFailed",
             "Unable to allocate a cmark-gfm parser.");
     }
 
@@ -111,7 +115,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
         if (extension == NULL || !cmark_parser_attach_syntax_extension(parser, extension)) {
             cmark_parser_free(parser);
             free(expanded_markdown);
-            mexErrMsgIdAndTxt("cmarkmd2html:ExtensionUnavailable",
+            mexErrMsgIdAndTxt("docmaker:Unavailable",
                 "Unable to enable the requested cmark-gfm extension.");
         }
     }
@@ -122,7 +126,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
     if (document == NULL) {
         cmark_parser_free(parser);
-        mexErrMsgIdAndTxt("cmarkmd2html:ParseFailed",
+        mexErrMsgIdAndTxt("docmaker:OperationFailed",
             "cmark-gfm was unable to parse the Markdown input.");
     }
 
@@ -131,14 +135,14 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     cmark_parser_free(parser);
     cmark_node_free(document);
     if (html == NULL) {
-        mexErrMsgIdAndTxt("cmarkmd2html:RenderFailed",
+        mexErrMsgIdAndTxt("docmaker:OperationFailed",
             "cmark-gfm was unable to render HTML.");
     }
 
     html_char = mxCreateString(html);
     free(html);
     if (html_char == NULL) {
-        mexErrMsgIdAndTxt("cmarkmd2html:AllocationFailed",
+        mexErrMsgIdAndTxt("docmaker:OperationFailed",
             "Unable to allocate the MATLAB HTML output.");
     }
 
@@ -154,12 +158,12 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
             mxDestroyArray(plhs[0]);
             plhs[0] = NULL;
         }
-        mexErrMsgIdAndTxt("cmarkmd2html:ConversionFailed",
+        mexErrMsgIdAndTxt("docmaker:OperationFailed",
             "Unable to convert the HTML output to a MATLAB string.");
     }
     mxDestroyArray(html_char);
     if (plhs[0] == NULL) {
-        mexErrMsgIdAndTxt("cmarkmd2html:AllocationFailed",
+        mexErrMsgIdAndTxt("docmaker:OperationFailed",
             "Unable to allocate the MATLAB string output.");
     }
 }

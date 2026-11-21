@@ -5,6 +5,33 @@ classdef tMarkdownConversion < matlab.unittest.TestCase
 
     methods ( Test )
 
+        function tCmarkMexRejectsInvalidInputCount( testCase )
+
+            testCase.verifyError( ...
+                @() docmaker.cmarkmd2html(), ...
+                "MATLAB:narginchk:notEnoughInputs" )
+            testCase.verifyError( ...
+                @() docmaker.cmarkmd2html( "test", "extra" ), ...
+                "MATLAB:narginchk:tooManyInputs" )
+
+        end % tCmarkMexRejectsInvalidInputCount
+
+        function tCmarkMexRejectsInvalidInputType( testCase )
+
+            testCase.verifyError( ...
+                @() docmaker.cmarkmd2html( 42 ), ...
+                "docmaker:InvalidValue" )
+
+        end % tCmarkMexRejectsInvalidInputType
+
+        function tCmarkMexRejectsTooManyOutputs( testCase )
+
+            testCase.verifyError( ...
+                @() testCase.callCmarkMexWithTwoOutputs(), ...
+                "MATLAB:nargoutchk:tooManyOutputs" )
+
+        end % tCmarkMexRejectsTooManyOutputs
+
         function tHostnameAcceptsDnsNames( testCase )
 
             hosts = [ ...
@@ -237,5 +264,15 @@ classdef tMarkdownConversion < matlab.unittest.TestCase
         end % tConvertsImageMarkdownFixture
 
     end % methods ( Test )
+
+    methods ( Access = private )
+
+        function callCmarkMexWithTwoOutputs( ~ )
+
+            [~, ~] = docmaker.cmarkmd2html( "test" );
+
+        end % callCmarkMexWithTwoOutputs
+
+    end % methods
 
 end % classdef
