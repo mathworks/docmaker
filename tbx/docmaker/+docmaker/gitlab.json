@@ -1,5 +1,5 @@
 {
-  "name": "gitlab",
+  "name": "GitLab",
   "hostname": {
     "default": "gitlab.com",
     "name": "DOCMAKER_GITLAB_HOSTNAME"

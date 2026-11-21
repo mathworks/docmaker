@@ -1,5 +1,5 @@
 {
-  "name": "github",
+  "name": "GitHub",
   "hostname": {
     "default": "api.github.com",
     "name": "DOCMAKER_GITHUB_HOSTNAME"

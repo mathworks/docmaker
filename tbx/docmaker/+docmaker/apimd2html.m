@@ -33,7 +33,7 @@ else
 end
 assert( docmaker.ishostname( hostname ), ...
     "docmaker:InvalidValue", ...
-    "Invalid hostname for %s: %s", config.name, hostname )
+    "Invalid hostname for %s Markdown API: %s", config.name, hostname )
 
 % Resolve authentication settings
 authConfig = config.authentication;
@@ -56,7 +56,7 @@ switch requestConfig.bodyFormat
         body = struct( "text", md, "gfm", true );
     otherwise
         error( "docmaker:UnsupportedValue", ...
-            "Unsupported request body format in %s configuration.", ...
+            "Unsupported request body format in %s Markdown API configuration.", ...
             config.name )
 end
 request = matlab.net.http.RequestMessage( method, [], body );
@@ -117,7 +117,7 @@ switch responseConfig.format
         end
     otherwise
         error( "docmaker:UnsupportedValue", ...
-            "Unsupported response format in %s configuration.", ...
+            "Unsupported response format in %s Markdown API configuration.", ...
             config.name )
 end
 
