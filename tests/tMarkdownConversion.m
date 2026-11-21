@@ -55,32 +55,6 @@ classdef tMarkdownConversion < matlab.unittest.TestCase
 
         end % tHostnameRejectsMalformedNames
 
-        function tApiSettingEnvironmentPrecedesSecret( testCase )
-
-            value = docmaker.selectApiSetting( ...
-                "from environment", "from secret", "default" );
-
-            testCase.verifyEqual( value, "from environment" )
-
-        end % tApiSettingEnvironmentPrecedesSecret
-
-        function tApiSettingUsesSecretWhenEnvironmentIsEmpty( testCase )
-
-            value = docmaker.selectApiSetting( ...
-                "", "from secret", "default" );
-
-            testCase.verifyEqual( value, "from secret" )
-
-        end % tApiSettingUsesSecretWhenEnvironmentIsEmpty
-
-        function tApiSettingUsesDefaultWhenSourcesAreEmpty( testCase )
-
-            value = docmaker.selectApiSetting( "", "", "gitlab.com" );
-
-            testCase.verifyEqual( value, "gitlab.com" )
-
-        end % tApiSettingUsesDefaultWhenSourcesAreEmpty
-
         function tApiHostDefaults( testCase )
 
             repoFolder = fileparts( fileparts( mfilename( "fullpath" ) ) );
@@ -92,11 +66,9 @@ classdef tMarkdownConversion < matlab.unittest.TestCase
                 fullfile( configFolder, "gitlab.json" ) ) );
 
             testCase.verifyEqual( ...
-                docmaker.selectApiSetting( "", "", ...
-                string( github.hostname.default ) ), "api.github.com" )
+                string( github.hostname.default ), "api.github.com" )
             testCase.verifyEqual( ...
-                docmaker.selectApiSetting( "", "", ...
-                string( gitlab.hostname.default ) ), "gitlab.com" )
+                string( gitlab.hostname.default ), "gitlab.com" )
 
         end % tApiHostDefaults
 

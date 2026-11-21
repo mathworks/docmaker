@@ -29,27 +29,24 @@ method = matlab.net.http.RequestMethod.POST;
 request = matlab.net.http.RequestMessage( method, [], markdown );
 request = addFields( request, "Content-Type", "text/plain" );
 
-% Look for token, in a MATLAB secret, or in an environment variable
+% Look for the token in the environment, then in a MATLAB Secret.
 tokenName = "DOCMAKER_GITHUB_TOKEN";
-tokenFromEnvironment = string( getenv( tokenName ) );
-tokenFromSecret = "";
-if strlength( tokenFromEnvironment ) == 0 && ...
+token = string( getenv( tokenName ) );
+if strlength( token ) == 0 && ...
         hasSecrets() && isSecret( tokenName )
-    tokenFromSecret = string( getSecret( tokenName ) );
+    token = string( getSecret( tokenName ) );
 end
-token = docmaker.selectApiSetting( tokenFromEnvironment, ...
-    tokenFromSecret, "" );
 
 % Look for a configured hostname; environment values override secrets.
 hostnameName = "DOCMAKER_GITHUB_HOSTNAME";
-hostnameFromEnvironment = string( getenv( hostnameName ) );
-hostnameFromSecret = "";
-if strlength( hostnameFromEnvironment ) == 0 && ...
+hostname = string( getenv( hostnameName ) );
+if strlength( hostname ) == 0 && ...
         hasSecrets() && isSecret( hostnameName )
-    hostnameFromSecret = string( getSecret( hostnameName ) );
+    hostname = string( getSecret( hostnameName ) );
 end
-hostname = docmaker.selectApiSetting( hostnameFromEnvironment, ...
-    hostnameFromSecret, "api.github.com" );
+if strlength( hostname ) == 0
+    hostname = "api.github.com";
+end
 if ~docmaker.ishostname( hostname )
     error( "docmaker:InvalidValue", ...
         "Invalid GitHub hostname: %s", hostname )

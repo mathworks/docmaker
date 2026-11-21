@@ -23,14 +23,14 @@ config = jsondecode( fileread( configFile ) );
 
 % Resolve and validate the hostname.
 hostnameVar = string( config.hostname.variable );
-hostnameFromEnvironment = string( getenv( hostnameVar ) );
-hostnameFromSecret = "";
-if strlength( hostnameFromEnvironment ) == 0 && ...
+hostname = string( getenv( hostnameVar ) );
+if strlength( hostname ) == 0 && ...
         hasSecrets() && isSecret( hostnameVar )
-    hostnameFromSecret = string( getSecret( hostnameVar ) );
+    hostname = string( getSecret( hostnameVar ) );
 end
-hostname = docmaker.selectApiSetting( hostnameFromEnvironment, ...
-    hostnameFromSecret, string( config.hostname.default ) );
+if strlength( hostname ) == 0
+    hostname = string( config.hostname.default );
+end
 if ~docmaker.ishostname( hostname )
     error( "docmaker:InvalidValue", ...
         "%s", "Invalid hostname for " + string( config.name ) + ...
@@ -40,14 +40,11 @@ end
 % Resolve authentication settings.
 auth = config.authentication;
 tokenName = string( auth.variable );
-tokenFromEnvironment = string( getenv( tokenName ) );
-tokenFromSecret = "";
-if strlength( tokenFromEnvironment ) == 0 && ...
+token = string( getenv( tokenName ) );
+if strlength( token ) == 0 && ...
         hasSecrets() && isSecret( tokenName )
-    tokenFromSecret = string( getSecret( tokenName ) );
+    token = string( getSecret( tokenName ) );
 end
-token = docmaker.selectApiSetting( tokenFromEnvironment, ...
-    tokenFromSecret, "" );
 if strlength( token ) == 0 && auth.required
     error( "docmaker:PermissionDenied", ...
         "%s", string( config.name ) + " Markdown conversion requires " + ...

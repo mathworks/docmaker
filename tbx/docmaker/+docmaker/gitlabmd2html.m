@@ -25,14 +25,14 @@ end
 
 % Look for a configured hostname; environment values override secrets.
 hostnameName = "DOCMAKER_GITLAB_HOSTNAME";
-hostnameFromEnvironment = string( getenv( hostnameName ) );
-hostnameFromSecret = "";
-if strlength( hostnameFromEnvironment ) == 0 && ...
+hostname = string( getenv( hostnameName ) );
+if strlength( hostname ) == 0 && ...
         hasSecrets() && isSecret( hostnameName )
-    hostnameFromSecret = string( getSecret( hostnameName ) );
+    hostname = string( getSecret( hostnameName ) );
 end
-hostname = docmaker.selectApiSetting( hostnameFromEnvironment, ...
-    hostnameFromSecret, "gitlab.com" );
+if strlength( hostname ) == 0
+    hostname = "gitlab.com";
+end
 if ~docmaker.ishostname( hostname )
     error( "docmaker:InvalidValue", ...
         "Invalid GitLab hostname: %s", hostname )
@@ -40,14 +40,11 @@ end
 
 % Look for the token in the environment, then in a MATLAB Secret.
 tokenName = "DOCMAKER_GITLAB_TOKEN";
-tokenFromEnvironment = string( getenv( tokenName ) );
-tokenFromSecret = "";
-if strlength( tokenFromEnvironment ) == 0 && ...
+token = string( getenv( tokenName ) );
+if strlength( token ) == 0 && ...
         hasSecrets() && isSecret( tokenName )
-    tokenFromSecret = string( getSecret( tokenName ) );
+    token = string( getSecret( tokenName ) );
 end
-token = docmaker.selectApiSetting( tokenFromEnvironment, ...
-    tokenFromSecret, "" );
 if strlength( token ) == 0
     error( "docmaker:PermissionDenied", ...
         "GitLab Markdown conversion requires a personal access token." + ...
