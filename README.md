@@ -36,6 +36,21 @@ Tasks are provided to:
 * `package`: package as a MATLAB Toolbox file (`.mltbx`)
 * `clean`: delete derived artifacts
 
+### Error identifiers
+
+DocMaker uses these standard `docmaker:` error and warning identifiers:
+
+* `AlreadyExists`
+* `InvalidResponse`
+* `InvalidValue`
+* `NotFound`
+* `OperationFailed`
+* `PermissionDenied`
+* `Timeout`
+* `Unavailable`
+* `UnsupportedOperation`
+* `UnsupportedValue`
+
 ### Build and test the local converter
 
 The repository pins cmark-gfm and gemoji as Git submodules. Initialize them from the repository root before building:
