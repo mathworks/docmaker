@@ -142,11 +142,20 @@ end
 end % getResponseMessage
 
 function tf = hasSecrets()
-%hasSecrets  Test whether MATLAB secrets are supported
+%hasSecrets  Test whether the MATLAB secrets vault is available
 
 persistent HAS_SECRETS
 if isempty( HAS_SECRETS )
-    HAS_SECRETS = ~isMATLABReleaseOlderThan( "R2024a" );
+    if isMATLABReleaseOlderThan( "R2024a" )
+        HAS_SECRETS = false;
+    else
+        try
+            [~] = listSecrets();
+            HAS_SECRETS = true;
+        catch
+            HAS_SECRETS = false;
+        end
+    end
 end
 tf = HAS_SECRETS;
 
