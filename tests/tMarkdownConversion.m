@@ -77,7 +77,7 @@ classdef tMarkdownConversion < matlab.unittest.TestCase
 
         end % tApiHostDefaults
 
-        function tRejectsInvalidConfiguredGithubHostname( testCase )
+        function tMd2xmlDispatchesGithubToApiHelper( testCase )
 
             name = 'DOCMAKER_GITHUB_HOSTNAME';
             previous = getenv( name );
@@ -85,12 +85,12 @@ classdef tMarkdownConversion < matlab.unittest.TestCase
             setenv( name, "https://api.github.com" )
 
             testCase.verifyError( ...
-                @() docmaker.githubmd2html( "test" ), ...
+                @() docmaker.md2xml( "test", "Converter", "github" ), ...
                 "docmaker:InvalidValue" )
 
-        end % tRejectsInvalidConfiguredGithubHostname
+        end % tMd2xmlDispatchesGithubToApiHelper
 
-        function tRejectsInvalidConfiguredGitlabHostname( testCase )
+        function tMd2xmlDispatchesGitlabToApiHelper( testCase )
 
             name = 'DOCMAKER_GITLAB_HOSTNAME';
             previous = getenv( name );
@@ -98,10 +98,10 @@ classdef tMarkdownConversion < matlab.unittest.TestCase
             setenv( name, "gitlab.com/api/v4" )
 
             testCase.verifyError( ...
-                @() docmaker.gitlabmd2html( "test" ), ...
+                @() docmaker.md2xml( "test", "Converter", "gitlab" ), ...
                 "docmaker:InvalidValue" )
 
-        end % tRejectsInvalidConfiguredGitlabHostname
+        end % tMd2xmlDispatchesGitlabToApiHelper
 
         function tApiMd2HtmlRejectsInvalidService( testCase )
 

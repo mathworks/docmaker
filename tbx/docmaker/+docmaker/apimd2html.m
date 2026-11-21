@@ -4,7 +4,7 @@ function html = apimd2html( md, service )
 %   html = docmaker.apimd2html(md,s) converts Markdown md to HTML using the
 %   Markdown API service s. Supported services are "github" and "gitlab".
 %
-%   See also: docmaker.githubmd2html, docmaker.gitlabmd2html
+%   See also: docmaker.md2xml, docconvert
 
 %   Copyright 2026 The MathWorks, Inc.
 

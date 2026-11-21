@@ -14,7 +14,7 @@ function doc = md2xml( md, options )
 %   DOCMAKER_GITLAB_HOSTNAME to override it. The token
 %   DOCMAKER_GITLAB_TOKEN is required.
 %
-%   See also: docconvert, docmaker.githubmd2html, docmaker.gitlabmd2html
+%   See also: docconvert, docmaker.apimd2html
 
 %   Copyright 2026 The MathWorks, Inc.
 
@@ -37,10 +37,8 @@ switch options.Converter
                 mex )
         end
         html = string( docmaker.cmarkmd2html( md ) );
-    case "github"
-        html = docmaker.githubmd2html( md );
-    case "gitlab"
-        html = docmaker.gitlabmd2html( md );
+    case {"github", "gitlab"}
+        html = docmaker.apimd2html( md, options.Converter );
 end
 
 % Convert HTML to XML

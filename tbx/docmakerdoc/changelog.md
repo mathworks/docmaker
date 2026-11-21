@@ -4,6 +4,7 @@
 
 * Added support for local Markdown conversion using [cmark-gfm](https://github.com/github/cmark-gfm) and [gemoji](https://github.com/github/gemoji)
 * Added `Converter` option to `docconvert`, `docindex`, and `DocMakerTask`: `cmark` (local, default), `github` (GitHub Markdown API), or `gitlab` (GitLab Markdown API)
+* Removed `docmaker.githubmd2html` and `docmaker.gitlabmd2html`; use `docmaker.apimd2html(md,service)` for HTML or the existing `Converter` options for document conversion
 
 ## Version 0.8.0
 

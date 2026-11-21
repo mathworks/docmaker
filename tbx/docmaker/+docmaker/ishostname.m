@@ -4,7 +4,7 @@ function tf = ishostname( s )
 %   tf = docmaker.ishostname(s) returns true when s is an ASCII DNS
 %   hostname without a trailing root dot and false otherwise.
 %
-%   See also: docmaker.githubmd2html, docmaker.gitlabmd2html
+%   See also: docmaker.apimd2html, docmaker.md2xml
 
 %   Copyright 2026 The MathWorks, Inc.
 
