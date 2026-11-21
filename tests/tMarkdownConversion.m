@@ -69,6 +69,11 @@ classdef tMarkdownConversion < matlab.unittest.TestCase
                 string( github.hostname.default ), "api.github.com" )
             testCase.verifyEqual( ...
                 string( gitlab.hostname.default ), "gitlab.com" )
+            testCase.verifyFalse( isfield( github.authentication, "required" ) )
+            testCase.verifyFalse( isfield( gitlab.authentication, "required" ) )
+            testCase.verifyEqual( string( github.response.successStatus ), "OK" )
+            testCase.verifyEqual( ...
+                string( gitlab.response.successStatus ), "Created" )
 
         end % tApiHostDefaults
 

@@ -2,7 +2,7 @@
   "name": "gitlab",
   "hostname": {
     "default": "gitlab.com",
-    "variable": "DOCMAKER_GITLAB_HOSTNAME"
+    "name": "DOCMAKER_GITLAB_HOSTNAME"
   },
   "request": {
     "method": "POST",
@@ -12,13 +12,12 @@
     "accept": "application/json"
   },
   "authentication": {
-    "required": true,
-    "variable": "DOCMAKER_GITLAB_TOKEN",
+    "name": "DOCMAKER_GITLAB_TOKEN",
     "header": "PRIVATE-TOKEN",
     "prefix": ""
   },
   "response": {
-    "successStatusCode": 201,
+    "successStatus": "Created",
     "format": "json",
     "htmlField": "html",
     "errorMessageField": "message"

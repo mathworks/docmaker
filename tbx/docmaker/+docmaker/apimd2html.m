@@ -21,48 +21,35 @@ if ~isfile( configFile )
 end
 config = jsondecode( fileread( configFile ) );
 
-% Resolve and validate the hostname.
-hostnameVar = string( config.hostname.variable );
-hostname = string( getenv( hostnameVar ) );
-if strlength( hostname ) == 0 && ...
-        hasSecrets() && isSecret( hostnameVar )
-    hostname = string( getSecret( hostnameVar ) );
+% Resolve and validate the hostname
+hostnameConfig = config.hostname;
+hostnameName = hostnameConfig.name;
+if ~isempty( getenv( hostnameName ) )
+    hostname = getenv( hostnameName );
+elseif hasSecrets() && isSecret( hostnameName )
+    hostname = getSecret( hostnameName );
+else
+    hostname = hostnameConfig.default;
 end
-if strlength( hostname ) == 0
-    hostname = string( config.hostname.default );
-end
-if ~docmaker.ishostname( hostname )
-    error( "docmaker:InvalidValue", ...
-        "%s", "Invalid hostname for " + string( config.name ) + ...
-        ": " + hostname )
+assert( docmaker.ishostname( hostname ), ...
+    "docmaker:InvalidValue", ...
+    "Invalid hostname for %s: %s", config.name, hostname )
+
+% Resolve authentication settings
+authConfig = config.authentication;
+tokenName = authConfig.name;
+if ~isempty( getenv( tokenName ) )
+    token = getenv( tokenName );
+elseif hasSecrets() && isSecret( tokenName )
+    token = getSecret( tokenName );
+else
+    token = '';
 end
 
-% Resolve authentication settings.
-auth = config.authentication;
-tokenName = string( auth.variable );
-token = string( getenv( tokenName ) );
-if strlength( token ) == 0 && ...
-        hasSecrets() && isSecret( tokenName )
-    token = string( getSecret( tokenName ) );
-end
-if strlength( token ) == 0 && auth.required
-    error( "docmaker:PermissionDenied", ...
-        "%s", string( config.name ) + " Markdown conversion requires " + ...
-        tokenName + "." )
-end
-
-% Create the service-specific request body.
+% Create the service-specific request body
 requestConfig = config.request;
-switch string( requestConfig.method )
-    case "POST"
-        method = matlab.net.http.RequestMethod.POST;
-    otherwise
-        error( "docmaker:UnsupportedOperation", ...
-            "%s", "Unsupported HTTP method in " + string( config.name ) + ...
-            " configuration." )
-end
-
-switch string( requestConfig.bodyFormat )
+method = matlab.net.http.RequestMethod.( requestConfig.method );
+switch requestConfig.bodyFormat
     case "plainText"
         body = md;
     case "gfmJson"
@@ -70,79 +57,68 @@ switch string( requestConfig.bodyFormat )
     otherwise
         error( "docmaker:UnsupportedValue", ...
             "Unsupported request body format in %s configuration.", ...
-            string( config.name ) )
+            config.name )
 end
-
 request = matlab.net.http.RequestMessage( method, [], body );
-request = addFields( request, "Content-Type", ...
-    string( requestConfig.contentType ) );
+request = addFields( request, "Content-Type", requestConfig.contentType );
 if ~isempty( requestConfig.accept )
-    request = addFields( request, "Accept", string( requestConfig.accept ) );
+    request = addFields( request, "Accept", requestConfig.accept );
 end
 if strlength( token ) > 0
-    header = string( auth.header );
-    prefix = string( auth.prefix );
-    request = addFields( request, header, prefix + token );
+    header = authConfig.header;
+    prefix = authConfig.prefix;
+    request = addFields( request, header, string( prefix ) + token );
 end
 
-% Send the request to the configured host.
-uri = matlab.net.URI( "https://" + hostname + string( requestConfig.path ) );
+% Send the request to the configured host
+uri = matlab.net.URI( "https://" + hostname + requestConfig.path );
 try
     response = request.send( uri );
-catch exception
-    if contains( lower( string( exception.identifier ) ), "timeout" ) || ...
-            contains( lower( string( exception.message ) ), "timed out" )
-        error( "docmaker:Timeout", ...
-            "%s Markdown API request timed out: %s", ...
-            string( config.name ), string( exception.message ) )
-    else
-        error( "docmaker:Unavailable", ...
-            "%s Markdown API is unavailable: %s", ...
-            string( config.name ), string( exception.message ) )
-    end
+catch e
+    error( "docmaker:Unavailable", "%s", e.message )
 end
 
-% Report API errors using the configured response field when available.
+% Report API errors using the configured response field
+import matlab.net.http.StatusCode
 responseConfig = config.response;
-statusCode = double( response.StatusCode );
-if statusCode ~= responseConfig.successStatusCode
+if response.StatusCode ~= StatusCode.( responseConfig.successStatus )
     message = getResponseMessage( ...
-        response, string( responseConfig.errorMessageField ) );
+        response, responseConfig.errorMessageField );
     statusLine = string( response.StatusLine );
-    switch statusCode
-        case {401, 403}
+    switch response.StatusCode
+        case {StatusCode.Unauthorized, StatusCode.Forbidden}
             errorId = "docmaker:PermissionDenied";
-        case 404
+        case StatusCode.NotFound
             errorId = "docmaker:NotFound";
-        case {408, 504}
+        case {StatusCode.RequestTimeout, StatusCode.GatewayTimeout}
             errorId = "docmaker:Timeout";
-        case {502, 503}
+        case {StatusCode.BadGateway, StatusCode.ServiceUnavailable}
             errorId = "docmaker:Unavailable";
         otherwise
             errorId = "docmaker:OperationFailed";
     end
     error( errorId, "%s Markdown API returned %s: %s", ...
-        string( config.name ), statusLine, message )
+        config.name, statusLine, message )
 end
 
-% Extract the HTML from the configured response format.
-switch string( responseConfig.format )
+% Extract the HTML from the configured response format
+switch responseConfig.format
     case "rawHtml"
         html = strtrim( string( response.Body.Data ) );
     case "json"
         data = response.Body.Data;
-        field = char( string( responseConfig.htmlField ) );
+        field = responseConfig.htmlField;
         if isstruct( data ) && isfield( data, field )
             html = strtrim( string( data.(field) ) );
         else
             error( "docmaker:InvalidResponse", ...
                 "%s Markdown API response did not contain HTML.", ...
-                string( config.name ) )
+                config.name )
         end
     otherwise
         error( "docmaker:UnsupportedValue", ...
             "Unsupported response format in %s configuration.", ...
-            string( config.name ) )
+            config.name )
 end
 
 end % apimd2html
@@ -151,8 +127,8 @@ function message = getResponseMessage( response, messageField )
 %getResponseMessage  Get a readable message from an API response
 
 body = response.Body.Data;
-if isstruct( body ) && isfield( body, char( messageField ) )
-    body = body.(char( messageField ));
+if isstruct( body ) && isfield( body, messageField )
+    body = body.(messageField);
 end
 try
     message = strjoin( string( body(:) ), " " );
