@@ -4,10 +4,16 @@ function html = gitlabmd2html( markdown )
 %   html = docmaker.gitlabmd2html(md) converts Markdown md using the
 %   GitLab Markdown API.
 % 
+%   The hostname defaults to "gitlab.com". Set DOCMAKER_GITLAB_HOSTNAME
+%   as a MATLAB Secret or environment variable to use an alternative
+%   GitLab instance. The environment variable takes precedence over the
+%   Secret.
+%
 %   Requests to this service must be authenticated. A GitLab access token
 %   scope "api" is sufficient. To authenticate, set DOCMAKER_GITLAB_TOKEN
 %   as a MATLAB secret (recommended for local machines from R2024a) or as
-%   an environment variable (recommended for build runners).
+%   an environment variable (recommended for build runners). If both are
+%   set, the environment variable takes precedence.
 %
 %   See also: docmaker.githubmd2html, docmaker.cmarkmd2html, docconvert
 
@@ -17,15 +23,33 @@ arguments
     markdown (1,1) string
 end
 
-% Look for the token in a MATLAB secret, then in the environment.
-tokenName = "DOCMAKER_GITLAB_TOKEN";
-if hasSecrets() && isSecret( tokenName )
-    token = string( getSecret( tokenName ) );
-else
-    token = string( getenv( tokenName ) );
+% Look for a configured hostname; environment values override secrets.
+hostnameName = "DOCMAKER_GITLAB_HOSTNAME";
+hostnameFromEnvironment = string( getenv( hostnameName ) );
+hostnameFromSecret = "";
+if strlength( hostnameFromEnvironment ) == 0 && ...
+        hasSecrets() && isSecret( hostnameName )
+    hostnameFromSecret = string( getSecret( hostnameName ) );
 end
+hostname = docmaker.selectApiSetting( hostnameFromEnvironment, ...
+    hostnameFromSecret, "gitlab.com" );
+if ~docmaker.ishostname( hostname )
+    error( "docmaker:InvalidValue", ...
+        "Invalid GitLab hostname: %s", hostname )
+end
+
+% Look for the token in the environment, then in a MATLAB Secret.
+tokenName = "DOCMAKER_GITLAB_TOKEN";
+tokenFromEnvironment = string( getenv( tokenName ) );
+tokenFromSecret = "";
+if strlength( tokenFromEnvironment ) == 0 && ...
+        hasSecrets() && isSecret( tokenName )
+    tokenFromSecret = string( getSecret( tokenName ) );
+end
+token = docmaker.selectApiSetting( tokenFromEnvironment, ...
+    tokenFromSecret, "" );
 if strlength( token ) == 0
-    error( "docmaker:gitlabmd2html:MissingToken", ...
+    error( "docmaker:PermissionDenied", ...
         "GitLab Markdown conversion requires a personal access token." + ...
         newline() + "Set DOCMAKER_GITLAB_TOKEN as an environment " + ...
         "variable or MATLAB Secret." )
@@ -39,9 +63,22 @@ request = addFields( request, "Content-Type", "application/json" );
 request = addFields( request, "Accept", "application/json" );
 request = addFields( request, "PRIVATE-TOKEN", token );
 
-% Request HTML output from GitLab.com.
-uri = matlab.net.URI( "https://gitlab.com/api/v4/markdown" );
-response = request.send( uri );
+% Request HTML output from GitLab.
+uri = matlab.net.URI( "https://" + hostname + "/api/v4/markdown" );
+try
+    response = request.send( uri );
+catch exception
+    if contains( lower( string( exception.identifier ) ), "timeout" ) || ...
+            contains( lower( string( exception.message ) ), "timed out" )
+        error( "docmaker:Timeout", ...
+            "GitLab Markdown API request timed out: %s", ...
+            string( exception.message ) )
+    else
+        error( "docmaker:Unavailable", ...
+            "GitLab Markdown API is unavailable: %s", ...
+            string( exception.message ) )
+    end
+end
 
 % Return the HTML response, or report the HTTP failure.
 switch response.StatusCode
@@ -50,12 +87,25 @@ switch response.StatusCode
         if isstruct( data ) && isfield( data, "html" )
             html = strtrim( string( data.html ) );
         else
-        error( "docmaker:gitlabmd2html:InvalidResponse", ...
+            error( "docmaker:InvalidResponse", ...
                 "GitLab Markdown API response did not contain HTML." )
         end
     otherwise
         message = getResponseMessage( response );
-        error( "docmaker:gitlabmd2html:RequestFailed", ...
+        statusCode = double( response.StatusCode );
+        switch statusCode
+            case {401, 403}
+                errorId = "docmaker:PermissionDenied";
+            case 404
+                errorId = "docmaker:NotFound";
+            case {408, 504}
+                errorId = "docmaker:Timeout";
+            case {502, 503}
+                errorId = "docmaker:Unavailable";
+            otherwise
+                errorId = "docmaker:OperationFailed";
+        end
+        error( errorId, ...
             "GitLab Markdown API returned %s: %s", ...
             string( response.StatusLine ), message )
 end

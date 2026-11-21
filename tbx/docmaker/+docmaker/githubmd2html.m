@@ -4,11 +4,17 @@ function html = githubmd2html( markdown )
 %   html = docmaker.githubmd2html(md) converts Markdown md to HTML using
 %   the GitHub Markdown API.
 %
+%   The hostname defaults to "api.github.com". Set DOCMAKER_GITHUB_HOSTNAME
+%   as a MATLAB Secret or environment variable to use an alternative
+%   GitHub instance. The environment variable takes precedence over the
+%   Secret.
+%
 %   Requests to this service are rate limited, and authenticated requests
 %   get a higher limit. A GitHub access token with no permissions is
 %   sufficient. To authenticate, set DOCMAKER_GITHUB_TOKEN as a MATLAB
 %   secret (recommended for local machines from R2024a) or as an
-%   environment variable (recommended for build runners).
+%   environment variable (recommended for build runners). If both are set,
+%   the environment variable takes precedence.
 %
 %   See also: docmaker.cmarkmd2html, docmaker.gitlabmd2html, docconvert
 
@@ -25,24 +31,57 @@ request = addFields( request, "Content-Type", "text/plain" );
 
 % Look for token, in a MATLAB secret, or in an environment variable
 tokenName = "DOCMAKER_GITHUB_TOKEN";
-if hasSecrets() && isSecret( tokenName )
-    token = string( getSecret( tokenName ) );
-else % fallback
-    token = string( getenv( tokenName ) ); % empty if no env var
+tokenFromEnvironment = string( getenv( tokenName ) );
+tokenFromSecret = "";
+if strlength( tokenFromEnvironment ) == 0 && ...
+        hasSecrets() && isSecret( tokenName )
+    tokenFromSecret = string( getSecret( tokenName ) );
 end
+token = docmaker.selectApiSetting( tokenFromEnvironment, ...
+    tokenFromSecret, "" );
+
+% Look for a configured hostname; environment values override secrets.
+hostnameName = "DOCMAKER_GITHUB_HOSTNAME";
+hostnameFromEnvironment = string( getenv( hostnameName ) );
+hostnameFromSecret = "";
+if strlength( hostnameFromEnvironment ) == 0 && ...
+        hasSecrets() && isSecret( hostnameName )
+    hostnameFromSecret = string( getSecret( hostnameName ) );
+end
+hostname = docmaker.selectApiSetting( hostnameFromEnvironment, ...
+    hostnameFromSecret, "api.github.com" );
+if ~docmaker.ishostname( hostname )
+    error( "docmaker:InvalidValue", ...
+        "Invalid GitHub hostname: %s", hostname )
+end
+
 if strlength( token ) > 0
     request = addFields( request, "Authorization", "Bearer " + token );
 end
 
 % Request HTML output from GitHub
-uri = matlab.net.URI( "https://api.github.com/markdown/raw" );
-response = request.send( uri );
+uri = matlab.net.URI( "https://" + hostname + "/markdown/raw" );
+try
+    response = request.send( uri );
+catch exception
+    if contains( lower( string( exception.identifier ) ), "timeout" ) || ...
+            contains( lower( string( exception.message ) ), "timed out" )
+        error( "docmaker:Timeout", ...
+            "GitHub Markdown API request timed out: %s", ...
+            string( exception.message ) )
+    else
+        error( "docmaker:Unavailable", ...
+            "GitHub Markdown API is unavailable: %s", ...
+            string( exception.message ) )
+    end
+end
 
 % Return the HTML response, or report the HTTP failure
 switch response.StatusCode
     case matlab.net.http.StatusCode.OK
         html = strtrim( string( response.Body.Data ) );
     otherwise
+        statusCode = double( response.StatusCode );
         body = response.Body.Data;
         if isstruct( body ) && isfield( body, "message" )
             body = body.message;
@@ -53,7 +92,19 @@ switch response.StatusCode
         else
             body = strjoin( body(:), " " );
         end
-        error( "docmaker:githubmd2html:RequestFailed", ...
+        switch statusCode
+            case {401, 403}
+                errorId = "docmaker:PermissionDenied";
+            case 404
+                errorId = "docmaker:NotFound";
+            case {408, 504}
+                errorId = "docmaker:Timeout";
+            case {502, 503}
+                errorId = "docmaker:Unavailable";
+            otherwise
+                errorId = "docmaker:OperationFailed";
+        end
+        error( errorId, ...
             "GitHub Markdown API returned %s: %s", ...
             string( response.StatusLine ), body )
 end

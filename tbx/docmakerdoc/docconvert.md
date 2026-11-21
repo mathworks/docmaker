@@ -18,7 +18,7 @@ Multiple documents may also be specified using `docconvert(md1,md2,...)`.
 
 `docconvert(...,"Interpreter",in)` uses the text interpreter `in`. Available interpreters are `latex` (LaTeX) and `none` (literal text, default). Use single dollar signs `$...$` to display equations inline, and double dollar signs `$$...$$` to display equations centered on their own line.
 
-`docconvert(...,"Converter",c)` uses the Markdown converter `c`. Available converters are `cmark` (bundled cmark-gfm, default), `github` (GitHub Markdown API on GitHub.com), and `gitlab` (GitLab Markdown API on GitLab.com). See [Markdown conversion](conversion.md) for converter details, setup, platform support, and version details.
+`docconvert(...,"Converter",c)` uses the Markdown converter `c`. Available converters are `cmark` (bundled cmark-gfm, default), `github` (GitHub Markdown API), and `gitlab` (GitLab Markdown API). See [Markdown conversion](conversion.md) for converter details, setup, platform support, and version details.
 
 `[html,res] = docconvert(...)` returns the names of the HTML document(s) `html` and the resources folder `res` created.
 

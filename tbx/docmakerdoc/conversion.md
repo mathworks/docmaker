@@ -10,21 +10,21 @@ DocMaker uses [cmark-gfm](https://github.com/github/cmark-gfm) to convert Markdo
 
 DocMaker also supports [GitHub Markdown API](https://docs.github.com/en/rest/markdown) to convert Markdown to HTML using GitHub's rendering engine.
 
-GitHub rate-limits API requests, and authenticated requests have a higher limit. A GitHub access token with no permissions is sufficient. To authenticate, set the MATLAB secret `DOCMAKER_GITHUB_TOKEN` or the environment variable of the same name. Use secrets for local development on R2024a and later, and environment variables for build runners and earlier MATLAB versions. Without a token, requests are anonymous.
+GitHub rate-limits API requests, and authenticated requests have a higher limit. A GitHub access token with no permissions is sufficient. To provide a token, set `DOCMAKER_GITHUB_TOKEN` as a MATLAB Secret or environment variable.
+
+The API hostname defaults to `api.github.com`. To use an alternative GitHub instance, set `DOCMAKER_GITHUB_HOSTNAME` as a MATLAB Secret or environment variable.
 
 GitHub Markdown API requires network access and sends document contents to GitHub. See the [GitHub API terms of service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service#h-api-terms) and [privacy statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement) for further information.
-
-The GitHub Markdown API supports GitHub.com only; private GitHub instances are not supported.
 
 ## GitLab Markdown API
 
 DocMaker also supports the [GitLab Markdown API](https://docs.gitlab.com/api/markdown/) to convert Markdown to HTML using GitLab's rendering engine.
 
-The GitLab Markdown API requires authentication. A GitLab access token with `api` scope is sufficient. To authenticate, set the MATLAB Secret `DOCMAKER_GITLAB_TOKEN` or the environment variable of the same name. Use secrets for local development on R2024a and later, and environment variables for build runners and earlier MATLAB versions.
+This API requires authentication. A GitLab access token with `api` scope is sufficient. To provide a token, set `DOCMAKER_GITLAB_TOKEN` as a MATLAB Secret or environment variable.
+
+The API hostname defaults to `gitlab.com`. To use an alternative GitLab instance, set `DOCMAKER_GITLAB_HOSTNAME` as a MATLAB Secret or environment variable.
 
 The GitLab Markdown API requires network access and sends document contents to GitLab. See the [GitLab API terms of use](https://handbook.gitlab.com/handbook/legal/api-terms/) and [privacy statement](https://about.gitlab.com/privacy/) for further information.
-
-The GitLab Markdown API supports GitLab.com only; private GitLab instances are not supported.
 
 ___
 

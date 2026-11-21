@@ -5,6 +5,151 @@ classdef tMarkdownConversion < matlab.unittest.TestCase
 
     methods ( Test )
 
+        function tHostnameAcceptsDnsNames( testCase )
+
+            hosts = [ ...
+                "api.github.com"; ...
+                "gitlab.com"; ...
+                "localhost"; ...
+                "GitLab-1.example.com"; ...
+                "gitlab.example.com." ];
+            for ii = 1:numel( hosts )
+                testCase.verifyTrue( docmaker.ishostname( hosts(ii) ), ...
+                    "Expected a valid hostname: " + hosts(ii) )
+            end
+
+            label63 = string( repmat( 'a', 1, 63 ) );
+            host253 = strjoin( [label63, label63, label63, ...
+                string( repmat( 'b', 1, 61 ) )], "." );
+            testCase.verifyTrue( docmaker.ishostname( host253 ) )
+
+        end % tHostnameAcceptsDnsNames
+
+        function tHostnameRejectsMalformedNames( testCase )
+
+            hosts = [ ...
+                ""; ...
+                "bad..example"; ...
+                "-bad.example"; ...
+                "bad-.example"; ...
+                "bad_name.example"; ...
+                "https://gitlab.com"; ...
+                "gitlab.com:443"; ...
+                "gitlab.com/api"; ...
+                "127.0.0.1"; ...
+                "2001:db8::1" ];
+            for ii = 1:numel( hosts )
+                testCase.verifyFalse( docmaker.ishostname( hosts(ii) ), ...
+                    "Expected an invalid hostname: " + hosts(ii) )
+            end
+
+            label64 = string( repmat( 'a', 1, 64 ) );
+            testCase.verifyFalse( docmaker.ishostname( label64 + ".com" ) )
+
+            host254 = strjoin( [ ...
+                string( repmat( 'a', 1, 63 ) ); ...
+                string( repmat( 'b', 1, 63 ) ); ...
+                string( repmat( 'c', 1, 63 ) ); ...
+                string( repmat( 'd', 1, 62 ) ) ], "." );
+            testCase.verifyFalse( docmaker.ishostname( host254 ) )
+
+        end % tHostnameRejectsMalformedNames
+
+        function tApiSettingEnvironmentPrecedesSecret( testCase )
+
+            value = docmaker.selectApiSetting( ...
+                "from environment", "from secret", "default" );
+
+            testCase.verifyEqual( value, "from environment" )
+
+        end % tApiSettingEnvironmentPrecedesSecret
+
+        function tApiSettingUsesSecretWhenEnvironmentIsEmpty( testCase )
+
+            value = docmaker.selectApiSetting( ...
+                "", "from secret", "default" );
+
+            testCase.verifyEqual( value, "from secret" )
+
+        end % tApiSettingUsesSecretWhenEnvironmentIsEmpty
+
+        function tApiSettingUsesDefaultWhenSourcesAreEmpty( testCase )
+
+            value = docmaker.selectApiSetting( "", "", "gitlab.com" );
+
+            testCase.verifyEqual( value, "gitlab.com" )
+
+        end % tApiSettingUsesDefaultWhenSourcesAreEmpty
+
+        function tApiHostDefaults( testCase )
+
+            repoFolder = fileparts( fileparts( mfilename( "fullpath" ) ) );
+            configFolder = fullfile( repoFolder, "tbx", "docmaker", ...
+                "+docmaker" );
+            github = jsondecode( fileread( ...
+                fullfile( configFolder, "github.json" ) ) );
+            gitlab = jsondecode( fileread( ...
+                fullfile( configFolder, "gitlab.json" ) ) );
+
+            testCase.verifyEqual( ...
+                docmaker.selectApiSetting( "", "", ...
+                string( github.hostname.default ) ), "api.github.com" )
+            testCase.verifyEqual( ...
+                docmaker.selectApiSetting( "", "", ...
+                string( gitlab.hostname.default ) ), "gitlab.com" )
+
+        end % tApiHostDefaults
+
+        function tRejectsInvalidConfiguredGithubHostname( testCase )
+
+            name = 'DOCMAKER_GITHUB_HOSTNAME';
+            previous = getenv( name );
+            testCase.addTeardown( @() setenv( name, previous ) )
+            setenv( name, "https://api.github.com" )
+
+            testCase.verifyError( ...
+                @() docmaker.githubmd2html( "test" ), ...
+                "docmaker:InvalidValue" )
+
+        end % tRejectsInvalidConfiguredGithubHostname
+
+        function tRejectsInvalidConfiguredGitlabHostname( testCase )
+
+            name = 'DOCMAKER_GITLAB_HOSTNAME';
+            previous = getenv( name );
+            testCase.addTeardown( @() setenv( name, previous ) )
+            setenv( name, "gitlab.com/api/v4" )
+
+            testCase.verifyError( ...
+                @() docmaker.gitlabmd2html( "test" ), ...
+                "docmaker:InvalidValue" )
+
+        end % tRejectsInvalidConfiguredGitlabHostname
+
+        function tApiMd2HtmlRejectsInvalidService( testCase )
+
+            testCase.verifyError( ...
+                @() docmaker.apimd2html( "test", 42 ), ...
+                "MATLAB:validators:mustBeMember" )
+            testCase.verifyError( ...
+                @() docmaker.apimd2html( "test", "unknown" ), ...
+                "MATLAB:validators:mustBeMember" )
+
+        end % tApiMd2HtmlRejectsInvalidService
+
+        function tApiMd2HtmlRejectsInvalidHostname( testCase )
+
+            name = 'DOCMAKER_GITHUB_HOSTNAME';
+            previous = getenv( name );
+            testCase.addTeardown( @() setenv( name, previous ) )
+            setenv( name, "https://api.github.com" )
+
+            testCase.verifyError( ...
+                @() docmaker.apimd2html( "test", "github" ), ...
+                "docmaker:InvalidValue" )
+
+        end % tApiMd2HtmlRejectsInvalidHostname
+
         function tConvertsGitHubFlavoredMarkdown( testCase )
 
             markdown = strjoin( [ ...

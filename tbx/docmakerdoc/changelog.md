@@ -3,8 +3,7 @@
 ## Version 0.9.0
 
 * Added support for local Markdown conversion using [cmark-gfm](https://github.com/github/cmark-gfm) and [gemoji](https://github.com/github/gemoji)
-* Added `Converter` option to `docconvert`, `docindex`, and `DocMakerTask`: `cmark` (default), `github` (GitHub.com), or `gitlab` (GitLab.com)
-* Removed support for private GitHub and GitLab instances
+* Added `Converter` option to `docconvert`, `docindex`, and `DocMakerTask`: `cmark` (local, default), `github` (GitHub Markdown API), or `gitlab` (GitLab Markdown API)
 
 ## Version 0.8.0
 

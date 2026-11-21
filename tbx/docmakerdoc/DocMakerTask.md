@@ -16,7 +16,7 @@ Custom build task for generating documentation
 
 `plan("doc") = DocMakerTask(...,"Interpreter",in)` uses the interpreter `in` to postprocess inline or display LaTeX expressions. Available interpreters are `latex` or `none` (default). Specify inline LaTeX expressions between single dollar symbols (`$`), and display LaTeX expressions between double dollar symbols (`$$`).
 
-`plan("doc") = DocMakerTask(...,"Converter",c)` uses the Markdown converter `c` to convert Markdown documents and `helptoc.md`. Available converters are `cmark` (bundled cmark-gfm, default), `github` (GitHub Markdown API on GitHub.com), and `gitlab` (GitLab Markdown API on GitLab.com). See [Markdown conversion](conversion.md) for converter details, setup, platform support, and version details.
+`plan("doc") = DocMakerTask(...,"Converter",c)` uses the Markdown converter `c` to convert Markdown documents and `helptoc.md`. Available converters are `cmark` (bundled cmark-gfm, default), `github` (GitHub Markdown API), and `gitlab` (GitLab Markdown API). See [Markdown conversion](conversion.md) for converter details, setup, platform support, and version details.
 
 `plan("doc") = DocMakerTask(...,"Level",n)` specifies the batching level `n`. With level 0 (default), all blocks in a document are run in a single batch. With level `n`, each level-n heading is run as a separate batch, with the workspace cleared and figures closed between batches. With level 7, each block is run as a separate batch.
 

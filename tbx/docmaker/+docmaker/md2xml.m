@@ -5,10 +5,14 @@ function doc = md2xml( md, options )
 %   This is the default and runs offline.
 %
 %   doc = docmaker.md2xml(md,"Converter","github") uses GitHub's Markdown
-%   API. The token DOCMAKER_GITHUB_TOKEN is optional.
+%   API. The hostname defaults to "api.github.com"; set
+%   DOCMAKER_GITHUB_HOSTNAME to override it. The token
+%   DOCMAKER_GITHUB_TOKEN is optional.
 %
 %   doc = docmaker.md2xml(md,"Converter","gitlab") uses GitLab's Markdown
-%   API. The token DOCMAKER_GITLAB_TOKEN is required.
+%   API. The hostname defaults to "gitlab.com"; set
+%   DOCMAKER_GITLAB_HOSTNAME to override it. The token
+%   DOCMAKER_GITLAB_TOKEN is required.
 %
 %   See also: docconvert, docmaker.githubmd2html, docmaker.gitlabmd2html
 

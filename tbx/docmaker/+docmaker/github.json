@@ -1,0 +1,26 @@
+{
+  "name": "github",
+  "hostname": {
+    "default": "api.github.com",
+    "variable": "DOCMAKER_GITHUB_HOSTNAME"
+  },
+  "request": {
+    "method": "POST",
+    "path": "/markdown/raw",
+    "bodyFormat": "plainText",
+    "contentType": "text/plain",
+    "accept": null
+  },
+  "authentication": {
+    "required": false,
+    "variable": "DOCMAKER_GITHUB_TOKEN",
+    "header": "Authorization",
+    "prefix": "Bearer "
+  },
+  "response": {
+    "successStatusCode": 200,
+    "format": "rawHtml",
+    "htmlField": null,
+    "errorMessageField": "message"
+  }
+}
