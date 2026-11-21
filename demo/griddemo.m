@@ -1,3 +1,5 @@
+% Copyright 2024-2026 The MathWorks, Inc.
+
 f = figure();
 g = uix.Grid('Parent',f,'Padding',5,'Spacing',5);
 uicontrol('Parent',g,'Background','r')

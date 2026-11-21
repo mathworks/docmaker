@@ -1,5 +1,5 @@
 function f = figures()
-%figures  Find all figures
+%docmaker.figures  Find all figures
 %
 %   f = docmaker.figures() returns all current figures in ascending number
 %   order.

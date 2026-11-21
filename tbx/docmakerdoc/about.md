@@ -2,19 +2,17 @@
 
 ## Contributors
 
-DocMaker is developed by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) from [MathWorks](https://www.mathworks.com/services/consulting.html) on [GitHub](https://github.com/mathworks/docmaker).
+DocMaker is developed by [David Sampson](https://www.mathworks.com/matlabcentral/profile/authors/16247) and [Ken Deeley](https://www.mathworks.com/matlabcentral/profile/authors/2987674) from [MathWorks](https://www.mathworks.com/services/consulting.html) on [GitHub](https://github.com/mathworks/docmaker).
 
-DocMaker uses the [GitHub Markdown API](https://docs.github.com/en/rest/markdown) or the [GitLab Markdown API](https://docs.gitlab.com/api/markdown/) for converting Markdown to HTML, and the [GitHub Markdown CSS](https://github.com/sindresorhus/github-markdown-css) by [Sindre Sorhus](https://github.com/sindresorhus) for HTML styling.
-
-The author thanks [Ken Deeley](https://www.mathworks.com/matlabcentral/profile/authors/2987674) from MathWorks for his support during the development of DocMaker.
+DocMaker converts Markdown to HTML using [cmark-gfm](https://github.com/github/cmark-gfm), [gemoji](https://github.com/github/gemoji), and [GitHub Markdown CSS](https://github.com/sindresorhus/github-markdown-css).
 
 ## History
 
 The [release notes](changelog.md) detail new features, bug fixes, and compatibility considerations for each version.
 
-DocMaker replaces a previous MathWorks internal documentation tool, *DocTools*, by [Ben Tordoff](https://www.mathworks.com/matlabcentral/profile/authors/1297191).  DocMaker seeks to improve on DocTools by supporting authoring in Markdown.
+DocMaker replaces a previous MathWorks internal documentation tool, *DocTools*, by [Ben Tordoff](https://www.mathworks.com/matlabcentral/profile/authors/1297191). DocMaker seeks to improve on DocTools by supporting authoring in Markdown.
 
-DocMaker was developed to build documentation for [GUI Layout Toolbox](http://www.mathworks.com/matlabcentral/fileexchange/47982-gui-layout-toolbox), [Package Jockey](https://insidelabs-git.mathworks.com/dsampson/pj), and [DocMaker](https://github.com/mathworks/docmaker) itself!  The features of DocMaker reflect the needs of these projects.
+DocMaker was developed to build documentation for [GUI Layout Toolbox](http://www.mathworks.com/matlabcentral/fileexchange/47982-gui-layout-toolbox), [Package Jockey](https://insidelabs-git.mathworks.com/dsampson/pj), and [DocMaker](https://github.com/mathworks/docmaker) itself! The features of DocMaker reflect the needs of these projects.
 
 ___
 

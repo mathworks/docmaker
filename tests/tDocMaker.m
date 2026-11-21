@@ -1,5 +1,7 @@
 classdef tDocMaker < matlab.unittest.TestCase
-    %TDOCMAKER Infrastructure for DocMaker tests.
+    %tDocMaker Infrastructure for DocMaker tests.
+    %
+    %   Copyright 2026 The MathWorks, Inc.
 
     properties ( Access = protected )
         % Temporary folder.

@@ -1,4 +1,4 @@
-name: MATLAB DocMaker Actions
+name: MATLAB DocMaker CI
 
 on:
   push:
@@ -6,93 +6,380 @@ on:
     tags:
       - 'v*'
   pull_request:
-    branches: [master]
   workflow_dispatch:
+    inputs:
+      mode:
+        description: CI workload to run for the selected ref
+        required: true
+        default: test-mini
+        type: choice
+        options:
+          - test-mini
+          - test-full
+          - package
+          - draft
 
-env:
-      DOCMAKER_GITHUB_TOKEN: ${{ secrets.DOCMAKER_GITHUB_TOKEN }}
+permissions:
+  contents: read
 
 jobs:
-  
-  run-tests:
+  test-linux-latest:
+    if: >-
+      ${{
+        (github.event_name == 'workflow_dispatch' &&
+        (inputs.mode == 'test-mini' || inputs.mode == 'test-full')) ||
+        github.event_name == 'pull_request' ||
+        (github.event_name == 'push' && github.ref == 'refs/heads/master')
+      }}
+    uses: ./.github/workflows/build-mex.yml
+    with:
+      runner: ubuntu-24.04
+      release: latest
+      mex_extension: mexa64
+      run_tests: true
+
+  test-platforms-latest:
+    if: >-
+      ${{
+        (github.event_name == 'workflow_dispatch' && inputs.mode == 'test-full') ||
+        (github.event_name == 'pull_request' && github.base_ref == 'master')
+      }}
     strategy:
+      fail-fast: false
       matrix:
-        platform: [ubuntu-latest, windows-latest]
-        matlab-version: [R2022b, R2023b, R2024b, R2025b, R2026a, R2026b, latest-including-prerelease]
-    runs-on: ${{ matrix.platform }}    
-    continue-on-error: false
+        include:
+          - platform: windows
+            runner: windows-latest
+            release: latest
+            extension: mexw64
+            architecture: skip
+          - platform: macos-intel
+            runner: macos-15-intel
+            release: R2025b
+            extension: mexmaci64
+            architecture: x86_64
+          - platform: macos-arm64
+            runner: macos-15
+            release: latest
+            extension: mexmaca64
+            architecture: arm64
+    uses: ./.github/workflows/build-mex.yml
+    with:
+      runner: ${{ matrix.runner }}
+      release: ${{ matrix.release }}
+      mex_extension: ${{ matrix.extension }}
+      architecture: ${{ matrix.architecture }}
+      run_tests: true
+
+  test-linux-releases:
+    needs: test-linux-latest
+    if: >-
+      ${{
+        always() &&
+        ((github.event_name == 'workflow_dispatch' && inputs.mode == 'test-full') ||
+        (github.event_name == 'pull_request' && github.base_ref == 'master')) &&
+        needs.test-linux-latest.result == 'success'
+      }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # GitHub-hosted Ubuntu 20.04 runners are unavailable; R2021a is best-effort on 22.04.
+          - matlab-version: R2021a
+            runner: ubuntu-22.04
+          - matlab-version: R2022b
+            runner: ubuntu-22.04
+          - matlab-version: R2023b
+            runner: ubuntu-22.04
+          - matlab-version: R2024b
+            runner: ubuntu-24.04
+          - matlab-version: R2025b
+            runner: ubuntu-24.04
+    runs-on: ${{ matrix.runner }}
     steps:
-      - name: Check out the repository
+      - name: Check out the source
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          submodules: recursive
 
-      - name: Start a display server for jobs running on Linux
-        if: ${{ matrix.platform == 'ubuntu-latest' }}
-        run: |
-          sudo apt-get install -y xvfb
-          Xvfb :99 &
-          echo "DISPLAY=:99" >> $GITHUB_ENV      
+      - name: Download the Linux MEX built with the latest MATLAB
+        uses: actions/download-artifact@v4
+        with:
+          name: mexa64
+          path: artifacts/linux
 
-      - name: Set up MATLAB on the runner
+      - name: Stage the Linux MEX
+        shell: bash
+        run: cp artifacts/linux/cmarkmd2html.mexa64 tbx/docmaker/+docmaker/
+
+      - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v3
         with:
           products: MATLAB
           release: ${{ matrix.matlab-version }}
 
-      - name: Run the toolbox tests
-        uses: matlab-actions/run-tests@v3
+      - name: Run the compatibility suite
+        uses: matlab-actions/run-command@v3
+        with:
+          command: >-
+            openProject(pwd);
+            results = runtests('tests');
+            assertSuccess(results)
 
-  package-and-release-toolbox:
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    
+  check-tag:
+    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
+    runs-on: ubuntu-24.04
     steps:
-    - name: Check out the repository
-      uses: actions/checkout@v6
+      - name: Check out the repository history
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: false
 
-    - name: Extract version from tag
-      shell: bash
-      run: |
-        TOOLBOX_VERSION="${GITHUB_REF_NAME#v}"
-        echo "TOOLBOX_VERSION=$TOOLBOX_VERSION" >> $GITHUB_ENV  
+      - name: Verify the tag points to a commit on master
+        shell: bash
+        env:
+          TAG_REF: ${{ github.ref }}
+        run: |
+          tag_name="${TAG_REF#refs/tags/}"
+          if [[ ! "$tag_name" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+            echo "Release tag $TAG_REF must match vMAJOR.MINOR.PATCH without prerelease or build metadata."
+            exit 1
+          fi
 
-    - name: Set up MATLAB on the runner
-      uses: matlab-actions/setup-matlab@v3
-      with:
-        products: MATLAB
+          git fetch --no-tags origin master
+          tag_commit="$(git rev-parse "${TAG_REF}^{commit}")"
+          if ! git merge-base --is-ancestor "$tag_commit" FETCH_HEAD; then
+            echo "Release tag $TAG_REF does not point to a commit reachable from master."
+            exit 1
+          fi
 
-    - name: Package toolbox
-      uses: matlab-actions/run-command@v3
-      with:
-        command: |
-            logLines = readlines( "tbx/docmakerdoc/changelog.md" );
-            startIdx = find( logLines == "## Version " + getenv( "TOOLBOX_VERSION" ) ) + 1;
-            allVersionLines = find( startsWith( logLines, "##" ) );
-            endIdx = allVersionLines(find( allVersionLines > startIdx, 1 )) - 1;
-            releaseNotes = join( logLines(startIdx:endIdx), newline() );
-            tempFile = "ReleaseNotes.txt";
-            writelines( releaseNotes, tempFile )
-            delimiter = "EOF_" + matlab.lang.internal.uuid();
-            systemCommand = sprintf( [ ...
-                'echo "RELEASE_NOTES<<%s" >> $GITHUB_ENV && ', ...
-                'cat "%s" >> $GITHUB_ENV && ', ...
-                'echo "%s" >> $GITHUB_ENV' ], ...
-                delimiter, tempFile, delimiter );
-            system( systemCommand );
-            delete( tempFile )
-            buildtool package -skip test -skip check
+  mex:
+    needs: check-tag
+    if: >-
+      ${{
+        always() &&
+        ((github.event_name == 'workflow_dispatch' &&
+        (inputs.mode == 'package' || inputs.mode == 'draft')) ||
+        (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') &&
+        needs.check-tag.result == 'success'))
+      }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: windows
+            runner: windows-latest
+            release: latest
+            extension: mexw64
+            architecture: skip
+          - platform: macos-intel
+            runner: macos-15-intel
+            release: R2025b
+            extension: mexmaci64
+            architecture: x86_64
+          - platform: macos-arm64
+            runner: macos-15
+            release: latest
+            extension: mexmaca64
+            architecture: arm64
+    uses: ./.github/workflows/build-mex.yml
+    with:
+      runner: ${{ matrix.runner }}
+      release: ${{ matrix.release }}
+      mex_extension: ${{ matrix.extension }}
+      architecture: ${{ matrix.architecture }}
+      run_tests: true
 
-        tasks: package
-        build-options: -skip test -skip check
+  package:
+    needs: [check-tag, mex]
+    if: >-
+      ${{
+        always() &&
+        ((github.event_name == 'workflow_dispatch' &&
+        (inputs.mode == 'package' || inputs.mode == 'draft')) ||
+        (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') &&
+        needs.check-tag.result == 'success' &&
+        needs.mex.result == 'success'))
+      }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the selected source and submodules
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
 
-    - name: Release toolbox
-      uses: softprops/action-gh-release@v3
-      with:
-        name: MATLAB DocMaker ${{ env.TOOLBOX_VERSION }}
-        tag_name: v${{ env.TOOLBOX_VERSION }}
-        body: ${{ env.RELEASE_NOTES }}
-        draft: false
-        make_latest: true
-        files: releases/MATLAB_DocMaker.mltbx
-      env:
+      - name: Download the Windows and Mac MEX files
+        uses: actions/download-artifact@v4
+        with:
+          pattern: mex*
+          path: artifacts/platforms
+          merge-multiple: true
 
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Stage the non-Linux MEX files
+        shell: bash
+        run: |
+          cp artifacts/platforms/cmarkmd2html.mexw64 tbx/docmaker/+docmaker/
+          cp artifacts/platforms/cmarkmd2html.mexmaci64 tbx/docmaker/+docmaker/
+          cp artifacts/platforms/cmarkmd2html.mexmaca64 tbx/docmaker/+docmaker/
+
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v3
+        with:
+          products: MATLAB
+          release: latest
+
+      - name: Configure the C compiler
+        uses: matlab-actions/run-command@v3
+        with:
+          command: mex -setup C
+
+      - name: Build and package the toolbox
+        uses: matlab-actions/run-command@v3
+        with:
+          command: openProject(pwd); buildtool('package')
+
+      - name: Verify the package contains all platform MEX files
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            toolbox="releases/MATLAB_DocMaker.mltbx"
+          else
+            toolbox="$(find releases -maxdepth 1 -name '*.mltbx' -print -quit)"
+          fi
+          test -n "$toolbox" && test -f "$toolbox"
+          for mex in cmarkmd2html.mexw64 cmarkmd2html.mexa64 cmarkmd2html.mexmaca64 cmarkmd2html.mexmaci64; do
+            if ! unzip -Z1 "$toolbox" | awk -F/ -v file="$mex" '$NF == file { found = 1 } END { exit !found }'; then
+              echo "Missing $mex in $toolbox"
+              exit 1
+            fi
+          done
+
+      - name: Upload the toolbox artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mltbx
+          path: releases/*.mltbx
+          if-no-files-found: error
+          retention-days: 14
+
+  draft:
+    needs: package
+    if: >-
+      ${{
+        github.event_name == 'workflow_dispatch' &&
+        inputs.mode == 'draft' &&
+        needs.package.result == 'success'
+      }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the selected source and release notes
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+          submodules: false
+
+      - name: Download the toolbox package
+        uses: actions/download-artifact@v4
+        with:
+          name: mltbx
+          path: release-assets
+
+      - name: Extract the toolbox version
+        shell: pwsh
+        run: |
+          $contents = Get-Content tbx/docmaker/Contents.m -Raw
+          if ($contents -notmatch '(?m)^% Version (\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?)\b') {
+            throw "Unable to read the toolbox version from Contents.m."
+          }
+          $version = $Matches[1]
+          $releaseNotesVersion = $version -replace '[-+].*$', ''
+          $tag = "v$version"
+          [IO.File]::AppendAllText($env:GITHUB_ENV, "TOOLBOX_VERSION=$version`nRELEASE_NOTES_VERSION=$releaseNotesVersion`nRELEASE_TAG=$tag`n", [Text.UTF8Encoding]::new($false))
+
+      - name: Extract release notes
+        shell: pwsh
+        run: |
+          $lines = Get-Content tbx/docmakerdoc/changelog.md
+          $heading = "## Version $env:RELEASE_NOTES_VERSION"
+          $start = [Array]::IndexOf($lines, $heading)
+          if ($start -lt 0) { throw "Release notes for $env:RELEASE_NOTES_VERSION were not found." }
+          $end = $start + 1
+          while ($end -lt $lines.Length -and -not $lines[$end].StartsWith('## ')) { $end++ }
+          $notes = $lines[($start + 1)..($end - 1)] -join "`n"
+          $delimiter = "EOF_$([guid]::NewGuid().ToString('N'))"
+          $content = "RELEASE_NOTES<<$delimiter`n$notes`n$delimiter`n"
+          [IO.File]::AppendAllText($env:GITHUB_ENV, $content, [Text.UTF8Encoding]::new($false))
+
+      - name: Create a GitHub draft release
+        uses: softprops/action-gh-release@v3
+        with:
+          name: MATLAB DocMaker ${{ env.TOOLBOX_VERSION }}
+          tag_name: ${{ env.RELEASE_TAG }}
+          target_commitish: ${{ github.sha }}
+          body: ${{ env.RELEASE_NOTES }}
+          draft: true
+          make_latest: false
+          files: release-assets/*.mltbx
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish:
+    needs: [check-tag, package]
+    if: >-
+      ${{
+        github.event_name == 'push' &&
+        startsWith(github.ref, 'refs/tags/v') &&
+        needs.check-tag.result == 'success' &&
+        needs.package.result == 'success'
+      }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the release notes
+        uses: actions/checkout@v6
+        with:
+          submodules: false
+
+      - name: Download the toolbox package
+        uses: actions/download-artifact@v4
+        with:
+          name: mltbx
+          path: release-assets
+
+      - name: Extract the version from the tag
+        shell: pwsh
+        run: |
+          $version = $env:GITHUB_REF_NAME.TrimStart('v')
+          $releaseNotesVersion = $version -replace '[-+].*$', ''
+          [IO.File]::AppendAllText($env:GITHUB_ENV, "TOOLBOX_VERSION=$version`nRELEASE_NOTES_VERSION=$releaseNotesVersion`n", [Text.UTF8Encoding]::new($false))
+
+      - name: Extract release notes
+        shell: pwsh
+        run: |
+          $lines = Get-Content tbx/docmakerdoc/changelog.md
+          $heading = "## Version $env:RELEASE_NOTES_VERSION"
+          $start = [Array]::IndexOf($lines, $heading)
+          if ($start -lt 0) { throw "Release notes for $env:RELEASE_NOTES_VERSION were not found." }
+          $end = $start + 1
+          while ($end -lt $lines.Length -and -not $lines[$end].StartsWith('## ')) { $end++ }
+          $notes = $lines[($start + 1)..($end - 1)] -join "`n"
+          $delimiter = "EOF_$([guid]::NewGuid().ToString('N'))"
+          $content = "RELEASE_NOTES<<$delimiter`n$notes`n$delimiter`n"
+          [IO.File]::AppendAllText($env:GITHUB_ENV, $content, [Text.UTF8Encoding]::new($false))
+
+      - name: Publish the GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          name: MATLAB DocMaker ${{ env.TOOLBOX_VERSION }}
+          tag_name: ${{ github.ref_name }}
+          body: ${{ env.RELEASE_NOTES }}
+          draft: false
+          make_latest: true
+          files: release-assets/MATLAB_DocMaker.mltbx
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

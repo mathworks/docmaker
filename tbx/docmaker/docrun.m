@@ -63,7 +63,7 @@ oFiles = strings( 0, 1 );
 % Check documents
 sHtml = docmaker.dir( sHtml{:} );
 assert( all( docmaker.extensions( sHtml ) == ".html" ), ...
-    "docmaker:InvalidArgument", ...
+    "docmaker:InvalidValue", ...
     "HTML documents must all have extension .html." )
 if isempty( sHtml ), return, end
 
@@ -192,7 +192,7 @@ try
     outString = string( evalinc( w, inString ) );
     ok = true; % ok
 catch e
-    warning( "docmaker:EvalError", "%s", e.message ) % rethrow as warning
+    warning( "docmaker:OperationFailed", "%s", e.message ) % rethrow as warning
     outString = e.message;
     ok = false; % error
 end
@@ -303,7 +303,7 @@ if isscalar( a ) && ~isscalar( b )
 elseif ~isscalar( a ) && isscalar( b )
     b = repmat( b, size( a ) );
 else
-    assert( isequal( size( a ), size( b ) ), "docmaker:InvalidArgument", ...
+    assert( isequal( size( a ), size( b ) ), "docmaker:InvalidValue", ...
         "Cannot compare element arrays of different sizes." )
 end
 

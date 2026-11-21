@@ -1,5 +1,5 @@
 function s = removeemojis( s )
-%removeemojis  Remove emojis from string
+%docmaker.removeemojis  Remove emojis from string
 %
 %   s = docmaker.removeemojis(s) removes emojis from the string s.
 %

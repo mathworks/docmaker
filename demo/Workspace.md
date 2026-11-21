@@ -73,7 +73,7 @@ evalinc(w,"e=a+b*c")
 
 ### Loading and saving
 
-There is nothing special about the `.mat` files that `docmaker.Workspace` can load and save.  Let's save a `.mat` file from the *base* workspace and load it to a workspace *object*:
+There is nothing special about the `.mat` files that `docmaker.Workspace` can load and save. Let's save a `.mat` file from the *base* workspace and load it to a workspace *object*:
 
 ```matlab
 clear

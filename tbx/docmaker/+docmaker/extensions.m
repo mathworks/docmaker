@@ -1,5 +1,5 @@
 function x = extensions( s )
-%extensions  File extensions
+%docmaker.extensions  File extensions
 %
 %   x = docmaker.extensions(s) returns file extensions x from the folder
 %   struct s.

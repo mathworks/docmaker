@@ -1,8 +1,13 @@
-function varargout = docindex( pRoot )
+function varargout = docindex( pRoot, options )
 %docindex  Create info.xml and helptoc.xml from helptoc.md
 %
 %   docindex(d) creates documentation index files "info.xml" and
 %   "helptoc.xml" and search database "helpsearch-v4" in the folder d.
+%
+%   docindex(...,"Converter",c) selects the Markdown converter. Available
+%   converters are "cmark" (default), "github", and "gitlab". GitHub and
+%   GitLab conversion send Markdown to their APIs and require network
+%   access.
 %
 %   [xml,db] = docindex(...) returns the names of the index files xml and
 %   the search database folder db created.
@@ -13,6 +18,8 @@ function varargout = docindex( pRoot )
 
 arguments
     pRoot (1,1) string {mustBeFolder}
+    options.Converter (1,1) string {mustBeMember( ...
+        options.Converter, ["cmark", "github", "gitlab"])} = "cmark"
 end
 
 % Canonicalize
@@ -20,10 +27,9 @@ sRoot = docmaker.dir( pRoot );
 pRoot = sRoot(1).folder; % absolute
 
 % Read helptoc.md
-converter = docmaker.converter();
 fToc = fullfile( pRoot, "helptoc.md" ); % source
 mToc = fileread( fToc ); % Markdown
-xToc = converter.md2xml( mToc ); % parse
+xToc = docmaker.md2xml( mToc, "Converter", options.Converter ); % convert
 docmaker.replacelinks( xToc, ".md", ".html" ) % replace links
 
 % Extract name

@@ -1,0 +1,25 @@
+{
+  "name": "gitlab",
+  "hostname": {
+    "default": "gitlab.com",
+    "name": "DOCMAKER_GITLAB_HOSTNAME"
+  },
+  "request": {
+    "method": "POST",
+    "path": "/api/v4/markdown",
+    "bodyFormat": "gfmJson",
+    "contentType": "application/json",
+    "accept": "application/json"
+  },
+  "authentication": {
+    "name": "DOCMAKER_GITLAB_TOKEN",
+    "header": "PRIVATE-TOKEN",
+    "prefix": ""
+  },
+  "response": {
+    "successStatus": "Created",
+    "format": "json",
+    "htmlField": "html",
+    "errorMessageField": "message"
+  }
+}

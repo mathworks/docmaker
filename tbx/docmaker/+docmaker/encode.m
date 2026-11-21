@@ -1,5 +1,5 @@
 function s = encode( fig )
-%encode  Encode image data
+%docmaker.encode  Encode image data
 %
 %   s = docmaker.encode(f) encodes the figure f to the string s using Base
 %   64 encoding.

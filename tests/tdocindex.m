@@ -1,14 +1,22 @@
 classdef tdocindex < tDocMaker
-    %TDOCINDEX Tests for docindex.
+    %tdocindex Tests for docindex.
+    %
+    %   Copyright 2026 The MathWorks, Inc.
 
     methods ( Test )
 
         function tIndexCreatesExpectedFiles( testCase )
 
+            testCase.assumeTrue( ...
+                ~isMATLABReleaseOlderThan( "R2022b" ), ...
+                "builddocsearchdb cannot index the temporary test help " + ...
+                "location in R2022a or earlier." )
+
             outputFile = docconvert( testCase.ExampleFile, ...
                 "Root", testCase.Folder );
             docrun( outputFile )
-            [files, folders] = docindex( testCase.Folder );
+            [files, folders] = docindex( testCase.Folder, ...
+                "Converter", "cmark" );
             testCase.verifyEqual( files(1), ...
                 fullfile( testCase.Folder, "info.xml" ), ...
                 "docindex did not generate info.xml." )
@@ -21,6 +29,14 @@ classdef tdocindex < tDocMaker
                 "documentation search database." )
 
         end % tIndexCreatesExpectedFiles
+
+        function tIndexRejectsInvalidConverter( testCase )
+
+            testCase.verifyError( ...
+                @() docindex( testCase.Folder, "Converter", "invalid" ), ...
+                "MATLAB:validators:mustBeMember" )
+
+        end % tIndexRejectsInvalidConverter
 
     end % methods ( Test )
 

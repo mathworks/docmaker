@@ -1,9 +1,11 @@
 classdef tDocMakerTask < matlab.unittest.TestCase
-    %TDOCMAKERTASK Tests for DocMakerTask.
+    %tDocMakerTask Tests for DocMakerTask.
+    %
+    %   Copyright 2026 The MathWorks, Inc.
 
     properties ( Access = private )
         % Custom build task.
-        Task(:, 1) matlab.buildtool.Task {mustBeScalarOrEmpty}
+        Task {mustBeScalarOrEmpty} % matlab.buildtool.Task, but this fails before R2022b
         % Tests folder.
         TestsFolder(:, 1) string {mustBeFolder, mustBeScalarOrEmpty}
         % Test file name.
@@ -72,8 +74,27 @@ classdef tDocMakerTask < matlab.unittest.TestCase
                 fc( ind ), ...
                 "The task output search index folder was not set " + ...
                 "correctly." )
+            testCase.verifyEqual( testCase.Task.Converter, "cmark" )
 
         end % tTaskArgumentsAreSetCorrectly
+
+        function tTaskAcceptsGithubConverter( testCase )
+
+            md = fullfile( testCase.TestsFolder, testCase.TestFile );
+            task = DocMakerTask( md, "Converter", "github" );
+
+            testCase.verifyEqual( task.Converter, "github" )
+
+        end % tTaskAcceptsGithubConverter
+
+        function tTaskAcceptsGitlabConverter( testCase )
+
+            md = fullfile( testCase.TestsFolder, testCase.TestFile );
+            task = DocMakerTask( md, "Converter", "gitlab" );
+
+            testCase.verifyEqual( task.Converter, "gitlab" )
+
+        end % tTaskAcceptsGitlabConverter
 
         function tExecutingTaskIsWarningFree( testCase )
 

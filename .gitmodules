@@ -1,0 +1,6 @@
+[submodule "ext/cmark-gfm"]
+	path = ext/cmark-gfm
+	url = https://github.com/github/cmark-gfm.git
+[submodule "ext/gemoji"]
+	path = ext/gemoji
+	url = https://github.com/github/gemoji.git
