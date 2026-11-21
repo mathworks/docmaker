@@ -1,68 +1,50 @@
-function tf = ishostname( host )
+function tf = ishostname( s )
 %docmaker.ishostname  Test whether text is a DNS hostname
 %
-%   tf = docmaker.ishostname(host) returns true when host is an ASCII DNS
-%   hostname and false otherwise. A trailing root dot is allowed.
+%   tf = docmaker.ishostname(s) returns true when s is an ASCII DNS
+%   hostname without a trailing root dot and false otherwise.
 %
 %   See also: docmaker.githubmd2html, docmaker.gitlabmd2html
 
 %   Copyright 2026 The MathWorks, Inc.
 
 arguments
-    host {mustBeTextScalar}
+    s (1,1) string
 end
 
-host = string( host );
-if ismissing( host ) || strlength( host ) == 0
+% Reject missing, empty, and too-long input
+if ismissing( s ) || strlength( s ) == 0 || strlength( s ) > 253
     tf = false;
     return
 end
 
-% Allow the optional root dot, then check DNS presentation lengths.
-if endsWith( host, "." )
-    host = extractBefore( host, strlength( host ) );
-end
-if strlength( host ) == 0 || strlength( host ) > 253
+% Split on dots and check each label
+labels = split( s, "." );
+if ~all( arrayfun( @islabel, labels ) )
     tf = false;
     return
 end
 
-labels = split( host, "." );
-for ii = 1:numel( labels )
-    label = char( labels(ii) );
-    if strlength( labels(ii) ) > 63 || ...
-            isempty( regexp( label, ...
-            '^[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?$', 'once' ) )
-        tf = false;
-        return
-    end
-end
-
-% Reject IPv4 literals; IPv6 literals fail the DNS-label check above.
-if isIPv4Literal( labels )
+% Reject IPv4 literals; IPv6 literals fail above
+if numel( labels ) == 4 && all( matches( labels, digitsPattern ) ) && ...
+        all( str2double( labels ) < 256 )
     tf = false;
     return
 end
 
+% Otherwise return true
 tf = true;
 
 end % ishostname
 
-function tf = isIPv4Literal( labels )
-%isIPv4Literal  Test whether labels contain an IPv4 address
+function tf = islabel( label )
+%islabel  Test whether text is a valid DNS label
 
-tf = false;
-if numel( labels ) ~= 4
-    return
+if strlength( label ) > 63 % max length
+    tf = false;
+else % letters, digits or hyphens; letters or digits first and last
+    tf = ~isempty( regexp( char( label ), ...
+        '^[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?$', 'once' ) );
 end
 
-for ii = 1:4
-    if isempty( regexp( char( labels(ii) ), '^\d{1,3}$', 'once' ) )
-        return
-    end
-end
-
-octets = str2double( labels );
-tf = all( octets <= 255 );
-
-end % isIPv4Literal
+end % islabel
