@@ -1,5 +1,7 @@
 classdef tdocdelete < tDocMaker
-    %TDOCDELETE Tests for docdelete.
+    %tdocdelete Tests for docdelete.
+    %
+    %   Copyright 2026 The MathWorks, Inc.
 
     methods ( Test )
 
@@ -41,6 +43,11 @@ classdef tdocdelete < tDocMaker
         end % tFilesAreRemovedAfterConversionAndRunning
 
         function tFilesAreRemovedAfterCompleteBuild( testCase )
+
+            testCase.assumeTrue( ...
+                ~isMATLABReleaseOlderThan( "R2022b" ), ...
+                "builddocsearchdb cannot index the temporary test help " + ...
+                "location in R2022a or earlier." )
 
             outputFiles = docconvert( testCase.ExampleFile, ...
                 "Root", testCase.Folder );

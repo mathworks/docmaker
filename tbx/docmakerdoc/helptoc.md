@@ -2,15 +2,15 @@
 
 * [DocMaker](index.md)
   * [Release notes](changelog.md)
-  * [Markdown conversion](conversion.md)
-  * [Build automation](automation.md)
-    * [DocMakerTask](DocMakerTask.md)
   * [Function reference](api.md)
     * [docconvert](docconvert.md)
     * [docrun](docrun.md)
     * [docindex](docindex.md)
     * [docdelete](docdelete.md)
+    * [DocMakerTask](DocMakerTask.md)
     * [docmaker.Workspace](workspace.md)
+  * [Build automation](automation.md)
+  * [Markdown conversion](conversion.md)
   * [About DocMaker](about.md)
   * [Licenses](license.md)
 

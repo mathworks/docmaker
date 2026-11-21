@@ -1,5 +1,5 @@
 function s = dir( p, varargin )
-%dir  List folder contents
+%docmaker.dir  List folder contents
 %
 %   s = docmaker.dir(f) returns the contents of the folder f, which can be
 %   specified as an absolute or relative path, and can include wildcards.

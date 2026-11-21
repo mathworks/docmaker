@@ -64,6 +64,34 @@
                     "choices={'latex','none'}"
                     ],
                 "purpose": "math interpreter"
+            },
+            {
+                "name": "Converter",
+                "kind": "namevalue",
+                "type": [
+                    "char",
+                    "choices={'cmark','github','gitlab'}"
+                ],
+                "purpose": "Markdown converter"
+            }
+        ]
+    },
+    "docindex": {
+        "inputs": [
+            {
+                "name": "d",
+                "kind": "required",
+                "type": "folder",
+                "purpose": "documentation folder"
+            },
+            {
+                "name": "Converter",
+                "kind": "namevalue",
+                "type": [
+                    "char",
+                    "choices={'cmark','github','gitlab'}"
+                ],
+                "purpose": "Markdown converter"
             }
         ]
     },

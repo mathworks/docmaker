@@ -2,19 +2,19 @@
 
 You can automate documentation generation as part of toolbox publishing using projects, source control integration, and (from R2022b) the [MATLAB Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html).
 
-Here we set out an example using DocMaker itself.  You can adapt this example to your needs.
+Here we set out an example using DocMaker itself. You can adapt this example to your needs.
 
 ## Provisioning DocMaker
 
 You should install DocMaker in both the developer and automation environments.
 
-A basic option is to script installation from a known location at project startup.  The latest installer is available at:
+A basic option is to script installation from a known location at project startup. The latest installer is available at:
 
 ```
 https://github.com/mathworks/docmaker/releases/latest/download/MATLAB_DocMaker.mltbx
 ```
 
-For specific versions, replace `latest` with the version tag, e.g. `v1.0` for version 1.0.  You can download the installer using [`websave`](https://www.mathworks.com/help/matlab/ref/websave.html), and then install the toolbox using [`matlab.addons.install`](https://www.mathworks.com/help/matlab/ref/matlab.addons.install.html).
+For specific versions, replace `latest` with the version tag, e.g. `v1.0.0` for version 1.0.0. You can download the installer using [`websave`](https://www.mathworks.com/help/matlab/ref/websave.html), and then install the toolbox using [`matlab.addons.install`](https://www.mathworks.com/help/matlab/ref/matlab.addons.install.html).
 
 A better option is to use a package manager such as [Package Jockey](https://insidelabs-git.mathworks.com/dsampson/pj) from [MathWorks Consulting](https://www.mathworks.com/consulting/).
 
@@ -24,11 +24,13 @@ Check that DocMaker is available using `ver`.
 s = ver("docmaker")
 ```
 
-By default, DocMaker uses the GitHub Markdown API at `api.github.com` to convert Markdown to HTML.  You can [configure Markdown conversion](conversion.md) to use another converter technology or service instance or to authenticate with an access token.
+By default, `Converter="cmark"` converts Markdown locally using [cmark-gfm](https://github.com/github/cmark-gfm) and [gemoji](https://github.com/github/gemoji), so network access is not required. Set `Converter` to `github` or `gitlab` in `docconvert` or `DocMakerTask` to use a hosted Markdown API. See [Markdown conversion](conversion.md) for platform and authentication details.
+
+The published DocMaker toolbox includes the platform-specific MEX binaries for Windows x64, Linux x86-64, Intel macOS, and Apple Silicon macOS.
 
 ## Organizing files
 
-You should organize your toolbox project files, separating code, documentation, tests, releases, etc. into folders.  For DocMaker, this looks like:
+You should organize your toolbox project files, separating code, documentation, tests, releases, etc. into folders. For DocMaker, this looks like:
 
 ```
 docmaker
@@ -43,9 +45,9 @@ docmaker.prj
 README.md
 ```
 
-`docmaker.prj` is the MATLAB project file.  `tbx` is the toolbox root folder -- the folder containing the shipping files -- with code in `docmaker`, and documentation in `docmakerdoc`.
+`docmaker.prj` is the MATLAB project file. `tbx` is the toolbox root folder -- the folder containing the shipping files -- with code in `docmaker`, and documentation in `docmakerdoc`.
 
-Track your files with Git.  Only DocMaker *source* artifacts (`*.md`, `*.m`) should be tracked.  You can exclude *generated* artifacts via `.gitignore` entries:
+Track your files with Git. Only DocMaker *source* artifacts (`*.md`, `*.m`) should be tracked. You can exclude *generated* artifacts via `.gitignore` entries:
 
 ```
 tbx/docmakerdoc/**/*.html
@@ -58,7 +60,7 @@ tbx/docmakerdoc/helpsearch-v*
 
 ### Alternative layout
 
-Some authors prefer to separate documentation input from output.  This looks like:
+Some authors prefer to separate documentation input from output. This looks like:
 
 ```
 docmaker
@@ -68,11 +70,11 @@ docmaker
   |- docmakerdoc
 ```
 
-with Markdown documents in `doc` and generated HTML documents, index files and other resources in `tbx/docmakerdoc`.  Since DocMaker generates output in place, the output needs to be moved to the shipping folder as a second step.
+with Markdown documents in `doc` and generated HTML documents, index files and other resources in `tbx/docmakerdoc`. Since DocMaker generates output in place, the output needs to be moved to the shipping folder as a second step.
 
 ## Generating documentation
 
-Create a build task `docTask` to generate the documentation.  The input is the documentation root folder.  The outputs are the HTML documents, resources folder, index files, and search database folder generated.
+Create a build task `docTask` to generate the documentation. The input is the documentation root folder. The outputs are the HTML documents, resources folder, index files, and search database folder generated.
 
 ```matlab
 plan("doc").Inputs = doc; % source folder, /tbx/docmakerdoc
@@ -96,10 +98,9 @@ docindex(doc) % index
 end 
 ```
 
-The task will be skipped if the input and output have not changed since the last successful run.  Furthermore `buildtool clean` will remove generated artifacts, without the need to call `docdelete` explicitly.
+The task will be skipped if the input and output have not changed since the last successful run. Furthermore `buildtool clean` will remove generated artifacts, without the need to call `docdelete` explicitly.
 
-In MATLAB R2025a or later, you can use the provided [`DocMakerTask`](DocMakerTask.md) to simplify this process, without the need to write a task function. This task works 
-in the same way as the steps above.
+In MATLAB R2025a or later, you can use the provided [`DocMakerTask`](DocMakerTask.md) to simplify this process, without the need to write a task function. This task works in the same way as the steps above.
 
 ```matlab
 md = fullfile( doc, "**", "*.md" ); % Markdown documents
@@ -149,7 +150,7 @@ Since [`movefile`](https://www.mathworks.com/help/matlab/ref/movefile.html) is n
 
 ## Packaging the toolbox
 
-Use [`packageToolbox`](https://www.mathworks.com/help/matlab/ref/matlab.addons.toolbox.packagetoolbox.html) with [`ToolboxOptions`](https://www.mathworks.com/help/matlab/ref/matlab.addons.toolbox.toolboxoptions.html) to package the toolbox.  If your documentation source is located under the toolbox root then you may wish to remove the source from the list of packaged files.
+Use [`packageToolbox`](https://www.mathworks.com/help/matlab/ref/matlab.addons.toolbox.packagetoolbox.html) with [`ToolboxOptions`](https://www.mathworks.com/help/matlab/ref/matlab.addons.toolbox.toolboxoptions.html) to package the toolbox. If your documentation source is located under the toolbox root then you may wish to remove the source from the list of packaged files.
 
 ```matlab
 o = matlab.addons.toolbox.ToolboxOptions("tbx",id,...);

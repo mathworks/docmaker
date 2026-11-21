@@ -1,9 +1,9 @@
 function s = superfolder( varargin )
-%superfolder  Common ancestor folder
+%docmaker.superfolder  Common ancestor folder
 %
-%   s = superfolder(p1,p2,...) returns the common ancestor of the folders
-%   p1, p2, ...  The folders must exist.  If there is no common ancestor
-%   then superfolder returns [].
+%   s = docmaker.superfolder(p1,p2,...) returns the common ancestor of the
+%   folders p1, p2, ... The folders must exist. If there is no common
+%   ancestor, then docmaker.superfolder returns [].
 
 %   Copyright 2024-2026 The MathWorks, Inc.
 

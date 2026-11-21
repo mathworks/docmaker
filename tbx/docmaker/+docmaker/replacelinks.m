@@ -1,11 +1,11 @@
 function replacelinks( doc, old, new )
-%replacelinks  Replace links in XML document
+%docmaker.replacelinks  Replace links in XML document
 %
-%   docmaker.replacelinks(x,o,n) replaces link extensions o with n in the
-%   XML document x.
+%   docmaker.replacelinks(doc,o,n) replaces link extensions o with n in
+%   the XML document doc.
 %
 %   For example, replace Markdown links with HTML links using:
-%      docmaker.replacelinks(x,".md",".html")
+%      docmaker.replacelinks(doc,".md",".html")
 
 %   Copyright 2024-2026 The MathWorks, Inc.
 

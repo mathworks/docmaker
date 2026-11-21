@@ -44,11 +44,11 @@ Nested out of order:
 s = "vanilla <a href=""https://www.ice.org/""><strong>ice</a></strong> cream"
 ```
 
-The last example :point_up: behaves differently in MATLAB, which tries to render the `<a>`, and discards the `<strong>` within it, but does render the `</strong>`.  DocMaker first discards the `<a>`, and then matches and discards the `<strong>` that spanned the `<a>` boundary.  We won't bother trying to address this edge case.
+The last example :point_up: behaves differently in MATLAB, which tries to render the `<a>`, and discards the `<strong>` within it, but does render the `</strong>`. DocMaker first discards the `<a>`, and then matches and discards the `<strong>` that spanned the `<a>` boundary. We won't bother trying to address this edge case.
 
 ## Tables
 
-Here is a table.  The variable names are rendered as `<strong>` and this needs to be stripped out.
+Here is a table. The variable names are rendered as `<strong>` and this needs to be stripped out.
 
 ```matlab
 t = table([1;2;3],["a";"b";"c"],VariableNames=["foo","bar"])
@@ -74,4 +74,4 @@ t = table([1;2;3],["<a href=""https://www.ice.org"">ice";"b";"</a>"],VariableNam
 
 DocMaker matches the plain text appearance of MATLAB in this case :point_up:.
 
-The end.  :hatching_chick:
+The end. :hatching_chick:

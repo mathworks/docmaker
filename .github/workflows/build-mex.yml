@@ -1,0 +1,84 @@
+name: Build MATLAB MEX
+
+on:
+  workflow_call:
+    inputs:
+      runner:
+        description: GitHub Actions runner label
+        required: true
+        type: string
+      source_ref:
+        description: Repository ref to build
+        required: false
+        default: ''
+        type: string
+      release:
+        description: MATLAB release to use
+        required: true
+        type: string
+      mex_extension:
+        description: Expected MATLAB MEX extension, without a leading dot
+        required: true
+        type: string
+      artifact_name:
+        description: Optional artifact name; defaults to the MEX extension
+        required: false
+        default: ''
+        type: string
+      architecture:
+        description: Expected runner architecture, or skip
+        required: false
+        default: skip
+        type: string
+      run_tests:
+        description: Run the complete toolbox test suite after building
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ${{ inputs.runner }}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.source_ref || github.ref }}
+          submodules: recursive
+
+      - name: Verify runner architecture
+        if: ${{ inputs.architecture != 'skip' }}
+        shell: bash
+        run: test "$(uname -m)" = "${{ inputs.architecture }}"
+
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v3
+        with:
+          products: MATLAB
+          release: ${{ inputs.release }}
+
+      - name: Configure the C compiler
+        uses: matlab-actions/run-command@v3
+        with:
+          command: mex -setup C
+
+      - name: Build MEX
+        uses: matlab-actions/run-command@v3
+        with:
+          command: openProject(pwd); buildtool('mex')
+
+      - name: Run the full test suite
+        if: ${{ inputs.run_tests }}
+        uses: matlab-actions/run-command@v3
+        with:
+          command: openProject(pwd); buildtool('test')
+
+      - name: Upload MEX artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_name || inputs.mex_extension }}
+          path: tbx/docmaker/+docmaker/cmarkmd2html.${{ inputs.mex_extension }}
+          if-no-files-found: error

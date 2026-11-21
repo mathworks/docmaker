@@ -10,9 +10,9 @@ The number of rows and columns are *dynamic* with the number of contents:
 * Changing the number of rows may change the number of columns, and vice versa.
 * Adding and removing contents may increase and decrease the number of columns.
 
-Contents are laid out dynamically, top-to-bottom then left-to-right.  To interleave empty space, use [`uix.Empty`](Empty.md).
+Contents are laid out dynamically, top-to-bottom then left-to-right. To interleave empty space, use [`uix.Empty`](Empty.md).
 
-Row heights and column widths can be fixed or variable, with minima.  Variable-sized rows and columns fill available container space, subject to minima, accoring to specified weights.
+Row heights and column widths can be fixed or variable, with minima. Variable-sized rows and columns fill available container space, subject to minima, accoring to specified weights.
 
 `uix.GridFlex` extends `uix.Grid`, adding draggable dividers between the rows and columns.
 

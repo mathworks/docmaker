@@ -15,23 +15,65 @@ test = fullfile( prj, "tests" );
 
 % Clean task
 plan("clean") = matlab.buildtool.tasks.CleanTask;
+plan("clean").Description = "Remove generated build artifacts";
 
 % Check task
+plan("check").Description = "Check code quality and project configuration";
 plan("check").Inputs = api;
+
+% MEX task
+sourceDir = fullfile( prj, "src" );
+extDir = fullfile( prj, "ext" );
+cmarkDir = fullfile( extDir, "cmark-gfm" );
+gemojiDir = fullfile( extDir, "gemoji" );
+genDir = fullfile( prj, "build", "cmark-gfm" );
+mexDir = fullfile( api, "+docmaker" );
+mexFile = fullfile( mexDir, "cmarkmd2html." + mexext() );
+rightsInputs = [ ...
+    fullfile( cmarkDir, "COPYING" )
+    fullfile( gemojiDir, "LICENSE" ) ];
+rightsFiles = [ ...
+    fullfile( mexDir, "cmark-gfm.rights" )
+    fullfile( mexDir, "gemoji.rights" ) ];
+genFiles = [ ...
+    fullfile( genDir, "cmark-gfm_version.h" )
+    fullfile( genDir, "emoji_map.c" ) ];
+mexSourceFiles = cmarkSourceFiles( cmarkDir, sourceDir, genDir );
+genEmojiMap = fullfile( genDir, "emoji_map.c" );
+mexInputs = [ ...
+    mexSourceFiles(mexSourceFiles ~= genEmojiMap)
+    filesIn( fullfile( cmarkDir, "src" ), "*.h" )
+    filesIn( fullfile( cmarkDir, "extensions" ), "*.h" )
+    filesIn( sourceDir, "*.h" )
+    fullfile( prj, "buildfile.m" )
+    fullfile( cmarkDir, "CMakeLists.txt" )
+    fullfile( cmarkDir, "src", "cmark-gfm_version.h.in" )
+    rightsInputs
+    fullfile( gemojiDir, "db", "emoji.json" )
+    fullfile( sourceDir, "emoji_map.c.in" ) ];
+mexInputs = mexInputs(isfile(mexInputs));
+plan("mex").Description = ...
+    "Generate and build the cmark-gfm MEX";
+plan("mex").Inputs = mexInputs;
+plan("mex").Outputs = [genFiles; mexFile; rightsFiles];
 
 % Test task
 plan("test") = matlab.buildtool.tasks.TestTask( test, ...
     "SourceFiles", tbx, "Strict", true );
+plan("test").Description = "Run the toolbox test suite";
 plan("test").Inputs = [api test];
-plan("test").Dependencies = "check";
+plan("test").Dependencies = ["check", "mex"];
 
 % Documentation task
 plan("doc") = DocMakerTask( fullfile( doc, "**", "*.md" ), ...
     "Theme", "light", ...
     "FigureSize", [600, 400], ...
     "FigureTheme", "light" );
+plan("doc").Description = "Build toolbox documentation";
+plan("doc").Dependencies = "mex";
 
 % Package task
+plan("package").Description = "Package the toolbox as an MLTBX";
 plan("package").Inputs = tbx;
 plan("package").Dependencies = ["test", "doc"];
 
@@ -41,7 +83,11 @@ plan.DefaultTasks = "package";
 end % buildfile
 
 function n = tbxname()
-%tbxname  Toolbox name
+%tbxname  Return the toolbox name
+%
+%   n = tbxname() returns the toolbox name as a string.
+%
+%   See also: packageTask, ver
 
 n = "docmaker";
 
@@ -60,35 +106,78 @@ fprintf( 1, "** Code checks passed\n" )
 
 % Check project
 p = currentProject();
-p.updateDependencies()
+p.refreshSourceControl() % refresh status for project checks
 t = table( p.runChecks() );
 ok = t.Passed;
 if any( ~ok )
     disp( t(~ok,:) )
-    error( "build:check", "Project check(s) failed." )
+    error( "docmaker:OperationFailed", "Project check(s) failed." )
 else
     fprintf( 1, "** Project checks passed\n" )
 end
 
 end % checkTask
 
-function packageTask( ~ )
+function mexTask( ~ )
+% Build cmark-gfm and its generated emoji lookup table
+
+root = fileparts( mfilename( "fullpath" ) );
+sourceDir = fullfile( root, "src" );
+extDir = fullfile( root, "ext" );
+cmarkDir = fullfile( extDir, "cmark-gfm" );
+gemojiDir = fullfile( extDir, "gemoji" );
+genDir = fullfile( root, "build", "cmark-gfm" );
+mexDir = fullfile( root, "tbx", "docmaker", "+docmaker" );
+
+generateSources( root );
+
+sourceFiles = cmarkSourceFiles( cmarkDir, sourceDir, genDir );
+options = [ ...
+    "-R2018a"
+    "-I" + sourceDir
+    "-I" + genDir
+    "-I" + fullfile( cmarkDir, "src" )
+    "-I" + fullfile( cmarkDir, "extensions" ) ];
+
+mexArgs = [ ...
+    cellstr(options)
+    cellstr(sourceFiles)
+    { "-outdir"; char(mexDir); "-output"; "cmarkmd2html" } ];
+mex( mexArgs{:} );
+
+copyfile( fullfile( cmarkDir, "COPYING" ), ...
+    fullfile( mexDir, "cmark-gfm.rights" ) );
+copyfile( fullfile( gemojiDir, "LICENSE" ), ...
+    fullfile( mexDir, "gemoji.rights" ) );
+
+end % mexTask
+
+function packageTask( c )
 % Package toolbox
 
 % Load and tweak metadata
-s = jsondecode( fileread( tbxname() + ".json" ) );
-v = ver( tbxname() ); % from Contents.m
-assert( isscalar( v ), "build:package", ...
-    "Found %d instances of %s on the MATLAB path.", numel( v ), tbxname() )
+n = tbxname();
+s = jsondecode( fileread( n + ".json" ) );
+v = ver( n ); % from Contents.m
+if isempty( v )
+    error( "docmaker:NotFound", ...
+        "No installed toolbox named %s was found on the MATLAB path.", n )
+elseif ~isscalar( v )
+    error( "docmaker:AlreadyExists", ...
+        "Found %d instances of %s on the MATLAB path.", numel( v ), n )
+end
+s.PackageName = n;
 s.ToolboxName = v.Name;
 s.ToolboxVersion = v.Version;
+s.UseLicenseBSD = true;
 
-if getenv( "GITHUB_ACTIONS" ) == "true"
+if getenv( "GITHUB_ACTIONS" ) == "true" && ...
+        startsWith( getenv( "GITHUB_REF" ), "refs/tags/v" )
     % Check version and tag compatibility for release
     ref = string( getenv( "GITHUB_REF" ) );
     gitTagNumber = extractAfter( ref, "refs/tags/v" );
     assert( v.Version == gitTagNumber, ...
-        "build:package:VersionTagMismatch", ...
+        "docmaker:InvalidValue", ...
         "%s Toolbox version %s (from Contents.m) does not " + ...
         "match the current Git tag number (%s).", ...
         v.Name, v.Version, gitTagNumber )
@@ -104,17 +193,262 @@ end % if
 % Create options object
 f = s.ToolboxFolder; % mandatory
 id = s.Identifier; % mandatory
-s = rmfield( s, ["Identifier", "ToolboxFolder"] ); % mandatory
-pv = [fieldnames( s ), struct2cell( s )]'; % optional
-o = matlab.addons.toolbox.ToolboxOptions( f, id, pv{:} );
+o = matlab.addons.toolbox.ToolboxOptions( f, id );
+s = rmfield( s, ["ToolboxFolder" "Identifier"] );
+for f = reshape( string( fieldnames( s ) ), 1, [] )
+    if isprop( o, f ), o.( f ) = s.( f ); end
+end
 o.ToolboxVersion = string( o.ToolboxVersion ); % g3079185
 
 % Package
 matlab.addons.toolbox.packageToolbox( o )
 fprintf( 1, "[+] %s\n", o.OutputFile );
 
-% Add license
-lic = fileread( "LICENSE" );
-mlAddonSetLicense( char( o.OutputFile ), struct( "type", 'BSD', "text", lic ) );
+% Add license (earlier versions)
+if ~isprop( o, "UseLicenseBSD" )
+    lic = fileread( fullfile( c.Plan.RootFolder, "LICENSE" ) );
+    mlAddonSetLicense( char( o.OutputFile ), struct( "type", 'BSD', "text", lic ) );
+end
 
 end % packageTask
+
+function files = cmarkSourceFiles( cmarkDir, sourceDir, genDir )
+%cmarkSourceFiles  List cmark-gfm files for MEX compilation
+%
+%   files = cmarkSourceFiles(cmarkDir,sourceDir,genDir) returns the C
+%   source files used to compile the cmark-gfm MEX, including the
+%   generated emoji map in genDir.
+%
+%   See also: mexTask, generateSources
+
+srcNames = [ ...
+    "cmark.c"; "node.c"; "iterator.c"; "blocks.c"; "inlines.c"; ...
+    "scanners.c"; "utf8.c"; "buffer.c"; "references.c"; "footnotes.c"; ...
+    "map.c"; "render.c"; "man.c"; "xml.c"; "html.c"; "commonmark.c"; ...
+    "plaintext.c"; "latex.c"; "houdini_href_e.c"; "houdini_html_e.c"; ...
+    "houdini_html_u.c"; "cmark_ctype.c"; "arena.c"; "linked_list.c"; ...
+    "syntax_extension.c"; "registry.c"; "plugin.c" ];
+extensionNames = [ ...
+    "core-extensions.c"; "table.c"; "strikethrough.c"; "autolink.c"; ...
+    "tagfilter.c"; "ext_scanners.c"; "tasklist.c" ];
+
+files = [ ...
+    fullfile( cmarkDir, "src", srcNames )
+    fullfile( cmarkDir, "extensions", extensionNames )
+    fullfile( sourceDir, "emoji.c" )
+    fullfile( sourceDir, "cmark-gfm_mex.c" )
+    fullfile( genDir, "emoji_map.c" ) ];
+
+end % cmarkSourceFiles
+
+function generateSources( root )
+%generateSources  Generate cmark-gfm headers and emoji map
+%
+%   generateSources(root) creates the cmark-gfm version header and emoji
+%   map under root/build/cmark-gfm.
+%
+%   root must contain initialized cmark-gfm and gemoji submodules.
+%
+%   See also: read_cmark_version, write_cmark_version, write_emoji_map
+
+cmarkDir = fullfile( root, "ext", "cmark-gfm" );
+gemojiDir = fullfile( root, "ext", "gemoji" );
+cmarkCMakeFile = fullfile( cmarkDir, "CMakeLists.txt" );
+cmarkVersionTemplate = fullfile( cmarkDir, "src", "cmark-gfm_version.h.in" );
+emojiJsonFile = fullfile( gemojiDir, "db", "emoji.json" );
+genDir = fullfile( root, "build", "cmark-gfm" );
+
+missingSubmodules = strings( 0, 1 );
+if ~isfile( cmarkCMakeFile ) || ~isfile( cmarkVersionTemplate )
+    missingSubmodules(end + 1, 1) = "ext/cmark-gfm";
+end
+if ~isfile( emojiJsonFile )
+    missingSubmodules(end + 1, 1) = "ext/gemoji";
+end
+if ~isempty( missingSubmodules )
+    error( "docmaker:NotFound", ...
+        "Missing or uninitialized submodule content: %s. Run " + ...
+        "git submodule update --init --recursive before building.", ...
+        strjoin( missingSubmodules, ", " ) )
+end
+if ~isfolder( genDir )
+    mkdir( genDir );
+end
+
+version = read_cmark_version( cmarkCMakeFile );
+write_cmark_version( ...
+    cmarkVersionTemplate, version, ...
+    fullfile( genDir, "cmark-gfm_version.h" ) );
+write_emoji_map( ...
+    fullfile( root, "src", "emoji_map.c.in" ), emojiJsonFile, ...
+    fullfile( genDir, "emoji_map.c" ) );
+
+end % generateSources
+
+function version = read_cmark_version( file )
+%read_cmark_version  Read cmark-gfm version metadata
+%
+%   version = read_cmark_version(file) reads the major, minor, patch,
+%   and GFM version values from the specified CMakeLists.txt file.
+%
+%   See also: generateSources, write_cmark_version
+
+text = fileread( file );
+names = ["major", "minor", "patch", "gfm"];
+version = struct;
+for name = names
+    expression = sprintf( "set\\(PROJECT_VERSION_%s\\s+(\\d+)\\)", ...
+        upper( name ) );
+    token = regexp( text, expression, "tokens", "once" );
+    if isempty( token )
+        error( "docmaker:InvalidValue", ...
+            "Unable to find PROJECT_VERSION_%s in %s.", upper( name ), file );
+    end
+    version.(name) = str2double( token{1} );
+end
+
+end % read_cmark_version
+
+function write_cmark_version( template, version, output )
+%write_cmark_version  Write the cmark-gfm version header
+%
+%   write_cmark_version(template,version,output) fills the version
+%   template and writes the generated header to output.
+%
+%   version is a struct containing fields major, minor, patch, and gfm.
+%
+%   See also: read_cmark_version, write_text
+
+headerText = fileread( template );
+names = ["major", "minor", "patch", "gfm"];
+for name = names
+    token = "@PROJECT_VERSION_" + upper( name ) + "@";
+    value = sprintf( "%d", version.(name) );
+    headerText = strrep( headerText, char( token ), value );
+end
+write_text( output, headerText );
+
+end % write_cmark_version
+
+function files = filesIn( folder, pattern )
+%filesIn  List folder entries matching a pattern
+%
+%   files = filesIn(folder,pattern) returns matching paths as a
+%   string array.
+%
+%   See also: dir, fullfile
+
+listing = dir( fullfile( folder, pattern ) );
+files = fullfile( string( {listing.folder} ), string( {listing.name} ) )';
+
+end % filesIn
+
+function write_text( file, text )
+%write_text  Write text to a file
+%
+%   write_text(file,text) writes text to the specified file without
+%   adding a newline.
+%
+%   See also: fopen, fclose
+
+fileId = fopen( file, "w" );
+if fileId < 0
+    error( "docmaker:OperationFailed", "Unable to create %s.", file );
+end
+cleanup = onCleanup( @() fclose( fileId ) );
+fprintf( fileId, "%s", text );
+
+end % write_text
+
+function write_emoji_map( template, jsonFile, output )
+%write_emoji_map  Generate C source for the emoji lookup table
+%
+%   write_emoji_map(template,jsonFile,output) reads emoji aliases from
+%   jsonFile, inserts C-escaped entries into template, and writes the
+%   generated source to output.
+%
+%   See also: read_utf8_text, c_string, c_utf8_string, write_text
+
+entries = jsondecode( read_utf8_text( jsonFile ) );
+aliases = strings( 0, 1 );
+emojis = strings( 0, 1 );
+
+for entry = entries'
+    for alias = entry{1}.aliases
+        aliases(end + 1, 1) = string( alias{1} ); %#ok<AGROW>
+        emojis(end + 1, 1) = string( entry{1}.emoji ); %#ok<AGROW>
+    end
+end
+
+[aliases, order] = sort( aliases );
+emojis = emojis(order);
+[aliases, uniqueIndices] = unique( aliases, "stable" );
+emojis = emojis(uniqueIndices);
+
+entryLines = cell( numel( aliases ), 1 );
+for index = 1:numel( aliases )
+    entryLines{index} = sprintf( '  {"%s", "%s"},', ...
+        c_string( aliases(index) ), c_utf8_string( emojis(index) ) );
+end
+
+templateText = fileread( template );
+placeholder = "@EMOJI_ENTRIES@";
+if numel( strfind( templateText, placeholder ) ) ~= 1
+    error( "docmaker:InvalidValue", ...
+        "Expected exactly one %s placeholder in %s.", ...
+        placeholder, template );
+end
+sourceText = strrep( templateText, placeholder, ...
+    strjoin( entryLines, newline() ) );
+
+write_text( output, sourceText );
+
+end % write_emoji_map
+
+function text = read_utf8_text( file )
+%read_utf8_text  Read and decode UTF-8 text from a file
+%
+%   text = read_utf8_text(file) reads file as bytes and decodes them as
+%   UTF-8.
+%
+%   See also: fread, native2unicode
+
+fileId = fopen( file, "r", "n", "ISO-8859-1" );
+if fileId == -1
+    if ~isfile( file )
+        error( "docmaker:NotFound", "Emoji data file not found: %s", file );
+    else
+        error( "docmaker:PermissionDenied", ...
+            "Unable to read emoji data: %s", file );
+    end
+end
+cleanup = onCleanup( @() fclose( fileId ) );
+bytes = fread( fileId, "*uint8" )';
+text = native2unicode( bytes, "UTF-8" );
+
+end % read_utf8_text
+
+function text = c_string( value )
+%c_string  Escape text for a C string literal
+%
+%   text = c_string(value) escapes backslashes and double quotes.
+%
+%   See also: c_utf8_string, write_emoji_map
+
+text = char( value );
+text = strrep( text, '\', '\\' );
+text = strrep( text, '"', '\"' );
+
+end % c_string
+
+function text = c_utf8_string( value )
+%c_utf8_string  Encode text as C UTF-8 escape sequences
+%
+%   text = c_utf8_string(value) returns UTF-8 bytes as \xNN escapes.
+%
+%   See also: c_string, write_emoji_map
+
+bytes = unicode2native( char( value ), "UTF-8" );
+text = char( strjoin( compose( "\\x%02X", bytes ), "" ) );
+
+end % c_utf8_string

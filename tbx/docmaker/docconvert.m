@@ -27,6 +27,11 @@ function varargout = docconvert( sMd, options )
 %   inline, and double dollar signs $$...$$ to display equations on their
 %   own line, centered.
 %
+%   docconvert(...,"Converter",c) selects the Markdown converter. Available
+%   converters are "cmark" (default), "github", and "gitlab". GitHub and
+%   GitLab conversion send Markdown to their APIs and require network
+%   access.
+%
 %   [html, res] = docconvert(...) returns the names of the HTML document(s)
 %   html and the resources folder res created.
 %
@@ -39,11 +44,15 @@ arguments ( Repeating )
 end
 
 arguments
-    options.Theme (1,1) string {mustBeMember(options.Theme,["light","dark","auto"])} = "auto"
+    options.Theme (1,1) string {mustBeMember( ...
+        options.Theme, ["light","dark","auto"] )} = "auto"
     options.Stylesheets (1,:) string {mustBeFile}
     options.Scripts (1,:) string {mustBeFile}
     options.Root (1,1) string {mustBeFolder}
-    options.Interpreter(1, 1) string {mustBeMember(options.Interpreter, ["latex", "none"])} = "none"    
+    options.Interpreter (1,1) string {mustBeMember( ...
+        options.Interpreter, ["latex", "none"] )} = "none"
+    options.Converter (1,1) string {mustBeMember( ...
+        options.Converter, ["cmark", "github", "gitlab"] )} = "cmark"
 end
 
 % Initialize output
@@ -52,7 +61,7 @@ oFiles = strings( 0, 1 );
 % Check documents
 sMd = docmaker.dir( sMd{:} );
 assert( all( docmaker.extensions( sMd ) == ".md" ), ...
-    "docmaker:InvalidArgument", ...
+    "docmaker:InvalidValue", ...
     "Markdown documents must all have extension .md." )
 if isempty( sMd ), return, end
 
@@ -62,7 +71,7 @@ if isfield( options, "Root" )
     sRoot = dir( options.Root );
     pRoot = sRoot(1).folder; % absolute path
     assert( isequal( docmaker.superfolder( pRoot, pMd{:} ), pRoot ), ...
-        "docmaker:InvalidArgument", ...
+        "docmaker:InvalidValue", ...
         "Markdown documents must be under folder %s.", pRoot )
 else
     pRoot = docmaker.superfolder( pMd{:} );
@@ -70,7 +79,8 @@ end
 
 % Include math scripts if LaTeX interpreter is requested
 if options.Interpreter == "latex"
-    mathScripts = fullfile( docmakerroot(), "resources", ...
+    mathScripts = fullfile( fileparts( mfilename( "fullpath" ) ), ...
+        "resources", ...
         ["mathjax-config.js", "tex-mml-chtml.js"] );
     if ~isfield( options, "Scripts" )
         options.Scripts = mathScripts;        
@@ -95,7 +105,7 @@ sCss = docmaker.dir( fullfile( pTem, [nGmd "matlaby.css" "copycode.css"] ) );
 if isfield( options, "Stylesheets" )
     sCss = docmaker.dir( sCss, options.Stylesheets );
     assert( all( docmaker.extensions( sCss ) == ".css" ), ...
-        "docmaker:InvalidArgument", ...
+        "docmaker:InvalidValue", ...
         "Stylesheets must all have extension .css." )
 end
 for ii = 1:numel( sCss )
@@ -118,7 +128,7 @@ sJs = docmaker.dir( fullfile( pTem, "copycode.js" ) );
 if isfield( options, "Scripts" )
     sJs = docmaker.dir( options.Scripts );
     assert( all( docmaker.extensions( sJs ) == ".js" ), ...
-        "docmaker:InvalidArgument", ...
+        "docmaker:InvalidValue", ...
         "Scripts must all have extension .js." )
 end
 for ii = 1:numel( sJs )
@@ -143,7 +153,7 @@ for ii = 1:numel( sMd ) % loop over files
     fMd = fullfile( sMd(ii).folder, sMd(ii).name );
     [pMd, nMd, ~] = fileparts( fMd );
     fHtml = fullfile( pMd, nMd + ".html" );
-    doc = convert( fMd, fCss, fJs );
+    doc = convert( fMd, fCss, fJs, options.Converter );
     writer.writeToFile( doc, fHtml, "utf-8" )
     if options.Interpreter == "latex"
         cleanLaTeXExpressions( fHtml )
@@ -159,19 +169,18 @@ end
 
 end % docconvert
 
-function doc = convert( fMd, fCss, fJs )
+function doc = convert( fMd, fCss, fJs, converter )
 %convert  Convert Markdown document to HTML with stylesheets and scripts
 %
-%  convert(md,css,js) converts the Markdown document md to HTML and
-%  includes references to the stylesheets css and scripts js.
+%  convert(md,css,js,converter) converts the Markdown document md to HTML
+%  using converter and includes the requested stylesheets and scripts.
 
 % Read Markdown from file
 pMd = fileparts( fMd );
 md = fileread( fMd );
 
 % Convert Markdown to XML
-converter = docmaker.converter();
-xml = converter.md2xml( md );
+xml = docmaker.md2xml( md, "Converter", converter );
 
 % Replace Markdown links
 docmaker.replacelinks( xml, ".md", ".html" )
@@ -288,55 +297,37 @@ if ischar( d ) && ischar( f ), r = char( r ); end
 end % relpath
 
 function cleanLaTeXExpressions( fHTML )
-%CLEANLATEXEXPRESSIONS Postprocess LaTeX expressions after conversion to
-%HTML via the GitHub or GitLab APIs. We remove spurious HTML tags and add 
-%delimiters to the expressions as needed.
+%cleanLaTeXExpressions  Restore LaTeX syntax after Markdown conversion
 %
-% For the GitHub API, we replace <em>...</em> with _..._ inside $...$ or 
-% $$...$$.
+%   cleanLaTeXExpressions(fHTML) restores underscores in LaTeX expressions
+%   after Markdown conversion. Markdown emphasis and LaTeX subscripts both
+%   use underscores, so emphasis tags inside expressions must be converted
+%   back. For example, the underscores in:
 %
-% Markdown italics and LaTeX subscripts both use an underscore, causing a
-% conflict when Markdown is parsed with priority over LaTeX inside a LaTeX
-% expression. For example, the underscores in the expression:
+%      $$
+%      \Phi = \frac{\dot{m}_{th} + \dot{m}}{2} ht_{in} - ...
+%            \frac{\dot{m}_{th} - \dot{m}}{2} ht_{out}
+%      $$
 %
-% $$
-% \Phi = \frac{\dot{m}_{th} + \dot{m}}{2} ht_{in} - ...
-%       \frac{\dot{m}_{th} - \dot{m}}{2} ht_{out}
-% $$
-%
-% are converted to <em>...</em> tags in HTML.
-%
-% For the GitLab API, we enclose span contents with class="js-render-math"
-% and data-math-style="display" or "inline" with $$ and $, respectively.
-%
-% Any future conflicting syntax will be added to this function on a
-% case-by-case basis.
+%   may be converted to <em>...</em> tags in HTML.
 
-arguments ( Input )
-    fHTML(1, 1) string {mustBeFile}    
-end % arguments ( Input )
+arguments
+    fHTML(1, 1) string {mustBeFile}
+end % arguments
 
-converterType = erase( class( docmaker.converter() ), "docmaker." );
-
-switch converterType
-    case "GitHub"
-        removeItalicTags( fHTML )
-    case "GitLab"
-        wrapMathSpans( fHTML )
-    otherwise
-        error( "docconvert:cleanLaTeXExpressions", ...
-            "Unsupported converter type %s.", converterType )
-end % switch/case
+removeItalicTags( fHTML )
 
 end % cleanLaTeXExpressions
 
 function removeItalicTags( fHTML )
-%REMOVEITALICTAGS Postprocess the generated HTML to remove spurious HTML 
-%tags from the LaTeX expressions.
+%removeItalicTags  Restore LaTeX underscores in generated HTML
+%
+%   removeItalicTags(fHTML) replaces emphasis tags around underscores in
+%   LaTeX expressions with literal underscores.
 
-arguments ( Input )
+arguments
     fHTML(1, 1) string {mustBeFile}
-end % arguments ( Input )
+end % arguments
 
 % Read the file contents.
 rawHTML = fileread( fHTML );
@@ -386,28 +377,3 @@ fprintf( fileID, "%s", rawHTML );
 fclose( fileID );
 
 end % removeItalicTags
-
-function wrapMathSpans( fHTML )
-%WRAPMATHSPANS Enclose GitLab-style LaTeX span contents within $$ or $.
-
-arguments ( Input )
-    fHTML(1, 1) string {mustBeFile}
-end % arguments ( Input )
-
-% Read the file contents.
-rawHTML = fileread( fHTML );
-
-% Display LaTeX → wrap inner content with $$...$$.
-displayPattern = '<span[^>]*data-math-style="display"[^>]*>(.*?)</span>';
-cleanHTML = regexprep( rawHTML, displayPattern, "$$$1$$" );
-
-% Inline LaTeX → wrap inner content with $...$.
-inlinePattern = '<span[^>]*data-math-style="inline"[^>]*>(.*?)</span>';
-cleanHTML = regexprep( cleanHTML, inlinePattern, "$$1$" );
-
-% Write the file contents.
-fileID = fopen( fHTML, "w" );
-fprintf( fileID, "%s", cleanHTML );
-fclose( fileID );
-
-end % wrapMathSpans
